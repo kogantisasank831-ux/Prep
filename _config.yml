@@ -1,0 +1,32 @@
+title: Applied GenAI Roadmap
+description: A production-oriented Applied GenAI learning roadmap.
+url: ""
+baseurl: ""
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+strict_front_matter: true
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+exclude:
+  - .venv
+  - content/inbox
+  - content/outlines
+  - content/prompts
+  - content/reviewed
+  - content/reviews
+  - content/templates
+  - document_service
+  - scripts
+  - tests
+  - AGENTS.md
+  - plan.md
+  - requirements.txt
+  - requirements-dev.txt
+
