@@ -1,7 +1,7 @@
 title: Applied GenAI Roadmap
 description: A production-oriented Applied GenAI learning roadmap.
-url: ""
-baseurl: ""
+url: "https://kogantisasank831-ux.github.io"
+baseurl: "/Prep"
 markdown: kramdown
 highlighter: rouge
 permalink: pretty
