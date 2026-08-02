@@ -19,6 +19,11 @@ website.
 - Treat generated explanations, citations, code, and expected outputs as
   untrusted until reviewed or executed.
 - Publish only content with `status: approved`.
+- Keep generation provenance, review history, validation transcripts, publication
+  status, and internal planning checklists in `content/reviews/`; do not render
+  them as learner-facing lesson content.
+- Write public lessons as coherent technical narratives rather than curriculum
+  specifications or exhaustive reference dumps.
 
 ## Responsibilities
 

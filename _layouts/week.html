@@ -24,18 +24,11 @@
     <main class="lesson-shell">
       <header class="lesson-hero">
         <div class="lesson-kicker">
-          <span>Phase {{ page.phase }}</span>
-          <span>Week {{ page.week }}</span>
-          <span>Version {{ page.version }}</span>
+          <span>Python engineering</span>
+          <span>Production foundations</span>
         </div>
         <h1>{{ page.title }}</h1>
         <p class="lesson-summary">Production engineering foundations for reliable, typed, testable AI services.</p>
-        <dl class="lesson-meta">
-          <div><dt>Status</dt><dd>{{ page.status | capitalize }}</dd></div>
-          <div><dt>Technical review</dt><dd>{{ page.technical_review | capitalize }}</dd></div>
-          <div><dt>Human review</dt><dd>{{ page.human_review | capitalize }}</dd></div>
-          <div><dt>Last reviewed</dt><dd>{{ page.last_reviewed }}</dd></div>
-        </dl>
       </header>
 
       <div class="lesson-layout">
@@ -56,12 +49,12 @@
 
       <nav class="lesson-pagination" aria-label="Week navigation">
         <a href="{{ '/#roadmap' | relative_url }}">← Roadmap overview</a>
-        <span>Week {{ page.week }} of 30</span>
+        <span>Python for production AI systems</span>
       </nav>
     </main>
 
     <footer>
-      <p>Approved learning content · Version {{ page.version }}</p>
+      <p>Applied GenAI Roadmap</p>
       <a href="#top">Back to top ↑</a>
     </footer>
   </body>

@@ -7,10 +7,6 @@
 .lesson-kicker span { padding: .35rem .65rem; border: 1px solid rgba(102, 227, 196, .25); border-radius: 999px; color: var(--accent); font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .lesson-hero h1 { max-width: 900px; margin-bottom: 1rem; font-size: clamp(2.8rem, 6vw, 5rem); }
 .lesson-summary { max-width: 720px; color: var(--muted); font-size: 1.1rem; }
-.lesson-meta { display: flex; flex-wrap: wrap; gap: 2rem; margin: 2.5rem 0 0; }
-.lesson-meta div { min-width: 120px; }
-.lesson-meta dt { color: var(--muted); font-size: .67rem; letter-spacing: .08em; text-transform: uppercase; }
-.lesson-meta dd { margin: .2rem 0 0; font-size: .86rem; font-weight: 700; }
 .lesson-layout { display: grid; grid-template-columns: 250px minmax(0, 760px); gap: clamp(2.5rem, 7vw, 7rem); align-items: start; padding-top: 3.5rem; }
 .lesson-sidebar { position: sticky; top: 1.5rem; max-height: calc(100vh - 3rem); overflow: auto; scrollbar-width: thin; }
 .toc-toggle { display: none; }
@@ -54,8 +50,6 @@
 }
 @media (max-width: 620px) {
   .lesson-hero { padding: 3.5rem 0 2.5rem; }
-  .lesson-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
   .lesson-content h2 { margin-top: 3.8rem; }
   .lesson-pagination { flex-direction: column; }
 }
-

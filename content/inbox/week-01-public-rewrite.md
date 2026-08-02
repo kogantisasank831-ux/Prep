@@ -1,14 +1,18 @@
 ---
+
 layout: week
 permalink: /weeks/week-01/
 description: Build a typed, validated and testable document extraction API with Python and FastAPI.
 title: Python for production AI systems
----
+---------------------------------------
+
 ## The service we are building
 
 A procurement team receives supplier notes, scope clarifications and exception reports as small text documents. Analysts currently copy the text into internal tools by hand. They need a small API that accepts one uploaded document and returns predictable JSON that downstream systems can trust.
 
 The first question is: **what stable JSON should downstream procurement systems receive?**
+
+<!-- VERIFIED_EXCERPT: models -->
 
 ```json
 {
@@ -42,6 +46,8 @@ A virtual environment keeps the lesson isolated from other projects. Create one 
 The first version is tempting because everything is visible in one place. It receives the upload, reads it, validates it, decodes it, normalizes it, logs it and constructs the response.
 
 The question this excerpt answers is: **what would a competent engineer write before the design pressures become visible?**
+
+<!-- VERIFIED_EXCERPT: api -->
 
 ```python
 MAX_UPLOAD_BYTES = 1_048_576
@@ -122,6 +128,8 @@ The distinction matters because deterministic domain behavior should be testable
 
 The question this excerpt answers is: **which behavior can become a pure function?** A pure function's result depends only on its inputs and it does not perform observable side effects such as I/O or logging.
 
+<!-- VERIFIED_EXCERPT: domain -->
+
 ```python
 def normalize_newlines(text: str) -> str:
     """Normalize newline representation without trimming other whitespace."""
@@ -160,8 +168,6 @@ A practical module split for this service is:
 
 This is not a rule that every service needs nine files. Each boundary exists here because it has a distinct reason to change and a distinct testing strategy. A smaller application can combine modules while preserving the same dependency direction.
 
-Dependency direction matters more than the number of files. `domain.py`, `ports.py` and `errors.py` do not import FastAPI or concrete readers. The service depends on those stable abstractions; `api.py`, `dependencies.py` and `main.py` assemble framework and adapter details around them. If `domain.py` imported `api.py` while `api.py` already imported domain values, Python would encounter a circular dependency and partially initialized modules. Treat that as a design signal: move the shared contract inward or move object construction outward instead of hiding the cycle with local imports.
-
 The architecture has now started to separate:
 
 > **Architecture, step 1**
@@ -183,6 +189,8 @@ The extraction service needs a decoder. That dependency should be selected durin
 
 The question this excerpt answers is: **what state belongs to each service instance, and what policy belongs to the class?**
 
+<!-- VERIFIED_EXCERPT: service -->
+
 ```python
 class DocumentExtractionService:
     supported_media_type: ClassVar[str] = "text/plain"
@@ -197,6 +205,8 @@ class DocumentExtractionService:
 `__init__` initializes a newly created instance. It is commonly called the constructor in day-to-day Python discussion, although object creation begins in `__new__` and initialization occurs in `__init__`. For this service, `__init__` establishes the dependency the instance requires to do useful work.
 
 The question this excerpt answers is: **what goes wrong when request-specific mutable state is placed on the class?**
+
+<!-- VERIFIED_EXCERPT: service -->
 
 ```python
 class BadTracker:
@@ -213,6 +223,8 @@ Every instance can mutate the same list. If mutable state is truly per instance,
 An **instance method** receives `self` and should use instance state or behavior. `extract()` is an instance method because it uses the injected decoder.
 
 A **class method** receives `cls`. It is useful for alternate constructors or behavior that deliberately depends on overridable class-level policy. The question this excerpt answers is: **when should validation read policy from the class rather than one instance?**
+
+<!-- VERIFIED_EXCERPT: service -->
 
 ```python
 @classmethod
@@ -262,6 +274,8 @@ A type hint helps developers, editors and static analyzers understand an interna
 
 The question this excerpt answers is: **why does an annotation not make a boundary safe?**
 
+<!-- VERIFIED_EXCERPT: models -->
+
 ```python
 def character_count(text: str) -> int:
     return len(text)
@@ -274,17 +288,13 @@ The call violates the annotated contract, but `len()` accepts a list, so Python 
 
 This distinction is especially important in Applied AI systems. LLM output, document metadata, tool arguments, queue messages and HTTP requests all cross trust boundaries. A schema can be well typed in our source code while the live input remains malformed.
 
-### Narrow optional and untyped values before domain use
-
-Boundary libraries sometimes expose values such as `str | None`, while parsers or third-party packages may return data typed as `Any`. Neither should spread through the application. Narrow an optional value once—by rejecting `None` or deliberately supplying a safe fallback—before constructing a domain object. For example, `file.filename or ""` converts upload metadata into a definite `str`; the service then rejects an empty or unsupported filename according to its policy.
-
-`Any` is different from `object`: it disables useful static checks for operations performed on that value. Contain it at the untyped boundary, validate or convert it into a concrete type, and expose only the concrete type to the rest of the system. Unions should represent genuine states in the contract, not uncertainty that the boundary forgot to resolve. Typed collections such as `list[str]` describe their element contract, but runtime validation is still required when the collection originated outside the process.
-
 ### Validate scalar multipart metadata with Pydantic
 
 The procurement endpoint has two scalar form fields: `media_type` and `correlation_id`. These are good Pydantic inputs because they are ordinary values that need runtime constraints and clear error reporting.
 
 The question this excerpt answers is: **what should the boundary model validate?**
+
+<!-- VERIFIED_EXCERPT: models -->
 
 ```python
 _SAFE_CORRELATION_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
@@ -326,6 +336,8 @@ Pydantic v2 field validators operate on one or more named fields. A model valida
 That placement matters. Duplicating `filename` and `upload_content_type` as user-supplied Pydantic fields would create two competing sources of truth: the multipart file metadata and separate scalar values.
 
 Pydantic models also provide serialization and construction APIs such as `model_dump()`, `model_dump_json()`, `model_validate()` and `model_validate_json()`. The question this excerpt answers is: **how should a trusted domain result become a validated response model?**
+
+<!-- VERIFIED_EXCERPT: models -->
 
 ```python
 class ExtractionResponse(BaseModel):
@@ -370,6 +382,8 @@ After boundary validation, the service needs one object containing the document 
 
 The question this excerpt answers is: **what should cross from the HTTP boundary into the synchronous service?**
 
+<!-- VERIFIED_EXCERPT: domain -->
+
 ```python
 @dataclass(frozen=True, slots=True)
 class ExtractionCommand:
@@ -400,6 +414,8 @@ The service receives one coherent command rather than a long list of loosely rel
 
 The question this excerpt answers is: **what does frozen fail to protect when a field refers to a mutable object?**
 
+<!-- VERIFIED_EXCERPT: domain -->
+
 ```python
 @dataclass(frozen=True)
 class ReviewBatch:
@@ -418,6 +434,8 @@ We now have bounded `bytes`, but decoding is still an external capability from t
 
 The question this excerpt answers is: **what is the smallest useful interface?**
 
+<!-- VERIFIED_EXCERPT: ports -->
+
 ```python
 class TextReader(Protocol):
     """Narrow interface required by the extraction service."""
@@ -428,6 +446,8 @@ class TextReader(Protocol):
 A `Protocol` supports structural typing: an object satisfies the interface when it provides a compatible `decode()` method. It does not have to inherit from `TextReader`. This keeps tests simple because a small fake decoder can be injected directly.
 
 The question this excerpt answers is: **where should strict UTF-8 policy and codec-error translation live?**
+
+<!-- VERIFIED_EXCERPT: readers -->
 
 ```python
 class Utf8TextReader:
@@ -473,6 +493,8 @@ A production API is defined as much by its failures as by its successful respons
 ### Define failure categories before mapping status codes
 
 The question this excerpt answers is: **which failures should callers be able to distinguish?**
+
+<!-- VERIFIED_EXCERPT: errors -->
 
 ```python
 class DocumentServiceError(Exception):
@@ -522,6 +544,8 @@ The exception stores a safe `correlation_id`, not the filename or document text.
 
 The question this excerpt answers is: **where should the low-level decoding error become an application error?**
 
+<!-- VERIFIED_EXCERPT: service -->
+
 ```python
 def _decode(self, command: ExtractionCommand) -> str:
     try:
@@ -555,6 +579,8 @@ The size decision occurs immediately after the bounded upload read because only 
 
 The question this excerpt answers is: **why is broad exception suppression unsafe for document extraction?**
 
+<!-- VERIFIED_EXCERPT: service -->
+
 ```python
 try:
     return self._reader.decode(command.content)
@@ -585,6 +611,8 @@ The operational goal is narrower: explain the lifecycle and failure category whi
 ### Use module-level loggers and structured context
 
 The question this excerpt answers is: **what should the service emit during a normal extraction?**
+
+<!-- VERIFIED_EXCERPT: service -->
 
 ```python
 logger = logging.getLogger(__name__)
@@ -621,6 +649,8 @@ Do not emit:
 
 The question this excerpt answers is: **what should a failure log preserve when the payload must remain private?**
 
+<!-- VERIFIED_EXCERPT: service -->
+
 ```python
 except DocumentServiceError as exc:
     logger.warning(
@@ -640,6 +670,8 @@ Expected client-specific failures such as unsupported formats can be warnings ra
 Fields supplied through `extra` become attributes on the emitted `LogRecord`. They are not guaranteed to appear in formatted log text. The active formatter decides what `caplog.text` contains.
 
 The question this excerpt answers is: **how do we test both secrecy and structured context?**
+
+<!-- VERIFIED_EXCERPT: tests -->
 
 ```python
 assert secret_text not in caplog.text
@@ -676,6 +708,8 @@ An **iterable** can produce an iterator. An **iterator** yields one item at a ti
 
 The question this excerpt answers is: **how could we inspect lines without materializing a second list?**
 
+<!-- VERIFIED_EXCERPT: domain -->
+
 ```python
 from collections.abc import Iterator
 from io import StringIO
@@ -699,6 +733,8 @@ The trade-offs are equally important:
 
 The question this excerpt answers is: **what does single consumption look like in observable behavior?**
 
+<!-- VERIFIED_EXCERPT: domain -->
+
 ```python
 lines = iter_logical_lines("PO-1\nPO-2")
 
@@ -719,6 +755,8 @@ FastAPI's `UploadFile.read()` is awaitable, so the route is `async def` and uses
 
 The question this excerpt answers is: **where does asynchronous execution actually enter the design?**
 
+<!-- VERIFIED_EXCERPT: api -->
+
 ```python
 MAX_UPLOAD_BYTES = 1_048_576
 
@@ -728,6 +766,8 @@ content = await file.read(MAX_UPLOAD_BYTES + 1)
 While an awaitable operation is waiting, the event loop may run other tasks. After the bounded bytes are available, strict decoding, validation, normalization and result construction remain ordinary synchronous work.
 
 The question this excerpt answers is: **why can an async function still block the event loop?**
+
+<!-- VERIFIED_EXCERPT: api -->
 
 ```python
 async def misleading() -> str:
@@ -767,17 +807,13 @@ We can now assemble the boundary without placing all the decisions back into one
 
 A thin route is not a route with no logic. It is a route whose logic is limited to HTTP concerns. For this service, the route must receive multipart data, await a bounded upload read, translate a read failure into an infrastructure category, reject oversized content, create the internal command and call the synchronous service.
 
-### Assemble the application at the outer boundary
-
-`api.py` defines an `APIRouter`; it does not create global service dependencies or configure the process. `dependencies.py` constructs the concrete UTF-8 reader and extraction service. `main.py` creates the FastAPI application, includes the router and registers exception handlers that translate application failures into HTTP responses. This is the composition root: the outermost module knows the concrete framework and adapters, while inner modules remain reusable without FastAPI.
-
-Keeping assembly in one place also makes tests controllable. FastAPI dependency overrides can replace the constructed service for an endpoint test without teaching the service about test doubles. Application startup owns logging configuration for the same reason: library modules emit records, while the executable boundary decides how the process handles them.
-
 ### Parse scalar form fields through a Pydantic dependency
 
 FastAPI receives form fields individually. A dependency function can construct `DocumentRequest`, allowing Pydantic to validate the scalar metadata before the route begins extraction.
 
 The question this excerpt answers is: **how do scalar multipart values enter the Pydantic boundary model?**
+
+<!-- VERIFIED_EXCERPT: api -->
 
 ```python
 def parse_document_request(
@@ -798,6 +834,8 @@ Only `media_type` and `correlation_id` are Pydantic request fields. `file.filena
 ### Enforce the bound before domain processing
 
 The question this excerpt answers is: **how does the endpoint distinguish exactly-at-limit content from a larger upload?**
+
+<!-- VERIFIED_EXCERPT: api -->
 
 ```python
 MAX_UPLOAD_BYTES = 1_048_576
@@ -836,6 +874,8 @@ This application-level read bound limits how much the route requests from `Uploa
 
 The question this excerpt answers is: **where do the command fields come from?**
 
+<!-- VERIFIED_EXCERPT: api -->
+
 ```python
 command = ExtractionCommand(
     filename=file.filename or "",
@@ -866,6 +906,8 @@ The service validates the relationship among filename, declared media type and u
 
 The question this excerpt answers is: **which rules remain synchronous domain policy?**
 
+<!-- VERIFIED_EXCERPT: service -->
+
 ```python
 @classmethod
 def _validate_command(cls, command: ExtractionCommand) -> None:
@@ -894,6 +936,8 @@ These signals are still metadata, not proof. A file named `supplier.txt` with bo
 
 The question this excerpt answers is: **how can we reject whitespace-only content without trimming valid returned text?**
 
+<!-- VERIFIED_EXCERPT: service -->
+
 ```python
 raw_text = self._decode(command)
 normalized_text = normalize_newlines(raw_text)
@@ -910,6 +954,8 @@ Calling `strip()` only in the predicate is important. The returned text remains 
 ### Map application failures to stable HTTP responses
 
 The HTTP layer owns status codes. The question this excerpt answers is: **where should `DocumentTooLargeError` become HTTP 413?**
+
+<!-- VERIFIED_EXCERPT: api -->
 
 ```python
 @app.exception_handler(DocumentTooLargeError)
@@ -954,6 +1000,8 @@ The runtime needs `python-multipart==0.0.32` to parse form and file fields. The 
 
 The question this excerpt answers is: **how does a client upload bytes without supplying a server path?**
 
+<!-- VERIFIED_EXCERPT: api -->
+
 ```bash
 curl \
   -X POST \
@@ -981,13 +1029,11 @@ The test strategy follows the architecture. Each layer is tested through its pub
 | Logging        | Content and filename are absent; structured fields exist on records                          |
 | HTTP boundary  | Multipart contract, sentinel limit and status mappings are stable                            |
 
-Arrange–Act–Assert keeps each test's evidence legible: arrange inputs and boundary substitutes, perform one observable action, then assert the public result or failure. It is a reading discipline rather than a requirement for three comment blocks. A fixture should represent reusable setup with a clear lifecycle—such as a configured `TestClient`—not conceal the important inputs for the behavior under test. Parametrization is preferable when the setup is constant and only cases and expected outcomes vary.
-
-Use ordinary fakes for narrow internal protocols and reserve mocks for external boundaries where calls themselves are observable behavior. Tests should remain independent of execution order, local time, live services and mutable module state. This keeps failures attributable to the contract being exercised rather than to hidden shared setup.
-
 ### Test the model as a runtime boundary
 
 The question this excerpt answers is: **does unsafe scalar metadata fail before extraction?**
+
+<!-- VERIFIED_EXCERPT: tests -->
 
 ```python
 @pytest.mark.parametrize(
@@ -1010,6 +1056,8 @@ Parametrization turns one behavioral rule into a compact boundary table. The tes
 
 The question this excerpt answers is: **does invalid UTF-8 become the decoder's stable failure while retaining the codec cause?**
 
+<!-- VERIFIED_EXCERPT: tests -->
+
 ```python
 def test_reader_rejects_invalid_utf8() -> None:
     with pytest.raises(ReaderDecodingError) as captured:
@@ -1023,6 +1071,8 @@ Direct byte payloads are deterministic across operating systems. When exact newl
 ### Test the service with a fake decoder
 
 The service should be tested without depending on the UTF-8 adapter for every case. The question this excerpt answers is: **how can a fake satisfy the protocol while real orchestration still runs?**
+
+<!-- VERIFIED_EXCERPT: tests -->
 
 ```python
 @dataclass(slots=True)
@@ -1047,6 +1097,8 @@ def test_service_extracts_and_normalizes_text() -> None:
 The fake is intentionally smaller than a mock-heavy arrangement. It satisfies the protocol and lets the real service execute. This gives stronger evidence than mocking private methods and asserting call sequences.
 
 The question this excerpt answers is: **how can one test express a readable decision table for format policy?**
+
+<!-- VERIFIED_EXCERPT: tests -->
 
 ```python
 @pytest.mark.parametrize(
@@ -1080,6 +1132,8 @@ def test_service_rejects_unsupported_formats(
 
 The question this excerpt answers is: **can we prove both non-leakage and traceability?**
 
+<!-- VERIFIED_EXCERPT: tests -->
+
 ```python
 assert result.text == secret_text
 assert secret_text not in caplog.text
@@ -1096,6 +1150,8 @@ The first two log assertions protect rendered output. The record assertion verif
 ### Test the multipart boundary as multipart
 
 Endpoint tests send form data and the file tuple separately. The question this excerpt answers is: **how do tests control each multipart source independently?**
+
+<!-- VERIFIED_EXCERPT: tests -->
 
 ```python
 def post_document(
@@ -1118,6 +1174,8 @@ def post_document(
 ```
 
 The question this excerpt answers is: **what assertion proves the sentinel-byte policy at the HTTP boundary?**
+
+<!-- VERIFIED_EXCERPT: tests -->
 
 ```python
 def test_extract_endpoint_rejects_oversized_document() -> None:
