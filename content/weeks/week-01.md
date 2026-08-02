@@ -3,6 +3,9 @@ layout: week
 permalink: /weeks/week-01/
 description: Build a typed, validated and testable document extraction API with Python and FastAPI.
 title: Python for production AI systems
+current_label: Production version
+alternate_label: Beginner version
+alternate_url: /weeks/week-01/beginner/
 ---
 ## The service we are building
 
