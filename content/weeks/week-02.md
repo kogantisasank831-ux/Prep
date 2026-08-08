@@ -6,6 +6,9 @@ description: Build a PostgreSQL procurement model and answer five operational qu
 summary: Follow one Northwind Components purchase order from contract to receipt, then use SQL to make its operational evidence queryable and defensible.
 kicker_primary: SQL and data modelling
 kicker_secondary: Procurement facts before dashboards
+current_label: Production version
+alternate_label: Beginner version
+alternate_url: /weeks/week-02/beginner/
 ---
 
 ## One order, one uncomfortable question
@@ -174,7 +177,7 @@ Do not add USD and EUR into a single total. Without FX data, the output grain in
 
 An `INNER JOIN` retains matching rows. A `LEFT JOIN` retains every row from the left side and supplies nulls when the right side has no match. The choice encodes business meaning: a report about open commitments must retain PO lines with no delivery.
 
-The dangerous case is a one-to-many join. `PO-1042` has one monetary PO line and two delivery items. This naive query repeats its ordered value once per receipt:
+The dangerous case is a one-to-many join. At the 30 June cutoff, `PO-1042` has one monetary PO line and two delivery items. This naive query repeats its ordered value once per receipt:
 
 ```sql
 -- Deliberately wrong: used to expose fan-out.
@@ -183,10 +186,13 @@ SELECT
     SUM(poi.ordered_quantity * poi.po_unit_price) AS inflated_value
 FROM purchase_orders AS po
 JOIN purchase_order_items AS poi USING (purchase_order_id)
+JOIN deliveries AS d
+  ON d.purchase_order_id = po.purchase_order_id
 JOIN delivery_items AS di
-  ON (di.purchase_order_id, di.po_line_no)
-   = (poi.purchase_order_id, poi.line_no)
+  ON (di.delivery_id, di.purchase_order_id, di.po_line_no)
+   = (d.delivery_id, poi.purchase_order_id, poi.line_no)
 WHERE po.po_number = 'PO-1042'
+  AND d.received_on <= :'as_of_date'::date
 GROUP BY po.po_number;
 ```
 
