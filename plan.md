@@ -3,16 +3,17 @@
 ## Objective
 
 Create technically accurate, detailed learning material for the roadmap in
-`Path.md`, one week at a time. Content generation will happen manually in
-ChatGPT Web to conserve Codex usage. Codex will design the prompts, validate and
-normalize the returned content, and integrate approved content into the static
-website.
+`Path.md`, one week at a time. Content may be generated in ChatGPT Web or by an
+explicitly approved Codex model. Codex defines the teaching sequence, validates
+and normalizes generated material, and integrates only human-approved content
+into the static website.
 
 ## Core Decisions
 
 - Process exactly one week at a time.
 - Use human-in-the-loop approval before publishing each week.
-- Use ChatGPT Web for initial content generation.
+- Use the generation surface approved for the specific content pass; record the
+  selected model or surface in the internal review artifact.
 - Store the approved source content as `content/weeks/week-NN.md`.
 - Generate website HTML from the approved Markdown; do not maintain independent
   Markdown and HTML copies manually.
@@ -24,12 +25,20 @@ website.
   them as learner-facing lesson content.
 - Write public lessons as coherent technical narratives rather than curriculum
   specifications or exhaustive reference dumps.
+- Teach one new mental model at a time. Do not combine adjacent concepts merely
+  because they appear together in the implementation.
+- Use a repeated learning unit: orienting question, first-principles intuition,
+  tiny example, boundary or failure case, comprehension checkpoint, then a clear
+  bridge to the next concept.
+- Introduce framework assembly only after the learner understands the components
+  being assembled.
 
 ## Responsibilities
 
 ### Project owner
 
-- Run the supplied prompt in ChatGPT Web.
+- Run the supplied prompt in ChatGPT Web when that is the approved generation
+  surface, or explicitly approve direct model generation in Codex.
 - Return the complete response without manually restructuring it.
 - Review the content for relevance, depth, clarity, and expected workload.
 - Approve the outline and final content.
@@ -46,9 +55,10 @@ website.
 - Convert or render the Markdown as website content.
 - Preserve review status, version, provenance, and source attribution.
 
-### ChatGPT Web
+### Content-generation model or surface
 
-- Generate the requested draft according to the supplied schema and constraints.
+- Generate the requested draft according to the supplied teaching sequence,
+  schema, and constraints.
 - Return Markdown only, without unrelated commentary.
 - Explicitly identify uncertainty, assumptions, and claims requiring verification.
 - Never invent citations, execution results, benchmarks, or source content.
@@ -81,9 +91,9 @@ Codex extracts the selected week's requirements from `Path.md` and defines:
 
 The project owner approves this outline before full content generation.
 
-### 2. Prepare the ChatGPT Web prompt
+### 2. Prepare the generation brief
 
-Codex supplies a complete prompt containing:
+Codex supplies or records a complete generation brief containing:
 
 - the learner profile and assumed technical level;
 - the approved weekly scope;
@@ -98,16 +108,18 @@ Codex supplies a complete prompt containing:
 The prompt should request one bounded artifact. Follow-up prompts should revise
 specific sections instead of regenerating the entire document unnecessarily.
 
-### 3. Generate in ChatGPT Web
+### 3. Generate the draft
 
-The project owner runs the prompt in ChatGPT Web and returns the result using one
-of these methods, in preference order:
+For ChatGPT Web, the project owner runs the prompt and returns the result using
+one of these methods, in preference order:
 
 1. Save the exact response as `content/inbox/week-NN-draft.md`.
 2. Attach the generated Markdown file in the conversation.
 3. Paste the complete response in the conversation when the document is small.
 
 Do not paste the result directly into `week-NN.md`; the inbox copy is unreviewed.
+For an explicitly approved Codex model, write the output directly to a reviewed
+candidate path, never to the canonical published document.
 
 ### 4. Structural review
 
@@ -212,7 +224,9 @@ human_review: pending
 ---
 ```
 
-The document should then contain these sections:
+The public document should use the concept order that best builds learner
+intuition. The following are required content capabilities, not a mandatory
+learner-facing section order:
 
 1. Overview
 2. Learning outcomes
@@ -233,8 +247,8 @@ The document should then contain these sections:
 17. Assumptions and unresolved questions
 18. Review history
 
-Sections may contain subsections, but their purpose and order should remain stable
-so the website can render every week consistently.
+Internal provenance, approval, unresolved questions, weekly planning, and review
+history belong in `content/reviews/`, not in the public lesson.
 
 ## Prompt Design Rules
 
