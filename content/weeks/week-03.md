@@ -1,7 +1,7 @@
 ---
 layout: week
 permalink: /weeks/week-03/
-title: LLM foundations: from tokens to a local model comparison
+title: "LLM foundations: from tokens to a local model comparison"
 description: Build first-principles LLM intuition and a reproducible, local-only comparison harness for two Qwen2.5 GGUF models.
 summary: Trace a prompt through tokenization, a decoder-only Transformer, sampling, and a controlled localhost experiment without confusing fluent output with evidence.
 kicker_primary: LLM foundations
