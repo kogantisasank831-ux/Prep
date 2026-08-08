@@ -8,101 +8,90 @@
     <title>Applied GenAI Roadmap</title>
     <script src="theme.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <script src="shell.js" defer></script>
     <script src="app.js" defer></script>
   </head>
-  <body>
+  <body class="app-shell-page roadmap-view">
     <a class="skip-link" href="#roadmap">Skip to roadmap</a>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="Applied GenAI roadmap home">
+
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Learning navigation">
+      <a class="brand app-sidebar-brand" href="#top" aria-label="Applied GenAI roadmap home">
         <span class="brand-mark" aria-hidden="true">AI</span>
         <span>Applied GenAI <strong>Roadmap</strong></span>
       </a>
-      <div class="header-actions">
-        <nav aria-label="Primary navigation">
-          <a href="#roadmap">Roadmap</a>
-          <a href="#weekly-system">Weekly system</a>
-        </nav>
-        <button class="header-control theme-toggle" type="button" aria-label="Switch color mode">
-          <span data-theme-icon aria-hidden="true">☀</span>
-          <span data-theme-label>Light</span>
-        </button>
-      </div>
-    </header>
+      <nav class="app-nav" aria-label="Roadmap and lessons">
+        <p class="app-nav-label">Contents</p>
+        <a class="app-nav-link app-content-link active" href="#roadmap" aria-current="page">
+          <span aria-hidden="true">⌂</span>
+          <span>Roadmap</span>
+        </a>
+        <p class="app-nav-label app-weeks-label">Learning path</p>
+        <div class="app-week-navigation" id="app-week-navigation" aria-live="polite"></div>
+      </nav>
+    </aside>
+    <button class="app-overlay" id="app-overlay" type="button" tabindex="-1" aria-label="Close navigation"></button>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow">30-week learning system</p>
-          <h1 id="hero-title">Build the skills to ship <span>production GenAI.</span></h1>
-          <p class="hero-description">A practical path through Python, RAG, agents, evaluation, security, and system design—grounded in one evolving procurement intelligence project.</p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#roadmap">Continue learning <span aria-hidden="true">→</span></a>
-            <button class="button button-secondary" id="reset-progress" type="button">Reset progress</button>
-          </div>
+    <div class="app-page">
+      <header class="site-header">
+        <div class="header-leading">
+          <button class="app-menu-toggle" type="button" data-app-menu-toggle aria-expanded="false" aria-controls="app-sidebar">
+            <span aria-hidden="true">☰</span>
+            <span>Menu</span>
+          </button>
+          <span class="header-context">Roadmap contents</span>
         </div>
+        <div class="header-actions">
+          <button class="header-control theme-toggle" type="button" aria-label="Switch color mode">
+            <span data-theme-icon aria-hidden="true">☀</span>
+            <span data-theme-label>Light</span>
+          </button>
+        </div>
+      </header>
 
-        <aside class="progress-card" aria-label="Roadmap progress">
-          <div class="progress-heading">
+      <main id="top">
+        <section class="roadmap-section" id="roadmap" aria-labelledby="roadmap-title">
+          <div class="roadmap-page-heading">
             <div>
-              <p class="label">Your progress</p>
-              <p><strong id="completed-count">0</strong> of <span id="total-count">30</span> weeks</p>
+              <p class="eyebrow">Contents</p>
+              <h1 id="roadmap-title">Learning roadmap</h1>
+              <p>A 30-week path from production Python foundations to reliable GenAI systems.</p>
             </div>
-            <span class="progress-percent" id="progress-percent">0%</span>
+            <aside class="progress-card roadmap-progress" aria-label="Roadmap progress">
+              <div class="progress-heading">
+                <div>
+                  <p class="label">Your progress</p>
+                  <p><strong id="completed-count">0</strong> of <span id="total-count">30</span> weeks</p>
+                </div>
+                <span class="progress-percent" id="progress-percent">0%</span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-label="Roadmap completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span id="progress-fill"></span>
+              </div>
+              <p class="progress-message" id="progress-message">Start with the foundations. Consistency compounds.</p>
+            </aside>
           </div>
-          <div class="progress-track" role="progressbar" aria-label="Roadmap completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <span id="progress-fill"></span>
+
+          <div class="toolbar" aria-label="Roadmap controls">
+            <label class="search-field">
+              <span class="visually-hidden">Search roadmap</span>
+              <span aria-hidden="true">⌕</span>
+              <input id="search" type="search" placeholder="Search topics, tools, or skills…" autocomplete="off">
+            </label>
+            <div class="filter-group" id="phase-filters" aria-label="Filter by phase"></div>
+            <button class="button button-secondary reset-progress" id="reset-progress" type="button">Reset progress</button>
           </div>
-          <p class="progress-message" id="progress-message">Start with the foundations. Consistency compounds.</p>
-          <dl class="roadmap-stats">
-            <div><dt>Core track</dt><dd>24 weeks</dd></div>
-            <div><dt>Optional lab</dt><dd>6 weeks</dd></div>
-            <div><dt>Weekly pace</dt><dd>8 hours</dd></div>
-          </dl>
-        </aside>
-      </section>
 
-      <section class="roadmap-section" id="roadmap" aria-labelledby="roadmap-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">The roadmap</p>
-            <h2 id="roadmap-title">Learn. Build. Explain.</h2>
-          </div>
-          <p>Every week connects concepts to a working deliverable and interview-ready explanations.</p>
-        </div>
+          <p class="load-state" id="load-state" role="status">Loading roadmap…</p>
+          <div class="phase-list" id="phase-list"></div>
+          <p class="empty-state" id="empty-state" hidden>No roadmap items match your search.</p>
+        </section>
+      </main>
 
-        <div class="toolbar" aria-label="Roadmap controls">
-          <label class="search-field">
-            <span class="visually-hidden">Search roadmap</span>
-            <span aria-hidden="true">⌕</span>
-            <input id="search" type="search" placeholder="Search topics, tools, or skills…" autocomplete="off">
-          </label>
-          <div class="filter-group" id="phase-filters" aria-label="Filter by phase"></div>
-        </div>
-
-        <p class="load-state" id="load-state" role="status">Loading roadmap…</p>
-        <div class="phase-list" id="phase-list"></div>
-        <p class="empty-state" id="empty-state" hidden>No roadmap items match your search.</p>
-      </section>
-
-      <section class="weekly-system" id="weekly-system" aria-labelledby="weekly-title">
-        <div>
-          <p class="eyebrow">Make progress visible</p>
-          <h2 id="weekly-title">Your weekly operating system</h2>
-          <p>Maintain four lightweight artifacts. Together they turn study time into evidence you can use in interviews and design reviews.</p>
-        </div>
-        <div class="artifact-grid">
-          <article><span>01</span><h3>Interview notebook</h3><p>Concepts, difficult questions, improved answers, and recurring mistakes.</p></article>
-          <article><span>02</span><h3>Decision records</h3><p>Alternatives, rationale, trade-offs, consequences, and architecture choices.</p></article>
-          <article><span>03</span><h3>Evaluation log</h3><p>Dataset, prompt and model versions, retrieval settings, metrics, and failures.</p></article>
-          <article><span>04</span><h3>Project changelog</h3><p>Weekly outcomes that become portfolio evidence and interview stories.</p></article>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <p>Designed for deliberate practice, measurable progress, and production thinking.</p>
-      <a href="#top">Back to top ↑</a>
-    </footer>
+      <footer>
+        <p>Designed for deliberate practice, measurable progress, and production thinking.</p>
+        <a href="#top">Back to top ↑</a>
+      </footer>
+    </div>
 
     <template id="phase-template">
       <section class="phase">

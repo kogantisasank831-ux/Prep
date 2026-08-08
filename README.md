@@ -2,8 +2,9 @@
 
 A static learning roadmap for the 30-week curriculum in [`Path.md`](Path.md).
 The dashboard is dependency-free; GitHub Pages uses its native Jekyll build to
-render approved weekly Markdown lessons. The site provides phase navigation,
-full-text filtering, weekly completion tracking, and private browser-local notes.
+render approved weekly Markdown lessons. The site provides responsive sidebar
+navigation, phase filtering, full-text search, light/dark and focused reading
+modes, weekly completion tracking, and private browser-local notes.
 
 ## Run locally
 
@@ -34,7 +35,7 @@ as `### Title`. Changes that follow this structure appear automatically on the
 website after refresh.
 
 Approved detailed lessons live in `content/weeks/` with `layout: week` and a
-stable permalink. Add the week number to `PUBLISHED_WEEKS` in `app.js` only after
+stable permalink. Add the week number to `PUBLISHED_WEEKS` in `shell.js` only after
 technical and human review pass.
 
 The Python HTTP server can preview the dashboard shell, but it does not execute

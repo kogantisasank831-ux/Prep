@@ -5,6 +5,7 @@ const toc = document.querySelector("#lesson-toc");
 const toggle = document.querySelector("#toc-toggle");
 const progress = document.querySelector("#reading-progress");
 const sidebar = document.querySelector("#lesson-sidebar");
+const applicationSidebar = document.querySelector("#app-sidebar");
 const readModeToggle = document.querySelector("#read-mode-toggle");
 const READ_MODE_STORAGE_KEY = "applied-genai-read-mode";
 
@@ -17,12 +18,21 @@ function setTocOpen(open) {
 
 function setReadMode(enabled) {
   document.body.classList.toggle("lesson-read-mode-active", enabled);
+  if (enabled) {
+    document.body.classList.remove("app-nav-open");
+    document.querySelector("[data-app-menu-toggle]")?.setAttribute("aria-expanded", "false");
+  }
   readModeToggle?.setAttribute("aria-pressed", String(enabled));
   sidebar?.setAttribute("aria-hidden", String(enabled));
+  if (applicationSidebar) {
+    const applicationSidebarHidden = enabled || window.matchMedia("(max-width: 1099px)").matches;
+    applicationSidebar.inert = applicationSidebarHidden;
+    applicationSidebar.setAttribute("aria-hidden", String(applicationSidebarHidden));
+  }
   const label = readModeToggle?.querySelector("[data-read-mode-label]");
-  if (label) label.textContent = enabled ? "Show contents" : "Read mode";
+  if (label) label.textContent = enabled ? "Show navigation" : "Read mode";
   if (readModeToggle) {
-    readModeToggle.title = enabled ? "Restore the lesson contents panel" : "Hide the contents panel for focused reading";
+    readModeToggle.title = enabled ? "Restore lesson navigation" : "Hide navigation for focused reading";
   }
   if (enabled) {
     setTocOpen(false);

@@ -1,7 +1,7 @@
 "use strict";
 
 const STORAGE_KEY = "applied-genai-roadmap-v1";
-const PUBLISHED_WEEKS = new Set([1, 2, 3]);
+const publishedWeeks = window.PUBLISHED_WEEKS ?? new Set();
 
 /** @typedef {{ heading: string, body: string[] }} RoadmapSection */
 /** @typedef {{ number: number, title: string, sections: RoadmapSection[], searchableText: string }} Week */
@@ -183,6 +183,7 @@ function renderRoadmap() {
       const weeklyPlan = weekNode.querySelector("details");
       const weekId = String(week.number);
       card.dataset.week = weekId;
+      card.id = `week-${week.number}`;
       card.classList.toggle("completed", state.completed.has(weekId));
       checkbox.checked = state.completed.has(weekId);
       checkbox.setAttribute("aria-label", `Mark week ${week.number} complete`);
@@ -195,7 +196,7 @@ function renderRoadmap() {
       }));
       weekNode.querySelector(".week-content").innerHTML = renderSections(week.sections);
       const lessonLink = weekNode.querySelector(".week-direct-link");
-      if (PUBLISHED_WEEKS.has(week.number)) {
+      if (publishedWeeks.has(week.number)) {
         lessonLink.href = `weeks/week-${String(week.number).padStart(2, "0")}/`;
         lessonLink.setAttribute("aria-label", `Open the full Week ${week.number} lesson`);
         lessonLink.hidden = false;
@@ -228,6 +229,16 @@ function renderRoadmap() {
   }
   phaseList.replaceChildren(fragment);
   document.querySelector("#empty-state").hidden = visibleWeeks > 0;
+  showRequestedWeek();
+}
+
+function showRequestedWeek() {
+  if (!/^#week-\d+$/.test(window.location.hash)) return;
+  const requestedWeek = document.querySelector(window.location.hash);
+  if (!requestedWeek) return;
+  const plan = requestedWeek.querySelector("details");
+  if (plan) plan.open = true;
+  window.requestAnimationFrame(() => requestedWeek.scrollIntoView({ block: "start" }));
 }
 
 async function initialise() {
@@ -260,4 +271,5 @@ async function initialise() {
   });
 }
 
+window.addEventListener("hashchange", showRequestedWeek);
 initialise();

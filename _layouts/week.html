@@ -9,26 +9,48 @@
     <script src="{{ '/theme.js' | relative_url }}"></script>
     <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
     <link rel="stylesheet" href="{{ '/week.css' | relative_url }}">
+    <script src="{{ '/shell.js' | relative_url }}" defer></script>
     <script src="{{ '/week.js' | relative_url }}" defer></script>
   </head>
-  <body id="top">
+  <body class="app-shell-page lesson-view" id="top">
     <a class="skip-link" href="#lesson-content">Skip to lesson</a>
 
-    <header class="site-header lesson-header">
-      <a class="brand" href="{{ '/' | relative_url }}" aria-label="Applied GenAI roadmap home">
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Learning navigation">
+      <a class="brand app-sidebar-brand" href="{{ '/' | relative_url }}" aria-label="Applied GenAI roadmap home">
         <span class="brand-mark" aria-hidden="true">AI</span>
         <span>Applied GenAI <strong>Roadmap</strong></span>
       </a>
-      <div class="header-actions lesson-header-actions">
-        <button class="header-control theme-toggle" type="button" aria-label="Switch color mode">
-          <span data-theme-icon aria-hidden="true">☀</span>
-          <span data-theme-label>Light</span>
-        </button>
-        <a class="back-link" href="{{ '/#roadmap' | relative_url }}">← Back to roadmap</a>
-      </div>
-    </header>
+      <nav class="app-nav" aria-label="Roadmap and lessons">
+        <p class="app-nav-label">Contents</p>
+        <a class="app-nav-link app-content-link" href="{{ '/#roadmap' | relative_url }}">
+          <span aria-hidden="true">⌂</span>
+          <span>Roadmap</span>
+        </a>
+        <p class="app-nav-label app-weeks-label">Learning path</p>
+        <div class="app-week-navigation" id="app-week-navigation" aria-live="polite"></div>
+      </nav>
+    </aside>
+    <button class="app-overlay" id="app-overlay" type="button" tabindex="-1" aria-label="Close navigation"></button>
 
-    <main class="lesson-shell">
+    <div class="app-page">
+      <header class="site-header lesson-header">
+        <div class="header-leading">
+          <button class="app-menu-toggle" type="button" data-app-menu-toggle aria-expanded="false" aria-controls="app-sidebar">
+            <span aria-hidden="true">☰</span>
+            <span>Menu</span>
+          </button>
+          <span class="header-context">Lesson</span>
+        </div>
+        <div class="header-actions lesson-header-actions">
+          <button class="header-control theme-toggle" type="button" aria-label="Switch color mode">
+            <span data-theme-icon aria-hidden="true">☀</span>
+            <span data-theme-label>Light</span>
+          </button>
+          <a class="back-link" href="{{ '/#roadmap' | relative_url }}">Roadmap</a>
+        </div>
+      </header>
+
+      <main class="lesson-shell">
       <header class="lesson-hero">
         <div class="lesson-hero-content">
           <div class="lesson-view-controls">
@@ -74,11 +96,12 @@
         <a href="{{ '/#roadmap' | relative_url }}">← Roadmap overview</a>
         <span>{{ page.title }}</span>
       </nav>
-    </main>
+      </main>
 
-    <footer>
-      <p>Applied GenAI Roadmap</p>
-      <a href="#top">Back to top ↑</a>
-    </footer>
+      <footer>
+        <p>Applied GenAI Roadmap</p>
+        <a href="#top">Back to top ↑</a>
+      </footer>
+    </div>
   </body>
 </html>
