@@ -1,7 +1,7 @@
 "use strict";
 
 const STORAGE_KEY = "applied-genai-roadmap-v1";
-const PUBLISHED_WEEKS = new Set([1, 3]);
+const PUBLISHED_WEEKS = new Set([1, 2, 3]);
 
 /** @typedef {{ heading: string, body: string[] }} RoadmapSection */
 /** @typedef {{ number: number, title: string, sections: RoadmapSection[], searchableText: string }} Week */
