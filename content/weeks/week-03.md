@@ -6,6 +6,9 @@ description: Build first-principles LLM intuition and a reproducible, local-only
 summary: Trace a prompt through tokenization, a decoder-only Transformer, sampling, and a controlled localhost experiment without confusing fluent output with evidence.
 kicker_primary: LLM foundations
 kicker_secondary: Local, controlled evaluation
+current_label: Production version
+alternate_label: Beginner version
+alternate_url: /weeks/week-03/beginner/
 ---
 
 ## One prompt, two continuations
