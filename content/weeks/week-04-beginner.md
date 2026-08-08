@@ -6,6 +6,9 @@ description: Learn to turn one procurement document into typed, reviewable data 
 summary: Follow a synthetic Atlas Metals order from document text to a validated extraction contract, then learn the prompting, validation, retry, and evaluation concepts that make the result usable.
 kicker_primary: Prompting and structured output
 kicker_secondary: Beginner context
+current_label: Beginner version
+alternate_label: Production version
+alternate_url: /weeks/week-04/
 ---
 
 ## One document, one bounded job
@@ -39,7 +42,7 @@ An analyst can read this in seconds. A downstream system cannot safely rely on s
 }
 ```
 
-The model may help transform text into this shape, but it is not the authority on whether a field is true. The document is still untrusted input, model output is still untrusted input, and a syntactically valid JSON object may still contain the wrong supplier, a guessed date, or a swapped currency.
+This is the application's final result, including its validation status. The model may propose the source fields, but it does not produce the authoritative status and is not the authority on whether a field is true. The document is still untrusted input, model output is still untrusted input, and a syntactically valid JSON object may still contain the wrong supplier, a guessed date, or a swapped currency.
 
 This lesson follows that one document from raw text to a bounded extraction result. The goal is not to make an assistant sound convincing. It is to define a contract, check it deterministically, preserve evidence for review, and expose failure instead of silently inventing a value.
 
@@ -140,11 +143,10 @@ Payment terms: Net 30 after inspection approval
 Example result:
 {"supplier_name":"Atlas Metals","product":"Copper wire",
  "quantity":"50","unit":"kg","unit_price":"12.00","currency":"USD",
- "delivery_date":null,"payment_terms":"Net 30 after inspection approval",
- "validation_status":"needs_review"}
+ "delivery_date":null,"payment_terms":"Net 30 after inspection approval"}
 ```
 
-The example is useful only if the contract says when null is permitted and why the status is not `valid`. Too many examples consume context, can anchor the model to irrelevant wording, and can accidentally teach a bad shortcut. Keep examples short, representative, and versioned along with the prompt.
+The example is useful only if the contract says when null is permitted. After validation, the application assigns this case `needs_review`; that status is not part of the model candidate. Too many examples consume context, can anchor the model to irrelevant wording, and can accidentally teach a bad shortcut. Keep examples short, representative, and versioned along with the prompt.
 
 **Checkpoint.** Should few-shot examples replace validation code? No. Examples influence model behavior. Validation code decides whether a particular response satisfies the application contract.
 
@@ -180,8 +182,7 @@ Payment is Net 30 once the inspection has been approved.
   "unit_price": "12.00",
   "currency": "USD",
   "delivery_date": "2026-08-18",
-  "payment_terms": "Net 30 after inspection approval",
-  "validation_status": "valid"
+  "payment_terms": "Net 30 after inspection approval"
 }
 ```
 
@@ -202,12 +203,12 @@ Here is a compact Pydantic-style shape. It illustrates types and constraints rat
 ```python
 from datetime import date
 from decimal import Decimal
-from typing import Literal, Self
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class ProcurementExtraction(BaseModel):
+class ProcurementCandidate(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, frozen=True)
 
     supplier_name: str = Field(min_length=1, max_length=200)
@@ -218,18 +219,11 @@ class ProcurementExtraction(BaseModel):
     currency: Literal["USD"]
     delivery_date: date | None
     payment_terms: str = Field(min_length=1, max_length=200)
-    validation_status: Literal["valid", "invalid", "needs_review"]
-
-    @model_validator(mode="after")
-    def missing_date_requires_review(self) -> Self:
-        if self.delivery_date is None and self.validation_status == "valid":
-            raise ValueError("a missing delivery date cannot be valid")
-        return self
 ```
 
-`extra="forbid"` prevents unnoticed fields from slipping through the stated contract. `Decimal` and `date` express the types needed by the application after parsing. The annotation `date | None` has no default, so the key remains required even though its value may be null. The model validator enforces the related status rule. The `Literal` examples are intentionally narrow for this bounded exercise; a real currency or unit policy should be explicitly designed, not expanded implicitly by a model response.
+`extra="forbid"` prevents unnoticed fields—including a model-authored status or confidence—from slipping through the stated candidate contract. `Decimal` and `date` express the types needed by the application after parsing. The annotation `date | None` has no default, so the key remains required even though its value may be null. The application assigns a null date `needs_review` after validation; the candidate cannot certify itself. The `Literal` examples are intentionally narrow for this bounded exercise; a real currency or unit policy should be explicitly designed, not expanded implicitly by a model response.
 
-Because the candidate arrives as JSON, validate the raw JSON bytes or text with `ProcurementExtraction.model_validate_json(...)`. Pydantic's strict JSON handling can convert the JSON string forms shown above into `Decimal` and `date`; validating an already-decoded Python dictionary follows different strict-conversion rules.
+Because the candidate arrives as JSON, validate the raw JSON bytes or text with `ProcurementCandidate.model_validate_json(...)`. Pydantic's strict JSON handling can convert the JSON string forms shown above into `Decimal` and `date`; validating an already-decoded Python dictionary follows different strict-conversion rules.
 
 Validation can establish facts such as “quantity is a positive decimal” and “delivery date parses as an ISO date.” It cannot establish “this delivery date was actually stated in the document.” Add separate semantic checks and evidence where needed. One simple approach is to preserve the source span or quoted text supporting each field, then compare it with the candidate value under a deterministic normalization policy.
 
@@ -243,7 +237,7 @@ typed parse + support check -> validation status
 
 Do not use a model-reported `confidence: 0.98` as a calibrated probability. Unless calibration has been separately measured for a specified model, task, and distribution, that number is merely another model-generated field. Prefer a validation status, explicit reasons, and provenance such as document ID, document digest, source span, schema version, prompt version, model identifier, and timestamp.
 
-**Checkpoint.** If the model writes `validation_status: "valid"`, should the application accept it without checking? No. The application—not the model—sets or verifies the status after validation and evidence checks.
+**Checkpoint.** What happens if the model adds `validation_status: "valid"`? The candidate schema rejects the unexpected field. The application—not the model—sets status after validation and evidence checks.
 
 ## Version the instructions and their contract
 
@@ -357,4 +351,4 @@ This Week 4 scope ends at extraction and validation. It does not retrieve extern
 - [ ] I can distinguish a bounded transport retry from a bounded validation-repair attempt.
 - [ ] I can describe a prompt-sensitivity evaluation without assuming local or hosted output is trusted.
 
-The later production lesson will harden this contract with fuller interfaces, failure handling, tests, and operational trade-offs. This beginner version gives you the vocabulary to judge why those controls exist.
+Continue with the [production version]({{ '/weeks/week-04/' | relative_url }}). It hardens this contract with fuller interfaces, failure handling, tests, and operational trade-offs.
