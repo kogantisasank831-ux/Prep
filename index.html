@@ -6,6 +6,7 @@
     <meta name="description" content="A 30-week applied GenAI learning roadmap and progress tracker.">
     <meta name="theme-color" content="#09111f">
     <title>Applied GenAI Roadmap</title>
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
   </head>
@@ -16,10 +17,16 @@
         <span class="brand-mark" aria-hidden="true">AI</span>
         <span>Applied GenAI <strong>Roadmap</strong></span>
       </a>
-      <nav aria-label="Primary navigation">
-        <a href="#roadmap">Roadmap</a>
-        <a href="#weekly-system">Weekly system</a>
-      </nav>
+      <div class="header-actions">
+        <nav aria-label="Primary navigation">
+          <a href="#roadmap">Roadmap</a>
+          <a href="#weekly-system">Weekly system</a>
+        </nav>
+        <button class="header-control theme-toggle" type="button" aria-label="Switch color mode">
+          <span data-theme-icon aria-hidden="true">☀</span>
+          <span data-theme-label>Light</span>
+        </button>
+      </div>
     </header>
 
     <main id="top">
@@ -118,10 +125,10 @@
         </div>
         <h4></h4>
         <div class="week-tags"></div>
+        <a class="week-direct-link" hidden>Open lesson <span aria-hidden="true">→</span></a>
         <details>
           <summary>View weekly plan <span aria-hidden="true">＋</span></summary>
           <div class="week-content"></div>
-          <a class="week-lesson-link" hidden>Read full lesson <span aria-hidden="true">→</span></a>
           <label class="notes-field">
             <span>Private notes</span>
             <textarea rows="3" placeholder="Capture a question, decision, or next action…"></textarea>

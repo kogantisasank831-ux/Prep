@@ -180,6 +180,7 @@ function renderRoadmap() {
       const card = weekNode.querySelector(".week-card");
       const checkbox = weekNode.querySelector("input[type=checkbox]");
       const notes = weekNode.querySelector("textarea");
+      const weeklyPlan = weekNode.querySelector("details");
       const weekId = String(week.number);
       card.dataset.week = weekId;
       card.classList.toggle("completed", state.completed.has(weekId));
@@ -193,11 +194,23 @@ function renderRoadmap() {
         return item;
       }));
       weekNode.querySelector(".week-content").innerHTML = renderSections(week.sections);
-      const lessonLink = weekNode.querySelector(".week-lesson-link");
+      const lessonLink = weekNode.querySelector(".week-direct-link");
       if (PUBLISHED_WEEKS.has(week.number)) {
         lessonLink.href = `weeks/week-${String(week.number).padStart(2, "0")}/`;
+        lessonLink.setAttribute("aria-label", `Open the full Week ${week.number} lesson`);
         lessonLink.hidden = false;
       }
+      weeklyPlan.addEventListener("toggle", () => {
+        card.classList.toggle("plan-open", weeklyPlan.open);
+        for (const grid of document.querySelectorAll(".week-grid")) {
+          grid.classList.toggle("plan-visible", grid.querySelector("details[open]") !== null);
+        }
+        if (weeklyPlan.open) {
+          for (const openPlan of document.querySelectorAll("#phase-list details[open]")) {
+            if (openPlan !== weeklyPlan) openPlan.open = false;
+          }
+        }
+      });
       notes.value = state.notes[weekId] ?? "";
       checkbox.addEventListener("change", () => {
         checkbox.checked ? state.completed.add(weekId) : state.completed.delete(weekId);

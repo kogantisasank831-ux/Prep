@@ -4,9 +4,34 @@ const content = document.querySelector("#lesson-content");
 const toc = document.querySelector("#lesson-toc");
 const toggle = document.querySelector("#toc-toggle");
 const progress = document.querySelector("#reading-progress");
+const sidebar = document.querySelector("#lesson-sidebar");
+const readModeToggle = document.querySelector("#read-mode-toggle");
+const READ_MODE_STORAGE_KEY = "applied-genai-read-mode";
+
+function setTocOpen(open) {
+  toc?.classList.toggle("open", open);
+  toggle?.setAttribute("aria-expanded", String(open));
+  const icon = toggle?.querySelector("span[aria-hidden='true']");
+  if (icon) icon.textContent = open ? "−" : "＋";
+}
+
+function setReadMode(enabled) {
+  document.body.classList.toggle("lesson-read-mode-active", enabled);
+  readModeToggle?.setAttribute("aria-pressed", String(enabled));
+  sidebar?.setAttribute("aria-hidden", String(enabled));
+  const label = readModeToggle?.querySelector("[data-read-mode-label]");
+  if (label) label.textContent = enabled ? "Show contents" : "Read mode";
+  if (readModeToggle) {
+    readModeToggle.title = enabled ? "Restore the lesson contents panel" : "Hide the contents panel for focused reading";
+  }
+  if (enabled) {
+    setTocOpen(false);
+  }
+  updateReadingProgress();
+}
 
 if (content && toc) {
-  const headings = [...content.querySelectorAll("h2, h3")];
+  const headings = [...content.querySelectorAll("h2")];
   const fragment = document.createDocumentFragment();
 
   for (const heading of headings) {
@@ -16,8 +41,7 @@ if (content && toc) {
     link.textContent = heading.textContent ?? "Section";
     link.dataset.level = heading.tagName.slice(1);
     link.addEventListener("click", () => {
-      toc.classList.remove("open");
-      toggle?.setAttribute("aria-expanded", "false");
+      setTocOpen(false);
     });
     fragment.appendChild(link);
   }
@@ -38,8 +62,13 @@ if (content && toc) {
 }
 
 toggle?.addEventListener("click", () => {
-  const open = toc?.classList.toggle("open") ?? false;
-  toggle.setAttribute("aria-expanded", String(open));
+  setTocOpen(!toc?.classList.contains("open"));
+});
+
+readModeToggle?.addEventListener("click", () => {
+  const enabled = !document.body.classList.contains("lesson-read-mode-active");
+  localStorage.setItem(READ_MODE_STORAGE_KEY, String(enabled));
+  setReadMode(enabled);
 });
 
 function updateReadingProgress() {
@@ -52,5 +81,5 @@ function updateReadingProgress() {
 
 window.addEventListener("scroll", updateReadingProgress, { passive: true });
 window.addEventListener("resize", updateReadingProgress);
+setReadMode(localStorage.getItem(READ_MODE_STORAGE_KEY) === "true");
 updateReadingProgress();
-
