@@ -1,6 +1,6 @@
 "use strict";
 
-window.PUBLISHED_WEEKS = new Set([1, 2, 3, 4]);
+window.PUBLISHED_WEEKS = new Set([1, 2, 3, 4, 5]);
 
 const shellScriptUrl = new URL(document.currentScript.src);
 const roadmapBasePath = shellScriptUrl.pathname.replace(/\/shell\.js$/, "");
