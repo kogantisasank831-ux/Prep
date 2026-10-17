@@ -699,7 +699,76 @@ Successes and failures use distinct record types. Failures have stable categorie
 
 ## 21. Hardening layer 3: sequential lifecycle evidence
 
-#…1390 tokens truncated…ainst the supplied note;
+### Why not start both models and loop over them?
+
+With 8 GB VRAM and 16 GB RAM, loading both models adds capacity pressure and makes the experiment harder to interpret. We therefore run Qwen2.5 1.5B first and Qwen2.5 7B second, in separate blocks.
+
+The operator manages the processes. Python must not silently install, download, launch, kill or replace a server.
+
+Each measured block needs durable evidence of startup, readiness and one warm-up. The transition also needs evidence that the preceding server was shut down. Startup and readiness record finite elapsed times. If full GPU offload fails and the operator chooses fewer GPU layers, the manifest must point to an earlier `gpu_load_failure` record containing the attempted layer count.
+
+Before generating a held-out trial, the service checks identity, configuration hash, block number, success semantics and event chronology.
+
+```text
+block 0: startup -> ready -> warm-up -> trials persisted -> block-completed
+                                              |
+                                              v
+                                         shutdown
+                                              |
+block 1: startup -> ready -> warm-up -> trials persisted -> block-completed
+```
+
+A `block_completed` record contains the plan ID/hash, frozen schedule hash, number of durable trials and a hash of the exact stored trial set. The second block requires a completion record consistent with block 0 and matching shutdown evidence.
+
+An inconsistent or stale completion marker fails the checks. As elsewhere, these unkeyed hashes check declared consistency; they are not authentication against an adversary.
+
+### Partial recovery does not silently rerun durable trials
+
+Imagine the first block stops partway through. On resumption, the service reads the trials already saved rather than generating new answers for them.
+
+Each trial **record ID** is a SHA-256 derived from stable request settings and target identity. The caller's `trial_id` is a separate field. An identical existing record is reused. A conflicting or duplicate record stops the run. Missing trials can continue independently, and an expected client failure is stored without preventing later trials.
+
+This recovery preserves the original sample. It does not retry until a nicer answer appears or discard failures to make results look better.
+
+The service then checks the completed block against the persisted schedule and exact trial set. Recovery is valid only while the durable evidence remains linked to the frozen plan.
+
+## 22. Hardening layer 4: append-only JSONL evidence
+
+### What makes one local file more trustworthy than “dump some JSON”?
+
+We use versioned, discriminated envelopes for plans, manifests, operational events, trial observations, blinded human evaluations and identity mappings. A trial retains the frozen request and its typed result. Validation checks agreement between their experiment, run, trial, case, prompt and fingerprint fields.
+
+`WindowsJsonlStore` converts an envelope into canonical strict UTF-8 JSON, then takes an exclusive one-byte `msvcrt` lock. Under that lock, it reads and validates the existing file and checks record-ID idempotency. It appends one complete line, flushes and calls `os.fsync()` before reporting success.
+
+```python
+# Abridged from tested source: WindowsJsonlStore.append
+with self._locked():
+    existing = self._read_unlocked()
+    # identical ID/content -> no-op; same ID/different content -> conflict
+    with self._path.open("ab") as output:
+        output.write(line + b"\n")
+        output.flush()
+        os.fsync(output.fileno())
+```
+
+An identical ID and content produce a no-op; the same ID with different content is a conflict. Readers reject truncated final lines, schema violations, duplicate IDs and malformed UTF-8 or JSON. Corruption reports an exact byte offset instead of silently skipping the damaged record. Serialization forbids NaN and infinity so strict JSONL readers can consume the file.
+
+This is a Windows-specific, single-writer contract. Locking and `fsync` reduce crash and concurrency risks, but the file is not a transactional database for multiple writers. To recover from corruption, follow an explicit procedure that copies valid evidence into a new file. Do not edit measured records in place.
+
+## 23. Hardening layer 5: separate, blinded quality evaluation
+
+### How do we judge the two continuations without letting identity choose the result?
+
+First use a calibration suite to check serialization, warm-up behavior and rubric anchors. Then freeze a held-out suite disjoint from calibration, its references, rubric, plan and request schedule before either model generates measured output.
+
+The service enforces three held-out trials per case and deterministic case order. If a held-out answer prompts you to change the prompt, sampling, artifact or rubric, create a new protocol version. The previous held-out suite cannot become tuning data while still being described as untouched evaluation.
+
+For scoring, replace the model name with a stable opaque output ID. Randomize presentation order deterministically using a recorded seed. `BlindedEvaluation` stores evaluator ID, UTC timestamp, rubric version, notes, uncertainty and separate `0/1/2/null` criterion scores. A separate `IdentityMapping` links that opaque ID to its trial and stays apart until scoring is finished.
+
+The supplier-note rubric covers:
+
+- instruction following;
+- factual support against the supplied note;
 - format adherence;
 - completeness;
 - unsupported claims; and
