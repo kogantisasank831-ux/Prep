@@ -13,41 +13,45 @@ alternate_url: /weeks/week-03/beginner/
 
 ## One prompt, two continuations
 
-Keep one short reference-backed note with us throughout the lesson:
+Imagine you receive this note from a supplier:
 
 > Supplier note: Northwind moved delivery to 18 August. Payment requires approval first.
 
-Now supply it as a single user message:
+You ask a language model to do something quite ordinary:
 
 > Summarize the supplied note in three bullets. Do not add facts that are not in the note.
 
-Two local models can continue that prompt differently. One might preserve the evidence and format; another might invent a date, omit a constraint, or stop early. The observation is simple, but it raises several different questions: how did the characters enter the model, why can the next word depend on an earlier phrase, why can a fluent answer be unsupported, and how would we compare the two outputs honestly?
+One model keeps the date and the payment condition. Another changes the date, misses the approval requirement, or stops before finishing. Both may sound perfectly natural. So what happened between the prompt and the answer?
 
-This lesson answers them in dependency order. It deliberately does **not** start with an SDK call or a full Transformer diagram. The build at the end sends this same kind of controlled prompt to two local models, records what happened, and separates measurement from judgment.
+We will follow this note through the model, starting with tokens and working up to the Transformer. Once that path makes sense, we will build a small local experiment to compare two models. The aim is to understand what we observed and how we measured it, rather than choose a winner from one convincing answer.
 
-The experiment is deliberately small enough to inspect, reproduce, and challenge. Its one operating constraint is local-only inference: the harness may contact a configured loopback server, but must not send a generation request to a hosted service or paid API. Downloading a model artifact is network activity, not inference; it is outside the harness and must be governed separately.
+The experiment uses local inference only. The Python harness can call the configured loopback server, but it must never send a generation request to a hosted service or paid API. Downloading model files is a separate network activity, handled outside the harness and governed separately.
 
 ### What you should already know, and what you will be able to do
 
-You need basic vectors, dot products, probability intuition, HTTP/JSON, and the engineering habits of typed boundaries, exceptions, dependency injection, and pytest. You do not need SQL or a deep-learning derivation course. By the end, you should be able to trace this note through a decoder-only model, distinguish token and document embeddings, explain sampling and context limits, and design a reproducible local comparison whose measurements are not mistaken for a quality verdict.
+Bring a basic understanding of vectors, dot products, probability, HTTP and JSON. We will also use familiar engineering habits: typed inputs, explicit exceptions, dependency injection and pytest. SQL and a full deep-learning derivation course are not prerequisites.
+
+By the end, you should be able to explain how a decoder-only model processes the note, distinguish token embeddings from retrieval embeddings, reason about sampling and context limits, and design a local comparison that separates measurements from judgments about quality.
 
 ### Facts, observations, and inference
 
-Keep three kinds of statement separate throughout the lesson.
+As you read, keep track of where each claim comes from:
 
-- **Source-backed fact:** a primary source documents a method, model, or API contract; it is not a measurement from this experiment.
-- **Observed result:** a response, failure, or metric captured under one recorded configuration; it does not automatically generalize.
-- **Inference:** an interpretation drawn from facts and observations; state its assumptions and alternatives.
+- **Source-backed fact:** a primary source describes a method, model or API contract. That is background knowledge, not a measurement from our experiment.
+- **Observed result:** we captured a response, failure or metric under a particular recorded configuration. It describes that run; it does not automatically apply elsewhere.
+- **Inference:** we interpret facts and observations. We need to explain the assumptions and consider other possible explanations.
 
-**Checkpoint.** Which category contains “the shorter output followed the format”? Observation, not a claim about model-family capability.
+For example, “the shorter output followed the format” is an observation. It does not establish what an entire model family can do.
 
-We begin with the object the model actually receives: tokens.
+Let's start with what enters the model: the tokens.
 
 ## 1. Text becomes tokens
 
-### Orienting question: why does a language model not consume words directly?
+### Why does a language model not consume words directly?
 
-Humans usually reason in characters, words, and sentences. A neural network needs a finite, numeric vocabulary. A tokenizer maps a string to a sequence of integer IDs drawn from that vocabulary; its decoder maps IDs back to text. Modern language-model tokenizers commonly use subword pieces, allowing frequent patterns to be represented compactly while still covering unfamiliar words by composing smaller pieces.
+We read characters, words and sentences. A neural network works with numbers. A tokenizer bridges that gap by turning a string into integer IDs from a finite vocabulary. Its decoder converts those IDs back into text.
+
+Modern tokenizers commonly use subword pieces. Frequent patterns can become compact vocabulary entries; unfamiliar words can be assembled from smaller pieces. Here is an illustrative round trip:
 
 ```text
 text:       "Northwind delivery"
@@ -57,21 +61,21 @@ tokenizer:  decode
 text:       "Northwind delivery"
 ```
 
-The numbers are labels, not quantities with semantic distance. Token ID `9017` is not inherently twice as related to ID `4508` as to ID `12`. The learned embedding table later gives IDs useful vector representations.
+Those IDs are labels. ID `9017` is not inherently twice as related to `4508` as it is to `12`. The model will look up a learned vector for each ID; the ID itself has no meaningful numerical distance.
 
-Token boundaries need not align with words. Punctuation, whitespace, source code, uncommon names, and languages with different writing systems can be split differently. Two tokenizers can encode the same visible string into different lengths, and a model’s chat template can add special tokens or formatting that were not present in the user’s text.
+A token also need not be a word. Spaces, punctuation, code, uncommon names and different writing systems can produce different splits. Two tokenizers may represent the same sentence with different numbers of tokens. A chat template can add formatting or special tokens that were absent from the text you typed.
 
-**Boundary.** “One token is about one word” is a rough intuition at best, not a safe budget calculation. It fails particularly badly across languages and structured text. A 4,096-token context is a limit in the active model/tokenizer representation, not a character limit and not a fixed number of English words.
+That is why “one token is about one word” is unsuitable for budgeting, especially across languages or structured text. A 4,096-token context is a limit measured with the active tokenizer and template. It is neither a character limit nor a fixed number of English words.
 
-**Checkpoint.** Can the harness compare raw prompt-token counts from the two selected models as if they measured the same unit? No. Record each runtime-reported count and tokenizer/template identity, then interpret counts within that model unless equivalence is verified.
+**Check your understanding:** can we compare prompt-token counts from our two models as though they were identical units? Only if we have verified that equivalence. Otherwise, record each runtime's count and tokenizer/template identity, and interpret the number within that model.
 
-The IDs now locate learned information, but an ID itself has no geometry. That is the next mental model.
+Now we have vocabulary IDs. Next, the model needs useful numeric representations for them.
 
 ## 2. IDs become vectors
 
-### Orienting question: what does the model look up for token ID 9017?
+### What does the model look up for token ID 9017?
 
-An embedding table is a learned matrix with one row per vocabulary item. For token ID `i`, lookup selects row `E[i]`, a vector of model width `d_model`. A vector is simply an ordered set of numbers; geometry becomes useful because training changes the table and later layers so that directions and combinations support prediction.
+An embedding table is a learned matrix with a row for each vocabulary item. For token ID `i`, the model selects row `E[i]`: a vector with width `d_model`.
 
 ```text
 vocabulary size V                 model width d
@@ -82,25 +86,27 @@ embedding table E: [V, d]
 token vector x: [d]
 ```
 
-For a prompt of `T` tokens, lookup produces a matrix `[T, d]`: one starting vector at each position. At this point the vector for a token is context-independent. The same token ID receives the same lookup row whether `approval` refers to payment authorization or project sign-off.
+A vector is an ordered list of numbers. Training adjusts the embedding table and later layers so that directions and combinations in this space help predict tokens. For `T` input tokens, the lookup gives a matrix of shape `[T, d]`, with one starting vector per position.
 
-Three related terms must not be collapsed:
+At this stage, the lookup is context-free. The ID for `approval` selects the same row whether the sentence concerns payment authorization or project sign-off. The surrounding text influences the representation later.
 
-1. A **token embedding** is the initial lookup vector associated with one token ID.
-2. A **contextual hidden state** is the position-specific vector after Transformer layers have mixed information from permitted context. `approval` can acquire different hidden states in the two sentences.
-3. A **document or sentence embedding** is an output deliberately produced for similarity/retrieval use, often by an embedding model with its own objective and pooling method. It is not automatically the same thing as a generative model’s final token state.
+It helps to separate three terms that often get called “embeddings”:
 
-**Boundary.** Cosine similarity between vectors is not an oracle for meaning, truth, or suitability for retrieval. It depends on the model, layer, training objective, normalization, and task. A generative model can contain an embedding table without being an appropriate standalone embedding service.
+1. A **token embedding** is the initial table row for a token ID.
+2. A **contextual hidden state** is the vector at a particular position after Transformer layers have incorporated permitted context. The two uses of `approval` can now have different representations.
+3. A **document or sentence embedding** is deliberately produced for similarity or retrieval, often using a separate model, objective and pooling method. A generative model's final token state is not automatically a substitute.
 
-**Checkpoint.** Before attention, can the lookup vector for `approval` know whether the note means payment authorization or project sign-off? No. It is an initial representation; contextualization comes later.
+Cosine similarity does not settle whether two vectors capture meaning, truth or retrieval usefulness. That depends on the model, layer, objective, normalization and task. Having an embedding table inside a generative model does not make it an appropriate standalone embedding service.
 
-The model must turn these vectors into a distribution over possible next tokens. That can be understood before looking inside a Transformer.
+**Check your understanding:** can the initial lookup for `approval` identify the kind of approval in our note? No. It provides the starting representation; the later layers add context.
+
+Before opening those layers, let's see what the model ultimately needs to produce.
 
 ## 3. Generation is repeated next-token prediction
 
-### Orienting question: what happens after the prompt has been encoded?
+### What happens after the prompt has been encoded?
 
-For a prompt token sequence `x_1, ..., x_T`, a causal language model produces a vector of scores—**logits**—for the next position. There is one score per vocabulary token. Scores are not probabilities. Softmax transforms them into non-negative values summing to one:
+Given the prompt tokens `x_1, ..., x_T`, a causal language model produces scores for the next token. These scores are called **logits**, and there is one for each vocabulary item. Softmax converts them into non-negative probabilities that sum to one.
 
 ```text
 logits for next token: [2.2, 0.1, -1.4, ...]
@@ -110,27 +116,27 @@ probabilities:          [0.78, 0.10, 0.02, ...]
 chosen token ID -> append to sequence -> predict again
 ```
 
-Autoregressive generation is the loop, not one giant act of text creation:
+Generation repeats a small sequence of steps:
 
-1. tokenize the prompt;
-2. compute next-token logits from the available prefix;
-3. select one token under a decoding rule;
-4. append it to the prefix; and
-5. repeat until a stop condition, end token, or output cap.
+1. Tokenize the prompt.
+2. Compute next-token logits using the available prefix.
+3. Select a token according to the decoding rule.
+4. Append the token to the prefix.
+5. Continue until an end token, another stop condition or the output cap.
 
-The output cap of 512 in this build limits generated tokens; it does not promise a complete answer. The context limit of 4,096 applies to the working input sequence under the runtime’s configured behavior. Prompt tokens, template tokens, and generated tokens compete for a bounded workspace.
+This is autoregressive generation. The model does not produce the whole answer in a single selection; every chosen token changes the prefix for the next prediction.
 
-**Boundary.** A high probability is a statement about the model’s learned distribution, not an external fact check. The model can assign high probability to a plausible false date because that continuation fits patterns in training and prompt context.
+Our build caps output at 512 generated tokens. That limits length but does not guarantee a finished answer. The configured context is 4,096 tokens, and the prompt, template and generated text share that bounded workspace under the runtime's behavior.
 
-**Checkpoint.** Does decoding one token at a time mean the model only considers the last token? No. The next distribution is conditioned on the permitted prefix; the architecture explains how representations mix that prefix.
+A probable continuation can still be false. The model might strongly prefer a plausible date because it fits learned patterns, even though that date is unsupported by the supplier note. Probability is a property of the learned distribution, not an external fact check.
 
-To see why attention was useful, first consider a more sequential route for carrying context.
+**Check your understanding:** does selecting one token at a time mean the model uses only the last token? No. It conditions the next distribution on the permitted prefix. We will now look at how information from that prefix reaches each position.
 
 ## 4. Why recurrent paths motivated direct interaction
 
-### Orienting question: what limitation appears when information must pass through every earlier position?
+### What limitation appears when information must pass through every earlier position?
 
-A recurrent neural network processes a sequence by carrying a hidden state forward:
+A recurrent neural network carries a hidden state forward through a sequence:
 
 ```text
 x1 -> h1 -> h2 -> h3 -> ... -> hT
@@ -138,23 +144,23 @@ x1 -> h1 -> h2 -> h3 -> ... -> hT
      x1    x2    x3
 ```
 
-At position `t`, the state summarizes earlier processing. This can model sequences, and recurrent models remain useful in some constrained, streaming, or specialized settings. The limitation for large-scale language workloads is the dependency path: later computation depends on earlier sequential steps, which hinders parallel training across positions and makes distant information travel through many updates.
+At step `t`, the state summarizes what has been processed so far. This can work well, and recurrent models remain useful for some constrained, streaming or specialized workloads.
 
-Attention offers a different path. A representation at one position can directly score and combine information from other permitted positions. During training, many positions can compute these interactions in parallel; at causal inference time, new tokens still arrive sequentially because each chosen token changes the prefix.
+For large language workloads, that sequential dependency creates a challenge. Later computation must wait for earlier steps, limiting parallel training across positions. Information from a distant token also travels through many state updates before reaching the current position.
 
-**Boundary.** “Transformers replaced RNNs” is too broad. It hides architecture variants, deployment constraints, streaming needs, and the fact that causal generation remains sequential in output length. The useful claim is narrower: attention-based Transformers became highly effective for many large-scale language-model workloads because they offer direct contextual interaction and parallelizable training computations.
+Attention provides a more direct route. A position can score and combine information from other permitted positions. During training, many positions can perform these interactions in parallel. During causal generation, output is still sequential: we must choose the current token before predicting the next one.
 
-**Checkpoint.** Does direct attention remove all cost of long context? No. Attention itself has computational and memory trade-offs that grow with sequence length; serving details are deferred to a later capacity lesson.
+So avoid the broad claim that Transformers simply replaced RNNs. Attention-based Transformers became effective for many large-scale language tasks because of direct contextual interaction and parallelizable training. Other architectures still have useful roles, depending on the constraints.
 
-The next question is how one position chooses what to mix from another.
+**Check your understanding:** does direct attention make long context free? No. Attention brings its own computation and memory costs, which increase with sequence length. We will leave detailed serving-capacity calculations for a later lesson.
 
 ## 5. One attention head mixes permitted information
 
-### Orienting question: what does a token ask of the rest of the sequence?
+### What does a token ask of the rest of the sequence?
 
-Self-attention creates three learned views of each hidden vector: a **query**, a **key**, and a **value**. Query means “what kind of information does this position seek?” Key means “what kind of information does this position offer for matching?” Value is the information carried if the position is selected.
+Self-attention makes three learned projections of each hidden vector: a **query**, a **key** and a **value**. A useful intuition is that the query describes what a position seeks, the key describes what a position offers for matching, and the value carries the information that will be mixed.
 
-For a sequence matrix `X`, one head uses learned projections:
+For a sequence matrix `X`, one head computes:
 
 ```text
 Q = X W_Q       K = X W_K       V = X W_V
@@ -163,21 +169,23 @@ weights = softmax(scores)
 output = weights V
 ```
 
-For `approval` in the supplier note, its query can score keys at other positions, including `payment` and `first`. Softmax converts the permitted scores for that query position into weights. The resulting output is a weighted sum of value vectors. The head is not a database lookup and does not expose an interpretable “reason” merely because weights exist; it is a learned differentiable computation.
+In the supplier note, the query at `approval` can score the keys at other positions, including `payment` and `first`. Softmax turns the permitted scores into weights. The head then takes a weighted sum of the values.
 
-The scale factor `sqrt(d_k)` keeps dot-product magnitudes in a useful range as key dimension changes. Shape intuition is enough here: with `T` positions and head width `d_k`, `Q` and `K` are `[T, d_k]`; `QK^T` supplies roughly `T × T` scores—one for every query/key pair—so full attention's score count and score-memory footprint grow quadratically with sequence length.
+This is a learned, differentiable computation. It is not a database lookup, and the weights do not by themselves give a reliable explanation of the final answer. Projections, values, residual paths and subsequent layers also contribute. A large weight does not prove that a token was understood or causally responsible for the output.
 
-**Boundary.** Attention scores are not a reliable explanation of model decisions. A large weight is neither a causal proof nor a guarantee that a token was “understood.” The network’s projections, values, residual paths, and later layers all matter.
+The factor `sqrt(d_k)` controls how dot-product magnitudes grow with key width. If there are `T` positions and each head uses width `d_k`, `Q` and `K` have shape `[T, d_k]`. Their product `QK^T` has roughly `T × T` scores. Full attention's score count and score-memory footprint therefore grow quadratically with sequence length.
 
-**Checkpoint.** What changes if values are permuted while queries and keys stay fixed? Matching weights can remain the same, but the carried information changes. Keys decide where to look; values decide what arrives.
+**Check your understanding:** suppose we keep queries and keys unchanged but permute the values. What happens? The matching weights can stay the same, but the information carried into the output changes. Keys influence where to look; values determine what arrives.
 
-Before adding more heads, constrain which positions the head is allowed to inspect.
+Before introducing more heads, we need to decide which positions a head may inspect.
 
 ## 6. A causal mask protects the prediction task
 
-### Orienting question: why must a next-token model not inspect its answer during training?
+### Why must a next-token model not inspect its answer during training?
 
-Suppose training text is `Northwind moved delivery`. At the position predicting `delivery`, looking directly at the token `delivery` would leak the label. A decoder-only language model therefore applies a **causal mask**: a position may attend to itself and earlier positions, but not later ones.
+Suppose the training text is `Northwind moved delivery`. While predicting `delivery` from the preceding text, the model must not inspect the future answer. That would leak the label.
+
+A decoder-only model uses a **causal mask**. Each position can attend to itself and earlier positions, but cannot attend to later ones:
 
 ```text
 allowed attention (row=query, column=key)
@@ -189,21 +197,19 @@ q3      ✓  ✓  ✓  ×
 q4      ✓  ✓  ✓  ✓
 ```
 
-Operationally, prohibited future scores are made unavailable to softmax (commonly by a mask that acts like negative infinity before normalization). The exact implementation can vary; the essential invariant is that a prediction for position `t` cannot use future tokens.
+The implementation makes prohibited scores unavailable to softmax, commonly using a mask that acts like negative infinity before normalization. Implementations vary; the requirement is that a prediction at position `t` cannot use future tokens.
 
-This mirrors inference. When the model has generated `- Delivery moved`, the next token can depend on those tokens but not on a future completion that has not yet been selected.
+During generation, after `- Delivery moved`, the next token can use that prefix. A future completion has not been selected and is unavailable. The mask enforces the same causal structure while training many positions in parallel.
 
-**Boundary.** Causal masking does not stop prompt injection, unsupported statements, memorization, or harmful output. It constrains sequence visibility for the objective. It is not a safety policy.
+This rule controls sequence visibility. It does not prevent prompt injection, memorization, unsupported statements or harmful output. It is not a safety policy.
 
-**Checkpoint.** If the mask is causal, why can the model use every word in the user prompt? When generating after the prompt, all prompt positions are earlier than the new token and therefore permitted.
-
-One head supplies one learned interaction pattern. Language benefits from several patterns in parallel.
+**Check your understanding:** why can a causally masked model use the entire user prompt when starting its answer? All prompt positions occur before the newly generated token, so they are permitted context.
 
 ## 7. Multiple heads, multiple interaction spaces
 
-### Orienting question: why not make a single attention head wider?
+### Why not make a single attention head wider?
 
-Multi-head attention runs several sets of query/key/value projections. Each head can learn a different interaction space, then their outputs are concatenated and projected back to model width.
+Multi-head attention uses several sets of query, key and value projections. Their outputs are concatenated and projected back to the model's working width:
 
 ```text
 X -> head 1 -> context pattern A --\
@@ -211,39 +217,43 @@ X -> head 2 -> context pattern B ----> concatenate -> output projection
 X -> head h -> context pattern H --/
 ```
 
-One head might learn useful patterns around syntax, another around agreement, another around a long-range entity reference. This is a capability hypothesis learned through optimization, not a human-assigned role list. Heads are not guaranteed to be cleanly interpretable or independent.
+Each head can learn a different interaction space. For example, different patterns might help with syntax, agreement or distant entity references. Training learns these patterns; we do not assign a fixed job to each head. The heads are not guaranteed to be independent or easily interpretable.
 
-If model width is `d_model` and there are `h` equally sized heads, a common design uses head width near `d_model / h`, subject to implementation details. Splitting does not magically create more total information; it gives the model several projected views and separate attention distributions before mixing them.
+With model width `d_model` and `h` equally sized heads, a common design uses head width around `d_model / h`, subject to the implementation. Several projections provide separate views and attention distributions before mixing. Splitting the width does not magically create more total information.
 
-**Boundary.** “Head 3 tracks dates” is not a stable general statement. Even when a visualization appears suggestive for one prompt, another layer or head may carry related computation. Interpretability needs controlled analysis, not a single heat map.
+Be careful with statements such as “head 3 tracks dates.” A visualization may suggest that behavior for one prompt, while related computation is distributed across other heads and layers. A reliable interpretation needs controlled analysis, not one heat map.
 
-**Checkpoint.** Does multi-head attention remove the causal rule? No. Each decoder head receives the same causal visibility constraint, then can learn different permitted interactions.
+**Check your understanding:** do multiple heads change the causal rule? No. Each decoder head follows the same visibility restriction while learning its own permitted interactions.
 
 ### From classical MHA to grouped-query attention
 
-Classical multi-head attention (MHA) gives every query head its own key and value head. Grouped-query attention (GQA) keeps several query heads but shares a smaller number of key/value heads across groups. The attention computation and causal mask remain the same mental model; the sharing changes the key/value representation and serving trade-off, not the definition of a query.
+Classical multi-head attention (**MHA**) gives each query head its own key and value head. **Grouped-query attention (GQA)** keeps multiple query heads while sharing fewer key/value heads among groups of them.
 
-For the selected Qwen2.5 architectures, the official [1.5B configuration](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/config.json) identifies 12 query heads and 2 key/value heads, while the official [7B configuration](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/config.json) identifies 28 query heads and 4 key/value heads. In each case, several query heads therefore share one key/value group. This is the bridge from the classical MHA explanation above to the actual model family; it is not evidence that any individual head has a human-readable role.
+The meaning of a query and the causal-attention calculation stay the same. Sharing changes the key/value representation and its serving trade-offs.
 
-**Boundary.** Head counts describe one architecture configuration, not a quality ranking or a measured memory result on the laptop. The harness records the active artifact set and runtime configuration; it does not infer hardware fit from head counts.
+The official Qwen2.5 [1.5B configuration](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/config.json) specifies 12 query heads and 2 key/value heads. Its [7B configuration](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/config.json) specifies 28 query heads and 4 key/value heads. In both, several query heads share a key/value group.
 
-**Checkpoint.** What is shared in GQA? Key/value heads are shared across groups of query heads; queries still express separate learned lookups.
+These counts connect the classical explanation to the models we will use. They do not tell us that a particular head has a human-readable role, that one model is better, or how much memory the laptop will actually consume. The experiment records artifacts and runtime configuration; it does not infer hardware fit from head counts.
 
-The interactions need a way to distinguish the note's delivery date from its payment condition. That is an order question, but the answer is slightly subtler than “every decoder adds position embeddings.”
+**Check your understanding:** what does GQA share? Key/value heads. The query heads still provide separate learned lookups.
+
+Attention now connects positions. Next, those positions need an order signal.
 
 ## 8. Order does not come for free
 
-### Orienting question: why should “approve then pay” differ from “pay then approve”?
+### Why should “approve then pay” differ from “pay then approve”?
 
-For a content-only, unmasked attention layer, reordering the same token vectors merely reorders the outputs: the layer has no way to distinguish “approve then pay” from “pay then approve.” Language order changes meaning, scope, and obligations, so a useful decoder needs an order signal somewhere in its computation.
+With content-only, unmasked attention, reordering the same token vectors simply reorders the outputs. Such a layer has no way to distinguish the meaning of “approve then pay” from “pay then approve.” Language needs the order to affect the computation.
 
-An explicit positional mechanism is common, but it is not the only possible source. A causal mask already gives each token a different pattern of permitted predecessors; boundary effects can therefore provide an implicit position signal. Some decoder architectures deliberately omit explicit positional embeddings (often called **NoPE**) and rely on that structure. The safe general claim is that order must affect the computation—not that every decoder must add a separate position vector.
+An explicit positional mechanism is common, but it is not the only possible source of order. A causal mask already gives positions different sets of visible predecessors. Those boundary effects can supply an implicit signal. Some decoder architectures omit explicit positional embeddings, a choice often called **NoPE**, and rely on that structure.
 
-Three conceptual approaches are common:
+The general requirement is that order enters the computation. It would be inaccurate to say that every decoder must add a separate position vector.
 
-- **Learned absolute positions:** a learned vector is associated with each position and combined with the token representation.
-- **Sinusoidal encodings:** fixed functions of position provide a pattern from which relative relationships can be learned.
-- **Rotary positional embeddings (RoPE):** position-dependent rotations are applied in the query/key representation space, affecting attention scores in a way that represents relative position.
+Three approaches you will encounter are:
+
+- **Learned absolute positions:** learn a vector for each position and combine it with the token representation.
+- **Sinusoidal encodings:** use fixed functions of position whose patterns can support learned relative relationships.
+- **Rotary positional embeddings (RoPE):** apply position-dependent rotations to queries and keys, changing attention scores in a way that represents relative position.
 
 ```text
 token embedding at position t
@@ -255,19 +265,17 @@ input to first block
 or: position changes Q and K before QK^T (RoPE concept)
 ```
 
-The selected Qwen2.5 architectures use RoPE, so their query/key calculations receive an explicit positional transformation. Other decoder families make different choices. The comparison harness records architecture, template, tokenizer, and runtime identity rather than treating one mechanism as universal.
+Our selected Qwen2.5 architectures use RoPE, so their query/key calculations include an explicit positional transformation. Other families may use different mechanisms. That is another reason to record architecture, tokenizer, template and runtime identity.
 
-**Boundary.** An advertised large context capability does not prove equally good behavior at all positions or all lengths. Position effects, attention allocation, training distribution, runtime configuration, and task structure can all affect practical quality.
+A large advertised context window does not establish equal quality at every length or position. Position effects, attention allocation, training distribution, runtime settings and the task itself can all affect what happens.
 
-**Checkpoint.** Does a positional mechanism replace token embeddings? No. Token embeddings represent vocabulary identity; explicit positional information or causal structure supplies order. The mechanisms affect designated parts of the computation.
-
-Attention mixes information across positions. The next two components make it possible to preserve and transform each position’s representation through depth.
+**Check your understanding:** does position information replace token embeddings? No. Embeddings supply token identity; an explicit positional mechanism or causal structure makes order available at the relevant point in the computation.
 
 ## 9. Residual paths and normalization preserve a working representation
 
-### Orienting question: why not replace a token’s vector completely after attention?
+### Why not replace a token’s vector completely after attention?
 
-Attention proposes an update to a representation. A residual path adds the update to the existing representation, keeping an easier route for information and gradients through many layers:
+Attention produces an update to the current representation. A residual connection adds that update to what was already there:
 
 ```text
 input x ----+--------------------> x + attention_update(x)
@@ -275,21 +283,19 @@ input x ----+--------------------> x + attention_update(x)
             +-> attention sublayer -----------+
 ```
 
-Normalization stabilizes activation scale and distribution according to the architecture’s chosen scheme. You will encounter pre-normalization and post-normalization arrangements; both combine normalization, a sublayer, and a residual addition in different orders. The important lesson here is not to memorize a single line of pseudocode. It is to see that a block updates a representation instead of repeatedly discarding it.
+This gives information and gradients a more direct path through a deep network. Each layer can learn a change relative to the existing signal instead of completely replacing it.
 
-Residual connections do not prove that a layer can be skipped without consequence, nor do they eliminate training instability. They provide a structural path that helps deep networks learn transformations relative to an existing signal.
+Normalization manages activation scale and distribution within the network. Architectures may place it before or after a sublayer, producing pre-normalization and post-normalization arrangements. Rather than memorize one universal line of pseudocode, follow how normalization, the sublayer and residual addition work together.
 
-**Boundary.** Normalization is not feature standardization done once over a dataset, and it is not an external-data validation rule. It is an internal neural-network operation with architectural variants.
+Residual connections do not make layers dispensable or eliminate training instability. Normalization is also different from standardizing dataset features once before training; it is an internal operation with architectural variants, not an external-data validation rule.
 
-**Checkpoint.** If the attention update were zero, what can the residual path carry forward? The original representation. This is the intuition behind “preserve and update.”
-
-After position mixing, each token also needs a rich local transformation.
+**Check your understanding:** if attention contributes a zero update, what does the residual connection carry onward? The original representation. That is the idea behind preserving a signal while updating it.
 
 ## 10. The feed-forward network transforms each position
 
-### Orienting question: what computation happens after tokens have exchanged context?
+### What computation happens after tokens have exchanged context?
 
-The feed-forward network (FFN), often called the MLP sublayer, applies the same learned nonlinear transformation independently at each sequence position. Conceptually:
+The feed-forward network (**FFN**), also called the MLP sublayer, applies a learned nonlinear transformation independently at each position:
 
 ```text
 hidden vector at position t
@@ -297,21 +303,19 @@ hidden vector at position t
        -> transformed vector at position t
 ```
 
-Unlike attention, the FFN does not choose information from other positions in that sublayer. It transforms each already contextualized vector. An expansion to a wider intermediate representation gives capacity for nonlinear features; contraction returns to model width so a residual addition remains well-shaped.
+Conceptually, it expands the vector into a wider intermediate representation, applies nonlinearity or gating, then contracts back to model width. The expansion adds capacity for nonlinear features; the return to model width allows a correctly shaped residual addition.
 
-This is why “attention is the whole Transformer” is incomplete. Attention mixes across positions; FFNs perform rich position-wise transformations; residual and normalization structure their composition. Repeating blocks lets later layers build on earlier contextual updates.
+Attention selects and mixes information across positions. The FFN instead transforms the already contextualized vector at each position. The same FFN parameters are used throughout the sequence, but different input states produce different outputs.
 
-**Boundary.** “Position-wise” does not mean the same output occurs at every position. The same FFN parameters are applied, but each input hidden state differs because token identity, position, and attention-derived context differ.
+This is why attention alone does not describe a Transformer. Attention, the FFN, residual paths and normalization work together; stacked blocks allow later transformations to build on earlier contextual updates.
 
-**Checkpoint.** Which sublayer can directly bring information from the first token to the last in one block? Attention. Which then transforms the result at the last position? The FFN.
-
-Every component is now familiar enough to assemble the decoder block without turning the architecture into unexplained boxes.
+**Check your understanding:** which sublayer can bring information directly from the first token to the last within one block? Attention. The FFN then transforms the resulting state at the last position.
 
 ## 11. Assemble and stack decoder blocks
 
-### Orienting question: how does one prompt become next-token logits?
+### How does one prompt become next-token logits?
 
-At a high level, a decoder-only Transformer does the following:
+We can now put the pieces together:
 
 ```text
 text -> tokenizer -> token IDs -> embedding lookup + positional information
@@ -327,23 +331,21 @@ text -> tokenizer -> token IDs -> embedding lookup + positional information
                            output projection -> logits -> decoding rule
 ```
 
-The bracketed block is stacked many times. In many architectures, explicit positional information affects the representation entering the stack or the attention query/key calculations; others use causal structure to make order available without an explicit embedding. Causal masking protects every decoder attention computation. The final output projection maps hidden width back to one score per vocabulary token. Softmax and sampling select the next token, which extends the sequence for the next pass.
+The bracketed decoder block repeats through the model's depth. Depending on the architecture, explicit position information affects the input to the stack or the query/key computation. Other designs derive order from causal structure without an explicit position embedding. Every decoder attention layer still follows the causal visibility rule.
 
-Training and inference share the autoregressive next-token conditional formulation, but only training optimizes a likelihood objective. During training, the sequence supplies target next tokens and many positions can be processed together under the causal mask. During generation, frozen parameters define the next-token distribution and each selected token is appended, so output proceeds step by step. This is one reason a long answer has latency even when prompt processing is fast.
+After the last block, the output projection converts hidden width into one logit per vocabulary item. Softmax and the decoding rule select the next token. Appending that token takes us back through the generation loop.
 
-**Boundary.** This diagram omits backpropagation, optimizer state, quantization implementation, KV-cache capacity formulas, batching, and kernel details. Omitting them is not denying their importance; it keeps the mental model focused on the causal language-model flow.
+Training and inference use the same autoregressive conditional formulation, but their roles differ. During training, the supplied sequence contains target tokens, many positions can be processed together under the mask, and a likelihood objective updates the parameters. During generation, parameters are frozen and each selected token extends the prefix. A long answer therefore takes time even when processing its prompt is fast.
 
-**Checkpoint.** Where does a 512-token output cap act? In decoding policy: it stops the autoregressive loop after at most that many generated tokens, regardless of whether the model would continue.
+This sketch leaves out backpropagation, optimizer state, quantization implementation, KV-cache capacity formulas, batching and kernel details. Those matter in other lessons; here we are tracing the causal model's path from text to output.
 
-The architecture tells us how scores are produced. The next question is how its parameters acquired useful statistical structure.
+**Check your understanding:** where does the 512-token cap act? In the decoding policy. It stops the loop after at most 512 generated tokens, even if the model would otherwise continue.
 
 ## 12. Pretraining learns a distribution, not a truth database
 
-### Orienting question: what objective teaches a base language model to continue text?
+### What objective teaches a base language model to continue text?
 
-Training and inference share the same autoregressive conditional formulation: a prefix determines a distribution for its next token. Pretraining optimizes next-token likelihood over a large corpus; given prefixes, training adjusts parameters to increase probability of observed continuations. At inference, the frozen parameters apply that learned causal next-token distribution and a decoding policy selects text. Across enough varied data and capacity, this can produce representations and continuation behavior that generalize beyond literal memorization.
-
-The objective is often expressed as minimizing negative log likelihood of target next tokens. Intuitively, a model is rewarded for placing more probability on the continuation present in training data. It is not directly rewarded for stating only verified propositions, showing sources, refusing every ambiguous request, or respecting a particular product policy.
+Pretraining shows the model many prefixes and their observed continuations. It adjusts parameters so that the continuation in the training data becomes more probable. This is next-token likelihood learning, commonly expressed as minimizing the negative log likelihood of target tokens.
 
 ```text
 prefix:  "Northwind moved delivery to"
@@ -351,19 +353,23 @@ target:  " 18 August"
 loss:    penalize low probability on the observed target token sequence
 ```
 
-Generalization and memorization are not mutually exclusive labels that can be inferred from one output. A model may reproduce some training content, compose learned regularities in new contexts, or produce a plausible but unsupported pattern. Training-data cutoff and coverage also limit what can be known from parameters alone.
+With enough varied data and capacity, this learning can produce useful representations and behavior beyond literal memorization. At inference, the frozen parameters provide the learned distribution; a decoding policy selects from it.
 
-**Boundary.** Pretraining data is not a queryable provenance store. A fluent statement does not identify a supporting source, and a refusal or uncertainty phrase does not prove the model lacks knowledge. Systems needing factual support require evidence-bearing context and deterministic validation outside the generator.
+The objective rewards probability assigned to observed continuations. It does not directly require verified propositions, citations, rejection of every ambiguous request or compliance with a particular product policy. A frequent pattern in training can be plausible without being true in the current task.
 
-**Checkpoint.** Does next-token likelihood contain a built-in concept of “this claim is externally verified”? No. It scores alignment with training continuations, not live source verification.
+Generalization and memorization can coexist. One output does not reveal which mechanism produced it. A model might reproduce training text, combine learned regularities in a new setting, or generate an unsupported pattern. Training cutoff and coverage also constrain knowledge held in its parameters.
 
-Base completion behavior is useful but not automatically assistant-like. That change has separate objectives and data.
+Think of the parameters as a learned predictor, rather than a source database you can query for provenance. Fluent wording does not identify supporting evidence. Likewise, a refusal or uncertainty phrase does not prove the model lacks the information. A system that needs factual support must supply evidence and apply deterministic validation outside the generator.
+
+**Check your understanding:** does next-token likelihood include a built-in check that a claim is externally verified? No. It measures how well predictions match observed training continuations.
 
 ## 13. Instruction tuning and preference alignment change behavior, not guarantees
 
-### Orienting question: why might a pretrained completion model not follow a user instruction reliably?
+### Why might a pretrained completion model not follow a user instruction reliably?
 
-Supervised instruction tuning trains on examples of instruction-and-response behavior. It teaches the model a format and task-following distribution closer to an assistant interaction. Preference-based alignment methods use preference information or reward-like objectives to bias behavior toward responses people or policies judge preferable. The original InstructGPT work is a canonical example of using human feedback in this broad family of approaches.
+A model trained to continue general text does not automatically behave like an assistant. **Supervised instruction tuning** trains it on instruction-and-response examples, making task-following and assistant-style responses more likely.
+
+**Preference-based alignment** uses preference information or reward-like objectives to favor responses that people or policies judge preferable. InstructGPT is a well-known example of this broad use of human feedback.
 
 ```text
 pretraining:        predict general corpus continuations
@@ -371,23 +377,21 @@ instruction tuning: map instruction-style inputs to desired responses
 alignment:          prefer some responses over alternatives under a rubric
 ```
 
-Neither transformation converts a probabilistic generator into a guaranteed source of truth. Instruction-tuned models can misunderstand instructions. Preference optimization can improve behavior on a distribution yet leave out-of-distribution failures. A model can be helpful, concise, and wrong simultaneously.
+These are changes to learned behavior, not guarantees of truth. Instruction-tuned models can misunderstand tasks. Preference optimization may help on the evaluated distribution while leaving failures elsewhere. An answer can be helpful, concise and wrong at the same time.
 
-For the local comparison, both selected artifacts are **Instruct** variants. That is relevant to expected chat behavior, but it is not evidence that either model will follow every constrained prompt. The harness records the chat-template identity because formatting between a user message and model input is part of the effective experiment.
+Both artifacts in our comparison are **Instruct** variants. That is relevant to expected chat behavior, but it does not establish that either will follow every constraint. The chat template is also part of the effective input, so we record its identity alongside the model.
 
-**Boundary.** Do not describe “alignment” as a single safety switch. It encompasses objectives, datasets, annotator preferences, evaluation choices, and deployment controls. Product authorization, deterministic validation, and human approval remain outside the model.
+Alignment includes objectives, datasets, annotator preferences, evaluation choices and deployment controls. It is not a single safety switch. Product authorization, deterministic validation and human approval remain responsibilities outside the model.
 
-**Checkpoint.** If a model follows a three-bullet format but inserts an unsupported date, did instruction tuning fail completely? No. Format adherence and factual support are separate rubric properties.
-
-The next practical constraint is what can be placed in the model’s bounded input workspace at all.
+**Check your understanding:** if the model produces three bullets but invents a date, did it fail every part of the task? No. It followed the format while failing factual support. Our rubric needs separate criteria for those behaviors.
 
 ## 14. Context is a bounded workspace
 
-### Orienting question: why can a longer context window still yield a worse answer?
+### Why can a longer context window still yield a worse answer?
 
-The active context includes serialized prompt content, template/special tokens, and generated tokens subject to runtime behavior. With a 4,096-token configured context and a 512-token output cap, a long input can leave little room for a response or trigger truncation/rejection depending on the runtime and request. Count actual tokens with the active model/template; do not budget in characters.
+The context contains serialized prompt text, template or special tokens, and generated tokens under the runtime's configured behavior. With a 4,096-token context and a requested 512-token output, the input cannot independently consume all 4,096 tokens.
 
-More supplied text can help when it contains relevant, clear evidence and instructions. It can also distract the model, bury an instruction, introduce conflicts, consume output budget, increase latency, or place relevant text in a difficult position. In the Northwind case, placing the two-sentence supplier note after thousands of tokens of unrelated policy may make the delivery date harder to use even though the request still fits. “The model supports a large context” is a capacity statement, not a quality guarantee.
+For example:
 
 ```text
 context budget = prompt/template tokens + generated tokens
@@ -398,19 +402,23 @@ context budget = prompt/template tokens + generated tokens
   =  -266 tokens: request cannot satisfy both limits as stated
 ```
 
-The arithmetic is conceptual; exact handling depends on the active runtime configuration. The lesson intentionally defers KV-cache memory derivations and serving-capacity design.
+This arithmetic illustrates the shared budget. The actual runtime may reject, truncate or otherwise handle an oversized request according to its configuration. Count with the active tokenizer and template instead of estimating in characters.
 
-**Boundary.** Context is not durable memory and it is not retrieval quality. Passing every document the system has ever seen into a prompt can increase exposure of sensitive data while reducing relevance.
+More context helps when it adds relevant, clear evidence. It can hurt when it buries instructions, introduces conflicting claims, consumes output room, adds latency or places key evidence where the model uses it poorly.
 
-**Checkpoint.** If the evidence is 200 tokens and the prompt is 3,000 tokens of unrelated policy, which change may improve groundedness: raising a headline context limit, or removing the irrelevant material? Often the latter; evaluate rather than assume.
+Suppose our two-sentence supplier note appears after thousands of tokens of unrelated policy. The request might fit, yet the model may miss the delivery date. A large advertised window describes capacity, not assured quality. This lesson leaves detailed KV-cache memory derivations and serving-capacity design for later.
 
-Even with an ideal context, the final selection policy changes which high-probability continuation becomes text.
+Context is also different from durable memory or retrieval quality. Passing every document ever seen can expose unnecessary sensitive information and make relevant facts harder to use.
+
+**Check your understanding:** if 200 useful tokens are surrounded by 3,000 irrelevant ones, should we first raise the context limit or remove distractions? Removing irrelevant material may help more. Evaluate the result rather than assume that extra capacity improves it.
 
 ## 15. Sampling changes selection, not knowledge
 
-### Orienting question: how can the same logits produce different outputs?
+### How can the same logits produce different outputs?
 
-After logits become probabilities, a decoder chooses a token. **Greedy decoding** selects the highest-probability token. **Temperature** rescales relative logit sharpness before sampling: lower temperatures concentrate probability mass; higher values flatten it. **Top-k** keeps only the `k` highest-probability candidates before sampling. **Top-p** (nucleus sampling) keeps the smallest high-probability set whose cumulative mass reaches `p`.
+Once the model produces logits, the decoder decides which token to select. **Greedy decoding** chooses the most probable one. **Temperature** rescales the sharpness of the distribution: lower values concentrate probability and higher values spread it out.
+
+**Top-k** keeps the `k` highest-probability candidates. **Top-p**, or nucleus sampling, keeps the smallest high-probability set whose cumulative probability reaches `p`.
 
 ```text
 next token after "Delivery moved to":  "18" .55, "20" .25, "August" .12, other .08
@@ -419,31 +427,29 @@ top-k=2: sample only from "18"/"20"
 top-p=.80: sample from the smallest prefix reaching .80 ("18"/"20")
 ```
 
-Maximum output tokens limits length. Stop tokens or stop strings can end a response under the runtime’s semantics. A seed can help record and sometimes reproduce a sampling process in one fixed implementation, but it is not a cross-model determinism guarantee: tokenizers, templates, kernels, runtime versions, and sampling implementations differ.
+The maximum output budget limits length. Stop tokens or strings can end generation according to the runtime's rules. A seed can help record and sometimes reproduce sampling in a fixed implementation, but it does not guarantee identical behavior across models, templates, tokenizers, kernels or runtime versions.
 
-Change one parameter at a time in a controlled example. Raising temperature and changing top-p simultaneously makes an output difference hard to attribute. The baseline comparison uses non-streaming requests and records every sampling, stop, seed, and stream setting.
+For a controlled example, change one parameter at a time. If you change temperature and top-p together, you cannot easily attribute the difference to either. The baseline records all sampling settings, stop rules, seeds and streaming choices, and uses non-streaming requests. The exact ordering and semantics of decoding operations are runtime-defined.
 
-**Boundary.** Temperature does not make a model more knowledgeable, and greedy output is not necessarily factual. Sampling is a selection policy over the model’s current distribution.
+These settings select from the knowledge and context already available; they do not add facts. Greedy decoding can still choose an unsupported continuation.
 
-**Checkpoint.** If a response invents a date at temperature zero, is “lower temperature” a complete remedy? No. The selected high-probability continuation can still be unsupported.
-
-That distinction leads directly to a more useful failure vocabulary than “hallucination happened.”
+**Check your understanding:** if a model invents a date at temperature zero, is lowering temperature a complete remedy? No. Its most probable continuation can itself be wrong.
 
 ## 16. Plausible falsehoods have several causes
 
-### Orienting question: why can a fluent answer be wrong despite a clear-looking prompt?
+### Why can a fluent answer be wrong despite a clear-looking prompt?
 
-“Hallucination” is an umbrella term, not a diagnosis. Separate at least these causes:
+Calling an error a hallucination names a symptom. To choose a useful response, look at the cause:
 
-- **Missing or stale knowledge:** the needed fact is absent from parameters or changed after training.
-- **Ambiguous request:** the prompt leaves multiple plausible interpretations.
-- **Unsupported completion pressure:** the model predicts a likely continuation where it should express uncertainty.
-- **Conflicting or irrelevant context:** supplied text contains incompatible claims or distractors.
-- **Sampling variability:** a lower-probability alternative is selected under stochastic decoding.
+- **Missing or stale knowledge:** the needed fact is absent from the parameters or changed after training.
+- **Ambiguous request:** the prompt allows several plausible interpretations.
+- **Unsupported completion pressure:** the model continues with a likely answer when it should acknowledge uncertainty.
+- **Conflicting or irrelevant context:** the supplied information disagrees or distracts from the task.
+- **Sampling variability:** stochastic decoding selects a less probable alternative.
 
-Instruction-following and format failures are adjacent evaluation dimensions, not automatically hallucinations. A response can ignore a three-bullet requirement while making no factual claim; it can also obey the format perfectly while inventing a date. The rubric must score those properties separately.
+Instruction following and format adherence are separate dimensions. A response can ignore the three-bullet format without making a false factual claim. It can also follow that format perfectly while inventing a date.
 
-For a reference-backed prompt, a rubric can ask: “Does every named date in the output occur in the supplied note?” That is stronger than asking whether the answer “sounds good.” It does not require claiming perfect semantic correctness.
+For a task grounded in a supplied note, ask a concrete question: does every date in the answer appear in the reference? That is more useful than deciding whether the summary sounds good, although it still does not establish perfect semantic correctness.
 
 ```text
 reference: "Delivery moved to 18 August."
@@ -452,19 +458,17 @@ output:    "Delivery is confirmed for 20 August."
 format may be correct; factual support is violated.
 ```
 
-Mitigations match causes: clarify the task, supply bounded authoritative context, constrain output where appropriate, validate deterministic fields, evaluate against references, or design human review. No single prompt suffix or sampling knob solves every category.
+Match the mitigation to the problem. Clarify an ambiguous task, supply bounded authoritative context, constrain output where useful, validate deterministic fields, evaluate against references, or involve human review. No prompt suffix or sampling setting handles every cause.
 
-**Boundary.** Local inference reduces network exposure but does not make generated text trusted. Treat output as data: do not execute it, turn it into trusted HTML, or allow it to execute commands or mutate a system of record.
+Local inference does not make generated text trustworthy. Treat the output as data. Do not execute it, trust it as HTML, or let it run commands or mutate a system of record.
 
-**Checkpoint.** Is a model’s uncertainty phrase proof that its claim is safe? No. It is text generated by the model; evaluate the claim and evidence separately.
-
-Similar capability and weights can operate under different boundaries. Choose the operating model by obligations and controls, not marketing labels.
+**Check your understanding:** can three well-formatted bullets still contain a fabricated payment condition? Yes. We need to score factual support and instruction/format behavior separately.
 
 ## 17. Hosted and open-weight are operating-model choices
 
-### Orienting question: what changes when inference happens on someone else’s infrastructure?
+### What changes when inference happens on someone else’s infrastructure?
 
-A hosted model service typically manages model serving, scaling, updates, and an API boundary. An open-weight/local arrangement gives the operator more control over artifact selection, network boundary, timing, runtime version, and data path, while also taking responsibility for licensing, hardware fit, patching, observability, model storage, and incident handling.
+A hosted service usually manages serving, scaling, updates and the API boundary. Running open weights locally gives you more control over artifacts, runtime version, timing and the data path. It also makes you responsible for licensing, hardware fit, patching, observability, storage and incident handling.
 
 | Dimension | Hosted model | Local/open-weight runtime |
 | --- | --- | --- |
@@ -475,23 +479,30 @@ A hosted model service typically manages model serving, scaling, updates, and an
 | Cost | Usage pricing and contract terms | Hardware, power, engineering, storage, and operations |
 | Licensing | Service terms govern access | Artifact and runtime licenses must be reviewed |
 
-Neither column is universally “more private,” “cheaper,” or “better.” Local storage still needs access control, retention policy, malware/supply-chain controls, and safe logs. Hosted use can be appropriate when governance, capacity, capability, support, and contractual terms satisfy the product’s constraints. This build makes no hosted call because its purpose is to learn a controlled local boundary.
+The right choice depends on the product's requirements. Local operation still needs file access controls, retention rules, safe logging and defenses against malicious software or artifacts. Hosted operation may suit the task when its governance, capability, support, capacity and contractual terms meet the requirements.
 
-**Boundary.** Open weight does not mean unrestricted license, safe artifact, or reproducible runtime. Record the model repository/revision, GGUF file, SHA-256, declared license, license-file revision, and runtime binary provenance before treating a run as reproducible.
+Our build makes no hosted inference call because we are learning to work with a controlled local boundary. That does not establish that local operation is universally cheaper, better or more private.
 
-**Checkpoint.** Is “the model ran on my laptop” enough provenance for a comparison? No. It omits artifact revision, quantization, context, template, offload, driver/runtime, and parameters.
+Open weights also do not imply an unrestricted license, safe files or a reproducible runtime. Record the repository and revision, GGUF file, SHA-256, declared license, license-file revision and runtime binary provenance before calling a run reproducible.
 
-The next section turns the operating decision into one narrow local boundary without pretending hardware fit is already observed.
+**Check your understanding:** is “it ran on my laptop” enough to describe a comparison? No. We also need the artifact, quantization, context, template, offload, driver/runtime and request settings.
 
 ## 18. The local server is an external boundary
 
-### Orienting question: what should the Python harness assume about `llama-server`?
+### What should the Python harness assume about `llama-server`?
 
-Assume only a configured localhost HTTP boundary, not ownership of the process. The native Windows CUDA `llama-server` runs separately from Python on the Windows laptop with an RTX 3070 Ti (8 GB VRAM) and 16 GB system RAM. It must bind to `127.0.0.1`, not a LAN-facing interface. The harness does not download artifacts, install binaries, start, stop, kill, or replace the server. Artifact download is network activity and is intentionally outside its inference-only responsibility.
+The Python application talks to a configured local HTTP server. It does not own the server process. For this exercise, a separate native Windows CUDA `llama-server` runs on the RTX 3070 Ti laptop with 8 GB VRAM and 16 GB RAM, bound to `127.0.0.1` rather than a LAN-facing address.
 
-The two local model blocks are `Qwen/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M` followed by `Qwen/Qwen2.5-7B-Instruct-GGUF:Q4_K_M`, never concurrently. The initial policy is context size 4,096, maximum output 512, non-streaming generation, and first attempt at full GPU offload. The selected Qwen repositories declare Apache-2.0; `llama.cpp` publishes MIT. Runtime, artifact, template, and license provenance belong in the `RunManifest`, not in an informal result description.
+The operator downloads artifacts and installs, starts, switches and stops the server. The harness must not download, install, launch, kill or substitute it. Downloads involve network access and remain outside the harness's inference-only responsibility.
 
-The official server documentation describes a model-information route and OpenAI-compatible chat-completions route; it notes that chat behavior depends on supported templates. The Qwen GGUF model cards show `llama-server` use for the exact selected repository names. The documentation provides a contract to test; it does not certify a local binary, exact API usage fields, template behavior, or hardware fit.
+We use these two blocks, in this order, never loaded concurrently:
+
+1. `Qwen/Qwen2.5-1.5B-Instruct-GGUF:Q4_K_M`.
+2. `Qwen/Qwen2.5-7B-Instruct-GGUF:Q4_K_M`.
+
+The initial settings are context size 4,096, maximum output 512, non-streaming generation and a first attempt at full GPU offload. The selected Qwen repositories declare Apache-2.0 and `llama.cpp` publishes MIT. Record the relevant runtime, artifact, template and license provenance in `RunManifest`.
+
+The official documentation describes model-information and OpenAI-compatible chat-completion routes. It also makes chat behavior dependent on supported templates. Qwen's GGUF model cards show `llama-server` examples for the selected repositories. These are contracts to check against our actual binary; they do not certify its fields, template behavior or hardware fit.
 
 ```text
 operator starts configured local server
@@ -505,22 +516,20 @@ harness -> health/readiness + /v1/models identity check
 POST local chat-completion -> validate response -> domain result
 ```
 
-Run exactly one model at a time. Process lifecycle and any reduced-offload fallback become durable evidence; the hardening layers below define those checks once rather than hiding them in an operator narrative.
+Q4 quantization and sequential loading make this a reasonable experiment to attempt on the laptop. They do not guarantee success. The 7B model could fail to load, need partial CPU offload or leave too little headroom for a 4,096-token context.
 
-**Hardware-fit inference.** Q4 quantization and sequential loading make the experiment plausible enough to test on the stated machine. The 7B artifact may still fail, run partially offloaded, or leave insufficient headroom at 4,096 context. Treat health and bounded smoke generation as observations of a recorded configuration, never as an advance guarantee.
+A health response only establishes readiness at the checked boundary. It does not prove model quality, correct chat-template use, full GPU offload or comparative performance. Preserve process-lifecycle evidence and any lower-offload fallback so we know what actually ran.
 
-**Boundary.** A server health response says the process is ready to accept a request; it does not establish output quality, correct template use, complete GPU offload, or comparative performance.
+**Check your understanding:** why provide an expected model identity to the client? A server running the wrong model invalidates the comparison, even if it is responsive.
 
-**Checkpoint.** Why is the client instantiated with an expected identity? A responsive wrong model invalidates a controlled comparison just as surely as an unavailable server.
-
-Before the hardening details, keep the minimum Northwind path visible:
+The minimum experiment is straightforward:
 
 ```text
 fixed prompt/config -> expected-identity check -> generate -> record
         -> switch model -> repeat -> blinded criterion comparison
 ```
 
-Two opaque outputs make the final step concrete. They are **illustrative text, not measurements from either model**:
+For example, here are two **illustrative outputs, not measurements from either selected model**:
 
 ```text
 opaque-17
@@ -534,9 +543,9 @@ opaque-42
 - Delivery is confirmed
 ```
 
-The evaluator can mark format adherence independently from factual support: both examples have three bullets, while only `opaque-17` stays within the note. The identity mapping remains hidden until scoring is complete.
+Both have three bullets. Only `opaque-17` preserves the note's facts. Score format separately from factual support, and keep the identity mapping hidden until scoring is complete.
 
-The theory now maps to explicit evidence rather than disappearing when code begins:
+The concepts we learned now tell us what the experiment needs to retain:
 
 | Theory | Experimental evidence |
 | --- | --- |
@@ -546,13 +555,13 @@ The theory now maps to explicit evidence rather than disappearing when code begi
 | Plausible falsehoods | reference-backed rubric criteria for factual support and unsupported claims |
 | Local deployment | literal loopback origin, expected model identity, and externally verified runtime/model hashes |
 
-We can now harden this simple path one layer at a time.
+Next, we will turn that simple experiment into code that keeps its requests, measurements and evidence consistent.
 
 ## 19. Hardening layer 1: a request that cannot silently change
 
-### Orienting question: what must be fixed before the supplier note reaches a model?
+### What must be fixed before the supplier note reaches a model?
 
-The Python package is deliberately split at six boundaries:
+The comparison package keeps six responsibilities separate:
 
 ```text
 validated request + persisted plan + persisted manifest
@@ -564,13 +573,15 @@ comparison service -> ModelClient -> HttpTransport -> llama-server
 versioned envelopes -> append-only JSONL
 ```
 
-The diagram is small, but each boundary prevents a different ambiguity. The request fixes what will be asked. The experiment plan fixes which cases and settings constitute the comparison. The manifest identifies the runtime, model bytes, template, tokenizer, hardware, and server configuration. The client translates one local HTTP protocol into typed success or failure. The service preserves each outcome independently. Storage makes the evidence durable.
+The request defines the question. The experiment plan freezes the cases and settings. The manifest records the declared model, runtime, tokenizer, template, hardware and server configuration. The client translates local HTTP responses into typed results. The service preserves each outcome. Storage keeps the evidence durable.
+
+Keeping these boundaries small helps us answer “what changed?” when two outputs differ. It also allows us to test the comparison without loading a model.
 
 ### The request owns its own fingerprint
 
-`BaselineRequest` accepts the canonical prompt text, not a caller-supplied claim about that text. Validation derives the SHA-256 hash and rejects a conflicting hash. The baseline also fixes context at 4,096, output at 512, and streaming to `False`; it validates finite sampling values, a bounded timeout, identifiers, and stop strings.
+`BaselineRequest` takes the actual prompt text and computes its SHA-256. It rejects a supplied hash that disagrees with that text. This prevents the caller from attaching an old prompt identity to a changed question.
 
-The implementation's essential idea is:
+The baseline fixes context at 4,096, output at 512 and streaming at `False`. It validates identifiers, stop strings, finite sampling values and a bounded timeout. Here is the essential part of the existing implementation:
 
 ```python
 # Abridged from tested source: BaselineRequest
@@ -595,15 +606,17 @@ class BaselineRequest(StrictModel):
         return self
 ```
 
-The full model persists all identifiers and generation settings. Its `generation_fingerprint()` hashes prompt hash, context/output limits, sampling values, stop strings, seed, streaming mode, and timeout. Timeout belongs in the fingerprint because it can change whether a trial succeeds. Canonical JSON uses sorted keys, compact separators, UTF-8, and `allow_nan=False`, so ambiguous serialization and non-finite numbers cannot quietly produce a different experiment.
+The complete model persists every identifier and generation setting. Its `generation_fingerprint()` hashes the prompt hash, context and output limits, sampling settings, seed, stop strings, streaming choice and timeout. The timeout belongs there because changing it can change whether a trial succeeds.
+
+Canonical JSON uses sorted keys, compact separators, UTF-8 and `allow_nan=False`. This gives one consistent representation and prevents non-finite values or ambiguous serialization from quietly changing the experiment.
 
 ### Loopback means one literal origin
 
-“Local” is enforced as data, not inferred from a friendly hostname. `AdapterConfig` accepts only an HTTP origin whose parsed hostname is the literal `127.0.0.1`, with an explicit port and no username, password, path, query, or fragment. `localhost`, IPv6 loopback, wildcard binds, LAN addresses, URLs with credentials, and look-alike hostnames are rejected.
+A friendly-looking hostname is not enough to establish that the experiment is local. `AdapterConfig` accepts only an HTTP origin with the literal hostname `127.0.0.1` and an explicit port. Usernames, passwords, paths, queries and fragments are forbidden.
 
-That narrow rule serves two purposes. It prevents configuration drift from turning a local experiment into an outbound request, and it makes the trust boundary reviewable. It does not prove that the local process or model artifact is safe.
+It rejects `localhost`, IPv6 loopback, wildcard binds, LAN addresses, credential-bearing URLs and look-alike hostnames. This deliberately narrow rule makes the boundary easy to inspect and prevents configuration drift into an outbound request. It does not establish that the local process or artifact is trustworthy.
 
-The transport tightens the same boundary. Its opener installs `ProxyHandler({})`, disables redirects, and reads at most 4 MiB. It rejects redirect status codes, conflicting or invalid `Content-Length` headers, and bodies that exceed the cap:
+The transport follows the same rule. It disables ambient proxies with `ProxyHandler({})`, rejects redirects, and reads no more than 4 MiB. Redirect status codes, invalid or conflicting `Content-Length` headers and oversized bodies are failures.
 
 ```python
 # Abridged from tested source: loopback transport construction
@@ -616,29 +629,29 @@ if len(body) > MAX_RESPONSE_BYTES:
     raise OSError("response body exceeds configured limit")
 ```
 
-Ignoring ambient proxies matters even for a loopback URL: a machine-level proxy configuration should not become an undeclared intermediary. Rejecting redirects prevents a local endpoint from redirecting the client elsewhere. Bounded reads stop a malformed or hostile process from forcing an unbounded allocation. These are transport controls, not model-quality controls.
+Disabling proxies prevents machine-level proxy settings from creating an undeclared intermediary. Refusing redirects prevents a local endpoint from sending the request elsewhere. Bounded reads prevent a malformed or hostile process from forcing an unbounded allocation. These controls protect the HTTP boundary; they do not improve model quality.
 
 ### A manifest says what ran; a plan says what was intended
 
-One record cannot answer both questions cleanly. `RunManifest` binds one model block to:
+These are related questions, but they need separate records. For each model block, `RunManifest` binds the run to:
 
 - the literal loopback adapter and expected reported identity;
-- pinned runtime revision and binary SHA-256;
-- ordered GGUF shard filenames, sizes, and SHA-256 values;
-- repository revision, quantization, license revision, template hash, and tokenizer hash;
+- the pinned runtime revision and binary SHA-256;
+- ordered GGUF shard filenames, sizes and SHA-256 values;
+- repository revision, quantization, license revision, template hash and tokenizer hash;
 - requested and effective GPU layers, context/output limits, warm-up and cache policies;
-- OS, GPU/VRAM, RAM, driver, CUDA backend, CPU threads, and harness version; and
-- startup, readiness, warm-up, prior shutdown, and optional full-offload-failure evidence IDs.
+- OS, GPU/VRAM, RAM, driver, CUDA backend, CPU threads and harness version; and
+- evidence IDs for startup, readiness, warm-up, prior shutdown and any full-offload failure.
 
-The 1.5B artifact is constrained to one expected filename; the 7B artifact is constrained to its two ordered shard filenames. A runtime model alias is only a consistency check. It cannot substitute for hashes of the intended bytes.
+The 1.5B model must use its one expected artifact filename. The 7B model must use its two expected shard filenames in the correct order. A reported model alias is only a consistency check; it cannot replace hashes of the intended files.
 
-These are unkeyed SHA-256 integrity links, not authentication. They bind records to declared values and expose inconsistent changes, but they do not prove artifact origin or which bytes a process actually loaded. The operator must independently hash the downloaded runtime and model files and compare them with pins obtained through a trusted source and workflow.
+These are unkeyed SHA-256 integrity links. They can reveal inconsistent declared values, but they do not authenticate artifact origin or prove which bytes the server loaded. The operator must independently hash runtime and model files, then compare them with pins obtained through a trusted source and workflow.
 
-`ExperimentPlan` freezes the comparison across both blocks. It stores calibration versus held-out mode, model and block order, suite/reference/rubric hashes, deterministic case order and seed, runtime/artifact/configuration/template/tokenizer pins, one warm-up, and three measured trials per held-out case. The surrounding `PlanEnvelope` derives a canonical `plan_hash` from the complete plan.
+`ExperimentPlan` freezes the experiment across both blocks. It records whether the run is calibration or held-out evaluation, the model/block order, suite/reference/rubric hashes, deterministic case order and seed, and the runtime/artifact/configuration/template/tokenizer pins. It also fixes one warm-up and three measured trials per held-out case. `PlanEnvelope` computes a canonical `plan_hash` over the complete plan.
 
-For a measured held-out run, unresolved runtime or artifact pins are invalid. This is intentional: an unresolved placeholder is acceptable while designing the exercise, but not while claiming measured evidence.
+Placeholders may be useful while designing the exercise. They are invalid for runtime or artifact pins in a measured held-out run. Resolve them before claiming evidence.
 
-The request schedule receives its own hash. It covers every ordered trial's case ID, prompt hash, suite ID, sampling parameters, seed, stop strings, timeout, context/output limits, and trial ID. Before a client call, the service recomputes both the prompt-suite hash and schedule hash. Changing even the timeout or suite identifier causes failure before generation.
+The request schedule has its own hash. It includes each ordered trial's case ID, prompt hash, suite ID, sampling settings, seed, stop strings, timeout, context and output limits, and trial ID. Before calling the client, the service recomputes the prompt-suite and schedule hashes. Even a changed timeout or suite identifier causes a failure before generation.
 
 ```text
 plan hash       -> binds the record to the declared experimental contract
@@ -647,19 +660,21 @@ schedule hash   -> integrity-links ordered trials and generation settings
 manifest hashes -> check consistency with declared runtime/model/configuration pins
 ```
 
-This distinction prevents a common evaluation leak: observing an output, changing one “minor” parameter, and still presenting the run as if it followed the original protocol.
+This makes it harder to observe an answer, adjust a supposedly minor setting, and describe the result as though it came from the original frozen protocol.
 
 ## 20. Hardening layer 2: one local client with explicit measurements
 
-### Orienting question: which parts of a response are observed, reported, or unavailable?
+### Which parts of a response are observed, reported, or unavailable?
 
-`LlamaServerClient` first checks request/manifest consistency, then calls `/health` and `/v1/models`, and finally sends one user message to `/v1/chat/completions`. A responsive server with the wrong model is a configuration failure, not a usable fallback.
+`LlamaServerClient` checks the request against its manifest, calls `/health` and `/v1/models`, then sends one user message to `/v1/chat/completions`. A ready server reporting the wrong model becomes a configuration failure. It is not a fallback candidate.
 
-The completion request contains only the expected model identity, one user message, frozen sampling settings, seed, maximum tokens, and `stream: false`; `stop` is omitted when empty. Response parsing requires HTTP 200, valid UTF-8 JSON, the expected model identity, exactly one choice, and string message content. Runtime dictionaries never enter the comparison service.
+The completion request contains the expected model identity, one user message, frozen sampling settings, seed, maximum output tokens and `stream: false`. The `stop` field is omitted when empty. A successful response must have HTTP status 200, valid UTF-8 JSON, the expected model identity, exactly one choice and string message content. The service receives a typed result rather than an arbitrary runtime dictionary.
 
-The baseline wall clock starts immediately before completion dispatch and stops after the full body is parsed and validated. The stored `request_wall_time` therefore includes localhost transport, queueing, prompt processing, decoding, and response transfer. It is not pure GPU inference time. Because the request is non-streaming, time to first token is explicitly unavailable.
+The baseline starts its wall-clock measurement immediately before dispatching the completion request and stops after reading, parsing and validating the full response. `request_wall_time` includes localhost transport, queueing, prompt processing, decoding and response transfer. It is not pure GPU inference time.
 
-Every metric carries four pieces of meaning:
+Because the request is non-streaming, time to first token is explicitly unavailable. Do not invent it from the total duration.
+
+Each metric explains its value, unit, measurement boundary and provenance:
 
 ```python
 # Abridged from tested source: Metric
@@ -672,151 +687,100 @@ class Metric(StrictModel):
     unavailable_reason: str | None = None
 ```
 
-Validation requires exactly one of a finite non-negative value or an unavailability reason. Token metrics require non-negative integers; booleans, NaN, infinity, negative values, missing fields, and malformed runtime values cannot masquerade as measurements. Missing prompt-token, completion-token, total-token, prompt-time, or decode-time fields become `null` with a reason rather than an estimate.
+A metric must contain either a finite non-negative value or a reason why it is unavailable. Token metrics require non-negative integers. Booleans, NaN, infinity, negative values, absent fields and malformed runtime values cannot be accepted as measurements.
 
-The `derived` source value is reserved by the schema, but this baseline emits no derived metrics: it does not yet model the formula and input provenance required to make a derived value reproducible.
+When prompt-token, completion-token, total-token, prompt-time or decode-time fields are absent, store `null` with an explanation. Estimating them would blur the distinction between what we observed and what we assumed.
 
-Success and failure are discriminated records. Failures use stable categories—`not_ready`, `configuration`, `timeout`, `transport`, `protocol`, or `server`—and bounded sanitized detail. A timeout means the client stopped waiting; the harness does not claim that the server cancelled generation. Both success and post-dispatch failure retain elapsed time under a stated boundary.
+The schema reserves `derived` as a source category, but the baseline emits no derived metrics. A reproducible derived value would also need its formula and input provenance, which this build does not yet model.
 
-**Checkpoint.** If one model reports 114 prompt tokens and the other reports 109, have we proved that the first received “more information”? No. Tokenizers and chat templates may differ. Record both counts and identities; interpret token throughput within each model unless equivalence is established.
+Successes and failures use distinct record types. Failures have stable categories: `not_ready`, `configuration`, `timeout`, `transport`, `protocol` or `server`. Their detail is bounded and sanitized. A client timeout means the client stopped waiting; it does not establish that the server cancelled generation. Successes and failures after dispatch both retain elapsed time under a stated boundary.
+
+**Check your understanding:** if the two models report 114 and 109 prompt tokens, does the first receive more information? We cannot conclude that. Templates and tokenizers may differ. Preserve the counts and identities, and compare throughput within a model unless equivalent token units have been established.
 
 ## 21. Hardening layer 3: sequential lifecycle evidence
 
-### Orienting question: why not start both models and loop over them?
-
-The supplied 8 GB VRAM and 16 GB RAM make concurrent loading an unnecessary confounder and likely capacity pressure. The plan therefore fixes two sequential blocks: Qwen2.5 1.5B first, then Qwen2.5 7B. The operator owns process lifecycle; Python does not silently install, download, launch, kill, or substitute a server.
-
-A measured block needs durable operational evidence for startup, readiness, one warm-up, and—between blocks—the preceding server shutdown. Startup and readiness store finite elapsed time. If full GPU offload fails and fewer layers are used, the manifest must reference a preceding `gpu_load_failure` record containing the attempted layer count. The service validates identity, configuration hash, block number, success semantics, and event chronology before generating a held-out trial.
-
-```text
-block 0: startup -> ready -> warm-up -> trials persisted -> block-completed
-                                              |
-                                              v
-                                         shutdown
-                                              |
-block 1: startup -> ready -> warm-up -> trials persisted -> block-completed
-```
-
-`block_completed` is more than a marker. It records the plan ID/hash, frozen schedule hash, durable trial count, and a hash of the exact persisted trial set. The second block requires a completion record that is internally consistent with block 0 plus matching shutdown evidence. An inconsistent or stale marker fails these declared-consistency checks; the unkeyed hashes do not provide adversarial tamper authentication.
-
-### Partial recovery does not silently rerun durable trials
-
-Each trial **record ID** is a SHA-256 over stable request settings and target identity; the caller-supplied `trial_id` remains a separate field. When a block resumes, the service reads already durable trial records. An identical existing record is reused; a conflicting or duplicate record stops the run. Missing trials continue independently, and an expected client failure is persisted without preventing later trials.
-
-This is partial recovery, not retry-based result selection. It avoids generating a second answer for a trial that was already stored, which would change the sample while keeping the same logical identity. It also preserves partial failure as experimental evidence instead of biasing the data toward successful calls.
-
-The service then checks the completed block against the persisted schedule and exact trial set. Recovery is accepted only when the durable records remain integrity-linked to the frozen plan.
-
-## 22. Hardening layer 4: append-only JSONL evidence
-
-### Orienting question: what makes one local file more trustworthy than “dump some JSON”?
-
-All durable objects use a versioned discriminated envelope. Record types are separate for the experiment plan, manifest, operational evidence, trial observation, blinded human evaluation, and identity mapping. A trial stores both the frozen request settings and the typed result, and validation checks that their experiment/run/trial/case/prompt/fingerprint fields agree.
-
-`WindowsJsonlStore` canonicalizes each envelope to strict UTF-8 JSON before acquiring an exclusive one-byte `msvcrt` lock. Under the lock it reads and validates the existing file, enforces record-ID idempotency, appends one complete line, flushes, and calls `os.fsync()` before reporting success.
-
-```python
-# Abridged from tested source: WindowsJsonlStore.append
-with self._locked():
-    existing = self._read_unlocked()
-    # identical ID/content -> no-op; same ID/different content -> conflict
-    with self._path.open("ab") as output:
-        output.write(line + b"\n")
-        output.flush()
-        os.fsync(output.fileno())
-```
-
-Readers reject a truncated final line, invalid schema, duplicate ID, or malformed UTF-8/JSON. Corruption reports the exact byte offset; it is not silently skipped. JSON serialization forbids NaN and infinity, so the file remains valid JSONL for other strict readers.
-
-The contract is intentionally single-writer and Windows-specific. Locking plus `fsync` narrows crash and concurrency risk, but it does not turn JSONL into a transactional multi-writer database. Recovery from corruption should copy valid evidence to a new file under an explicit procedure; it should not edit measured records in place.
-
-## 23. Hardening layer 5: separate, blinded quality evaluation
-
-### Orienting question: how do we judge the two continuations without letting identity choose the result?
-
-First use a calibration suite to debug serialization, warm-up, and rubric anchors. Then freeze a disjoint held-out suite, reference material, rubric, plan, and request schedule before generation. The service enforces exactly three held-out trials per case and deterministic case order. Seeing a held-out output and changing the prompt, sampling, artifact, or rubric requires a new protocol version.
-
-The evaluation view replaces model identity with a stable opaque output ID and deterministically randomizes presentation order with a recorded seed. `BlindedEvaluation` stores evaluator ID, UTC time, rubric version, notes, uncertainty, and independent `0/1/2/null` criterion scores. `IdentityMapping` is a different envelope linking the opaque ID to the trial record and remains separate until scoring is complete.
-
-Use these properties for the supplier-note cases:
-
-- instruction following;
-- factual support against the supplied note;
+#…1390 tokens truncated…ainst the supplied note;
 - format adherence;
 - completeness;
 - unsupported claims; and
 - concision/relevance.
 
-Score `0` for violated, `1` for partial or ambiguous, `2` for satisfied, and `null` only with a not-applicable reason. Keep latency and token measurements outside the human score. Do not manufacture one weighted winner: the output can be faster yet less supported, or more complete yet less concise.
+Use `0` for violated, `1` for partial or ambiguous, and `2` for satisfied. Use `null` only with a not-applicable reason. Latency and token measurements remain outside the human score.
 
-**Boundary.** This remains a bounded observational comparison. Model size, quantization, training data, tokenizer, chat template, runtime, block order, caching, and thermal state are confounders. The result cannot establish a universal model-family ranking or a causal architecture claim.
+Keep the criteria separate rather than combining them into one weighted winner. A faster answer can be less supported; a more complete answer can be less concise.
+
+The comparison is a bounded observation, not a universal ranking. Model size, quantization, training data, tokenizer, chat template, runtime, block order, cache state and thermal state can confound it. It cannot establish a model-family leaderboard or a causal claim about architecture.
 
 ## 24. What has been proved, and what still requires the laptop
 
-The deterministic harness was checked without a GPU. For this repository snapshot, the executed validation evidence is:
+The existing lesson records a deterministic harness validation performed without a GPU:
 
 - 80 tests passed;
 - Ruff lint and formatting checks passed; and
 - strict mypy passed.
 
-Those checks cover strict request/manifest/plan validation, loopback URL attacks, static opener construction with proxy disabling and a redirect-rejecting handler, bounded reads, identity checks, sanitized failures, finite metrics, schedule freezing, lifecycle chronology, sequential block transitions, partial recovery, canonical trial record IDs, JSONL idempotency/durability/corruption handling, and separation of evaluation from identity mapping. They did not exercise a live ambient proxy or a live HTTP 302 exchange.
+That is earlier validation evidence, not a claim that a real model comparison has now run. Source, dependency, runtime, test or configuration changes require the relevant gates to be rerun before repeating the claim.
 
-This evidence is maintenance-sensitive: changes to source, dependencies, runtime, tests, or configuration require rerunning the gates before repeating the claim.
+The recorded checks covered strict request/manifest/plan validation, loopback URL attacks, proxy-disabled opener construction, a redirect-rejecting handler, bounded reads, identity checks, sanitized failures, finite metrics and schedule freezing. They also covered lifecycle chronology, sequential block transitions, partial recovery, canonical record IDs, JSONL idempotency/durability/corruption handling, and keeping evaluations separate from identity mappings. They did not exercise a live ambient proxy or a real HTTP 302 exchange.
 
-The real `llama-server` integration test is opt-in and was skipped. Therefore no executed evidence yet proves that either pinned model loads on this laptop, that full GPU offload succeeds, that the expected API fields appear for the chosen runtime revision, or that the 7B model fits with a 4,096-token context. Exact runtime/model revisions and SHA-256 values also remain unresolved until the learner pins the artifacts and runs the gate.
+The opt-in `llama-server` integration test was skipped. We therefore have no executed evidence that the pinned models load on this laptop, that full GPU offload succeeds, that the chosen binary exposes the expected API fields, or that the 7B model fits at context 4,096. Exact runtime/model revisions and SHA-256 values remain unresolved until the learner pins the files and runs the gate.
 
-The opt-in test requires `LLM_COMPARISON_INTEGRATION=1` plus endpoint, expected model, runtime revision/hash, and model revision/hash variables. For the hash variables, the test checks only presence and lowercase SHA-256 syntax; it does not hash a file, attest a process, or verify which bytes were loaded. It then checks `/health`, `/v1/models`, expected identity, and one bounded non-streaming smoke completion. Passing it would show only that one declared configuration crossed that contract boundary; it would not authenticate the declared hashes or constitute a quality benchmark.
+The integration test needs `LLM_COMPARISON_INTEGRATION=1`, plus variables for endpoint, expected model, runtime revision/hash and model revision/hash. It checks that hash values are present and have lowercase SHA-256 syntax; it does not hash files, attest the process or identify which bytes were loaded.
+
+The test then checks `/health`, `/v1/models`, expected identity and one bounded non-streaming completion. Passing establishes that one declared configuration crossed that HTTP contract. It neither authenticates the declared hashes nor constitutes a quality benchmark.
 
 ### Bounded runbook
 
-1. Pin the `llama.cpp` revision and Windows CUDA binary SHA-256; record its license revision.
-2. Pin each Qwen repository revision, ordered GGUF shard filename/size/SHA-256, template hash, tokenizer hash, and license-file revision.
-3. Build and persist the calibration or held-out `ExperimentPlan`; confirm its suite, rubric, reference, request-schedule, artifact, and configuration hashes.
-4. Start `llama-server` externally with `--host 127.0.0.1`, context 4,096, and the requested full-offload setting. Never expose the port to the LAN.
-5. Record startup and readiness evidence; verify `/v1/models` identity. If full offload fails, preserve the failed attempt before choosing and recording fewer GPU layers.
-6. Independently verify binary/artifact hashes, then run the declared-provenance smoke test. If it fails, stop: do not substitute a different model or silently change configuration.
-7. Record one unmeasured warm-up, cache policy, and the manifest for block 0. Run the frozen schedule and persist every success or failure.
-8. Verify block-completion consistency, record server shutdown, then repeat the bounded lifecycle for block 1.
-9. Generate blinded views, store identity mappings separately, score all retained held-out outputs, and report criterion-level results with uncertainty and confounders.
-10. Preserve the append-only JSONL file and environment/run notes. Do not claim laptop fit, comparative quality, or reproducibility beyond the exact configuration actually observed.
+Follow this sequence when you are ready to run the local experiment:
+
+1. Pin the `llama.cpp` revision and Windows CUDA binary SHA-256. Record its license revision.
+2. Pin each Qwen repository revision, ordered GGUF shard filename/size/SHA-256, chat-template hash, tokenizer hash and license-file revision.
+3. Build and persist the calibration or held-out `ExperimentPlan`. Check its suite, rubric, reference, schedule, artifact and configuration hashes.
+4. Start `llama-server` externally with `--host 127.0.0.1`, context 4,096 and the requested full-offload setting. Do not expose its port to the LAN.
+5. Record startup and readiness, then verify `/v1/models` identity. If full offload fails, retain the failed attempt before choosing and recording fewer GPU layers.
+6. Independently verify binary and artifact hashes, then run the declared-provenance smoke test. Stop if it fails; do not silently change the configuration or substitute a model.
+7. Record one unmeasured warm-up, cache policy and manifest for block 0. Run the frozen schedule, saving every success and failure.
+8. Check block-completion consistency and record shutdown. Repeat the same bounded lifecycle for block 1.
+9. Create blinded evaluation views and store identity mappings separately. Score all retained held-out outputs and report individual criteria, uncertainty and confounders.
+10. Retain the append-only JSONL file and environment/run notes. Limit claims about laptop fit, quality and reproducibility to the configuration actually observed.
 
 ## 25. Common mistakes and their corrective question
 
 ### Calling every vector an embedding
 
-Ask: is this an initial lookup vector, a contextual hidden state, or an output from an embedding model trained for similarity? The answer changes what similarity claims are justified.
+Identify which vector you mean: an initial table row, a contextual hidden state, or an embedding model's similarity-oriented output. That choice determines which comparisons are justified.
 
 ### Treating attention as an explanation dashboard
 
-Ask: does this attention map establish a causal mechanism, or is it only one intermediate learned quantity? Do not turn a heat map into a factual rationale.
+Ask what the attention map establishes. It shows an intermediate learned quantity; without controlled causal analysis, it does not prove why the answer occurred. A heat map alone cannot provide a factual rationale.
 
 ### Mixing the causal mask with sampling
 
-Ask: is this rule constraining visibility inside the model, or selecting among next-token probabilities after logits? The mask enforces temporal access; sampling changes output selection.
+Locate the operation in the pipeline. The mask restricts information visible inside the model. Sampling selects from the next-token distribution after logits are produced. They solve different problems.
 
 ### Treating context length as memory or quality
 
-Ask: what exact tokens are in the request, which are relevant, what output budget remains, and what was the observed behavior at the chosen placement? Capacity is not usefulness.
+Inspect the actual tokens, their relevance, the remaining output budget and where evidence appears. An advertised maximum does not tell you whether the supplied context was useful or correctly used.
 
 ### Calling all incorrect output hallucination
 
-Ask: was the fact absent, stale, ambiguous, contradicted by context, ignored by the instruction behavior, or selected stochastically? The mitigation depends on the category.
+Diagnose the error: missing or stale facts, ambiguity, conflicting context, ignored instructions, unsupported continuation pressure or sampling variability. Choose the mitigation for that cause.
 
 ### Measuring a local request as pure model latency
 
-Ask: where did timing start and stop? The baseline records `request_wall_time` in seconds, including localhost transport and queueing. It must not be labeled “inference-only” without runtime timing fields.
+Name the start and stop of the timer. The baseline stores `request_wall_time` in seconds, including localhost transport and queueing. Without runtime timing fields, calling it inference-only would misdescribe the measurement.
 
 ### Comparing token rates across tokenizers as a single speed contest
 
-Ask: did the two models/template serializations produce the same token counts? If not, raw tokens/second is only comparable within the model’s own tokenizer context.
+Check whether the tokenizers and template serializations produce equivalent units. Otherwise, tokens per second should be interpreted within the model's own tokenizer context.
 
 ### Letting calibration leak into evaluation
 
-Ask: was this prompt, rubric, parameter, or model choice changed after a held-out result was seen? If yes, version a new experiment; do not present the result as an untouched held-out comparison.
+Ask whether prompts, rubrics, parameters or model choices changed after a held-out result was seen. If they did, version a new experiment. Do not describe it as an untouched held-out comparison.
 
 ### Silently changing offload or model after failure
 
-Ask: can a reviewer see the requested setting, observed failure, effective fallback, and active model identity? If not, hardware behavior cannot be reconstructed.
+Make the requested setting, failure, effective fallback and active identity visible. Without them, another reader cannot reconstruct what the hardware and model actually did.
 
 ## 26. Interview practice
 
@@ -824,67 +788,67 @@ Ask: can a reviewer see the requested setting, observed failure, effective fallb
 
 **Why do Transformers work well for many language-model workloads, and where is that too broad?**
 
-Start with the recurrent dependency path: it forces information through sequential state updates and limits parallel training across positions. Explain that attention gives direct contextual interaction, while causal decoding still emits tokens sequentially. Qualify the claim: recurrent and other sequence architectures remain relevant under different constraints; no architecture is universally superior.
+Explain the recurrent dependency path first: information passes through sequential state updates, which limits parallel training across positions. Attention allows direct contextual interaction. Then add the qualification that causal decoding still generates tokens sequentially, and recurrent or other sequence architectures remain useful under different constraints. No architecture is universally best.
 
 **Differentiate token embedding, contextual state, and document embedding.**
 
-Give the lifecycle. An ID indexes a context-free token embedding. Decoder blocks turn it into a position/context-dependent hidden state. An embedding model produces a task-oriented vector for similarity/retrieval, usually with pooling and a dedicated objective. Do not infer that the last two are interchangeable.
+Walk through the lifecycle. An ID selects a context-free embedding-table row. Decoder blocks turn it into a context- and position-dependent hidden state. A retrieval embedding model produces a task-oriented vector, usually through a dedicated objective and pooling. The latter two are not automatically interchangeable.
 
 **What are Q, K, and V?**
 
-Query describes what a position seeks, key describes what another position offers for matching, and value is what gets mixed after normalized scores. Then state the causal-mask constraint and qualify attention weights as non-proof of explanation.
+The query describes what a position seeks, the key provides a matching representation, and the value carries what will be mixed after scores are normalized. Mention the causal mask, and explain that attention weights alone do not prove an explanation of the final decision.
 
 **Why is positional information necessary?**
 
-Without position, the same token embeddings in different orders are indistinguishable to content-only attention. Learned absolute vectors, sinusoidal encodings, or RoPE supply order; in RoPE, position changes query/key geometry before attention scores. Position capacity does not guarantee equal long-context quality.
+Content-only attention cannot distinguish the same embeddings in different orders. Learned absolute positions, sinusoidal encodings or RoPE can make order available. With RoPE, position changes query/key geometry before attention scores. A larger position capacity does not guarantee equal long-context quality.
 
 **Embedding model versus generative model: objective and output?**
 
-An embedding model is trained and exposed to produce a fixed-size task-oriented vector for similarity or retrieval, commonly after pooling. A generative causal model is trained for next-token likelihood and exposes a distribution/continuation over vocabulary tokens. Its token embeddings and hidden states are not automatically a replacement retrieval embedding API.
+An embedding model exposes a fixed-size task-oriented vector for similarity or retrieval, commonly using pooling and a dedicated training objective. A causal generative model learns next-token likelihood and exposes distributions and continuations. Its internal embeddings and states are not automatically a retrieval embedding API.
 
 **Pretraining versus instruction tuning?**
 
-Pretraining learns broad next-token likelihood from corpus continuations. Supervised instruction tuning trains instruction/response behavior; preference alignment adds an objective over preferred responses. Each changes behavior under its data/objective; none alone establishes source-grounded truth.
+Pretraining learns broad next-token likelihood from corpus continuations. Supervised instruction tuning learns instruction/response behavior. Preference alignment adds an objective favoring selected responses. Their effects depend on data and objective; none establishes source-grounded truth on its own.
 
 **How do temperature, top-k, and top-p interact?**
 
-Temperature changes relative logit sharpness before sampling. Top-k removes all but a fixed number of candidates; top-p keeps the smallest candidate set reaching cumulative probability `p`. Their order and exact semantics are runtime-defined, so change one parameter at a time and record all three rather than attributing an output to “creativity.”
+Temperature changes the sharpness of logits before sampling. Top-k limits selection to a fixed number of candidates. Top-p retains the smallest high-probability set reaching cumulative probability `p`. The runtime defines exact ordering and semantics. Record all three and change one at a time instead of attributing a result vaguely to creativity.
 
 ### Applied design
 
 **Why can a fluent model hallucinate?**
 
-The objective predicts plausible continuations rather than fetching verified truth. Then separate missing/stale knowledge, ambiguity, conflicting context, unsupported continuation pressure, and sampling variability. Treat instruction and format behavior as adjacent rubric dimensions. Propose a cause-matched mitigation and preserve the distinction between a model statement and external evidence.
+It predicts plausible continuations rather than retrieving verified truth. Distinguish missing or stale knowledge, ambiguous requests, conflicting context, unsupported completion pressure and sampling variability. Keep instruction and format behavior as separate rubric criteria. Match the mitigation to the cause, and distinguish generated statements from supporting evidence.
 
 **Why does a larger context window not automatically improve an answer?**
 
-Context is a bounded workspace, not durable memory or a relevance filter. More tokens can leave less output room, bury relevant evidence, introduce conflicts, increase latency, and expose unnecessary data. Count the active template/tokenizer representation and evaluate placement and relevance; do not infer quality from an advertised maximum.
+The window is a bounded workspace. It is not durable memory or a relevance filter. More text can reduce output room, bury evidence, introduce conflicts, add latency and expose unnecessary data. Budget using the active tokenizer/template, then evaluate relevance and placement instead of assuming quality from capacity.
 
 **Why not declare the 7B model better from one local response?**
 
-One response confounds prompt, sampling, template, model version, quantization, thermal state, and evaluator preference. A limited comparison freezes held-out cases/parameters, retains trials and failures, records provenance, blinds evaluation, separates quality dimensions, and reports uncertainty rather than a leaderboard.
+One response mixes effects from prompt, sampling, template, model version, quantization, thermal state and evaluator preference. Freeze the held-out cases and settings, preserve all trials and failures, record provenance, blind evaluation and score separate dimensions. Report uncertainty rather than a universal ranking.
 
 **Hosted versus open-weight: which should we choose?**
 
-Start with product constraints: data handling, capabilities, license, latency, operations, support, cost, and reproducibility. Local operation provides more control but adds artifact/runtime/hardware obligations. Hosted operation can reduce local operations but changes network, contract, and version-control boundaries. Avoid a universal recommendation.
+Start with product constraints: data handling, capability, licensing, latency, operations, support, cost and reproducibility. Local operation provides control but adds runtime/artifact/hardware responsibilities. Hosted operation reduces some local work while changing network, contractual and version-control boundaries. The choice depends on the requirements.
 
 ### Senior follow-ups
 
 **Why is `ModelClient` a protocol rather than two provider clients?**
 
-Both locked models expose the same `llama-server` HTTP boundary. The comparison service needs one typed generation operation, not provider taxonomy. The adapter contains HTTP details; a fake client supports deterministic tests. Add abstractions only when distinct behavior requires them.
+Both selected models expose the same `llama-server` HTTP interface. The service needs a typed generation operation, not an artificial provider taxonomy. The adapter owns HTTP details, and a fake client makes deterministic tests possible. Add abstractions when distinct behavior actually requires them.
 
 **How would you interpret token and latency measurements?**
 
-Name their provenance and boundary. Runtime-reported token counts/durations are used only when exposed; otherwise `null` is honest. `request_wall_time` is measured in seconds from dispatch to validated response and includes local transport/queueing. Tokenizer/template differences prevent simplistic cross-model token-rate comparisons. Quality remains separately scored.
+State their origin and boundary. Preserve runtime token counts and durations only when reported; otherwise, use `null` with an explanation. `request_wall_time` runs from dispatch to a fully validated response and includes local transport and queueing. Tokenizer/template differences prevent simplistic token-rate comparisons. Score quality separately.
 
 **What does local-only protect, and what does it not?**
 
-It can keep a harness request off a hosted inference endpoint. It does not authorize sensitive prompts, secure local files, validate outputs, protect against malicious artifacts, or solve retention/access control. Bind to loopback, pin and verify supply-chain inputs, and apply data minimization.
+It prevents the harness from sending an inference request to a hosted endpoint. It does not authorize sensitive prompts, secure files, validate responses, protect against malicious artifacts or solve access and retention. Bind to loopback, pin and independently verify artifacts, and minimize the data used.
 
 ## 27. Active recall
 
-Try these before consulting the answers.
+Try answering these aloud or in your interview notebook before reading the answers. If an explanation feels vague, return to that part of the prompt-to-output path.
 
 1. Why is a token ID not a semantic coordinate?
 2. What distinguishes an embedding table row from a contextual hidden state?
@@ -919,6 +883,8 @@ Try these before consulting the answers.
 14. Calibration may change the protocol; the frozen held-out suite may not be used for same-version tuning.
 
 ## 28. Exercises
+
+These exercises move from reasoning about the model to checking the experiment's implementation. The acceptance criteria matter: use them to decide whether the work is complete.
 
 ### Exercise A: token-budget prediction
 
@@ -962,7 +928,7 @@ Trace the simplified Northwind fragment `[Payment, requires, approval]` while pr
 
 ## 29. Mini-project: local evidence comparison
 
-Build the comparison application for a four-case reference-note suite. The goal is an evidence record, not a model leaderboard.
+Bring the pieces together in a comparison application using four reference-backed note cases. You should finish with a record another person can inspect: what was asked, which declared configuration ran, what succeeded or failed, and how the retained outputs were judged.
 
 ### Scope
 
@@ -985,7 +951,7 @@ Build the comparison application for a four-case reference-note suite. The goal 
 
 ## Where this leads
 
-This lesson establishes the mechanism underneath later prompting, retrieval, evaluation, and serving decisions. Keep the same contract discipline: distinguish model text from validated data, preserve source and metric provenance, isolate external boundaries behind narrow typed interfaces, and make a change to prompts or evaluation protocol visible rather than silently rewriting history.
+You now have the mechanism behind later lessons on prompting, retrieval, evaluation and serving. Keep the same engineering habits as the systems grow: validate model text before treating it as data, retain source and metric provenance, use narrow typed interfaces for external boundaries, and make changes to prompts or evaluation protocols explicit.
 
 ## Primary sources and further reading
 
