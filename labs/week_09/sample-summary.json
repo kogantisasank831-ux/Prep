@@ -1,0 +1,272 @@
+{
+  "schema": "week09-stage-evaluation/1.0.0",
+  "run_id": "4b2e2abddd411b7e4f8e2e7416b235fe2acf6fbd647b615da5c38262605120b4",
+  "scope": "visible synthetic practice questions; deterministic proxies, not learned-model or semantic correctness certification",
+  "dataset": {
+    "schema": "procurement-evaluation-dataset/1.0.0",
+    "dataset_id": "week09-procurement",
+    "version": "1.0.0",
+    "split": "practice",
+    "corpus_digest": "fc5ad68b6b3f5402b3714b46cc9ab05dd8e480b768a0a0a23c17f98f6ecea018",
+    "cases_digest": "5ad1e7d8dc2b820cd0d1b007d61f386db6503a880ba583df3f5ec6c60fb65915",
+    "source_checks_digest": "264a9b4491e5e6c2c563090de1a09da5dda99f7ed72808f6752b8e24fc9079b8"
+  },
+  "system": {
+    "config": {
+      "candidate_count": 6,
+      "retrieval_depth": 8,
+      "evidence_count": 3,
+      "context_chars": 1400,
+      "compression": "none",
+      "max_sentences": 2
+    },
+    "dense": {
+      "adapter_id": "demo-procurement-features",
+      "artifact_digest": "synthetic-only",
+      "runtime_id": "python-stdlib/3.12.14",
+      "preprocessing_version": "identifier-dropping-positive-candidates/v2",
+      "metric": "jaccard-features",
+      "minimum_score": 0.0,
+      "dimension": null
+    },
+    "reranker": {
+      "name": "teaching-pair-rules",
+      "version": "1.0.0",
+      "artifact_digest": "synthetic",
+      "runtime": "python-stdlib",
+      "preprocessing": "unique-terms-and-commercial-phrases/v1"
+    },
+    "python": "3.12.14",
+    "implementation_digest": "ea0f46ead1d09851c8921b39064e3d96df249ec2c5134923a3e80440f8f98b56"
+  },
+  "normalization": "strip-S-labels/casefold/collapse-whitespace/v1",
+  "query_count": 30,
+  "answerable_count": 22,
+  "unanswerable_count": 8,
+  "source_audit": {
+    "scope": "controlled layout fixture facts and statuses; no PDF/OCR accuracy claim",
+    "source_count": 9,
+    "status_match_count": 9,
+    "parsed_atom_recall": 1.0,
+    "complete_chunk_unit_count": 12,
+    "expected_chunk_unit_count": 12,
+    "chunk_unit_recall": 1.0,
+    "sources": [
+      {
+        "source": "northwind-procurement/P-101/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 3,
+        "parsed_atom_count": 3,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      },
+      {
+        "source": "northwind-procurement/P-102/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 3,
+        "parsed_atom_count": 3,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      },
+      {
+        "source": "northwind-procurement/P-103/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 3,
+        "parsed_atom_count": 3,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      },
+      {
+        "source": "northwind-procurement/P-104/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 3,
+        "parsed_atom_count": 3,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      },
+      {
+        "source": "northwind-procurement/P-105/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 13,
+        "parsed_atom_count": 13,
+        "complete_chunk_units": 5,
+        "expected_chunk_units": 5
+      },
+      {
+        "source": "northwind-procurement/P-106/1",
+        "expected_status": "needs_review",
+        "observed_status": "needs_review",
+        "status_matches": true,
+        "parsed_atom_hits": 1,
+        "parsed_atom_count": 1,
+        "complete_chunk_units": 0,
+        "expected_chunk_units": 0
+      },
+      {
+        "source": "northwind-procurement/P-107/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 4,
+        "parsed_atom_count": 4,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      },
+      {
+        "source": "northwind-procurement/P-108/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 3,
+        "parsed_atom_count": 3,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      },
+      {
+        "source": "other-tenant/PRIVATE/1",
+        "expected_status": "accepted",
+        "observed_status": "accepted",
+        "status_matches": true,
+        "parsed_atom_hits": 3,
+        "parsed_atom_count": 3,
+        "complete_chunk_units": 1,
+        "expected_chunk_units": 1
+      }
+    ]
+  },
+  "retrieval": {
+    "candidate": {
+      "precision_at_k": 0.19696969696969696,
+      "recall_at_k": 1.0,
+      "reciprocal_rank_at_k": 0.9545454545454546,
+      "ndcg_at_k": 0.9701451281857297
+    },
+    "hybrid": {
+      "precision_at_k": 0.3787878787878788,
+      "recall_at_k": 0.9848484848484849,
+      "reciprocal_rank_at_k": 0.9545454545454546,
+      "ndcg_at_k": 0.961893228524941
+    },
+    "reranked": {
+      "precision_at_k": 0.3939393939393939,
+      "recall_at_k": 1.0,
+      "reciprocal_rank_at_k": 0.9772727272727273,
+      "ndcg_at_k": 0.9832240797077936
+    }
+  },
+  "context_support_complete_fraction": 1,
+  "context_source_precision": 0.6893939393939393,
+  "expected_citation_recall": 1.0,
+  "answer_atom_coverage": 1.0,
+  "exact_match_fraction": 0.3,
+  "answerable_exact_match_fraction": 0.18181818181818182,
+  "unanswerable_abstention_fraction": 0.625,
+  "invalid_citation_count": 0,
+  "extractive_traceability_fraction": 1,
+  "failure_counts": {
+    "unanswerable_evidence_returned": 3
+  },
+  "categories": {
+    "access_denied": {
+      "case_count": 2,
+      "behavior_matches": 1,
+      "context_support_complete": null
+    },
+    "commercial": {
+      "case_count": 4,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "condition": {
+      "case_count": 2,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "cross_reference": {
+      "case_count": 2,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "date": {
+      "case_count": 1,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "filter_mismatch": {
+      "case_count": 1,
+      "behavior_matches": 1,
+      "context_support_complete": null
+    },
+    "filtered": {
+      "case_count": 2,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "identifier": {
+      "case_count": 2,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "multi_source": {
+      "case_count": 1,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "numeric": {
+      "case_count": 3,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "paraphrase": {
+      "case_count": 2,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "review_only": {
+      "case_count": 1,
+      "behavior_matches": 1,
+      "context_support_complete": null
+    },
+    "supplier": {
+      "case_count": 3,
+      "behavior_matches": 1,
+      "context_support_complete": 1
+    },
+    "unavailable_fact": {
+      "case_count": 3,
+      "behavior_matches": 0,
+      "context_support_complete": null
+    },
+    "unmapped_alias": {
+      "case_count": 1,
+      "behavior_matches": 1,
+      "context_support_complete": null
+    }
+  },
+  "reviews": {
+    "reviewed_count": 0,
+    "pending_count": 30,
+    "groups": {},
+    "note": "No human or LLM review was executed; null is not a passing score."
+  },
+  "unmeasured": [
+    "semantic similarity",
+    "claim entailment/faithfulness",
+    "semantic answer correctness",
+    "semantic citation support",
+    "real model quality",
+    "latency",
+    "memory",
+    "general PDF/OCR accuracy"
+  ]
+}

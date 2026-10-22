@@ -1,0 +1,9 @@
+{
+  "schema": "procurement-evaluation-dataset/1.0.0",
+  "dataset_id": "week09-procurement",
+  "version": "1.0.0",
+  "split": "practice",
+  "corpus_digest": "fc5ad68b6b3f5402b3714b46cc9ab05dd8e480b768a0a0a23c17f98f6ecea018",
+  "cases_digest": "5ad1e7d8dc2b820cd0d1b007d61f386db6503a880ba583df3f5ec6c60fb65915",
+  "source_checks_digest": "264a9b4491e5e6c2c563090de1a09da5dda99f7ed72808f6752b8e24fc9079b8"
+}
