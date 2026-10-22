@@ -1,9 +1,15 @@
 ---
 layout: week
+week: 7
+phase: 2
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-07/
 title: "Sparse and hybrid retrieval: preserve exact evidence and semantic recall"
 description: Build an authorization-aware, reproducible sparse/dense retrieval boundary for procurement codes, names, commercial terms, and paraphrases.
-summary: Continue the frozen P-101 through P-106 corpus from a versioned token contract and authorized BM25 corpus through provenance-preserving dense candidates, reciprocal-rank fusion, and held-out evaluation.
+summary: Continue the frozen procurement corpus from a versioned token contract and authorized BM25 corpus through provenance-preserving dense candidates, reciprocal-rank fusion, and held-out evaluation.
 kicker_primary: Sparse and hybrid retrieval
 kicker_secondary: Exact evidence plus semantic recall
 current_label: Production version
@@ -11,12 +17,29 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-07/beginner/
 ---
 
-## P-106 changes what “relevant” must preserve
+## Your route through Week 7
 
-P-101 through P-105 are now immutable, traceable chunks from Week 6. P-106 adds an exact commercial identifier:
+By the end of this week, you should be able to explain a BM25 score, preserve an exact product code through tokenization, combine two ranked lists with RRF, and diagnose a hybrid result from its contributors. You will compare sparse, dense, and hybrid retrieval on one frozen collection, including code, supplier, commercial-term, and paraphrase queries.
+
+Bring Week 5's embedding/ranking ideas and Week 6's source identities, chunk boundaries, and metadata. The main implementation uses immutable dataclasses, protocols, mappings, and explicit boundary errors. Start with the [beginner lesson]({{ '/weeks/week-07/beginner/' | relative_url }}) if you want to work through the ranking formulas before the full contracts.
+
+| Time | Work | What you should produce |
+| --- | --- | --- |
+| Hour 1 | Try a code query and a paraphrase against the same evidence | A prediction about which signal will help |
+| Hours 2–3 | Work through tokenization and BM25; calculate one score by hand | A checked rare-term/length-normalization example |
+| Hour 4 | Trace authorization and exact metadata predicates | The eligible corpus shared by both paths |
+| Hour 5 | Calculate min–max and RRF examples | A contributor table you can explain |
+| Hours 6–7 | Run the lab, inspect failures, change one parameter | A measured comparison and category breakdown |
+| Hour 8 | Complete the exercises and interview explanation | A short retrieval decision note |
+
+Ask this as you read each result: “Did this candidate preserve the identifier or condition the question depends on?” A good topic match can still lose the decisive detail.
+
+## P-107 changes what “relevant” must preserve
+
+P-101 through P-105 have immutable, traceable chunks from Week 6. P-106 remains the uncertain OCR fixture and stays out of the accepted index. A separate P-107 catalogue note adds an exact commercial identifier:
 
 ```text
-P-106 | Atlas Metals catalogue note | version 1
+P-107 | Atlas Metals catalogue note | version 1
 Tenant: northwind-procurement
 Product code: CW-1000
 Commercial name: Copper wire, 1,000 kg coil
@@ -36,33 +59,22 @@ The central design question is:
 
 > How can sparse and dense retrieval be combined for codes, names, terms, and paraphrases while preserving authorization, reproducibility, provenance, and honest evaluation?
 
-The answer is not “add two scores.” Sparse and dense systems observe different signals, produce incompatible score distributions, and can fail independently. They must operate on the same authorised frozen corpus, record their configuration, return source lineage, and be compared against held-out relevance/support labels.
+Sparse and dense systems observe different signals, produce incompatible score distributions, and can fail independently. They must operate on the same authorised frozen corpus, record their configuration, return source lineage, and be compared against held-out relevance/support labels.
 
-```text
-authenticated principal + typed metadata predicate
-                    |
-                    v
-         authorised frozen chunk corpus only
-                    |
-        +-----------+------------+
-        |                        |
-        v                        v
-versioned BM25             versioned dense adapter
-        |                        |
-        +------ ranked candidates+
-                    |
-                    v
-   rank fusion + contributor provenance + deterministic tie rule
-                    |
-                    v
-  reviewable source chunks, or an explicit empty/weak outcome
-```
+Follow the request in this order:
+
+1. Derive the principal from trusted authentication context and apply its object grants.
+2. Apply the allowed metadata predicates to form the shared eligible corpus.
+3. Rank that corpus independently with versioned BM25 and dense scorers.
+4. Fuse accepted ranked candidates, retaining contributor ranks and raw scores.
+5. Return source-linked candidates or an empty outcome for review.
+
 
 Retrieval relevance is not factual truth. A `CW-1000` match may be superseded, unauthorised for the current caller, or attached to a different agreement. No code below writes to a procurement system, generates an answer, or treats a ranking score as permission to act.
 
 ## 1. Make the keyword and lexical contract explicit before building BM25
 
-### Orienting question: what exactly is an “exact” product-code match?
+### What exactly is an “exact” product-code match?
 
 Sparse retrieval begins with a tokenizer. It maps visible text into terms, so its behavior decides whether `CW-1000` survives as one token, becomes `cw` plus `1000`, or disappears. Tokenization, normalization, aliases, and BM25 parameters are retrieval behavior; they belong in a versioned configuration and manifest.
 
@@ -77,19 +89,25 @@ Net 30        -> net, 30
 That is intentionally conservative. `CW1000` does not match `CW-1000`, and `CW-100O` with letter O does not match zero. An alias table could map a known supplier code variant to a canonical token, but aliases create false-positive risk, must preserve the original text, need an owner and effective version, and require evaluation against exact-code/OCR cases. Do not normalize punctuation away merely because it looks convenient.
 
 ```python
+"""Exact sparse/dense/fusion contracts for the Week 7 teaching lab."""
+
 from __future__ import annotations
+
 
 from collections import Counter, defaultdict
 from collections.abc import Callable, Iterable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from hashlib import sha256
 from math import isfinite, log
+import json
+import platform
+from types import MappingProxyType
 import re
 from typing import Protocol, Self
 
 
 TOKEN_PATTERN = re.compile(r"[a-z0-9]+(?:[-_/][a-z0-9]+)*")
-MANIFEST_SCHEMA = "procurement-hybrid-retrieval/1.0.0"
+MANIFEST_SCHEMA = "procurement-hybrid-retrieval/1.1.0"
 
 
 class RetrievalError(Exception):
@@ -156,9 +174,18 @@ def digest_text(value: str) -> str:
     return sha256(value.encode("utf-8")).hexdigest()
 
 
-def tokenize(text: str, contract: TokenContract = DEFAULT_TOKEN_CONTRACT) -> tuple[str, ...]:
-    if contract.pattern != TOKEN_PATTERN.pattern:
+def tokenize(
+    text: str, contract: TokenContract = DEFAULT_TOKEN_CONTRACT
+) -> tuple[str, ...]:
+    contract.fingerprint()
+    if contract != DEFAULT_TOKEN_CONTRACT:
         raise ConfigurationError("reference tokenizer does not implement this contract")
+    if not isinstance(text, str) or len(text) > 4000:
+        raise ConfigurationError("tokenizer requires bounded text")
+    try:
+        text.encode("utf-8")
+    except UnicodeEncodeError as exc:
+        raise ConfigurationError("tokenizer requires valid UTF-8 text") from exc
     return tuple(TOKEN_PATTERN.findall(text.lower()))
 
 
@@ -170,21 +197,15 @@ The reference tokenizer is local and deterministic. It does not correct typos, d
 
 ### Aliases and normalization need the same evidence discipline as source data
 
-It is tempting to make sparse search friendlier by indexing both `cw-1000` and `cw1000`, stripping punctuation, or expanding an abbreviation such as `AM` to `Atlas Metals`. Each operation can improve one query while creating a different error. `AM` may mean another supplier or an internal field; punctuation may distinguish two catalogue codes; an OCR correction may turn an uncertain source value into an apparently exact match.
+An alias such as `CW1000 → CW-1000` may improve a lookup while also collapsing two distinct supplier codes. `AM` can identify more than one company; an OCR correction can turn an uncertain value into an apparently exact token. Preserve the original text and tokens alongside any canonical form.
 
-Treat aliases as governed retrieval data. Each alias needs a canonical target, source/evidence, owner, effective range, tenant/supplier scope, and version. Preserve the original tokens separately, make the alias policy visible in the manifest, and test positive and negative cases. An alias that changes the candidate corpus or query terms after an incident is a new retrieval configuration, not a harmless patch. The safe fallback is a visible no-exact-match result with the original query intact, followed by authorised review if the business workflow requires it.
+Treat aliases as versioned retrieval data. Record the target, source/evidence, owner, effective range, tenant/supplier scope, and policy version. Test positive and false matches before changing either the document or query representation. If no approved mapping exists, retain the query and expose the lack of an exact lexical match for authorized review.
 
-Normalization should also be asymmetric where the task demands it. Query-time expansion can be useful when it is explicitly recorded, while document-time expansion changes index statistics and storage. Applying both without a defined policy can double-count an alias in BM25, increase duplicate candidates, and make an exact source token appear more certain than it is. Evaluate code, supplier, and commercial-term categories separately before adopting a convenience rule across the corpus.
-
-The decision belongs to the retrieval boundary, not to an unversioned UI convenience feature. A user must be able to distinguish an exact literal match from an alias-assisted candidate during authorised review.
-
-If that distinction is unavailable in logs, result provenance, and evaluation labels, an operator cannot safely diagnose a code-search regression or explain why a particular candidate was returned.
-
-It also prevents accidental claims that lexical identity survived a transformation when it did not.
+Query-time expansion and document-time expansion have different effects. The latter changes index statistics and storage; applying both can double-count a term. Compare code, supplier, and commercial-term queries separately. Include alias provenance in results, safe diagnostics, manifests, and labels so an operator can distinguish literal matching from assisted retrieval and explain regressions. An unversioned UI rewrite would hide that distinction.
 
 ## 2. BM25 is a sparse ranking formula with corpus-dependent behavior
 
-### Orienting question: why does `CW-1000` deserve more credit than `invoice`?
+### Why does `CW-1000` deserve more credit than `invoice`?
 
 BM25 ranks chunks using terms present in the query and corpus statistics. For query term `t` and chunk `d`, a common form is:
 
@@ -205,17 +226,27 @@ BM25 is strong when lexical identity matters: exact product codes, supplier name
 class BM25Config:
     k1: float = 1.2
     b: float = 0.75
+    algorithm: str = "log1p-idf-unique-query/v1"
 
     def fingerprint(self) -> str:
-        if not isfinite(self.k1) or not isfinite(self.b) or self.k1 <= 0.0 or not 0.0 <= self.b <= 1.0:
-            raise ConfigurationError("BM25 requires k1 > 0 and b in [0, 1]")
-        return digest_text(f"k1={self.k1:.12g}\x1fb={self.b:.12g}")
+        if self.algorithm != "log1p-idf-unique-query/v1":
+            raise ConfigurationError("unsupported BM25 algorithm contract")
+        if (
+            type(self.k1) not in (int, float)
+            or type(self.b) not in (int, float)
+            or not isfinite(self.k1)
+            or not isfinite(self.b)
+            or self.k1 <= 0
+            or not 0 <= self.b <= 1
+        ):
+            raise ConfigurationError("BM25 requires finite k1 > 0 and b in [0, 1]")
+        return digest_text(json.dumps(asdict(self), sort_keys=True))
 
 
 @dataclass(frozen=True)
 class BM25Index:
     chunks: tuple[SourceChunk, ...]
-    term_frequencies: Mapping[str, Counter[str]]
+    term_frequencies: Mapping[str, Mapping[str, int]]
     document_frequencies: Mapping[str, int]
     document_lengths: Mapping[str, int]
     average_document_length: float
@@ -231,66 +262,159 @@ class BM25Index:
         config: BM25Config,
     ) -> Self:
         config.fingerprint()
+        token_contract.fingerprint()
+        validate_chunks(chunks)
         if not chunks:
             raise CorpusInvariantError("BM25 requires at least one authorised chunk")
-        term_frequencies: dict[str, Counter[str]] = {}
-        document_frequencies: Counter[str] = Counter()
-        document_lengths: dict[str, int] = {}
+        frequencies: dict[str, Mapping[str, int]] = {}
+        df: Counter[str] = Counter()
+        lengths: dict[str, int] = {}
         for chunk in chunks:
-            if chunk.chunk_id in term_frequencies:
-                raise CorpusInvariantError("chunk IDs must be unique")
             terms = tokenize(chunk.text, token_contract)
             if not terms:
-                raise CorpusInvariantError("chunks must have at least one token")
-            term_frequencies[chunk.chunk_id] = Counter(terms)
-            document_lengths[chunk.chunk_id] = len(terms)
-            document_frequencies.update(term_frequencies[chunk.chunk_id].keys())
+                raise CorpusInvariantError("chunks must contain at least one token")
+            counts = Counter(terms)
+            frequencies[chunk.chunk_id] = MappingProxyType(dict(counts))
+            lengths[chunk.chunk_id] = len(terms)
+            df.update(counts.keys())
         return cls(
-            chunks=tuple(chunks),
-            term_frequencies=term_frequencies,
-            document_frequencies=dict(document_frequencies),
-            document_lengths=document_lengths,
-            average_document_length=sum(document_lengths.values()) / len(document_lengths),
-            token_contract=token_contract,
-            config=config,
+            tuple(chunks),
+            MappingProxyType(frequencies),
+            MappingProxyType(dict(df)),
+            MappingProxyType(lengths),
+            sum(lengths.values()) / len(lengths),
+            token_contract,
+            config,
         )
 
     def score(self, query_text: str, chunk: SourceChunk) -> float:
+        if chunk not in self.chunks:
+            raise ManifestCompatibilityError("scored chunk differs from index snapshot")
         frequencies = self.term_frequencies[chunk.chunk_id]
         length = self.document_lengths[chunk.chunk_id]
         total = 0.0
-        for term in tokenize(query_text, self.token_contract):
-            frequency = frequencies[term]
+        # Query terms are unique in this version; repetition is not a hidden boost.
+        for term in dict.fromkeys(tokenize(query_text, self.token_contract)):
+            frequency = frequencies.get(term, 0)
             if frequency == 0:
                 continue
-            document_frequency = self.document_frequencies[term]
-            inverse_document_frequency = log(
-                1.0 + (len(self.chunks) - document_frequency + 0.5) / (document_frequency + 0.5)
+            df = self.document_frequencies[term]
+            idf = log(1.0 + (len(self.chunks) - df + 0.5) / (df + 0.5))
+            norm = (
+                1
+                - self.config.b
+                + self.config.b * length / self.average_document_length
             )
-            denominator = frequency + self.config.k1 * (
-                1.0 - self.config.b + self.config.b * length / self.average_document_length
+            k1 = self.config.k1
+            # Equivalent ratio avoids overflow for a very large finite k1.
+            tf_weight = (
+                frequency * (1 + 1 / k1) / (frequency / k1 + norm)
+                if k1 >= 1
+                else frequency * (1 + k1) / (frequency + k1 * norm)
             )
-            total += inverse_document_frequency * frequency * (self.config.k1 + 1.0) / denominator
+            total += idf * tf_weight
         return total
 ```
 
-The formula makes an important security/reproducibility point: IDF and `avgdl` are corpus statistics. If unauthorised chunks remain in the index, they influence scores even when final display filters them away. That is an information leak and produces rankings that the authorised caller could not reproduce from their permitted corpus.
+Try a tiny calculation before inspecting the larger fixture. Suppose there are two chunks: `CW-1000` and `invoice invoice invoice`. Then `N=2`, `df(CW-1000)=1`, `avgdl=2`, and the code chunk has length 1. With `k1=1.2` and `b=0.75`, its score is `ln(2) × 2.2 / (1 + 1.2 × (0.25 + 0.75 × 1/2))`, approximately **0.8714**. The score measures a lexical ranking signal, not a probability.
+
+The implementation uses a positive `log(1 + …)` IDF variant and unique query terms, so repeating `CW-1000` in the query does not create a hidden boost. It is an inspectable BM25 variant, not a promise of identical scores to a search engine: analyzers, query-term handling, fields, length norms, synonym overlap, and shard statistics can differ. The default `k1` and `b` are starting parameters to evaluate.
+
+The formula also makes a security/reproducibility point: IDF and `avgdl` are corpus statistics. If unauthorised chunks remain in the index, they influence scores even when final display filters them away. Under this lesson’s partition-local statistics contract, that can expose private-corpus influence and makes scores depend on evidence outside the caller’s eligible snapshot. A separate design using approved public background statistics would need to declare that policy explicitly.
 
 ## 3. Build the authorised corpus before either retriever scores
 
-### Orienting question: what may an unauthorized exact match influence?
+### What may an unauthorized exact match influence?
 
-Nothing: no BM25 term frequency, no IDF, no average length, no dense candidate, no fusion contributor, no result count, and no cache key derived from the candidate set. The reference implementation builds a small exact authorised corpus per request. That is straightforward and correct for this lesson, but it is not the scalable final architecture.
+The reference requires denied text to affect no BM25 term counts, IDF, average length, dense score, or fusion contributor. It constructs a small authorized corpus per request before either scorer runs. Its partition key binds the trusted principal, eligible representation, and canonical metadata predicates. This provides a clear correctness baseline for the lesson; it is not a scalable serving design or a constant-time guarantee. Traversal, grant checks, total request timing, caches, and infrastructure still require their own assessment.
 
 Metadata filters are typed, allowlisted predicates. They can narrow a query to a supplier or document type, but they are not authorization. The access policy derives object visibility from a trusted principal. A caller cannot obtain another tenant by adding a metadata filter.
 
 ```python
+def validate_request(request: RetrievalRequest) -> None:
+    if (
+        not isinstance(request.principal_id, str)
+        or not request.principal_id.strip()
+        or len(request.principal_id) > 128
+        or not isinstance(request.query_text, str)
+        or not request.query_text.strip()
+        or len(request.query_text) > 1000
+        or type(request.top_k) is not int
+        or request.top_k < 1
+        or request.top_k > 256
+    ):
+        raise ConfigurationError(
+            "request requires bounded principal/query and integer top_k in [1, 256]"
+        )
+    try:
+        request.query_text.encode("utf-8")
+        request.principal_id.encode("utf-8")
+    except UnicodeEncodeError as exc:
+        raise ConfigurationError("request requires valid UTF-8 text") from exc
+    validate_filters(request.filters)
+
+
+def validate_chunks(chunks: Sequence[SourceChunk]) -> None:
+    if len(chunks) > 256 or len({chunk.chunk_id for chunk in chunks}) != len(chunks):
+        raise CorpusInvariantError("corpus must have at most 256 unique chunk IDs")
+    for chunk in chunks:
+        fields = (
+            chunk.chunk_id,
+            chunk.tenant_id,
+            chunk.document_id,
+            chunk.document_version,
+            chunk.source_digest,
+        )
+        if (
+            any(
+                not isinstance(value, str) or not value.strip() or len(value) > 256
+                for value in fields
+            )
+            or not isinstance(chunk.text, str)
+            or not chunk.text.strip()
+            or len(chunk.text) > 4000
+            or len(chunk.metadata) > 32
+            or len(dict(chunk.metadata)) != len(chunk.metadata)
+            or any(
+                not isinstance(k, str)
+                or not k.strip()
+                or not isinstance(v, str)
+                or not v.strip()
+                or len(k) > 100
+                or len(v) > 1000
+                for k, v in chunk.metadata
+            )
+        ):
+            raise CorpusInvariantError(
+                "chunks require bounded identity, text, and unique metadata"
+            )
+        try:
+            for value in (
+                *fields,
+                chunk.text,
+                *(value for pair in chunk.metadata for value in pair),
+            ):
+                value.encode("utf-8")
+        except UnicodeEncodeError as exc:
+            raise CorpusInvariantError("chunks require valid UTF-8 text") from exc
+
+
+def require_request_corpus(request: RetrievalRequest, corpus: AuthorizedCorpus) -> None:
+    validate_request(request)
+    if (
+        request.principal_id != corpus.principal_id
+        or tuple(sorted(request.filters, key=lambda f: f.field)) != corpus.filters
+    ):
+        raise ManifestCompatibilityError(
+            "request principal/filters differ from authorised corpus"
+        )
+
+
 ALLOWED_FILTER_FIELDS = frozenset({"supplier", "document_type"})
 
 
 class AccessPolicy(Protocol):
-    def can_read(self, principal_id: str, chunk: SourceChunk) -> bool:
-        ...
+    def can_read(self, principal_id: str, chunk: SourceChunk) -> bool: ...
 
 
 @dataclass(frozen=True)
@@ -307,8 +431,16 @@ class StaticObjectAccessPolicy:
 
 
 def validate_filters(filters: Sequence[MetadataFilter]) -> None:
-    if any(filter_.field not in ALLOWED_FILTER_FIELDS or not filter_.value for filter_ in filters):
-        raise ConfigurationError("metadata filters must use a non-empty allowlisted predicate")
+    if len(filters) > len(ALLOWED_FILTER_FIELDS) or any(
+        filter_.field not in ALLOWED_FILTER_FIELDS
+        or not isinstance(filter_.value, str)
+        or not filter_.value.strip()
+        or len(filter_.value) > 200
+        for filter_ in filters
+    ):
+        raise ConfigurationError(
+            "metadata filters must use bounded allowlisted equality predicates"
+        )
     if len({filter_.field for filter_ in filters}) != len(filters):
         raise ConfigurationError("metadata filter fields must be unique")
 
@@ -318,6 +450,7 @@ class AuthorizedCorpus:
     principal_id: str
     chunks: tuple[SourceChunk, ...]
     partition_fingerprint: str
+    filters: tuple[MetadataFilter, ...] = ()
 
     @classmethod
     def build(
@@ -326,53 +459,45 @@ class AuthorizedCorpus:
         chunks: Sequence[SourceChunk],
         access_policy: AccessPolicy,
     ) -> Self:
-        if not request.principal_id.strip() or not request.query_text.strip() or request.top_k <= 0:
-            raise ValueError("principal, query text, and positive top_k are required")
-        validate_filters(request.filters)
-        def matches_filters(chunk: SourceChunk) -> bool:
-            values = metadata_values(chunk)
-            return all(values.get(filter_.field) == filter_.value for filter_ in request.filters)
+        validate_request(request)
+        if len(chunks) > 256:
+            raise CorpusInvariantError("reference corpus exceeds 256 chunks")
         authorised = tuple(
-            chunk for chunk in chunks if access_policy.can_read(request.principal_id, chunk)
+            chunk
+            for chunk in chunks
+            if access_policy.can_read(request.principal_id, chunk)
         )
-        chunk_ids = [chunk.chunk_id for chunk in authorised]
-        if len(set(chunk_ids)) != len(chunk_ids):
-            raise CorpusInvariantError("authorised chunk IDs must be unique")
-        if any(
-            not all(
-                (
-                    chunk.chunk_id,
-                    chunk.tenant_id,
-                    chunk.document_id,
-                    chunk.document_version,
-                    chunk.source_digest,
-                    chunk.text.strip(),
-                )
-            )
-            or len(dict(chunk.metadata)) != len(chunk.metadata)
+        validate_chunks(authorised)
+        eligible = tuple(
+            chunk
             for chunk in authorised
-        ):
-            raise CorpusInvariantError("authorised chunks require complete identity, text, and unique metadata fields")
-        eligible = tuple(chunk for chunk in authorised if matches_filters(chunk))
-        identity = "\n".join(
-            sorted(
-                f"{chunk.tenant_id}\x1f{chunk.chunk_id}\x1f{chunk.source_digest}"
-                for chunk in eligible
+            if all(
+                metadata_values(chunk).get(f.field) == f.value for f in request.filters
             )
         )
-        filters = "\n".join(
-            sorted(f"{filter_.field}={filter_.value}" for filter_ in request.filters)
+        filters = tuple(sorted(request.filters, key=lambda f: f.field))
+        partition = digest_text(
+            json.dumps(
+                {
+                    "principal": request.principal_id,
+                    "corpus": corpus_fingerprint(eligible),
+                    "filters": [asdict(f) for f in filters],
+                },
+                sort_keys=True,
+            )
         )
-        return cls(
-            request.principal_id,
-            eligible,
-            digest_text(f"{request.principal_id}\n{identity}\n{filters}"),
-        )
+        return cls(request.principal_id, eligible, partition, filters)
 
-    def bm25(self, token_contract: TokenContract, config: BM25Config) -> BM25Index | None:
-        if not self.chunks:
-            return None
-        return BM25Index.build(self.chunks, token_contract=token_contract, config=config)
+    def bm25(
+        self, token_contract: TokenContract, config: BM25Config
+    ) -> BM25Index | None:
+        token_contract.fingerprint()
+        config.fingerprint()
+        return (
+            BM25Index.build(self.chunks, token_contract=token_contract, config=config)
+            if self.chunks
+            else None
+        )
 ```
 
 For a larger system, common correct alternatives include per-tenant/authorisation-partitioned indexes, pre-filtered shard routing, or an index/filter design whose candidate generation itself enforces object visibility. The invariant remains: forbidden chunks cannot influence retrieval statistics or candidate scoring. “Search everything then hide the result” is not an access control design.
@@ -387,7 +512,7 @@ Metadata filters are also part of the attack surface. The reference only permits
 
 ## 4. Dense and sparse signals complement, but do not validate each other
 
-### Orienting question: when does each retriever fail first?
+### When does each retriever fail first?
 
 Sparse retrieval preserves visible lexical evidence. It is usually the first choice for `CW-1000`, a supplier name, a rare payment acronym, or a commercial term. It can fail on paraphrase: P-104 says `signs off`, not `approval`.
 
@@ -403,27 +528,39 @@ class DenseConfig:
     runtime_id: str
     preprocessing_version: str
     metric: str
+    minimum_score: float = 0.0
+    dimension: int | None = None
 
     def fingerprint(self) -> str:
-        values = (
-            self.adapter_id,
-            self.artifact_digest,
-            self.runtime_id,
-            self.preprocessing_version,
-            self.metric,
-        )
-        if not all(values):
+        if self.dimension is not None and (
+            type(self.dimension) is not int or self.dimension < 1
+        ):
+            raise ConfigurationError(
+                "dense dimension must be a positive integer when supplied"
+            )
+        if not all(
+            isinstance(value, str) and value.strip()
+            for value in (
+                self.adapter_id,
+                self.artifact_digest,
+                self.runtime_id,
+                self.preprocessing_version,
+                self.metric,
+            )
+        ):
             raise ConfigurationError("dense configuration fields must be non-empty")
-        return digest_text("\x1f".join(values))
+        if type(self.minimum_score) not in (int, float) or not isfinite(
+            self.minimum_score
+        ):
+            raise ConfigurationError("dense minimum score must be finite")
+        return digest_text(json.dumps(asdict(self), sort_keys=True))
 
 
 class DenseAdapter(Protocol):
     @property
-    def config(self) -> DenseConfig:
-        ...
+    def config(self) -> DenseConfig: ...
 
-    def score(self, query_text: str, chunk_text: str) -> float:
-        ...
+    def score(self, query_text: str, chunk_text: str) -> float: ...
 
 
 @dataclass(frozen=True)
@@ -431,8 +568,8 @@ class DemoDenseAdapter:
     config: DenseConfig = DenseConfig(
         adapter_id="demo-procurement-features",
         artifact_digest="synthetic-only",
-        runtime_id="python-stdlib/3.13",
-        preprocessing_version="identifier-dropping/v1",
+        runtime_id=f"python-stdlib/{platform.python_version()}",
+        preprocessing_version="identifier-dropping-positive-candidates/v2",
         metric="jaccard-features",
     )
 
@@ -460,12 +597,14 @@ class DemoDenseAdapter:
         chunk_features = self._features(chunk_text)
         if not query_features or not chunk_features:
             return 0.0
-        return len(query_features & chunk_features) / len(query_features | chunk_features)
+        return len(query_features & chunk_features) / len(
+            query_features | chunk_features
+        )
 ```
 
 ## 5. Preserve raw ranks and contributor provenance through fusion
 
-### Orienting question: why can’t we simply add BM25 and dense scores?
+### Why can’t we simply add BM25 and dense scores?
 
 BM25 scores depend on query terms, corpus statistics, `k1`, and `b`; dense scores depend on the model, metric, and vector normalization. A BM25 score of `8.4` and a cosine-like score of `0.81` have no shared unit. Raw addition silently grants one signal an arbitrary dominance.
 
@@ -516,18 +655,28 @@ class FusionConfig:
 
     def fingerprint(self) -> str:
         if (
-            self.rank_constant <= 0
+            type(self.rank_constant) is not int
+            or self.rank_constant <= 0
             or not self.weights
-            or any(not name or not isfinite(weight) or weight <= 0.0 for name, weight in self.weights)
+            or any(
+                not name
+                or type(weight) not in (int, float)
+                or not isfinite(weight)
+                or weight <= 0
+                for name, weight in self.weights
+            )
         ):
-            raise ConfigurationError("RRF rank constant and weights must be positive")
+            raise ConfigurationError(
+                "RRF requires an integer rank constant and positive finite weights"
+            )
         if len({name for name, _ in self.weights}) != len(self.weights):
             raise ConfigurationError("RRF retriever names must be unique")
-        values = (
-            str(self.rank_constant),
-            *(f"{name}={weight:.12g}" for name, weight in sorted(self.weights)),
+        return digest_text(
+            json.dumps(
+                {"rank_constant": self.rank_constant, "weights": sorted(self.weights)},
+                sort_keys=True,
+            )
         )
-        return digest_text("\x1f".join(values))
 
 
 def rank_candidates(
@@ -535,25 +684,39 @@ def rank_candidates(
     *,
     top_k: int,
     retriever: str,
+    minimum_score: float = 0.0,
 ) -> tuple[RankedCandidate, ...]:
-    if top_k <= 0:
-        raise ValueError("top_k must be positive")
-    ordered = sorted(scores, key=lambda item: (-item[1], item[0].chunk_id))[:top_k]
+    if type(top_k) is not int or top_k < 1 or not retriever:
+        raise ValueError("positive integer top_k and retriever name are required")
+    if type(minimum_score) not in (int, float) or not isfinite(minimum_score):
+        raise ConfigurationError("score floor must be finite")
+    items = tuple(scores)
+    if any(
+        type(score) not in (int, float) or not isfinite(score) for _, score in items
+    ):
+        raise ConfigurationError("candidate scores must be finite numbers")
+    if len({chunk.chunk_id for chunk, _ in items}) != len(items):
+        raise CorpusInvariantError("ranked candidates must have unique IDs")
+    ordered = sorted(
+        (item for item in items if item[1] > minimum_score),
+        key=lambda item: (-item[1], item[0].chunk_id),
+    )[:top_k]
     return tuple(
         RankedCandidate(chunk, score, rank, retriever)
-        for rank, (chunk, score) in enumerate(ordered, start=1)
+        for rank, (chunk, score) in enumerate(ordered, 1)
     )
 
 
 def sparse_candidates(
-    request: RetrievalRequest,
-    corpus: AuthorizedCorpus,
-    index: BM25Index | None,
+    request: RetrievalRequest, corpus: AuthorizedCorpus, index: BM25Index | None
 ) -> tuple[RankedCandidate, ...]:
-    if index is None:
+    require_request_corpus(request, corpus)
+    if not corpus.chunks and index is None:
         return ()
-    if index.chunks != corpus.chunks:
-        raise ManifestCompatibilityError("BM25 index corpus differs from authorised corpus")
+    if index is None or index.chunks != corpus.chunks:
+        raise ManifestCompatibilityError(
+            "BM25 index corpus differs from authorised corpus"
+        )
     return rank_candidates(
         ((chunk, index.score(request.query_text, chunk)) for chunk in corpus.chunks),
         top_k=request.top_k,
@@ -562,24 +725,43 @@ def sparse_candidates(
 
 
 def dense_candidates(
-    request: RetrievalRequest,
-    corpus: AuthorizedCorpus,
-    adapter: DenseAdapter,
+    request: RetrievalRequest, corpus: AuthorizedCorpus, adapter: DenseAdapter
 ) -> tuple[RankedCandidate, ...]:
+    require_request_corpus(request, corpus)
+    config = adapter.config
+    config.fingerprint()
+    scores = tuple(
+        (chunk, adapter.score(request.query_text, chunk.text))
+        for chunk in corpus.chunks
+    )
+    if adapter.config != config:
+        raise ManifestCompatibilityError("dense configuration changed during scoring")
     return rank_candidates(
-        ((chunk, adapter.score(request.query_text, chunk.text)) for chunk in corpus.chunks),
+        scores,
         top_k=request.top_k,
         retriever="dense",
+        minimum_score=config.minimum_score,
     )
 
 
 def min_max_normalize(scores: Mapping[str, float]) -> dict[str, float]:
     if not scores:
         return {}
+    if any(
+        type(value) not in (int, float) or not isfinite(value)
+        for value in scores.values()
+    ):
+        raise ConfigurationError("normalization requires finite numeric scores")
     lower, upper = min(scores.values()), max(scores.values())
     if lower == upper:
         return {key: 0.0 for key in scores}
-    return {key: (value - lower) / (upper - lower) for key, value in scores.items()}
+    # Scale first if subtracting extreme signed values would overflow.
+    span = upper - lower
+    if isfinite(span):
+        return {key: (value - lower) / span for key, value in scores.items()}
+    scale = max(abs(lower), abs(upper))
+    lo, hi = lower / scale, upper / scale
+    return {key: (value / scale - lo) / (hi - lo) for key, value in scores.items()}
 
 
 def reciprocal_rank_fusion(
@@ -588,27 +770,42 @@ def reciprocal_rank_fusion(
     *,
     top_k: int,
 ) -> tuple[FusedCandidate, ...]:
-    if top_k <= 0:
-        raise ValueError("top_k must be positive")
+    if type(top_k) is not int or top_k < 1:
+        raise ValueError("top_k must be a positive integer")
     weights = dict(config.weights)
     config.fingerprint()
     fused_scores: defaultdict[str, float] = defaultdict(float)
     chunks: dict[str, SourceChunk] = {}
     contributors: defaultdict[str, list[Contributor]] = defaultdict(list)
     seen_contributors: set[tuple[str, str]] = set()
+    ranks_by_retriever: defaultdict[str, set[int]] = defaultdict(set)
     for ranked_list in ranked_lists:
         for candidate in ranked_list:
             if candidate.retriever not in weights:
                 raise ConfigurationError("fusion received an unconfigured retriever")
-            if candidate.rank <= 0 or not isfinite(candidate.score):
-                raise ConfigurationError("fusion candidates require positive ranks and finite scores")
+            if (
+                type(candidate.rank) is not int
+                or candidate.rank <= 0
+                or type(candidate.score) not in (int, float)
+                or not isfinite(candidate.score)
+            ):
+                raise ConfigurationError(
+                    "fusion candidates require positive ranks and finite scores"
+                )
             contribution_key = (candidate.retriever, candidate.chunk.chunk_id)
             if contribution_key in seen_contributors:
-                raise ConfigurationError("fusion received a duplicate retriever/chunk contribution")
+                raise ConfigurationError(
+                    "fusion received a duplicate retriever/chunk contribution"
+                )
             seen_contributors.add(contribution_key)
+            if candidate.rank in ranks_by_retriever[candidate.retriever]:
+                raise ConfigurationError("retriever ranks must be unique")
+            ranks_by_retriever[candidate.retriever].add(candidate.rank)
             existing_chunk = chunks.get(candidate.chunk.chunk_id)
             if existing_chunk is not None and existing_chunk != candidate.chunk:
-                raise CorpusInvariantError("one chunk ID resolved to conflicting source chunks")
+                raise CorpusInvariantError(
+                    "one chunk ID resolved to conflicting source chunks"
+                )
             fused_scores[candidate.chunk.chunk_id] += weights[candidate.retriever] / (
                 config.rank_constant + candidate.rank
             )
@@ -616,13 +813,21 @@ def reciprocal_rank_fusion(
             contributors[candidate.chunk.chunk_id].append(
                 Contributor(candidate.retriever, candidate.rank, candidate.score)
             )
+    if any(
+        ranks != set(range(1, len(ranks) + 1)) for ranks in ranks_by_retriever.values()
+    ):
+        raise ConfigurationError("retriever ranks must be contiguous from one")
+    if any(not isfinite(score) for score in fused_scores.values()):
+        raise ConfigurationError("fusion score exceeded finite range")
     ordered = sorted(fused_scores.items(), key=lambda item: (-item[1], item[0]))[:top_k]
     return tuple(
         FusedCandidate(
             chunk=chunks[chunk_id],
             score=score,
             rank=rank,
-            contributors=tuple(sorted(contributors[chunk_id], key=lambda item: item.retriever)),
+            contributors=tuple(
+                sorted(contributors[chunk_id], key=lambda item: item.retriever)
+            ),
         )
         for rank, (chunk_id, score) in enumerate(ordered, start=1)
     )
@@ -637,7 +842,11 @@ def hybrid_candidates(
     *,
     candidate_depth: int,
 ) -> tuple[FusedCandidate, ...]:
-    if candidate_depth < request.top_k:
+    if (
+        type(candidate_depth) is not int
+        or candidate_depth < request.top_k
+        or candidate_depth > 256
+    ):
         raise ConfigurationError("candidate depth must be at least top_k")
     expanded = RetrievalRequest(
         principal_id=request.principal_id,
@@ -655,13 +864,19 @@ def hybrid_candidates(
     )
 ```
 
-Contributor ranks and raw scores let an operator diagnose an RRF result: “P-106 appeared because BM25 ranked it first and dense did not contribute,” rather than inventing a misleading combined meaning. Keep raw scores internal/authorised where they may reveal corpus statistics; a user-facing result normally needs source provenance and a safe explanation of the retrieval path, not unrestricted diagnostics.
+Before fusion, the reference admits only sparse scores strictly above zero and dense scores strictly above the floor in `DenseConfig` (zero for the teaching scorer). A no-match chunk therefore cannot gain an RRF vote just because it was padded into a top-k list. For a real cosine adapter, zero is a declared starting floor, not a calibrated relevance threshold; valid cosine similarities can be negative. Choose a threshold using development evidence and report missed positives. Unsupported ASCII tokenization, no positive match, and an empty authorized corpus are distinguishable causes of an empty list.
+
+For equal weights and rank constant 60, a chunk at sparse rank 1 and dense rank 3 receives `1/61 + 1/63 ≈ 0.032266`. A chunk at rank 1 in only one list gets `1/61 ≈ 0.016393`. RRF discards the original score gaps: rank 1 beats rank 2 by the same rule even if their raw scores are nearly equal. The rank constant is separate from output `top_k`; candidate depth limits what the fusion can ever see.
+
+The normalization helper rejects nonfinite/bool values and handles extreme signed scores without subtraction overflow. It maps an all-equal list to zeros by an explicit convention. That convention supplies no evidence that an equal-score candidate is relevant.
+
+Contributor ranks and raw scores let an operator diagnose an RRF result: “P-107 appeared because BM25 ranked it first and dense did not contribute,” rather than inventing a misleading combined meaning. Keep raw scores internal/authorised where they may reveal corpus statistics; a user-facing result normally needs source provenance and a safe explanation of the retrieval path, not unrestricted diagnostics.
 
 ## 6. Record the whole retrieval configuration in one manifest
 
-### Orienting question: what changed if a hybrid result changes tomorrow?
+### What changed if a hybrid result changes tomorrow?
 
-The answer is not just “the model.” Source/chunk snapshot, token contract, BM25 parameters, dense adapter configuration, access partition/filter, fusion policy, candidate depth, and top-k all affect the candidate set. A manifest turns those hidden inputs into explicit compatibility checks.
+Source/chunk snapshot, token contract, BM25 parameters, dense adapter configuration, access partition/filter, fusion policy, candidate depth, and top-k all affect the candidate set. A manifest turns those hidden inputs into explicit compatibility checks. The corpus fingerprint includes actual chunk text and metadata, not just a supplied source digest. A text change with a stale digest still changes the fingerprint. BM25 parameter fingerprints preserve full numeric values rather than rounding distinct settings to the same string. These are compatibility checks against trusted records, not signatures or proof of source authenticity.
 
 ```python
 @dataclass(frozen=True)
@@ -677,7 +892,12 @@ class RetrievalManifest:
     top_k: int
 
     def fingerprint(self) -> str:
-        if self.candidate_depth < self.top_k or self.top_k <= 0:
+        if (
+            self.schema_version != MANIFEST_SCHEMA
+            or type(self.candidate_depth) is not int
+            or type(self.top_k) is not int
+            or not 1 <= self.top_k <= self.candidate_depth <= 256
+        ):
             raise ConfigurationError("candidate depth must be at least positive top_k")
         fields = (
             self.schema_version,
@@ -694,21 +914,13 @@ class RetrievalManifest:
 
 
 def corpus_fingerprint(chunks: Sequence[SourceChunk]) -> str:
+    """Bind actual chunk text and metadata as well as externally supplied source IDs."""
+    records = [
+        {**asdict(chunk), "metadata": sorted(chunk.metadata)}
+        for chunk in sorted(chunks, key=lambda c: c.chunk_id)
+    ]
     return digest_text(
-        "\n".join(
-            sorted(
-                "\x1f".join(
-                    (
-                        chunk.tenant_id,
-                        chunk.document_id,
-                        chunk.document_version,
-                        chunk.chunk_id,
-                        chunk.source_digest,
-                    )
-                )
-                for chunk in chunks
-            )
-        )
+        json.dumps(records, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
     )
 
 
@@ -722,6 +934,7 @@ def make_manifest(
     candidate_depth: int,
     top_k: int,
 ) -> RetrievalManifest:
+    tokenize("", token_contract)
     manifest = RetrievalManifest(
         schema_version=MANIFEST_SCHEMA,
         corpus_fingerprint=corpus_fingerprint(corpus.chunks),
@@ -737,16 +950,20 @@ def make_manifest(
     return manifest
 
 
-def require_compatible(expected: RetrievalManifest, observed: RetrievalManifest) -> None:
+def require_compatible(
+    expected: RetrievalManifest, observed: RetrievalManifest
+) -> None:
     if expected.fingerprint() != observed.fingerprint():
-        raise ManifestCompatibilityError("retrieval manifest differs from the requested contract")
+        raise ManifestCompatibilityError(
+            "retrieval manifest differs from the requested contract"
+        )
 ```
 
 Build a new manifest when source/chunk policy, tokenization, alias policy, BM25 parameters, dense artifact/runtime/preprocessing/metric, metadata filtering/access partition, fusion weights, candidate depth, or top-k changes. Promotion is manual after invariant tests and held-out evaluation. Rollback selects a prior immutable manifest and its compatible corpus/index artifacts; it does not mutate old chunks or mix new dense vectors with an old token policy.
 
 ## 7. Compare sparse, dense, and hybrid on the same frozen evidence
 
-### Orienting question: what is a fair comparison?
+### What is a fair comparison?
 
 Hold source chunks, document versions, authorization filter, metadata predicate, query split, labels, token/BM25 configuration, dense adapter, candidate depth, and final `top_k` fixed. Vary only the retrieval/fusion path. Split near-duplicate catalogues, amendments, and repeated boilerplate by source family or time between development and held-out sets to avoid leakage.
 
@@ -761,7 +978,7 @@ Evaluate more than one attractive query:
 | Latency, cost, memory | local adapter/index practicality at the measurement boundary |
 | Category failures | codes, abbreviations, suppliers, commercial terms, paraphrases, OCR, versions, tenants |
 
-No metric proves factual correctness. The P-106 price still needs source/version review. No average should hide a catastrophic code or tenant-isolation failure. Record parser/chunk manifest, model artifact/runtime, hardware, local measurement boundary, and label version with every result. Do not claim a benchmark score or winner until the governed experiment runs.
+No metric proves factual correctness. The P-107 price still needs source/version review. No average should hide a catastrophic code or tenant-isolation failure. Record parser/chunk manifest, model artifact/runtime, hardware, local measurement boundary, and label version with every result. Do not claim a benchmark score or winner until the governed experiment runs.
 
 ```python
 @dataclass(frozen=True)
@@ -779,10 +996,12 @@ def recall_at_k(returned_ids: Sequence[str], relevant_ids: frozenset[str]) -> fl
     return len(set(returned_ids) & relevant_ids) / len(relevant_ids)
 
 
-def precision_at_k(returned_ids: Sequence[str], relevant_ids: frozenset[str]) -> float:
-    if not returned_ids:
-        return 0.0
-    return len(set(returned_ids) & relevant_ids) / len(returned_ids)
+def precision_at_k(
+    returned_ids: Sequence[str], relevant_ids: frozenset[str], *, k: int
+) -> float:
+    if type(k) is not int or k < 1 or len(set(returned_ids)) != len(returned_ids):
+        raise ValueError("positive k and unique ranking IDs are required")
+    return len(set(returned_ids[:k]) & relevant_ids) / k
 
 
 def reciprocal_rank(returned_ids: Sequence[str], relevant_ids: frozenset[str]) -> float:
@@ -797,11 +1016,11 @@ def support_complete(chunks: Sequence[SourceChunk], atoms: frozenset[str]) -> bo
     return all(atom.lower() in source_text for atom in atoms)
 ```
 
-`nDCG` is appropriate when a written rubric assigns graded relevance; do not invent grades merely to produce the metric. Support completeness is stricter than relevance: for the P-105 question, it may require the table row, `Net 30 after inspection approval`, and the cross-reference to Schedule A. It evaluates reviewable evidence, not generated prose.
+`nDCG` supports binary or graded relevance. The lab uses a written direct-support rule and binary nDCG; a graded experiment needs a separately defined scale. Precision in the runnable lab divides by **requested k**, including short or empty lists. Recall, reciprocal rank, and nDCG are null when a query has no labelled relevant chunks. The three compact recall/rank helpers above assume an already selected top-k list; the lab reuses Week 5's validated metric implementation for all reported results. Support completeness is stricter than relevance: for the P-105 question, it may require the table row, `Net 30 after inspection approval`, and the cross-reference to Schedule A. It evaluates reviewable evidence, not generated prose.
 
 ### Read evaluation metrics as a decision record, not a leaderboard
 
-Define a query and relevance guide before tuning token aliases, `k1`, `b`, dense adapters, candidate depth, or fusion weights. A useful corpus has direct positives, lexical distractors, paraphrases, product-code variants, supplier-name collisions, numbers/units, negation, expired amendments, OCR-like character errors, and tenant-denied records. Preserve label provenance and adjudication notes: a disagreement about whether P-101 or P-106 is relevant to a catalogue query may reflect an unresolved business meaning, not a model failure.
+Define a query and relevance guide before tuning token aliases, `k1`, `b`, dense adapters, candidate depth, or fusion weights. A useful corpus has direct positives, lexical distractors, paraphrases, product-code variants, supplier-name collisions, numbers/units, negation, expired amendments, OCR-like character errors, and tenant-denied records. Preserve label provenance and adjudication notes: a disagreement about whether P-101 or P-107 is relevant to a catalogue query may reflect an unresolved business meaning, not a model failure.
 
 Split documents by family or time where possible. A version-2 amendment that repeats version-1 wording should not sit in held-out evaluation if the model, alias rules, or chunk policy was tuned on version 1. The same applies to duplicate overlapping chunks: if a labelled phrase appears in many chunks, aggregate or group evaluation carefully so repeated copies do not manufacture apparent recall. Freeze the source/chunk manifest and access partition for all paths in a comparison. Sparse, dense, and hybrid cannot be compared fairly if one sees a different corpus.
 
@@ -813,9 +1032,9 @@ Finally, define the empty/weak-result policy before evaluation. An empty authori
 
 ## 8. Cumulative fixtures and contract tests
 
-### Orienting question: what can a deterministic reference prove?
+### What can a deterministic reference prove?
 
-The fixture below freezes P-101 through P-106, adds an unauthorized exact-code match, and tests the important boundary behavior. It does not claim that the teaching dense adapter represents a real embedding model or that any strategy wins.
+The shortened fixture passages below form a self-contained teaching snapshot for these four contract tests. They include the code and supplier text directly so each test is easy to inspect. Keep this illustrative snapshot separate from Week 6's immutable records; do not overwrite a source version with the shortened text. The runnable comparison in Section 13 instead imports Week 6's actual parsed sources and chunk IDs, with new code notes as P-107/P-108. The tests below also add an unauthorized exact-code match and check the boundary behavior. It does not claim that the teaching dense adapter represents a real embedding model or that any strategy wins.
 
 ```python
 def chunk(
@@ -846,7 +1065,7 @@ FROZEN_CHUNKS = (
     chunk("P-104:1:0", "P-104", "Cedar Fasteners. Payment is due after the receiving team signs off on delivered bolts.", supplier="Cedar Fasteners", document_type="payment_note"),
     chunk("P-105:1:row-1", "P-105", "Schedule A row 1: product copper wire; quantity 1,000 kg; unit price USD 12.00.", document_type="framework_agreement"),
     chunk("P-105:1:section-3", "P-105", "Section 3 Invoicing: Invoice terms are Net 30 after inspection approval. This condition controls Schedule A.", document_type="framework_agreement"),
-    chunk("P-106:1:0", "P-106", "Atlas Metals catalogue note. Product code CW-1000. Commercial name Copper wire, 1,000 kg coil. Quoted unit price USD 12.00.", document_type="catalogue"),
+    chunk("P-107:1:0", "P-107", "Atlas Metals catalogue note. Product code CW-1000. Commercial name Copper wire, 1,000 kg coil. Quoted unit price USD 12.00.", document_type="catalogue"),
 )
 UNAUTHORIZED_CODE_MATCH = chunk(
     "P-secret:1:0", "P-secret", "Secret tenant product code CW-1000 with unrelated quote.", tenant="other-tenant",
@@ -903,7 +1122,7 @@ def test_invalid_bm25_and_authorization_isolation() -> None:
 def test_metadata_filter_manifest_and_candidate_depth() -> None:
     request = RetrievalRequest("analyst", "CW-1000", top_k=1, filters=(MetadataFilter("document_type", "catalogue"),))
     corpus = corpus_for(request)
-    assert [item.document_id for item in corpus.chunks] == ["P-106"]
+    assert [item.document_id for item in corpus.chunks] == ["P-107"]
     expect_raises(ConfigurationError, lambda: AuthorizedCorpus.build(RetrievalRequest("analyst", "CW-1000", 1, (MetadataFilter("tenant_id", "other-tenant"),)), FROZEN_CHUNKS, ACCESS))
     expect_raises(
         ConfigurationError,
@@ -959,10 +1178,10 @@ def test_rrf_contributors_ties_and_same_corpus_evaluation() -> None:
         top_k=2,
     )
     assert [candidate.chunk.chunk_id for candidate in tied] == ["P-101:1:0", "P-102:1:0"]
-    cases = (EvaluationCase("code", RetrievalRequest("analyst", "CW-1000", 3), frozenset({"P-106:1:0"}), frozenset({"cw-1000"}), "identifier"),)
+    cases = (EvaluationCase("code", RetrievalRequest("analyst", "CW-1000", 3), frozenset({"P-107:1:0"}), frozenset({"cw-1000"}), "identifier"),)
     returned = [candidate.chunk.chunk_id for candidate in sparse_candidates(cases[0].request, corpus_for(cases[0].request), corpus_for(cases[0].request).bm25(DEFAULT_TOKEN_CONTRACT, BM25))]
     assert 0.0 <= recall_at_k(returned, cases[0].relevant_chunk_ids) <= 1.0
-    assert 0.0 <= precision_at_k(returned, cases[0].relevant_chunk_ids) <= 1.0
+    assert 0.0 <= precision_at_k(returned, cases[0].relevant_chunk_ids, k=cases[0].request.top_k) <= 1.0
     assert 0.0 <= reciprocal_rank(returned, cases[0].relevant_chunk_ids) <= 1.0
 
 
@@ -980,7 +1199,7 @@ The test suite shows that adding an unauthorized exact `CW-1000` chunk leaves th
 
 ## 9. Empty/weak outcomes, observability, and operational change
 
-An authorized request can have an empty corpus after filters, no lexical matches, weak dense scores, or only obsolete evidence. Return an explicit empty or weak-result status with safe manifest/source provenance. Do not broaden permissions, silently alter the query, look in another tenant, or generate an answer to conceal the absence.
+An authorized request can have an empty corpus after filters, no lexical matches, weak dense scores, or only obsolete evidence. The local API returns an empty tuple when no candidate exceeds its score floor; it does not implement a calibrated weak-result classifier or automatic source-currentness rule. Return an explicit empty or weak-result status with safe manifest/source provenance. Do not broaden permissions, silently alter the query, look in another tenant, or generate an answer to conceal the absence.
 
 Observability should record aggregate counts and safe identifiers: access-denied/empty outcomes, filter fields (not sensitive values where prohibited), corpus/manifest fingerprint, retriever/fusion configuration ID, candidate depth, top-k, latency at a documented boundary, memory/index size, duplicate rate, and category-level evaluation regressions. Avoid raw source text, query text, unrestricted document IDs, vectors, aliases, credentials, and parser payloads in general logs.
 
@@ -1007,6 +1226,8 @@ RRF rewards rank agreement. Two retrievers can agree on generic invoice boilerpl
 ### “A local dense model handles product codes.”
 
 Which held-out identifier/abbreviation/OCR cases show that? Dense representations commonly need sparse lexical support for arbitrary identifiers.
+
+The authorization answers below refer to the lab's partition-local statistics and trusted-principal contract. The deterministic tests prove invariance of its eligible records, scores, and fusion output when a denied distractor is added; they do not prove constant-time execution or production side-channel resistance.
 
 ## 11. Interview defense and active recall
 
@@ -1052,8 +1273,82 @@ Ranks avoid pretending BM25 and dense scores share a unit. RRF is simple and rep
 4. Specify a governed non-default RRF-weight experiment: development/held-out split, candidate depth, metric suite, category failures, promotion threshold, and rollback manifest.
 5. Implement an actual approved local dense adapter behind `DenseAdapter`; pin artifact/runtime/preprocessing/metric and compare it with the teaching fake without changing the sparse corpus.
 
+## 13. Run the sparse, dense, and hybrid comparison
+
+Open the [Week 7 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_07). From the repository root in its Python environment:
+
+```shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_07.compare --summary
+python -m labs.week_07.compare
+python -m pytest tests/test_week07_hybrid.py -q
+```
+
+The default run makes no network/model call and needs no credential or GPU. It reuses the exact accepted P-101–P-105 source text, versions, structure-chunk IDs, and locations from Week 6. It adds the P-107 catalogue note for `CW-1000` and a separate P-108 Beacon note for `PP-20`. P-106 remains the OCR-review fixture. The result is seven accepted documents and eleven searchable chunks. Supplier/document-type labels are explicit curated synthetic metadata, recorded under `curated-synthetic-fixture-labels/1.0.0`; they are not a claim of automatic entity extraction.
+
+The fourteen queries are visible `practice` data. Ten have direct evidence labels, and four cover an unmapped alias, an OCR-like code variant, an undefined abbreviation, and an identifier found only in a denied tenant. Those four queries have no labelled support. They do not simulate every negative or authorization failure, and they are not held-out evidence for choosing parameters.
+
+### Keep the comparison controlled
+
+For each query, all three modes see the same authorized and metadata-filtered corpus. Exact supplier and document-type filters narrow it before BM25 statistics and dense scoring. The source/query fingerprints, token contract, BM25 algorithm/parameters, dense configuration, metadata policy, fusion configuration, top-k, and candidate depth appear in the report. The unfiltered corpus fingerprint stays fixed; per-query fingerprints change when the declared predicates change.
+
+Sparse and dense baselines return at most three accepted candidates. Hybrid takes at most five accepted candidates from each path and fuses down to three, using equal weights and rank constant 60. That larger union is part of the hybrid configuration and extra work, not a free quality gain; the standalone lists are the first three of the same scoring rules. Ties use chunk ID. Both paths drop nonpositive teaching scores rather than padding lists, and raw contributor scores/ranks remain available in the full output.
+
+The dense path is the identifier-dropping feature/Jaccard scorer shown earlier. It deliberately has no feature for `CW-1000` or `PP-20`. A zero recall on those queries demonstrates the fake's construction, not a measured failure rate of embedding models. Real encoders can behave differently in both directions.
+
+### Executed teaching results
+
+The [sample summary](https://github.com/kogantisasank831-ux/Prep/blob/main/labs/week_07/sample-comparison.json) contains these default results, rounded here:
+
+| Retrieval mode | Macro P@3 | Macro R@3 | MRR@3 | Binary nDCG@3 | Complete-support fraction | Empty queries |
+| --- | --- | --- | --- | --- | --- | --- |
+| sparse | 0.400 | 0.967 | 0.883 | 0.890 | 0.900 | 4 / 14 |
+| dense | 0.233 | 0.467 | 0.333 | 0.372 | 0.400 | 9 / 14 |
+| hybrid | 0.400 | 0.967 | 0.900 | 0.916 | 0.900 | 4 / 14 |
+
+The quality means use the ten labelled queries. P@3 keeps denominator 3 even when an exact-code lookup has only one accepted hit, so that lookup has precision `1/3` and recall `1`. The four no-gold cases have null recall/rank/support metrics and are excluded from quality means; all four return empty lists under the default teaching configuration. This tests a narrow no-positive-match rule, not a general abstention or uncertainty detector. Adding a semantically related distractor or a real encoder could change those outcomes.
+
+Support requires the declared substring atoms in their specifically labelled chunks and source versions. It is a deterministic evidence check, not entailment or generated-answer correctness. The `same_source_repeat_fraction` field counts multiple hits from one document/version; two hits may be complementary clauses, so this is not a semantic-duplicate or wasted-context rate.
+
+Sparse and hybrid have the same mean recall in this fixture. Their ordering differs on some queries. Avoid turning the slightly higher hybrid MRR into a production recommendation: the labels are tiny and visible, the dense representation is hand-written, and candidate depth differs from a single baseline's output budget. Latency, actual postings/vector/index memory, real-model effectiveness, and generated-answer quality were not measured.
+
+### Follow three queries all the way to the evidence
+
+1. **Q01, `CW-1000`:** inspect sparse's token match, dense's empty result, and the single sparse contributor in RRF. The default fusion does not invent a dense vote for a zero-score chunk.
+2. **Q07, the sign-off paraphrase:** inspect the payment/sign-off/receiving features and P-104's original wording. This is where a richer representation could help, but the result still depends on the declared labels.
+3. **Q09, the Schedule A condition:** use each result's `source_locations` and `returned_evidence_keys` to identify which row/clause/cross-reference is missing. In the default run, all modes retrieve only two of three labelled units at k=3. High topical relevance still leaves support incomplete.
+
+Then change just the candidate depth and inspect Q09 again:
+
+```shell
+python -m labs.week_07.compare --candidate-depth 3 --summary
+python -m labs.week_07.compare --candidate-depth 8 --summary
+```
+
+Keep top-k and all labels fixed. A larger depth cannot rescue evidence absent from both accepted lists, and an increased union may promote noise. Record the changed manifest and explain what changed in the actual contributors. Do not adjust relevance labels after seeing rankings.
+
+### Optional actual local dense adapter
+
+The lab includes `LocalCosineAdapter` as a reference for original exercise 5. It reuses the reviewed-local-model boundary from [Week 5](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_05#optional-actual-local-model-run), including role-specific query/document encoding, artifact/runtime identity, exact prefixes, local-only loading, and token preflight. Follow those optional dependency and artifact instructions before running:
+
+```shell
+python -m labs.week_07.compare --model-directory .runtime/embedding-model --model-id reviewed-local-model --summary
+```
+
+Pass the selected model's required `--query-prefix` and `--document-prefix`. `--dense-min-score` defaults to zero and is recorded in the dense configuration; it is an experimental selection floor, not a relevance probability. Negative cosine scores can be valid. This pairwise adapter intentionally recomputes encodings as a small correctness reference; it is not a vector-index or serving-latency benchmark. No actual model artifact was loaded for the checked-in sample. The new wrapper is exercised with the deterministic Week 5 encoder.
+
+## 14. Your Week 7 handoff
+
+Write a one-page decision note: corpus/query fingerprints, metadata/authorization scope, tokenizer and BM25 settings, dense identity, RRF constant/weights/depth, category metrics, and one failure with source locations. Explain why an exact code lookup needs token identity, why a paraphrase may benefit from another representation, and what evidence would justify changing the fusion policy.
+
+You are ready for the next week when you can calculate one BM25 and one RRF score, reproduce the comparison, trace a fused result to its contributors, and separate “retrieved a candidate” from “returned complete current evidence.” Reranking, broader query rewriting, duplicate control, and context construction belong to Week 8; they have not been silently added to this retrieval baseline.
+
 ## Primary documentation
 
 - [Python 3.13 `dataclasses`](https://docs.python.org/3.13/library/dataclasses.html)
 - [Python 3.13 `typing` and `Protocol`](https://docs.python.org/3.13/library/typing.html)
 - [Python 3.13 `collections.Counter`](https://docs.python.org/3.13/library/collections.html#collections.Counter)
+
+- [Stanford IR book: Okapi BM25](https://nlp.stanford.edu/IR-book/html/htmledition/okapi-bm25-a-non-binary-model-1.html)
+- [Lucene 9.12.3 BM25Similarity: positive IDF variant and parameters](https://lucene.apache.org/core/9_12_3/core/org/apache/lucene/search/similarities/BM25Similarity.html)
+- [Cormack, Clarke, and Buettcher: reciprocal rank fusion](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf)

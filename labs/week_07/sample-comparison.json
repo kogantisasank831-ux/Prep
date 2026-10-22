@@ -1,0 +1,133 @@
+{
+  "schema": "week07-practice-comparison/1.0.0",
+  "scope": "synthetic visible practice; default dense path is a teaching feature scorer",
+  "source_count": 7,
+  "chunk_count": 11,
+  "query_count": 14,
+  "top_k": 3,
+  "candidate_depth": 5,
+  "fusion": {
+    "rank_constant": 60,
+    "weights": [
+      [
+        "bm25",
+        1.0
+      ],
+      [
+        "dense",
+        1.0
+      ]
+    ]
+  },
+  "dense": {
+    "adapter_id": "demo-procurement-features",
+    "artifact_digest": "synthetic-only",
+    "runtime_id": "python-stdlib/3.12.14",
+    "preprocessing_version": "identifier-dropping-positive-candidates/v2",
+    "metric": "jaccard-features",
+    "minimum_score": 0.0,
+    "dimension": null
+  },
+  "token_contract": {
+    "name": "identifier-preserving",
+    "version": "1.0.0",
+    "pattern": "[a-z0-9]+(?:[-_/][a-z0-9]+)*"
+  },
+  "bm25": {
+    "k1": 1.2,
+    "b": 0.75,
+    "algorithm": "log1p-idf-unique-query/v1"
+  },
+  "full_corpus_fingerprint": "dd41837b685588fab8bc07387d3a97affa3a2b7040446bb2d19a7a7b4c3a29b6",
+  "metadata_policy": "curated-synthetic-fixture-labels/1.0.0",
+  "candidate_policy": "strictly above zero for sparse; dense floor in its config",
+  "query_fixture_digest": "b9f66537a615140deb31f1a93c94340704284bd4212eb6ae9d033ebdc8549630",
+  "quarantined": {
+    "document_id": "P-106",
+    "version": "1",
+    "status": "needs_review",
+    "reasons": [
+      "table row requires labelled numeric review"
+    ]
+  },
+  "unmeasured": [
+    "real-model quality",
+    "latency",
+    "actual sparse/dense index memory",
+    "generated-answer quality"
+  ],
+  "results": [
+    {
+      "mode": "sparse",
+      "labelled_query_count": 10,
+      "no_gold_query_count": 4,
+      "macro_precision_at_k": 0.39999999999999997,
+      "macro_recall_at_k": 0.9666666666666667,
+      "mrr_at_k": 0.8833333333333333,
+      "mean_binary_ndcg_at_k": 0.8896290390560079,
+      "support_complete_fraction": 0.9,
+      "empty_result_count": 4,
+      "no_gold_queries_with_candidates": 0,
+      "category_recall": {
+        "abbreviation": null,
+        "commercial": 1.0,
+        "cross_reference": 0.6666666666666666,
+        "denied_identifier": null,
+        "filtered": 1.0,
+        "identifier": 1.0,
+        "ocr_variant": null,
+        "semantic": 1.0,
+        "supplier": 1.0,
+        "unmapped_alias": null
+      }
+    },
+    {
+      "mode": "dense",
+      "labelled_query_count": 10,
+      "no_gold_query_count": 4,
+      "macro_precision_at_k": 0.2333333333333333,
+      "macro_recall_at_k": 0.4666666666666667,
+      "mrr_at_k": 0.3333333333333333,
+      "mean_binary_ndcg_at_k": 0.3724147677594514,
+      "support_complete_fraction": 0.4,
+      "empty_result_count": 9,
+      "no_gold_queries_with_candidates": 0,
+      "category_recall": {
+        "abbreviation": null,
+        "commercial": 0.5,
+        "cross_reference": 0.6666666666666666,
+        "denied_identifier": null,
+        "filtered": 0.0,
+        "identifier": 0.0,
+        "ocr_variant": null,
+        "semantic": 1.0,
+        "supplier": 0.5,
+        "unmapped_alias": null
+      }
+    },
+    {
+      "mode": "hybrid",
+      "labelled_query_count": 10,
+      "no_gold_query_count": 4,
+      "macro_precision_at_k": 0.39999999999999997,
+      "macro_recall_at_k": 0.9666666666666667,
+      "mrr_at_k": 0.9,
+      "mean_binary_ndcg_at_k": 0.9161651027548701,
+      "support_complete_fraction": 0.9,
+      "empty_result_count": 4,
+      "no_gold_queries_with_candidates": 0,
+      "category_recall": {
+        "abbreviation": null,
+        "commercial": 1.0,
+        "cross_reference": 0.6666666666666666,
+        "denied_identifier": null,
+        "filtered": 1.0,
+        "identifier": 1.0,
+        "ocr_variant": null,
+        "semantic": 1.0,
+        "supplier": 1.0,
+        "unmapped_alias": null
+      }
+    }
+  ]
+}

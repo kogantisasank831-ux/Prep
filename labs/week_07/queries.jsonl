@@ -1,0 +1,14 @@
+{"query_id":"Q01","split":"practice","category":"identifier","query":"CW-1000","filters":{},"support":{"P-107/1/1":["CW-1000"]}}
+{"query_id":"Q02","split":"practice","category":"identifier","query":"PP-20","filters":{},"support":{"P-108/1/1":["PP-20"]}}
+{"query_id":"Q03","split":"practice","category":"supplier","query":"Atlas Metals copper wire quote","filters":{},"support":{"P-107/1/1":["Atlas Metals","Quoted unit price USD 12.00"]}}
+{"query_id":"Q04","split":"practice","category":"supplier","query":"Beacon Plastics product code","filters":{},"support":{"P-108/1/1":["Beacon Plastics","PP-20"]}}
+{"query_id":"Q05","split":"practice","category":"commercial","query":"Net 30 after inspection approval","filters":{},"support":{"P-101/1/1":["Net 30 after inspection approval"],"P-105/1/8":["Net 30 after inspection approval"]}}
+{"query_id":"Q06","split":"practice","category":"commercial","query":"Net 15 from receipt","filters":{},"support":{"P-102/1/1":["Net 15 from receipt"]}}
+{"query_id":"Q07","split":"practice","category":"semantic","query":"receiving-team sign-off before payment","filters":{},"support":{"P-104/1/1":["receiving team signs off"]}}
+{"query_id":"Q08","split":"practice","category":"semantic","query":"Why is the copper-wire shipment delayed while quality checks finish?","filters":{},"support":{"P-103/1/1":["delayed by two days","quality checks finish"]}}
+{"query_id":"Q09","split":"practice","category":"cross_reference","query":"What payment condition controls Schedule A for the 1,000 kg copper-wire line?","filters":{"document_type":"framework_agreement"},"support":{"P-105/1/6":["quantity=1,000 kg"],"P-105/1/8":["Net 30 after inspection approval"],"P-105/1/9":["controls Schedule A"]}}
+{"query_id":"Q10","split":"practice","category":"filtered","query":"CW-1000","filters":{"document_type":"catalogue","supplier":"Atlas Metals"},"support":{"P-107/1/1":["CW-1000"]}}
+{"query_id":"Q11","split":"practice","category":"unmapped_alias","query":"CW1000","filters":{},"support":{}}
+{"query_id":"Q12","split":"practice","category":"ocr_variant","query":"CW-100O","filters":{},"support":{}}
+{"query_id":"Q13","split":"practice","category":"abbreviation","query":"AM","filters":{},"support":{}}
+{"query_id":"Q14","split":"practice","category":"denied_identifier","query":"SECRET-900","filters":{},"support":{}}

@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 7
+phase: 2
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-07/beginner/
 title: "Sparse and hybrid retrieval: a beginner's introduction"
 description: Learn why exact procurement identifiers need keyword search and how sparse, dense, and rank-fused retrieval complement one another.
@@ -11,12 +17,20 @@ alternate_label: Production version
 alternate_url: /weeks/week-07/
 ---
 
+## Start here
+
+Week 6 taught you to choose the pieces of text a search system can return. This week asks how to find those pieces when the query might be an exact product code or a sentence with different wording. Picture two colleagues: one checks the words and identifiers, while the other looks for related meaning. Hybrid retrieval gives both lists a chance to contribute.
+
+You will learn to explain BM25, calculate a simple RRF score, apply metadata filters without granting access, and run a three-way comparison. Bring basic Python functions, dataclasses, dictionaries, and the Week 5/6 ideas of a vector search and traceable chunks. Allow eight hours: one for the story, two for tokenization/BM25, one for filtering, one for fusion, two for the lab, and one for your exercises and explanation.
+
+As you read, keep two queries side by side: `CW-1000` and “receiving-team sign-off before payment.” The best clue for one can be weak for the other.
+
 ## One query exposes a dense-retrieval blind spot
 
-Week 6 turned P-101 through P-105 into bounded, traceable chunks. Now add one short, synthetic product-code record:
+Week 6 turned P-101 through P-105 into bounded, traceable chunks. Keep P-106, the uncertain OCR fixture, under review. Add a separate synthetic P-107 product-code record:
 
 ```text
-P-106 | Atlas Metals catalogue note
+P-107 | Atlas Metals catalogue note
 Tenant: northwind-procurement
 Product code: CW-1000
 Commercial name: Copper wire, 1,000 kg coil
@@ -51,7 +65,7 @@ traceable candidate chunks for source review
 
 Retrieval still ranks candidates. It does not prove that a price is current, that a code belongs to an active catalogue, or that a payment condition applies to a particular order. Documents, chunks, query text, vectors, and scores remain sensitive and untrusted data. Authorization and metadata constraints must reduce the candidate set before either retriever scores it.
 
-**Checkpoint.** If a sparse search returns P-106 for `CW-1000`, has it proved that the quote is valid today? No. It has found a chunk containing the exact token. A reviewer must check source version, scope, effective date, and the relevant commercial process.
+**Checkpoint.** If a sparse search returns P-107 for `CW-1000`, has it proved that the quote is valid today? No. It has found a chunk containing the exact token. A reviewer must check source version, scope, effective date, and the relevant commercial process.
 
 ## Keyword retrieval starts with a token contract
 
@@ -80,7 +94,7 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
-from math import log
+from math import isfinite, log
 import re
 from typing import Protocol
 
@@ -169,7 +183,7 @@ class BM25Index:
     def build(cls, chunks: Sequence[Chunk], *, k1: float = 1.2, b: float = 0.75) -> BM25Index:
         if not chunks:
             raise ValueError("BM25 needs at least one chunk")
-        if k1 <= 0 or not 0.0 <= b <= 1.0:
+        if type(k1) not in (int,float) or type(b) not in (int,float) or not isfinite(k1) or not isfinite(b) or k1 <= 0 or not 0.0 <= b <= 1.0:
             raise ValueError("require k1 > 0 and b in [0, 1]")
         frequencies: dict[str, Counter[str]] = {}
         document_frequency: Counter[str] = Counter()
@@ -194,7 +208,7 @@ class BM25Index:
         )
 
     def score(self, query_text: str, chunk: Chunk) -> float:
-        query_terms = tokenize(query_text)
+        query_terms = tuple(dict.fromkeys(tokenize(query_text)))
         frequencies = self.term_frequencies[chunk.chunk_id]
         length = self.document_lengths[chunk.chunk_id]
         total = 0.0
@@ -266,7 +280,7 @@ The teaching scorer deliberately ignores `CW-1000`. That exposes the desired lim
 
 ## Filter first, then score both retrievers
 
-Metadata filtering is useful when a caller is already limited to a supplier, document type, date range, or tenant. It is also a security boundary when authorization determines which objects the caller may inspect. Filtering after ranking is too late: score, timing, result count, cache, or existence information can leak an unauthorised chunk.
+Metadata filtering narrows a caller’s already permitted records, for example to a supplier or document type. It cannot grant access to another tenant. A trusted principal and object-grant policy decide visibility first; the runnable lab only accepts explicit allowlisted equality filters. Filtering after ranking is too late: score, timing, result count, cache, or existence information can leak an unauthorised chunk.
 
 ```python
 class AccessPolicy(Protocol):
@@ -294,6 +308,11 @@ def eligible_chunks(
 ) -> tuple[Chunk, ...]:
     if not query.principal_id.strip() or not query.text.strip():
         raise ValueError("principal and query text must be non-empty")
+    if type(query.top_k) is not int or query.top_k < 1:
+        raise ValueError("top_k must be a positive integer")
+    if (any(key not in {"supplier","document_type"} or not value for key,value in query.metadata_filters)
+            or len({key for key,_ in query.metadata_filters}) != len(query.metadata_filters)):
+        raise ValueError("filters require unique allowlisted equality predicates")
     def matches_metadata(chunk: Chunk) -> bool:
         values = metadata_dict(chunk)
         return all(values.get(key) == value for key, value in query.metadata_filters)
@@ -304,19 +323,17 @@ def eligible_chunks(
     )
 
 
-def rank_scores(
-    scores: Iterable[tuple[Chunk, float]],
-    *,
-    top_k: int,
-    retriever: str,
-) -> tuple[SearchResult, ...]:
-    if top_k <= 0:
-        raise ValueError("top_k must be positive")
-    ordered = sorted(scores, key=lambda item: (-item[1], item[0].chunk_id))[:top_k]
-    return tuple(
-        SearchResult(chunk=chunk, score=score, rank=rank, retriever=retriever)
-        for rank, (chunk, score) in enumerate(ordered, start=1)
-    )
+def rank_scores(scores: Iterable[tuple[Chunk, float]], *, top_k: int, retriever: str) -> tuple[SearchResult, ...]:
+    if type(top_k) is not int or top_k <= 0:
+        raise ValueError("top_k must be a positive integer")
+    items = tuple(scores)
+    if any(type(score) not in (int, float) or not isfinite(score) for _,score in items):
+        raise ValueError("scores must be finite numbers")
+    if len({chunk.chunk_id for chunk,_ in items}) != len(items):
+        raise ValueError("candidate IDs must be unique")
+    ordered = sorted((item for item in items if item[1] > 0), key=lambda item:(-item[1],item[0].chunk_id))[:top_k]
+    return tuple(SearchResult(chunk,score,rank,retriever) for rank,(chunk,score) in enumerate(ordered,1))
+
 
 
 def sparse_search(query: RetrievalQuery, index: BM25Index, access_policy: AccessPolicy) -> tuple[SearchResult, ...]:
@@ -345,7 +362,7 @@ def dense_search(
     )
 ```
 
-The sparse and dense functions receive the same `eligible_chunks` result. The teaching sparse path rebuilds BM25 statistics over that eligible set so an unauthorised document cannot influence IDF or average length even when its text is never returned. Rebuilding at query time is intentionally simple, not operationally efficient; a production design can use pre-partitioned authorised indexes or another access-aware statistics policy. The simple ranking function has deterministic tie-breaking by `chunk_id`; a zero score remains a candidate only because this illustrative baseline returns top-k from the eligible corpus. A real product may define an explicit empty or low-quality-result policy, but it should not invent an answer when all scores are weak.
+The sparse and dense functions receive the same `eligible_chunks` result. The teaching sparse path rebuilds BM25 statistics over that eligible set so an unauthorised document cannot influence IDF or average length even when its text is never returned. Rebuilding at query time is intentionally simple, not operationally efficient; a production design can use pre-partitioned authorised indexes or another access-aware statistics policy. The simple ranking function has deterministic tie-breaking by `chunk_id`; zero-score candidates are omitted so an absent lexical/feature match cannot acquire a vote in fusion. A real product may define an explicit empty or low-quality-result policy, but it should not invent an answer when all scores are weak.
 
 ## Hybrid retrieval combines evidence, not raw scales
 
@@ -363,11 +380,21 @@ This produces values between zero and one within one candidate set. It is not a 
 def min_max_normalize(scores: Mapping[str, float]) -> dict[str, float]:
     if not scores:
         return {}
-    minimum = min(scores.values())
-    maximum = max(scores.values())
-    if minimum == maximum:
+    if any(
+        type(value) not in (int, float) or not isfinite(value)
+        for value in scores.values()
+    ):
+        raise ValueError("normalization requires finite numeric scores")
+    lower, upper = min(scores.values()), max(scores.values())
+    if lower == upper:
         return {key: 0.0 for key in scores}
-    return {key: (value - minimum) / (maximum - minimum) for key, value in scores.items()}
+    # Scale first if subtracting extreme signed values would overflow.
+    span = upper - lower
+    if isfinite(span):
+        return {key: (value - lower) / span for key, value in scores.items()}
+    scale = max(abs(lower), abs(upper))
+    lo, hi = lower / scale, upper / scale
+    return {key: (value / scale - lo) / (hi - lo) for key, value in scores.items()}
 ```
 
 Other choices include z-score normalization, rank normalization, calibration on held-out data, or a learned combiner. Each makes assumptions and needs its own evaluation. For this beginner hybrid baseline, use **reciprocal rank fusion (RRF)** because it combines ranks, not incomparable raw scores:
@@ -385,12 +412,19 @@ def reciprocal_rank_fusion(
     rank_constant: int = 60,
     top_k: int,
 ) -> tuple[SearchResult, ...]:
-    if rank_constant <= 0 or top_k <= 0:
+    if type(rank_constant) is not int or type(top_k) is not int or rank_constant <= 0 or top_k <= 0:
         raise ValueError("rank constant and top_k must be positive")
     scores: defaultdict[str, float] = defaultdict(float)
     chunks: dict[str, Chunk] = {}
+    seen: set[tuple[str,str]] = set()
     for ranked_list in ranked_lists:
         for result in ranked_list:
+            key = (result.retriever,result.chunk.chunk_id)
+            if key in seen or type(result.rank) is not int or result.rank < 1 or not isfinite(result.score):
+                raise ValueError("duplicate or invalid fusion contribution")
+            seen.add(key)
+            if result.chunk.chunk_id in chunks and chunks[result.chunk.chunk_id] != result.chunk:
+                raise ValueError("conflicting source identity")
             scores[result.chunk.chunk_id] += 1.0 / (rank_constant + result.rank)
             chunks[result.chunk.chunk_id] = result.chunk
     return rank_scores(
@@ -408,7 +442,7 @@ def hybrid_search(
     *,
     candidate_depth: int,
 ) -> tuple[SearchResult, ...]:
-    if candidate_depth < query.top_k:
+    if type(candidate_depth) is not int or candidate_depth < query.top_k:
         raise ValueError("candidate depth must be at least top_k")
     expanded_query = RetrievalQuery(
         principal_id=query.principal_id,
@@ -439,7 +473,9 @@ This keeps the system honest about uncertainty while preserving a useful audit t
 
 ## Compare the same chunks, not three different experiments
 
-The frozen fixture below keeps P-101 through P-106 stable. Each chunk has the same tenant, source version, metadata, and text for BM25, dense-demo, and RRF. The exact product code, supplier name, commercial term, and semantic question are all represented as queries; the code provides comparison scaffolding, not benchmark results.
+The short passages below are an independent teaching snapshot for the small functions, rather than replacements for Week 6's stored source versions. The runnable lab later reuses the actual Week 6 text, chunk IDs, and locations, then adds separately identified code notes.
+
+The frozen fixture below keeps P-101 through P-107 stable. Each chunk has the same tenant, source version, metadata, and text for BM25, dense-demo, and RRF. The exact product code, supplier name, commercial term, and semantic question are all represented as queries; the code provides comparison scaffolding, not benchmark results.
 
 ```python
 CHUNKS = (
@@ -449,7 +485,7 @@ CHUNKS = (
     Chunk("P-104:1:0", "northwind-procurement", "P-104", "1", "Cedar Fasteners. Payment is due after the receiving team signs off on delivered bolts.", (("supplier", "Cedar Fasteners"), ("document_type", "payment_note"))),
     Chunk("P-105:1:row-1", "northwind-procurement", "P-105", "1", "Schedule A row 1: product copper wire; quantity 1,000 kg; unit price USD 12.00.", (("supplier", "Atlas Metals"), ("document_type", "framework_agreement"))),
     Chunk("P-105:1:section-3", "northwind-procurement", "P-105", "1", "Section 3 Invoicing: Invoice terms are Net 30 after inspection approval. This condition controls Schedule A.", (("supplier", "Atlas Metals"), ("document_type", "framework_agreement"))),
-    Chunk("P-106:1:0", "northwind-procurement", "P-106", "1", "Atlas Metals catalogue note. Product code CW-1000. Commercial name Copper wire, 1,000 kg coil. Quoted unit price USD 12.00.", (("supplier", "Atlas Metals"), ("document_type", "catalogue"))),
+    Chunk("P-107:1:0", "northwind-procurement", "P-107", "1", "Atlas Metals catalogue note. Product code CW-1000. Commercial name Copper wire, 1,000 kg coil. Quoted unit price USD 12.00.", (("supplier", "Atlas Metals"), ("document_type", "catalogue"))),
 )
 
 INDEX = BM25Index.build(CHUNKS)
@@ -484,8 +520,8 @@ def run_same_corpus_comparison(cases: Sequence[ComparisonCase]) -> dict[str, tup
 
 
 COMPARISON_CASES = (
-    ComparisonCase(EVALUATION_QUERIES[0], frozenset({"P-106:1:0"})),
-    ComparisonCase(EVALUATION_QUERIES[1], frozenset({"P-106:1:0"})),
+    ComparisonCase(EVALUATION_QUERIES[0], frozenset({"P-107:1:0"})),
+    ComparisonCase(EVALUATION_QUERIES[1], frozenset({"P-107:1:0"})),
     ComparisonCase(EVALUATION_QUERIES[2], frozenset({"P-101:1:0", "P-105:1:section-3"})),
     ComparisonCase(EVALUATION_QUERIES[3], frozenset({"P-104:1:0"})),
 )
@@ -494,10 +530,11 @@ COMPARISON_CASES = (
 assert tokenize("CW-1000 / PO_2026/18") == ("cw-1000", "po_2026/18")
 COMPARISON_COUNTS = run_same_corpus_comparison(COMPARISON_CASES)
 assert set(COMPARISON_COUNTS) == {case.query.text for case in COMPARISON_CASES}
-assert all(counts == (3, 3, 3) for counts in COMPARISON_COUNTS.values())
+assert all(all(0 <= count <= 3 for count in counts) for counts in COMPARISON_COUNTS.values())
+assert COMPARISON_COUNTS["CW-1000"] == (1, 0, 1)
 
 exact_results = sparse_search(EVALUATION_QUERIES[0], INDEX, ACCESS)
-assert exact_results[0].chunk.chunk_id == "P-106:1:0"
+assert exact_results[0].chunk.chunk_id == "P-107:1:0"
 semantic_results = dense_search(EVALUATION_QUERIES[3], CHUNKS, ACCESS, DEMO_DENSE)
 assert semantic_results[0].chunk.chunk_id == "P-104:1:0"
 
@@ -508,7 +545,7 @@ catalogue_query = RetrievalQuery(
     metadata_filters=(("document_type", "catalogue"),),
 )
 assert [result.chunk.chunk_id for result in sparse_search(catalogue_query, INDEX, ACCESS)] == [
-    "P-106:1:0"
+    "P-107:1:0"
 ]
 
 unauthorised = Chunk(
@@ -523,11 +560,11 @@ expanded_index = BM25Index.build((*CHUNKS, unauthorised))
 assert sparse_search(EVALUATION_QUERIES[0], expanded_index, ACCESS) == exact_results
 ```
 
-The assertions prove that each deterministic retriever receives the same frozen corpus and returns the requested count for every fixture query. They do not measure which list is better. `relevant_chunk_ids` represents judged evidence, not facts generated by a retriever; keep those labels held out from retrieval-policy tuning.
+The assertions check the shared corpus and upper result-count limit. The exact-code fixture returns one sparse hit, no teaching dense hit, and one fused hit; padding every list to three would hide that difference. They do not measure which list is better. `relevant_chunk_ids` represents declared practice evidence, not facts generated by a retriever. Use a separate held-out set when tuning a policy.
 
 ## Evaluate retrieval and support, not an attractive result list
 
-For each held-out query, label which chunks are directly relevant and what evidence a reviewer needs. In this fixture, the product-code query labels P-106 because it is the only source that defines `CW-1000`. A broader query about the related copper-wire agreement could require P-101 or P-105 as additional evidence. Define that intent before examining rankings rather than changing relevance labels to fit the returned order.
+For each held-out query, label which chunks are directly relevant and what evidence a reviewer needs. In this fixture, the product-code query labels P-107 because it is the only source that defines `CW-1000`. A broader query about the related copper-wire agreement could require P-101 or P-105 as additional evidence. Define that intent before examining rankings rather than changing relevance labels to fit the returned order.
 
 Record:
 
@@ -543,7 +580,43 @@ Record:
 
 Use one frozen source/chunk manifest, access policy, local dense configuration, tokenizer/BM25 configuration, top-k, candidate depth, and label version across sparse, dense, and hybrid comparisons. Split duplicate documents, amendments, and near-identical catalogue entries by source family or time between development and held-out evaluation. Report failure groups: exact codes, supplier names, abbreviations, commercial terms, semantic paraphrases, OCR-like errors, tenant boundaries, and version conflicts.
 
-This is an evaluation procedure, not a benchmark result. It contains no measured scores or winner. A hybrid system that improves average Recall@10 but returns duplicate clauses, increases sensitive-text exposure, or fails code queries is not automatically the right choice.
+This is the evaluation procedure you would need for a policy decision. The guided run below adds measured practice results, with their limited scope shown explicitly. A hybrid system that improves average Recall@10 but returns duplicate clauses, increases sensitive-text exposure, or fails code queries is not automatically the right choice.
+
+## Run the lab and read one result carefully
+
+From the repository root in the project's Python environment:
+
+```shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_07.compare --summary
+python -m labs.week_07.compare
+python -m pytest tests/test_week07_hybrid.py -q
+```
+
+The [Week 7 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_07) runs all three modes on seven accepted synthetic documents and eleven chunks. P-101–P-105 retain their Week 6 text, versions, and locations. P-107 adds `CW-1000`; P-108 adds `PP-20`. P-106 stays an uncertain OCR-review document. Supplier/type labels are curated fixture metadata, not automatic extraction results.
+
+Fourteen visible practice queries cover codes, suppliers, commercial terms, paraphrases, a cross-reference, filters, unmapped aliases, an abbreviation, OCR-like text, and a denied identifier. They are not held-out benchmark data. The default dense path is the hand-written feature scorer, not a downloaded embedding model.
+
+Try Q01 first. BM25 returns P-107 because its token is `cw-1000`. The teaching dense scorer has no code feature and returns nothing. RRF receives one sparse contribution and returns that source; it does not fill the dense list with zero-score votes. The same three paths use the same permission/filter rules. A metadata filter can reduce that set but cannot expose the denied tenant's matching code.
+
+Now try Q09. Its reviewer needs the 1,000 kg row, the full payment condition, and the link to Schedule A. All modes find two of those three labelled chunks in the default run, leaving the evidence incomplete. Inspect `returned_evidence_keys`, `ranking`, and source locations in the full JSON. Retrieval still has work to do even when the result looks related.
+
+The [sample summary](https://github.com/kogantisasank831-ux/Prep/blob/main/labs/week_07/sample-comparison.json) reports mean Recall@3 of 0.967 for sparse, 0.467 for the teaching dense path, and 0.967 for hybrid across ten labelled queries. These are fixture arithmetic, not real-model accuracy or proof that hybrid wins. The other four queries have no labelled support: their recall/rank/support metrics are null, and the default run returns no candidates for them.
+
+Precision uses requested k: one correct code hit at k=3 means precision `1/3`, while recall is `1`. MRR asks how early the first relevant hit appears. Binary nDCG also considers ordering and the labelled relevant set. Support completeness checks required substrings in their specific labelled chunks; it is not a generated-answer grade. No real-model quality, latency, actual index memory, or answer generation was measured.
+
+### Calculate fusion once by hand
+
+If a chunk is rank 1 in sparse and rank 3 in dense, with constant 60 and equal weights, its RRF score is `1/61 + 1/63 ≈ 0.032266`. A rank-1 hit in one list gets only `1/61 ≈ 0.016393`. The constant 60 softens rank differences; it is different from the number of output results. The score says how the rank lists contributed, not how likely the evidence is true.
+
+Change one input at a time:
+
+```shell
+python -m labs.week_07.compare --candidate-depth 3 --summary
+python -m labs.week_07.compare --candidate-depth 8 --summary
+```
+
+Depth controls how many candidates each retriever can offer RRF, while output top-k stays three. A missing candidate cannot be recovered by fusion, and a larger union can also add noise. Write down which source changed position and why. A real local-model reference is optional in the main lesson; follow its artifact, prefix, token-limit, and offline instructions before attempting it. No model was loaded for this sample.
 
 ## Failure modes to expect before trusting a hybrid result
 
@@ -573,7 +646,7 @@ Dense models optimize broad representation similarity. Product codes, abbreviati
 
 ## Exercises
 
-1. Add a P-107 record containing `CW1000` without a hyphen. Define whether it is an alias, a distinct code, or an OCR-review case; update the token/alias policy only after defining tests.
+1. Add a P-109 record containing `CW1000` without a hyphen. Define whether it is an alias, a distinct code, or an OCR-review case; update the token/alias policy only after defining tests.
 2. Add an unauthorised tenant with an exact `CW-1000` match. Prove that it is excluded before BM25 and dense scoring, not merely hidden after ranking.
 3. Define a metadata filter for `document_type=catalogue`. Compare it with an unrestricted search using the same query labels; explain the recall/noise trade-off.
 4. Create a held-out label set for supplier name, commercial term, semantic paraphrase, abbreviation, and typo/OCR cases. Define direct, partial, and non-relevant evidence before tuning candidate depth.
@@ -591,4 +664,12 @@ Dense models optimize broad representation similarity. Product codes, abbreviati
 - [ ] I can compare dense, sparse, and hybrid retrieval on the same frozen chunks without fabricating a winner.
 - [ ] I can distinguish retrieval relevance from source truth, currentness, and permission to act.
 
-The production lesson can harden this comparison with fuller interfaces, index provenance, tests, and operational trade-offs. It remains bounded to candidate retrieval; later work addresses further ranking and context construction.
+For your weekly handoff, explain one code-search failure and one paraphrase result in your own words. Include the corpus/query fingerprints, tokenizer/BM25 settings, fusion depth/constant, measured results, and a remaining limitation. Original exercise 1 now uses P-109 to avoid reusing the P-107/P-108 catalogue identities.
+
+Return to the [main lesson]({{ '/weeks/week-07/' | relative_url }}) for full contracts, contributor provenance, strict configuration checks, and the optional actual local adapter. Week 8 will build on these candidates with reranking, duplicate control, and context construction.
+
+## Primary documentation
+
+- [Stanford IR book: Okapi BM25](https://nlp.stanford.edu/IR-book/html/htmledition/okapi-bm25-a-non-binary-model-1.html)
+- [Lucene's BM25 IDF and parameter definitions](https://lucene.apache.org/core/9_12_3/core/org/apache/lucene/search/similarities/BM25Similarity.html)
+- [The reciprocal rank fusion paper](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf)
