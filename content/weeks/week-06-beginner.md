@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 6
+phase: 2
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-06/beginner/
 title: "Document parsing and chunking: a beginner's introduction"
 description: Learn how to turn procurement files into bounded, traceable retrieval units without breaking the evidence an analyst needs.
@@ -10,6 +16,14 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-06/
 ---
+
+## Start here
+
+Week 5 showed how to rank short documents. This week asks what happens when a document is too long, or when a table and a condition live in different sections. Think of a chunk as the piece of evidence you put on a reviewer's desk. It must be small enough to find and large enough to make sense.
+
+By the end, you will be able to explain six boundary strategies, keep a table row linked to its source, run a policy comparison, and tell the difference between a document hit and a complete answer. You need basic Python functions, lists, dataclasses, and the Week 5 idea of a vector search. The short functions below build intuition; the runnable lab adds the stricter identities, parser statuses, authorization, and manifest checks.
+
+Allow about eight hours: one for the P-105 story, two for the four small splitters, one for semantic and parent-child ideas, two for the lab, and two for exercises and a short explanation in your own words. Read each strategy with the same question in mind: **what useful evidence could this boundary separate?**
 
 ## A search result is only as useful as the text unit behind it
 
@@ -178,10 +192,17 @@ def digest_text(text: str) -> str:
 
 
 def validated_text(document: ParsedDocument) -> str:
-    text = "\n".join(block.text.strip() for block in document.blocks if block.text.strip())
-    if not text or len(text) > MAX_PARSED_DOCUMENT_CHARS:
-        raise ValueError("parsed document text must be non-empty and bounded")
+    if not document.blocks:
+        raise ValueError("parsed document requires blocks")
+    for block in document.blocks:
+        if block.kind not in {"heading", "paragraph", "table_row"} or not block.text.strip():
+            raise ValueError("unknown or empty parsed block; review the source")
+        block.text.encode("utf-8")
+    text = "\n".join(block.text.strip() for block in document.blocks)
+    if len(text) > MAX_PARSED_DOCUMENT_CHARS:
+        raise ValueError("parsed document text must be bounded")
     return text
+
 
 
 def parsed_content_digest(document: ParsedDocument) -> str:
@@ -189,24 +210,20 @@ def parsed_content_digest(document: ParsedDocument) -> str:
 
 
 def fixed_size_chunks(document: ParsedDocument, *, width: int) -> tuple[Chunk, ...]:
-    if width <= 0:
-        raise ValueError("width must be positive")
+    if type(width) is not int or width <= 0:
+        raise ValueError("width must be a positive integer")
     text = validated_text(document)
     locations = tuple(block.location for block in document.blocks)
     return tuple(
         Chunk(
-            chunk_id=f"{document.document_id}:{document.version}:fixed:{offset}",
-            document_id=document.document_id,
-            version=document.version,
-            text=text[offset : offset + width],
-            locations=locations,
-            metadata=document.metadata,
-        )
-        for offset in range(0, len(text), width)
+            chunk_id=f"{document.document_id}:{document.version}:fixed:{width}:{offset}",
+            document_id=document.document_id, version=document.version,
+            text=text[offset:offset+width], locations=locations, metadata=document.metadata,
+        ) for offset in range(0, len(text), width) if text[offset:offset+width].strip()
     )
 ```
 
-The code intentionally carries the source locations even though a fixed chunk can span several blocks. A production parser would retain more precise character/page offsets. It should also reject malformed source identity and enforce tenant/object authorization outside this pure chunking function.
+The code intentionally carries the source locations even though a fixed chunk can span several blocks. The main lesson and runnable lab retain precise half-open, block-relative character ranges for fixed/overlap windows. These short examples keep a conservative all-block location list and schematic IDs so you can follow the split itself; use the lab contracts for a stored index. It should also reject malformed source identity and enforce tenant/object authorization outside this pure chunking function.
 
 **Checkpoint.** Why is fixed-size chunking still useful? It provides a simple, repeatable baseline. If a more elaborate policy cannot beat it on held-out retrieval and support-quality measures, its extra complexity has not earned its place.
 
@@ -223,31 +240,28 @@ chunk 2: [after inspection approval.............]
 Overlap can help P-105’s payment clause, but it is not free. It increases chunk count, vector storage, indexing time, duplicate retrieval candidates, and the chance that a downstream consumer sees the same evidence twice. Too much overlap can produce a high apparent Recall@k merely because the same supporting phrase has many near-duplicate copies.
 
 ```python
-def overlapping_fixed_chunks(
-    document: ParsedDocument,
-    *,
-    width: int,
-    overlap: int,
-) -> tuple[Chunk, ...]:
-    if width <= 0 or not 0 <= overlap < width:
-        raise ValueError("require positive width and overlap smaller than width")
+def overlapping_fixed_chunks(document: ParsedDocument, *, width: int, overlap: int) -> tuple[Chunk, ...]:
+    if type(width) is not int or width <= 0 or type(overlap) is not int or not 0 <= overlap < width:
+        raise ValueError("require integer width > 0 and 0 <= overlap < width")
     text = validated_text(document)
     locations = tuple(block.location for block in document.blocks)
-    stride = width - overlap
-    starts = range(0, len(text), stride)
-    return tuple(
-        Chunk(
-            chunk_id=f"{document.document_id}:{document.version}:overlap:{offset}",
-            document_id=document.document_id,
-            version=document.version,
-            text=text[offset : offset + width],
-            locations=locations,
-            metadata=document.metadata,
-        )
-        for offset in starts
-        if text[offset : offset + width]
-    )
+    chunks: list[Chunk] = []
+    start = 0
+    while start < len(text):
+        end = min(start+width, len(text))
+        if text[start:end].strip():
+            chunks.append(Chunk(
+                chunk_id=f"{document.document_id}:{document.version}:overlap:{width}:{overlap}:{start}",
+                document_id=document.document_id, version=document.version,
+                text=text[start:end], locations=locations, metadata=document.metadata,
+            ))
+        if end == len(text):
+            break
+        start += width-overlap
+    return tuple(chunks)
 ```
+
+Try the arithmetic on a 200-character block: with width 120 and overlap 40, the first window is `[0,120)` and the second is `[80,200)`. Both have 120 characters. The loop stops when it reaches 200; another window starting at 160 would repeat text already covered. The two windows store 240 characters for 200 source characters. For long documents, 25% overlap approaches `1 / 0.75`, or about 1.33 times the text volume; measure finite tails and actual UTF-8 bytes rather than assuming every file has exactly that multiplier.
 
 The overlap is a policy parameter that must be recorded with the index. Changing it changes the corpus of chunks and therefore changes retrieval, storage, and evaluation. Do not silently compare one build with 20% overlap against another with no overlap and attribute every difference to the embedding model.
 
@@ -257,54 +271,44 @@ The overlap is a policy parameter that must be recorded with the index. Changing
 
 It has limits. Sentence detection is language- and format-dependent. A period can occur in `Inc.`, a decimal, a product code, a bullet, or an abbreviation. Tables and headings are not ordinary sentences. A very long sentence can still exceed the target, and a short sentence can rely on a heading or preceding exception.
 
-The compact splitter below is for controlled synthetic prose only. It is not a general natural-language parser and deliberately treats table blocks separately later.
+The compact splitter below is for controlled synthetic prose. It keeps headings and table rows as separate atomic chunks, then groups prose sentences. A regex can still mishandle abbreviations and languages; a target width cannot force a long sentence to become short.
 
 ```python
 SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
 
-def sentence_based_chunks(
-    document: ParsedDocument,
-    *,
-    target_width: int,
-) -> tuple[Chunk, ...]:
-    if target_width <= 0:
-        raise ValueError("target width must be positive")
+def sentence_based_chunks(document: ParsedDocument, *, target_width: int) -> tuple[Chunk, ...]:
+    if type(target_width) is not int or target_width <= 0:
+        raise ValueError("target width must be a positive integer")
+    validated_text(document)
     chunks: list[Chunk] = []
-    current_sentences: list[str] = []
-    current_locations: list[str] = []
+    sentences: list[str] = []
+    locations: list[str] = []
+
+    def emit(text: str, source_locations: Iterable[str]) -> None:
+        chunks.append(Chunk(
+            chunk_id=f"{document.document_id}:{document.version}:sentence:{target_width}:{len(chunks)}",
+            document_id=document.document_id, version=document.version, text=text,
+            locations=tuple(dict.fromkeys(source_locations)), metadata=document.metadata,
+        ))
+
+    def flush() -> None:
+        if sentences:
+            emit(" ".join(sentences), locations)
+            sentences.clear()
+            locations.clear()
+
     for block in document.blocks:
         if block.kind != "paragraph":
+            flush()
+            emit(block.text.strip(), [block.location])
             continue
         for sentence in SENTENCE_END.split(block.text.strip()):
-            candidate = " ".join((*current_sentences, sentence)).strip()
-            if current_sentences and len(candidate) > target_width:
-                chunks.append(
-                    Chunk(
-                        chunk_id=f"{document.document_id}:{document.version}:sentence:{len(chunks)}",
-                        document_id=document.document_id,
-                        version=document.version,
-                        text=" ".join(current_sentences),
-                        locations=tuple(current_locations),
-                        metadata=document.metadata,
-                    )
-                )
-                current_sentences = [sentence]
-                current_locations = [block.location]
-            else:
-                current_sentences.append(sentence)
-                current_locations.append(block.location)
-    if current_sentences:
-        chunks.append(
-            Chunk(
-                chunk_id=f"{document.document_id}:{document.version}:sentence:{len(chunks)}",
-                document_id=document.document_id,
-                version=document.version,
-                text=" ".join(current_sentences),
-                locations=tuple(current_locations),
-                metadata=document.metadata,
-            )
-        )
+            if sentences and len(" ".join((*sentences, sentence))) > target_width:
+                flush()
+            sentences.append(sentence)
+            locations.append(block.location)
+    flush()
     return tuple(chunks)
 ```
 
@@ -312,7 +316,7 @@ def sentence_based_chunks(
 
 ## Strategy 4: structure-aware chunks preserve document meaning
 
-A **structure-aware** policy uses parser labels such as heading, paragraph, list, and table. It can attach a heading to its following paragraphs, keep each table row with its header, and make a section boundary visible. For P-105, one useful policy creates a chunk for `Section 3 — Invoicing` plus both invoicing paragraphs, while representing Schedule A as a separate, row-aware table chunk.
+A **structure-aware** policy uses parser labels such as heading, paragraph, list, and table. It can attach a heading to its following paragraphs, keep each table row with its header, and make a section boundary visible. For P-105, a section-sized policy can put `Section 3 — Invoicing` beside both invoicing paragraphs and represent Schedule A as a separate row-aware chunk. The small function below instead attaches the heading to each parsed body block. Parent-child retrieval later supplies the whole section when a child matches.
 
 ```text
 chunk: Section 3 — Invoicing
@@ -517,9 +521,43 @@ The assertions check only fixture and contract behavior. They do not claim that 
 4. Record Recall@k and Precision@k for retrieval, chunk count, average length, storage calculation, and the reviewer’s answer-support rubric. Keep raw source text out of general logs.
 5. Inspect failures by document type: prose, table, scanned/OCR, amendments, headings, and long sections. Choose a policy only after considering quality, cost, and failure modes together.
 
-This is an evaluation design, not a benchmark result. It supplies no scores because none have been measured here.
+This procedure describes the evaluation you would need before selecting a policy. The guided run below provides measured teaching output on visible practice cases; it does not replace that held-out evaluation.
 
 **Checkpoint.** If overlap increases Recall@5 on this collection, should it be adopted immediately? Not necessarily. Check duplicate rate, Precision@5, storage/index cost, support completeness, subgroup failures, and whether the gain holds on held-out documents.
+
+## Run it and inspect the evidence
+
+Open the [Week 6 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_06) and, from the repository root in its Python environment, run:
+
+```shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_06.compare --summary
+python -m labs.week_06.compare --context-budget-chars 100 --summary
+python -m pytest tests/test_week06_chunking.py -q
+```
+
+The default comparison uses six strategies, the same five accepted documents, and nine practice queries. It marks P-106's `USD 12.O0` price for review and leaves that document out of every index. P-106 is a simulated parsed OCR error; the lab has not read a scanned file or run an OCR engine.
+
+The default embedding uses hand-written teaching features, not a trained model. The boundary policy called `semantic` uses shared-word Jaccard similarity, also a teaching heuristic. Read the results as a way to inspect the pipeline. The [checked-in sample](https://github.com/kogantisasank831-ux/Prep/blob/main/labs/week_06/sample-comparison.json) records eight fixed chunks, nine overlapping chunks, twelve sentence chunks, nine structure chunks, thirteen shared-term chunks, and seventeen stored parent/child records. Only nine of those parent/child records are indexed children.
+
+Here is how to read the report:
+
+| Field | Meaning |
+| --- | --- |
+| `corpus_fingerprint` | Must match across policies: everyone saw the same representation |
+| `stored_chunk_count` / `indexed_chunk_count` | Parent context can be stored without becoming a searchable vector |
+| `average_indexed_chunk_chars` | Actual character lengths; tokenizer lengths were not measured |
+| `stored_text_utf8_bytes` | Text storage only, excluding IDs and metadata |
+| `packed_float32_vector_bytes_estimate` | Indexed count × 6 teaching dimensions × 4 bytes; actual index memory is unmeasured |
+| `document_recall_at_chunk_k` | Relevant documents reached by the top three chunk hits |
+| `complete_support_source_fraction` | Fraction of labelled sources whose required substrings appear in admitted context |
+| `generated_answer_quality` | `null`: no generated answers or human answer grades were measured |
+
+Seven queries have supporting-document labels. Two have no labelled support and receive null recall/support metrics; they do not count as successful answers. The search still returns candidates for them because it has no abstention rule. Every strategy gets the same 800-character context budget by default. Parent expansion must pass authorization again, fit as a whole unit, and count toward that budget. A unit too large to fit is skipped. The 100-character command makes that consequence easy to see.
+
+For Q04, write down the three pieces the reviewer needs: the 1,000 kg row, the complete payment clause, and the sentence connecting the clause to Schedule A. Then run the full report without `--summary` and inspect its ranked and context IDs. “Found P-105” is weaker than “returned all three pieces.” The substring check is a limited practice proxy: matching words does not prove that a conclusion is correct, and equivalent wording may fail it.
+
+Original exercise 1 has an OCR-review reference in the lab; try a new confused character yourself. For the storage exercise, use measured counts rather than the long-document approximation. To run an already-reviewed local model, follow the optional instructions in the main lesson and Week 5 lab; no actual model quality, latency, or real PDF/OCR accuracy is claimed by this teaching run.
 
 ## Failure boundaries and safe defaults
 
@@ -564,4 +602,10 @@ That answer is stronger than “use 500 tokens” because it names the evidence 
 - [ ] I can choose chunk size from document structure, retrieval unit, context budget, and held-out evaluation evidence.
 - [ ] I know that a parsed string, chunk, vector, or retrieved passage remains untrusted evidence rather than permission to act.
 
-The production lesson can harden these contracts with fuller interfaces, parser boundaries, tests, and operational trade-offs.
+For your weekly handoff, explain one boundary failure in plain language and attach the source/query fingerprints, policy settings, measured counts, and one remaining limitation. Then return to the [main lesson]({{ '/weeks/week-06/' | relative_url }}) for fuller interfaces, source spans, manifest checks, and parent authorization. Continue with [Week 7]({{ '/weeks/week-07/' | relative_url }}) after completing the exercises.
+
+## Read the source documentation
+
+- [pypdf: why PDF text extraction and OCR are difficult](https://pypdf.readthedocs.io/en/stable/user/extract-text.html)
+- [Python regular expressions](https://docs.python.org/3.13/library/re.html)
+- [Sentence Transformers model API](https://www.sbert.net/docs/package_reference/sentence_transformer/SentenceTransformer.html)

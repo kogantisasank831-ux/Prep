@@ -1,0 +1,9 @@
+{"query_id":"Q01","split":"practice","text":"Which documents require approval or sign-off before payment?","support":{"P-101":["Net 30 after inspection approval"],"P-104":["Payment is due after the receiving team signs off"],"P-105":["Invoice terms are Net 30 after inspection approval"]}}
+{"query_id":"Q02","split":"practice","text":"What invoice terms apply to polymer pellets?","support":{"P-102":["Polymer pellets","Net 15 from receipt"]}}
+{"query_id":"Q03","split":"practice","text":"Why is the copper-wire shipment delayed?","support":{"P-103":["delayed by two days","quality checks finish"]}}
+{"query_id":"Q04","split":"practice","text":"In P-105, what payment condition applies to the 1,000 kg copper-wire line?","support":{"P-105":["product=copper wire; quantity=1,000 kg","Net 30 after inspection approval","controls Schedule A"]}}
+{"query_id":"Q05","split":"practice","text":"Who supplies copper wire to the Northwind plant?","support":{"P-105":["Atlas Metals supplies copper wire to the Northwind plant"]}}
+{"query_id":"Q06","split":"practice","text":"What is the unit price for the 1,000 kg copper-wire line?","support":{"P-105":["product=copper wire; quantity=1,000 kg; unit price=USD 12.00"]}}
+{"query_id":"Q07","split":"practice","text":"Which purchase confirmation has Net 30 terms after inspection approval?","support":{"P-101":["Net 30 after inspection approval"]}}
+{"query_id":"Q08","split":"practice","text":"What is today's market price of gold?","support":{}}
+{"query_id":"Q09","split":"practice","text":"Which document says inspection approval is unnecessary for the P-105 payment?","support":{}}

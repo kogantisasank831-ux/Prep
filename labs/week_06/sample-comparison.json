@@ -1,0 +1,194 @@
+{
+  "schema": "week06-practice-comparison/1.0.0",
+  "measurement_scope": "synthetic practice; teaching features unless an explicit local model is supplied",
+  "model": {
+    "model_id": "week06-teaching-features-with-bias",
+    "artifact_digest": "synthetic-only",
+    "runtime_version": "none",
+    "preprocessing_version": "week05-features-plus-constant-0.1/v1",
+    "dimension": 6,
+    "metric": "cosine",
+    "asymmetric": true
+  },
+  "query_fixture_digest": "3952d1c2dddc3b00ad2a1609decdc4af5d1a37b6e66ab7d7413a55239a553f74",
+  "source_count": 5,
+  "query_count": 9,
+  "k_chunks": 3,
+  "context_budget_chars": 800,
+  "quarantined": [
+    {
+      "document_id": "P-106",
+      "status": "needs_review",
+      "reasons": [
+        "table row requires labelled numeric review"
+      ]
+    }
+  ],
+  "unmeasured": [
+    "generated answers/human answer grades",
+    "token lengths",
+    "latency",
+    "actual vector/index/metadata memory",
+    "real PDF/OCR accuracy"
+  ],
+  "results": [
+    {
+      "policy": {
+        "name": "fixed",
+        "version": "1.1.0",
+        "parameters": [
+          [
+            "width",
+            "120"
+          ]
+        ]
+      },
+      "corpus_fingerprint": "9c784d25b09b0c4fc6905e9998c6d5dc122a16b1d3f302a1633e4633692f9f07",
+      "stored_chunk_count": 8,
+      "indexed_chunk_count": 8,
+      "average_stored_chunk_chars": 94.375,
+      "average_indexed_chunk_chars": 94.375,
+      "stored_text_utf8_bytes": 763,
+      "packed_float32_vector_bytes_estimate": 192,
+      "document_recall_at_chunk_k": 1.0,
+      "complete_support_source_fraction": 0.6666666666666666,
+      "labelled_query_count": 7,
+      "no_gold_query_count": 2,
+      "generated_answer_quality": null,
+      "average_tokens": null
+    },
+    {
+      "policy": {
+        "name": "overlap",
+        "version": "1.1.0",
+        "parameters": [
+          [
+            "width",
+            "120"
+          ],
+          [
+            "overlap",
+            "40"
+          ]
+        ]
+      },
+      "corpus_fingerprint": "9c784d25b09b0c4fc6905e9998c6d5dc122a16b1d3f302a1633e4633692f9f07",
+      "stored_chunk_count": 9,
+      "indexed_chunk_count": 9,
+      "average_stored_chunk_chars": 101.66666666666667,
+      "average_indexed_chunk_chars": 101.66666666666667,
+      "stored_text_utf8_bytes": 927,
+      "packed_float32_vector_bytes_estimate": 216,
+      "document_recall_at_chunk_k": 0.8571428571428571,
+      "complete_support_source_fraction": 0.5238095238095238,
+      "labelled_query_count": 7,
+      "no_gold_query_count": 2,
+      "generated_answer_quality": null,
+      "average_tokens": null
+    },
+    {
+      "policy": {
+        "name": "sentence",
+        "version": "1.1.0",
+        "parameters": [
+          [
+            "target_width",
+            "120"
+          ]
+        ]
+      },
+      "corpus_fingerprint": "9c784d25b09b0c4fc6905e9998c6d5dc122a16b1d3f302a1633e4633692f9f07",
+      "stored_chunk_count": 12,
+      "indexed_chunk_count": 12,
+      "average_stored_chunk_chars": 62.333333333333336,
+      "average_indexed_chunk_chars": 62.333333333333336,
+      "stored_text_utf8_bytes": 756,
+      "packed_float32_vector_bytes_estimate": 288,
+      "document_recall_at_chunk_k": 0.8571428571428571,
+      "complete_support_source_fraction": 0.7142857142857143,
+      "labelled_query_count": 7,
+      "no_gold_query_count": 2,
+      "generated_answer_quality": null,
+      "average_tokens": null
+    },
+    {
+      "policy": {
+        "name": "structure",
+        "version": "1.0.0",
+        "parameters": [
+          [
+            "include_heading",
+            "True"
+          ]
+        ]
+      },
+      "corpus_fingerprint": "9c784d25b09b0c4fc6905e9998c6d5dc122a16b1d3f302a1633e4633692f9f07",
+      "stored_chunk_count": 9,
+      "indexed_chunk_count": 9,
+      "average_stored_chunk_chars": 85.88888888888889,
+      "average_indexed_chunk_chars": 85.88888888888889,
+      "stored_text_utf8_bytes": 783,
+      "packed_float32_vector_bytes_estimate": 216,
+      "document_recall_at_chunk_k": 0.8095238095238095,
+      "complete_support_source_fraction": 0.6666666666666666,
+      "labelled_query_count": 7,
+      "no_gold_query_count": 2,
+      "generated_answer_quality": null,
+      "average_tokens": null
+    },
+    {
+      "policy": {
+        "name": "semantic",
+        "version": "1.1.0",
+        "parameters": [
+          [
+            "similarity",
+            "shared-term-jaccard/1.0.0"
+          ],
+          [
+            "threshold",
+            "0.1"
+          ]
+        ]
+      },
+      "corpus_fingerprint": "9c784d25b09b0c4fc6905e9998c6d5dc122a16b1d3f302a1633e4633692f9f07",
+      "stored_chunk_count": 13,
+      "indexed_chunk_count": 13,
+      "average_stored_chunk_chars": 57.46153846153846,
+      "average_indexed_chunk_chars": 57.46153846153846,
+      "stored_text_utf8_bytes": 755,
+      "packed_float32_vector_bytes_estimate": 312,
+      "document_recall_at_chunk_k": 0.8095238095238095,
+      "complete_support_source_fraction": 0.6666666666666666,
+      "labelled_query_count": 7,
+      "no_gold_query_count": 2,
+      "generated_answer_quality": null,
+      "average_tokens": null
+    },
+    {
+      "policy": {
+        "name": "parent-child",
+        "version": "1.1.0",
+        "parameters": [
+          [
+            "child_unit",
+            "parsed_block"
+          ]
+        ]
+      },
+      "corpus_fingerprint": "9c784d25b09b0c4fc6905e9998c6d5dc122a16b1d3f302a1633e4633692f9f07",
+      "stored_chunk_count": 17,
+      "indexed_chunk_count": 9,
+      "average_stored_chunk_chars": 90.23529411764706,
+      "average_indexed_chunk_chars": 72.33333333333333,
+      "stored_text_utf8_bytes": 1542,
+      "packed_float32_vector_bytes_estimate": 216,
+      "document_recall_at_chunk_k": 0.8095238095238095,
+      "complete_support_source_fraction": 0.6666666666666666,
+      "labelled_query_count": 7,
+      "no_gold_query_count": 2,
+      "generated_answer_quality": null,
+      "average_tokens": null
+    }
+  ]
+}
