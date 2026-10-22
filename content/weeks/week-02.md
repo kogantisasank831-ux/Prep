@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 2
+phase: 1
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-02/
 title: "SQL and data modelling: make procurement facts trustworthy"
 description: Build a PostgreSQL procurement model and answer five operational questions without double-counting, ambiguous dates, or hidden metric definitions.
@@ -10,6 +16,21 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-02/beginner/
 ---
+
+## Your route through Week 2
+
+The goal is to answer the five procurement questions and explain why their numbers are trustworthy. Work from one row's meaning to joins and dates, then build the supplier measures. Keep your own query results, a short metric-definition note and answers to the eight medium SQL and two product-analytics problems below.
+
+| Time | Focus | Evidence to keep |
+| --- | --- | --- |
+| Hour 1 | Trace an order, its lines and its receipts | A grain and key for each table |
+| Hours 2–3 | Aggregation, joins and cutoff dates | A reproduced fan-out error and its corrected result |
+| Hour 4 | Subqueries, CTEs and windows | The latest applicable price and first fully accepted date |
+| Hour 5 | Indexes, normalization and transactions | One explained plan and a shared-lock-order sketch |
+| Hours 6–7 | Run the PostgreSQL lab and five analyses | Output with explicit currency, unit, cutoff and denominator |
+| Hour 8 | Interview practice and independent exercises | A defensible explanation of each query's grain and limits |
+
+Bring basic `SELECT`, filtering and ordering. If joins or keys still feel unfamiliar, read the [beginner lesson]({{ '/weeks/week-02/beginner/' | relative_url }}) first and return to the full queries afterward.
 
 ## One order, one uncomfortable question
 
@@ -705,11 +726,13 @@ The lab's [30_transactions.sql](../../labs/week-02/sql/30_transactions.sql) expo
 
 Cancellation locks the same header before changing status. Its trigger proves there is no accepted receipt. A fully rejected physical delivery has zero accepted quantity and does not alone prevent cancellation under this lab rule.
 
-The two-session fixture verifies the boundary rather than inferring it. When two 100 kg acceptances raced against 130 kg remaining, one committed, the other was rejected, and the final accepted total was 970 kg. When first acceptance raced cancellation, delivery committed, cancellation was rejected, and the PO remained issued.
+The recorded two-session verification used a separate 130 kg test order. Two sessions each attempted to accept 100 kg; one committed, the other was rejected, and the final accepted quantity on that test order was 100 kg. A separate first-acceptance-versus-cancellation test left the order issued after delivery committed and cancellation was rejected.
+
+The 130 kg remaining on `PO-1042` is an analytical snapshot at 30 June. The complete seed also contains its 5 July receipt, so the live write function sees 1,000 kg already accepted after the full seed is loaded. Use a dedicated fresh order for a concurrency exercise; changing the reporting cutoff does not undo loaded receipts or change the write-time invariant.
 
 Those are observations under the recorded PostgreSQL lab, not universal timing guarantees. Applications should distinguish a domain rejection from SQLSTATE `40001` serialization failure and `40P01` deadlock, and apply bounded retry policy only to retryable failures.
 
-Direct inserts into delivery tables bypass the aggregate invariant. A production design would restrict table-write privileges and expose the validated function boundary. The local lab does not implement production authorization.
+Direct inserts into delivery tables bypass the aggregate invariant. The current functions use `SECURITY INVOKER`, so they execute with the caller's privileges: revoking table writes would also stop these functions from writing. A protected production write boundary needs a separately reviewed ownership, role and function-security design. The lab demonstrates the locking protocol without claiming that this single-role setup enforces production authorization.
 
 **Checkpoint.** Why do delivery and cancellation both lock the header first? They serialize incompatible state transitions at one shared boundary and reduce inconsistent lock ordering.
 
@@ -899,6 +922,23 @@ Invoices, payments, taxes, FX, unit conversion, returns, corrections, authentica
 12. Why do delivery and cancellation lock the PO header first?
 13. What history is missing from the monthly spend metric?
 14. Which definition choices make reliability reproducible?
+
+### Check your reasoning
+
+1. **Receipt line:** one PO line received in one physical receipt, identified by the receipt and line keys.
+2. **Historical price:** the issued order records the terms of that commitment; a new contract version should not rewrite its history.
+3. **Pre-aggregate first:** several receipts can match one monetary line. Summarizing receipts to the line key prevents the ordered value being counted repeatedly.
+4. **Zero or unavailable:** no receipt means zero accepted quantity for fulfillment; no comparable market observation means the price comparison is unavailable.
+5. **Half-open periods:** include the start and exclude the end so adjacent periods have no shared boundary date. State the separate inclusive receipt cutoff explicitly.
+6. **Outer-row dependency:** `LATERAL` lets the inner query use the current PO line's product, units, currency and order date.
+7. **Rows versus calendar:** three observed month rows can span more than three calendar months when a month is missing. Add a calendar spine for a calendar-based metric.
+8. **Changing grain:** receipt day → PO line → PO → eligible supplier. Keep physical quantities within compatible units and monetary totals within a currency.
+9. **A reasonable scan:** small tables or broad predicates can make a sequential scan cheaper than index traversal and row fetching.
+10. **Predicate proof:** an index predicate can prevent its use when the planner cannot prove that the query implies the predicate. It is an access-path condition, not a business-data constraint.
+11. **One commit unit:** `BEGIN` groups related changes for commit or rollback; constraints still decide validity and a shared protocol handles competing writers.
+12. **Shared transition boundary:** delivery and cancellation compete over the same PO state. Locking its header first serializes that decision and gives both workflows a consistent order.
+13. **Missing lifecycle history:** current PO status cannot reconstruct which orders were issued or cancelled at every earlier month end.
+14. **A complete reliability policy:** fix the eligible completion window, minimum sample, OTIF/rejection/lateness definitions, units, missing evidence and rank tie rules together.
 
 ## Next action: trace `PO-1042` yourself
 

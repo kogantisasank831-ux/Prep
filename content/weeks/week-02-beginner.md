@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 2
+phase: 1
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-02/beginner/
 title: "SQL and data modelling: a beginner's introduction"
 description: Learn how a relational database represents a purchase order, its deliveries, and the questions SQL can answer about them.
@@ -10,6 +16,12 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-02/
 ---
+
+## Your route through Week 2
+
+Start with the order story and explain each table's row meaning before trying the full queries. Use the same eight-hour plan as the production lesson: one hour for grains and keys, two for aggregation/joins/dates, one for nested queries and windows, one for indexes and transactions, two for the lab, and one for practice.
+
+Your goal is to run the five procurement analyses and explain the result of each. Keep an order trace, one example of a duplicated total, a corrected query and a short note describing the date, unit and currency of every measure. The exercises near the end give you smaller steps toward that handoff.
 
 ## Begin with one order
 
@@ -259,6 +271,28 @@ The production lesson and lab use five analyses. Their names are shorter than th
 5. **Eligible supplier reliability ranking**: include suppliers with at least three issued, non-cancelled orders whose `fully_accepted_on` falls inside the half-open reporting period. Rank by OTIF descending, unit-safe rejection rate ascending, then median days late ascending; exact metric ties share a `RANK`. This is a declared lab policy, not an intrinsic attribute of a supplier.
 
 The same discipline applies to every result: define the metric, source facts, time boundary, and output grain before trusting the number.
+
+## Practice with the order you already understand
+
+1. **Name the row.** List the grain and key of the order header, order line, receipt and received line. Explain why the same PO number can appear in several receipt rows.
+2. **Predict the wrong total.** One line commits USD 12,000 and has two receipts. Predict the total if the line value is summed after that join. Then explain why `SUM(DISTINCT ...)` would also be unsafe for two different lines worth the same amount.
+3. **Trace the cutoff.** Write delivered, accepted and remaining quantities on 30 June, then after the 5 July receipt. Explain why a reporting date changes the analytical result while the full loaded data still contains every receipt.
+4. **Keep absence visible.** Describe what should happen to a line with no receipt in an open-work report. Then describe a PO with no comparable market price. Explain which absence can become zero and which remains unavailable.
+5. **Choose the correct measure.** A manager asks for cash paid in March. Identify the extra facts needed beyond the current PO and delivery model. State what monthly committed spend can answer today.
+6. **Explain the race.** On a new 130 kg order with no receipts, two people each try to accept 100 kg. Describe the shared header lock, the second quantity check and why only one attempt should commit. Use a fresh order rather than the fully seeded `PO-1042`.
+
+### Six questions to answer aloud
+
+- **Why are accepted and delivered quantities different?** Inspection can reject part of what physically arrived. This lesson's fulfillment measure uses accepted quantity.
+- **Why aggregate before a join?** Several receipts would repeat one order-line amount; a line-level receipt summary keeps the join compatible with the monetary line.
+- **Why pass a date?** The result should describe a declared cutoff rather than change with the computer's current date.
+- **How does a window differ from grouping?** Grouping collapses rows into summaries. A window can retain each receipt date while calculating the running accepted total.
+- **Does an index prove a query is faster?** It supplies another access path. Inspect the actual plan under the relevant data and parameters.
+- **Does a transaction solve every concurrent-write problem?** It defines a commit/rollback unit. Validity rules and a shared locking or isolation protocol still decide which competing changes may commit.
+
+## Your handoff
+
+After the [lab setup](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week-02), run the supplied scripts in their documented order. Keep the `PO-1042` cutoff result, the five analytical outputs and the verification message. Write the grain beside each output and note that committed value is neither invoiced value nor cash paid. Then work through the full lesson's eight medium and two product-analytics problems.
 
 ## Continue with the complete lesson
 
