@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 4
+phase: 1
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-21
+estimated_hours: 8
 permalink: /weeks/week-04/
 title: "Prompting and structured output: make extraction evidence defensible"
 description: Build a typed procurement-document extraction boundary that treats model output as untrusted, validates it deterministically, and records every attempt.
@@ -11,9 +17,11 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-04/beginner/
 ---
 
-## One confirmation, one question that prose cannot answer safely
+## Turn a purchase confirmation into data a program can use
 
-An operations team receives this synthetic purchase confirmation:
+Last week, we compared what two models said about the same input. This week, the next question is practical: how do we turn a model response into something another program can use?
+
+Imagine an operations analyst receives this synthetic purchase confirmation:
 
 ```text
 Purchase confirmation
@@ -26,7 +34,7 @@ Delivery date: 2026-08-18
 Payment terms: Net 30 after inspection approval
 ```
 
-The desired extraction is not a friendly summary. It is a typed candidate that a downstream review workflow can inspect without reparsing a model sentence:
+The analyst needs the supplier, quantity, price, delivery date, and payment condition copied accurately. A fluent summary might leave out the currency or shorten the payment condition. A named object makes those omissions visible:
 
 ```json
 {
@@ -41,11 +49,11 @@ The desired extraction is not a friendly summary. It is a typed candidate that a
 }
 ```
 
-The business question is deliberately narrower than “what does the model know about procurement?”:
+We will call this object a **candidate** until the application has checked it. The question driving the lesson is:
 
 > Can this bounded document produce one candidate that satisfies a declared contract and is supported by visible evidence, or a reviewable failure that says why it did not?
 
-The answer is never “because the model sounded certain.” A document may be incomplete or hostile, a parser or tool may return corrupt text, and a local or remote model may emit plausible but unsupported fields. The system must distinguish four results:
+A confident answer cannot settle that question. The document might omit a date, repeat a label with conflicting values, or contain an instruction aimed at the model. The model might return perfect JSON with the wrong price. We therefore check the response in stages:
 
 ```text
 received document -> untrusted model candidate -> structural validation
@@ -53,7 +61,7 @@ received document -> untrusted model candidate -> structural validation
                                                 -> valid | invalid | needs_review
 ```
 
-For this lesson, `PO` creation, payment approval, external retrieval, tool execution, and system writes are out of scope. The extractor only produces a candidate plus provenance and a final application-owned validation status. It never treats “Net 30 after inspection approval” as permission to pay.
+Our result contains the candidate, its provenance, and an application-assigned status. The payment phrase stays intact: `Net 30 after inspection approval` does not mean `Net 30`. Creating purchase orders, approving payments, retrieval, and tool execution belong to later work.
 
 ### The contract for every extraction
 
@@ -63,19 +71,36 @@ Every result must state these components:
 source document + output schema + validation policy + evidence rule + versioned configuration
 ```
 
-The source document is synthetic text. The output schema defines names and types. The validation policy says which values are permitted. The evidence rule defines what counts as supported by this document. The configuration identifies the prompt, schema, local model boundary, and generation settings that produced the candidate.
+These are five separate decisions. The source tells us which document we examined; the schema defines the fields and types; the validation policy defines permitted values; the evidence rule connects those values to source text; and the versioned configuration tells us how we obtained the response. Keeping them separate makes a failed extraction easier to explain.
 
 Model output can be JSON-valid yet wrong. Schema-valid output can be typed yet semantically wrong. A self-reported `confidence: 0.99` is merely another generated value unless calibration has been measured for a specified model, task, population, and decision rule. This design reports deterministic validation status and evidence/provenance instead.
 
 **Checkpoint.** Does `{"delivery_date": "2026-08-18"}` prove the document contains that date? No. JSON syntax and a date parser say nothing about the evidence. The application must compare the candidate against the document under its declared policy.
 
-**Bridge.** A model cannot satisfy an extraction contract that the application has not first made explicit.
+A model cannot satisfy an extraction contract that the application has not first made explicit.
+
+### Before you begin
+
+You need the Week 1 ideas of typed Python boundaries, exceptions, and tests, plus Week 3's distinction between model output and measured evidence. Bring basic JSON knowledge. SQL, a vector database, and an agent framework are not required.
+
+By the end of this week, you should be able to:
+
+- write system and user messages without treating document text or tool results as trusted instructions;
+- choose between zero-shot instructions, few-shot demonstrations, and a small role description;
+- define all extraction fields, including missing-value behavior, before making a model call;
+- distinguish JSON syntax, schema validity, and factual support;
+- explain and test bounded transport retry and validation repair;
+- compare prompt versions on a fixed set of cases and defend the results in an interview.
+
+Use roughly eight hours: two for the concepts, one for interview and recall practice, three for the guided lab, and two for tests, an independent exercise, and your evaluation notes. Start with Sections 1–6; Sections 7–12 show how those pieces fit into an application. The lab runs without a GPU or an API key. A real local-model comparison is a separate exercise, so do not count the scripted demo as model evaluation.
+
+The [Week 4 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_04) includes runnable Python, tests, and twelve synthetic evaluation cases. Read the beginner version first if schema validation or message roles are unfamiliar.
 
 ## 1. Design the output contract before composing messages
 
-### Orienting question: what must one accepted field mean?
+### What must one accepted field mean?
 
-The output is a business boundary, not a convenient dictionary. Each field has one type and one meaning:
+Start by deciding what each value means to the caller. Otherwise, a later prompt edit can quietly change an interface. For the Atlas confirmation, the contract is:
 
 | Field | Meaning | Accepted internal type |
 | --- | --- | --- |
@@ -105,19 +130,20 @@ The external JSON representation carries decimal values as strings. JSON has one
 
 **Checkpoint.** Why is `"quantity": "1000"` preferable to `"quantity": 1000` in this contract? It gives the boundary an explicit decimal lexical form to parse deliberately. Either form can be designed, but accepting a generic JSON number without a precision policy leaves financial representation ambiguous.
 
-**Bridge.** The contract identifies the fields; Pydantic makes the structural portion executable.
+The contract identifies the fields; Pydantic makes the structural portion executable.
 
 ## 2. Use a typed boundary, not a permissive mapping
 
-### Orienting question: which invariants can code decide without asking a model?
+### Which invariants can code decide without asking a model?
 
-Pydantic v2 parses untrusted JSON into a typed value and reports structured failures. It is not the final judge of document truth. The following Python 3.13 interface is intentionally strict and narrow:
+Pydantic v2 lets us turn the structural rules into executable checks. It can reject a missing key, a negative quantity, or an extra field. It cannot tell us whether the source promised that delivery date. Here is the typed candidate we will use:
 
 ```python
 from __future__ import annotations
 
 from datetime import date
 from decimal import Decimal
+import re
 from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -142,6 +168,17 @@ class ExtractionCandidate(BaseModel):
     delivery_date: date | None
     payment_terms: NonBlank
 
+    @field_validator("quantity", "unit_price", mode="before", json_schema_input_type=str)
+    @classmethod
+    def require_decimal_string(cls, value: object) -> Decimal:
+        if (
+            not isinstance(value, str)
+            or len(value) > 64
+            or re.fullmatch(r"(?:0|[1-9][0-9]*)(?:\.[0-9]+)?", value) is None
+        ):
+            raise ValueError("expected a finite decimal string")
+        return Decimal(value)
+
     @field_validator("quantity", "unit_price")
     @classmethod
     def reject_non_finite_decimal(cls, value: Decimal) -> Decimal:
@@ -149,10 +186,19 @@ class ExtractionCandidate(BaseModel):
             raise ValueError("decimal must be finite")
         return value
 
+    @field_validator("delivery_date", mode="before", json_schema_input_type=str | None)
+    @classmethod
+    def require_iso_date(cls, value: object) -> date | None:
+        if value is None:
+            return None
+        if not isinstance(value, str) or re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value) is None:
+            raise ValueError("expected YYYY-MM-DD or null")
+        return date.fromisoformat(value)
+
     @field_validator("supplier_name", "product", "payment_terms")
     @classmethod
     def reject_surrounding_whitespace(cls, value: str) -> str:
-        if value != value.strip():
+        if not value.strip() or value != value.strip():
             raise ValueError("text must not contain surrounding whitespace")
         return value
 ```
@@ -172,17 +218,21 @@ def parse_candidate(raw_json: str) -> ExtractionCandidate:
         raise CandidateSchemaError("candidate failed extraction schema") from exc
 ```
 
-The complete JSON Schema is derived from the same model with `ExtractionCandidate.model_json_schema()`. This avoids maintaining one handwritten schema for model output and another unreviewed set of Python assumptions. JSON Schema expresses portable structure; Pydantic gives the Python service a typed representation. Neither verifies that the model faithfully read the document.
+The decimal validator explicitly requires a JSON string before constructing `Decimal`. `strict=True` alone does not enforce that wire policy; JSON-mode conversions differ from strict validation of Python objects. The validator also declares a string input type for schema generation. Business limits such as positive quantity still run in application code.
+
+The complete JSON Schema is derived from the same model with `ExtractionCandidate.model_json_schema()`. This keeps the field structure tied to the Python model. It does not mean every custom Python validator is reproduced in the generated JSON Schema. For example, a declared string input type does not automatically publish the entire decimal parsing policy or calendar checks to a runtime. Keep application validation, and test the exact schema subset the selected decoder supports. JSON Schema expresses portable structure; Pydantic gives the Python service a typed representation. Neither verifies that the model faithfully read the document.
+
+The full lab additionally rejects repeated JSON keys and bounds candidate text to 32 KiB before parsing. This matters because a JSON decoder may otherwise keep only the last repeated value. Those checks are application policy; a Pydantic annotation by itself is not a duplicate-key detector.
 
 **Boundary.** Do not accept a model object because it contains the expected keys. `"quantity": "NaN"`, an unknown currency, a missing payment condition, a future-only field, and a typo in `delivery_date` are contract failures with different remediation paths.
 
 **Checkpoint.** Does a `date | None` annotation make a missing date valid? No. The `delivery_date` key remains required. It accepts ISO `YYYY-MM-DD` or explicit JSON `null`; null deterministically becomes application status `needs_review`, while a missing key remains schema-invalid.
 
-**Bridge.** Structural validation checks representation. It cannot establish what the document actually said.
+Structural validation checks representation. It cannot establish what the document actually said.
 
 ## 3. Separate evidence checks from schema checks
 
-### Orienting question: how can an ISO date still be wrong?
+### How can an ISO date still be wrong?
 
 A candidate with `delivery_date=date(2026, 8, 19)` is structurally perfect. It is also wrong for the Atlas document. The final decision therefore needs a deterministic, field-by-field evidence policy.
 
@@ -214,7 +264,10 @@ def parse_labelled_evidence(text: str) -> ProcurementEvidence:
     for line in text.splitlines():
         if ":" in line:
             key, value = line.split(":", maxsplit=1)
-            fields[key.strip().casefold()] = value.strip()
+            key = key.strip().casefold()
+            if key in fields:
+                raise EvidenceError("duplicate source label requires review")
+            fields[key] = value.strip()
 
     try:
         quantity_text, unit = fields["quantity"].replace(",", "").split(maxsplit=1)
@@ -243,6 +296,8 @@ def parse_labelled_evidence(text: str) -> ProcurementEvidence:
         raise EvidenceError("document does not match the labelled-evidence contract") from exc
 ```
 
+Repeated source labels now fail explicitly, even when the repeated values happen to agree. Silently choosing the last supplier or price would hide an ambiguity from the reviewer. The complete lab also rejects unknown labels, malformed numeric grouping, unexpected lines, and unsupported date forms before calling the fake model.
+
 The parser validates both parts of the commercial expression: the connector token must be `per`, and its price unit must equal the quantity unit. Thus `USD 12.00 per ea` beside `Quantity: 1,000 kg` cannot become evidence for this candidate. An absent delivery-date label becomes `None` evidence under the explicit nullable rule; malformed present dates still raise `EvidenceError`. Do not extend this parser by assumption to arbitrary vendor formats.
 
 An explicit comparison owns the acceptance decision:
@@ -268,30 +323,32 @@ def check_evidence(
     pairs = (
         ("supplier_name", evidence.supplier_name, candidate.supplier_name),
         ("product", evidence.product, candidate.product),
-        ("quantity", str(evidence.quantity), str(candidate.quantity)),
+        ("quantity", evidence.quantity, candidate.quantity),
         ("unit", evidence.unit, candidate.unit),
-        ("unit_price", str(evidence.unit_price), str(candidate.unit_price)),
+        ("unit_price", evidence.unit_price, candidate.unit_price),
         ("currency", evidence.currency, candidate.currency),
         ("delivery_date", date_text(evidence.delivery_date), date_text(candidate.delivery_date)),
         ("payment_terms", evidence.payment_terms, candidate.payment_terms),
     )
     return tuple(
-        SemanticCheck(field, expected, actual, expected == actual)
+        SemanticCheck(field, str(expected), str(actual), expected == actual)
         for field, expected, actual in pairs
     )
 ```
 
-Exact string equality is appropriate only because the evidence contract has already normalized this synthetic fixture. Names, units, whitespace, date formats, product aliases, and language variants need a separately specified normalization policy. A fuzzy matcher is not an excuse to accept a candidate because it is “close enough.” If a mismatch could change a financial, delivery, or approval meaning, surface it for review.
+Compare quantities and prices as `Decimal` values: `12.0` and `12.00` represent the same amount here. Keep their original representations in protected source evidence if scale is significant to a different contract. Names, units, and payment conditions use exact text equality in this exercise. Names, units, whitespace, date formats, product aliases, and language variants need a separately specified normalization policy. A fuzzy matcher is not an excuse to accept a candidate because it is “close enough.” If a mismatch could change a financial, delivery, or approval meaning, surface it for review.
 
 **Checkpoint.** Is the evidence parser more trusted than the original document? No. It is deterministic code operating on untrusted text. It produces a reproducible interpretation under a narrow grammar; it does not authenticate the source document.
 
-**Bridge.** The application now knows what to accept. Messages tell the model what candidate to attempt.
+There is an important design lesson in this small example: if every real input follows these labels reliably, the deterministic parser can already extract the data. An LLM would add cost and failure modes without a necessary capability. We retain the model boundary here to study prompting and validation. For free-form contracts, a new evidence policy would need reviewed source spans and ambiguity handling; this label parser is not a general fact checker.
+
+With the checks defined, we can now tell the model which candidate to attempt.
 
 ## 4. Message roles organise context; they do not create trust
 
-### Orienting question: what should a local model receive?
+### What should a local model receive?
 
-Chat interfaces often represent inputs as system, user, and tool messages. Model templates may use those roles to format tokens differently, but role labels are not authorization boundaries.
+Think of a chat request as an envelope with labelled parts. The system message carries the application instruction, the user message carries the request and document, and a tool message carries a recorded tool result. The selected chat template turns those parts into model input. Roles help organise that input; they do not grant a document or parser result authority over the application.
 
 ```python
 from dataclasses import dataclass
@@ -338,13 +395,13 @@ application-owned system message
 
 **Checkpoint.** Does a system message outrank a malicious document as a security mechanism? No. It is a model-conditioning convention, not a privilege enforcement mechanism. The only final enforcement here is deterministic application code.
 
-**Bridge.** With roles understood, choose the smallest prompting method that demonstrates the contract.
+With roles understood, choose the smallest prompting method that demonstrates the contract.
 
 ## 5. Zero-shot, few-shot, and role prompting have different jobs
 
-### Orienting question: what is the least context needed for this extractor?
+### What is the least context needed for this extractor?
 
-A **zero-shot** prompt gives the task and contract without demonstrations. It is the correct baseline for the Atlas document because it reveals whether the output contract is sufficiently clear:
+A **zero-shot** prompt gives the task and contract without demonstrations. Use it as the baseline for the Atlas document: can the model follow the task and contract without a demonstration?
 
 ```text
 Extract only facts explicitly stated in the delimited procurement document.
@@ -363,7 +420,7 @@ Expected handling: produce the contract's explicit missing/null state, or surfac
 candidate as non-valid when the field is required.
 ```
 
-**Role prompting** adds a perspective such as “You are a procurement-document extraction assistant.” It can make the task easier for a model to recognise, but it does not grant domain authority, calibration, access to a vendor system, or permission to approve the outcome. Requirements that deterministic code can check are more valuable than theatrical claims of expertise.
+**Role prompting** adds a perspective such as “You are a procurement-document extraction assistant.” It can make the task easier for a model to recognise, but it does not grant domain authority, calibration, access to a vendor system, or permission to approve the outcome. “Return these fields, and do not invent an absent date” is more useful here than a claim that the assistant is an expert.
 
 ```text
 Useful:   Return only the declared fields and use the supplied document as evidence.
@@ -374,11 +431,11 @@ Insufficient: You are an infallible procurement auditor.
 
 **Checkpoint.** When is few-shot prompting justified? When a versioned, representative example resolves a known mapping ambiguity and a held-out evaluation shows the change improves the declared metric without unacceptable regressions.
 
-**Bridge.** Prompt wording can request JSON. That is not the same as receiving a constrained structured response.
+Prompt wording can request JSON. That is not the same as receiving a constrained structured response.
 
 ## 6. “Return JSON” is weaker than structured output
 
-### Orienting question: why not parse a polished answer after the fact?
+### Why not parse a polished answer after the fact?
 
 There are three increasingly strong output arrangements:
 
@@ -435,13 +492,13 @@ class LocalStructuredModel(Protocol):
 
 The protocol permits a local server adapter, a subprocess adapter, or a deterministic fake in tests. It does not bind the domain to FastAPI, a hosted API, or any model family. “Local” changes where inference runs; it does not make model output, tool output, prompt content, or model artifacts trusted.
 
-**Checkpoint.** If constrained decoding returns valid JSON every time, can the application delete `parse_candidate()` and `check_evidence()`? No. The decoding constraint addresses a generation interface. The application still owns type policy, semantic support, version checks, and final status.
+**Checkpoint.** If constrained decoding keeps returning valid JSON, can the application delete `parse_candidate()` and `check_evidence()`? No. The decoding constraint addresses a generation interface. The application still owns type policy, semantic support, version checks, and final status.
 
-**Bridge.** A constrained model call needs versioned inputs and a failure vocabulary before it can be retried safely.
+A constrained model call needs versioned inputs and a failure vocabulary before it can be retried safely.
 
 ## 7. Make model calls reproducible and failures explicit
 
-### Orienting question: what changed when an extraction changes?
+### What changed when an extraction changes?
 
 An output may change because the document, prompt, schema, model artifact, chat template, decoding configuration, or local runtime changed. Record each separately:
 
@@ -483,11 +540,11 @@ If policy requires raw candidate or prompt retention, store a separately access-
 
 **Checkpoint.** Why version the schema if Pydantic generates it from code? The generated schema still changes when code changes. A stored schema identifier/version tells reviewers which contract governed a durable attempt and exposes compatibility work.
 
-**Bridge.** Now distinguish a failure to receive a response from a response that fails the contract.
+Now distinguish a failure to receive a response from a response that fails the contract.
 
 ## 8. Transport retry and validation repair are not the same operation
 
-### Orienting question: what should happen after a timeout versus an invalid date?
+### What should happen after a timeout versus an invalid date?
 
 A **transport retry** is for an unavailable or incomplete model interaction: local process down, connection reset, timeout, or invalid transport envelope. It resends the exact same immutable request to the same expected boundary under a bounded retry policy. It does not alter the prompt, schema, or document.
 
@@ -575,11 +632,11 @@ When the repair cap is reached, return `needs_review` with preserved attempts an
 
 **Checkpoint.** Why must a transport retry use the same messages? Otherwise it is a new experiment with a hidden prompt change, not recovery from an unavailable boundary.
 
-**Bridge.** The records make retry behavior auditable; tests make it safe to change.
+The records make retry behavior auditable; tests make it safe to change.
 
 ## 9. Assemble an outcome without giving the model the final word
 
-### Orienting question: what does the caller receive when any stage fails?
+### What does the caller receive when any stage fails?
 
 The caller should not need to infer success from a missing exception or parse a model's apology. It receives an explicit result whose status was assigned by the application. `AttemptRecord` carries non-sensitive metadata and candidate digests; raw candidate text belongs only in a separately authorised audit payload when retention policy requires it, not in a casual success payload.
 
@@ -609,11 +666,11 @@ def decide_validation_status(
     checks: tuple[SemanticCheck, ...],
 ) -> tuple[ValidationStatus, str | None]:
     """Assign the application-owned status after deterministic checks."""
+    if not all(check.passed for check in checks):
+        return "invalid", "EVIDENCE_MISMATCH"
     if candidate.delivery_date is None and evidence.delivery_date is None:
         return "needs_review", "DELIVERY_DATE_ABSENT"
-    if all(check.passed for check in checks):
-        return "valid", None
-    return "invalid", "EVIDENCE_MISMATCH"
+    return "valid", None
 ```
 
 The status has a deliberately limited meaning:
@@ -756,6 +813,8 @@ class ProcurementExtractionService:
         return record
 ```
 
+The runnable lab completes the helpers shown here, records **every** model call including transport failures, rejects repeated JSON keys and source labels, and uses distinct initial/repair prompt versions. Its final outcome has two caller-facing states (`valid` and `needs_review`); `SCHEMA_INVALID` and `EVIDENCE_MISMATCH` remain attempt reason codes. In the compact teaching interfaces above, `invalid` describes an individual rejected candidate rather than a permission to consume it.
+
 The service computes `document_sha256` from the exact `document_text`; a caller cannot supply a digest for different text. A document that violates the narrow labelled-evidence grammar returns `needs_review` with `EVIDENCE_POLICY_UNSATISFIED` before model inference. The message-rendering functions are intentionally not implicit in this service. They should accept the fixed document and explicitly versioned prompt text, produce tuples of `ChatMessage`, and be unit tested separately. Repair uses the same document and unchanged response schema; it has a separately recorded message version in a fuller implementation, for example `procurement-extract-repair/1.0.0`. For compactness, the snippet stores the base prompt version in `AttemptRecord`; production evidence should store both base and repair prompt identifiers when they differ.
 
 There is one detail to make explicit: `call_with_transport_retries()` above retries internally, but `AttemptRecord` should ultimately represent each transport attempt as well as each response/repair attempt. The compact code records the final exhausted transport result, which is enough to show outcome control flow but not enough for a complete operational audit. In a production implementation, inject an attempt callback into the retry helper and append a record for every timeout, reset, and successful response. Do not invent missing failures after the fact.
@@ -764,11 +823,11 @@ The method returns `needs_review` after the cap because it has not established a
 
 **Checkpoint.** Why does a final evidence mismatch end as `needs_review` rather than being silently dropped? It is a useful, reproducible observation: the model produced a typed value that the configured source policy could not support. Preserving the metadata, reason, and optional authorised audit payload enables review and evaluation.
 
-**Bridge.** With the final status owned by deterministic code, tests can distinguish every status transition from a model's wording.
+With the final status owned by deterministic code, tests can distinguish every status transition from a model's wording.
 
 ## 10. Test the contract, not a particular model's phrasing
 
-### Orienting question: which behavior can be proven without starting a model?
+### Which behavior can be proven without starting a model?
 
 Most of this workflow is deterministic. Test it with an injected fake, fixed document, and fixed clock; reserve real local inference for an explicit integration environment. The following pytest-style tests describe behavior at the narrowest useful boundary:
 
@@ -911,11 +970,11 @@ The test uses `{}` because it tests transport recovery only; schema parsing belo
 
 **Checkpoint.** Why is the date-mismatch test essential even when schema tests pass? It proves the distinction between a parseable value and an evidence-supported extraction, which is the central trust boundary.
 
-**Bridge.** Unit tests prove policies on chosen cases. Prompt sensitivity needs a controlled experiment across cases and variants.
+Unit tests prove policies on chosen cases. Prompt sensitivity needs a controlled experiment across cases and variants.
 
 ## 11. Measure prompt sensitivity instead of arguing from one response
 
-### Orienting question: what if an innocuous wording change changes the delivery date?
+### What if an innocuous wording change changes the delivery date?
 
 Prompt sensitivity is variation in output caused by changes to instruction wording, message order, delimiter form, examples, schema rendering, template, or generation settings. Some variation is expected from stochastic generation; decision-critical variation must be measured, not dismissed as “model personality.”
 
@@ -952,11 +1011,11 @@ Human review is most useful at the semantic boundary. Blind the prompt and model
 
 **Checkpoint.** If prompt B has a higher schema-pass rate but doubles the unsupported-date rate, is it better? Not under this contract. Structural validity and evidence support are separate required dimensions.
 
-**Bridge.** An evaluation only supports the configuration it tested. Promotion and rollback keep that boundary operational.
+An evaluation only supports the configuration it tested. Promotion and rollback keep that boundary operational.
 
 ## 12. Promote a configuration deliberately, and make reversal ordinary
 
-### Orienting question: what changes when a new prompt wins the held-out set?
+### What changes when a new prompt wins the held-out set?
 
 An evaluation result is evidence, not automatic authority to replace a working configuration. Promotion should name the exact candidate configuration: prompt and example bundle, repair message, schema, evidence policy, local model artifact, runtime/template, constrained-decoding setting, and generation configuration. A reviewer can then compare it against the current configuration on the same fixed evaluation set.
 
@@ -992,7 +1051,7 @@ An increase in `SCHEMA_INVALID` after a local-runtime upgrade points to a differ
 
 **Checkpoint.** Why is rollback part of prompt versioning? Prompt and schema changes are deployed behavior. If a new version degrades a declared metric, returning to an exact known configuration is safer than improvising another mutation during the incident.
 
-**Bridge.** Promotion preserves controlled behavior. The remaining pitfalls are mostly ways teams accidentally hide the evidence they need.
+Promotion preserves controlled behavior. The remaining pitfalls are mostly ways teams accidentally hide the evidence they need.
 
 ## 13. Common mistakes and the corrective question
 
@@ -1076,6 +1135,97 @@ The model cannot authoritatively certify itself. The status must result from det
 9. It is generated text unless independently calibrated for the stated setting; validation status and evidence are actionable instead.
 10. Evidence-supported acceptance rate or unsupported-field rate, not schema-pass rate alone.
 
+## 16. Guided build: run the boundary, then break it deliberately
+
+The repository contains the complete exercise in `labs/week_04/extractor.py`, with tests in `tests/test_week04_extractor.py`. The definitions earlier in the lesson introduce one component at a time; the lab supplies the full working sequence.
+
+From the repository root, use your Python environment and the existing dependency files:
+
+```shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_04.extractor
+python -m pytest tests/test_week04_extractor.py -q
+```
+
+The demonstration uses a scripted candidate, so it needs no GPU, model download, token, or hosted account. Its expected result is `validation_status: valid`, one recorded attempt, and a typed candidate containing the eight source fields. The printed `demo_mode` explicitly says that no LLM call occurred. This proves the validation path works for the fixture; it does not measure a model's extraction accuracy.
+
+Follow the build in four steps:
+
+1. **Read the contract.** Locate the decimal-string validator, the required-but-nullable date, and the extra-field rule. Explain which errors each can reject before running a test.
+2. **Follow one success.** The service validates the labelled source, builds versioned messages and a schema, receives a scripted candidate, parses it, and compares typed values with the evidence.
+3. **Follow two failures.** An unknown source label returns `DOCUMENT_INVALID` before a model call. A schema-valid candidate with the wrong date produces `EVIDENCE_MISMATCH` and can use a bounded repair.
+4. **Inspect the attempts.** A timeout followed by a response creates two records with the same request fingerprint. A repair changes the prompt version while keeping source and schema unchanged.
+
+With two transport attempts per round and one repair round, the maximum is `(1 + 1) × 2 = 4` model calls. A returned candidate failure starts repair; it does not consume another transport retry. A missing source date is not repaired into an invented date.
+
+The lab stores records in memory so you can inspect them. It does not implement durable audit storage, a server lifecycle, backoff/deadline scheduling, a real runtime adapter, or privacy controls for production data. Supply those through explicit boundaries before calling it a deployed service.
+
+## 17. Independent exercises
+
+### Exercise 1: name the failure before fixing it
+
+Create four candidate variants: a missing `delivery_date` key, explicit null, a malformed date, and a valid ISO date that disagrees with the source. Predict the structural and evidence outcomes, then test them.
+
+**Acceptance:** your explanation distinguishes missing, null, malformed, and unsupported values. Only the supported date can become `valid`; an absent source date remains `needs_review`.
+
+### Exercise 2: protect commercial meaning
+
+Change `"12.00"` to `"12.0"`, then change `Net 30 after inspection approval` to `Net 30`. Explain why the first can preserve numeric meaning while the second drops a material condition.
+
+**Acceptance:** the decimal comparison passes; the payment-term comparison fails. No fuzzy matcher hides the difference.
+
+### Exercise 3: build one few-shot variant
+
+Start with the zero-shot instruction. Add one development example demonstrating an absent delivery date. Record a new prompt/example version, then compare it on held-out cases with all other settings fixed.
+
+**Acceptance:** examples and holdout IDs are disjoint; your log includes prompt/schema/model/runtime/settings identities. Report counts of schema failures and unsupported fields separately. If you have not run a real model, leave quality measurements marked unmeasured.
+
+### Exercise 4: make recovery observable
+
+Use a scripted boundary that times out, returns invalid JSON, times out again, and finally returns a valid candidate. Then repeat with a permanently invalid last response.
+
+**Acceptance:** there are at most four calls under the default caps, every call is recorded, transport retries preserve fingerprints, and repairs use a different prompt version. The permanently invalid sequence ends in `needs_review`.
+
+### Exercise 5: test a hostile or ambiguous document
+
+Append a second supplier label, then append an instruction-like line. State which exact source-policy rule rejects each. Try a malicious sentence inside a permitted text field as well: rejection of unknown labels alone does not prove general prompt-injection resistance.
+
+**Acceptance:** duplicated labels are never resolved by overwrite. The source cannot add fields or set status, and no response authorizes a side effect. Describe the remaining limitations of a broader free-form parser.
+
+### Exercise 6: explain a regression to another engineer
+
+Suppose prompt A passes schema on 9/10 returned candidates and has one unsupported field; prompt B passes on 10/10 and has three unsupported fields. Write a short recommendation using those counts and their denominators.
+
+**Acceptance:** do not select B merely for prettier JSON. State which metric improved, which regressed, and what additional evidence you need. These numbers are a reasoning exercise, not observed benchmark results.
+
+## 18. Mini-project and definition of done
+
+Build a procurement-document extractor whose model candidate contains supplier name, product, unit price, quantity, unit, delivery date, payment terms, and currency. Return the application-owned validation status alongside it. Keep the schema, evidence policy, messages, model boundary, and recovery policy separately testable.
+
+Use the [twelve synthetic evaluation cases](https://github.com/kogantisasank831-ux/Prep/blob/main/labs/week_04/evaluation_cases.jsonl) as a starting point. Six cases are marked `development`; six are marked `holdout`. They cover changed suppliers, decimal quantities, `ea` units, conditional payment terms, missing dates, malformed source values, duplicate labels, and instruction-like text. The labels describe the intended outcome under this lab's narrow USD-only grammar; they are not model-generated scores. Keep holdout cases out of prompt examples and prompt selection, and add new cases after failures.
+
+| Deliverable | Evidence you should retain |
+| --- | --- |
+| Output contract | generated schema, version, decimal/date/nullability policy |
+| Messages | zero-shot baseline, optional few-shot variant, exact versions or content digests |
+| Validation | schema errors kept separate from unsupported source values |
+| Recovery | per-call attempt records, fixed caps, unchanged transport requests |
+| Evaluation | case IDs, split, expected results, model configuration, counts and denominators |
+| Handoff | one working demonstration, tests, failure examples, and known limitations |
+
+You are done when you can demonstrate all of the following:
+
+- [ ] A clear supported document produces the required fields and `valid` status.
+- [ ] Missing keys, extra status/confidence fields, invalid dates, invalid decimals, and repeated JSON keys fail visibly.
+- [ ] Source ambiguity, unit mismatch, and unsupported values never become valid through guessing.
+- [ ] `12.0` and `12.00` compare as numbers; payment conditions retain their exact meaning.
+- [ ] Every model call is recorded; transport and repair caps are independently enforced.
+- [ ] No raw document or candidate appears in routine attempt metadata; hashes are not described as encryption or raw-data retention.
+- [ ] Fake-based tests and real-model observations are clearly labelled and never combined into one quality score.
+- [ ] You can answer the structured-output interview question without suggesting that schema validation proves truth.
+
+Finish by updating your interview notebook, evaluation log, weekly changelog, and a short decision note on why the caller owns status. If you use only the offline lab this week, record real-model quality as unmeasured. In Week 5, the focus changes to finding relevant documents with embeddings; extraction remains a separate boundary.
+
 ## Next action: implement the narrow boundary first
 
 Start with `ExtractionCandidate`, `parse_candidate`, the labelled evidence parser, and their deterministic tests. Then add the injected local adapter and attempt records. Only after the controlled evaluation set exists should a prompt, model artifact, schema change, or constrained-decoding mode be promoted for this workflow.
@@ -1085,6 +1235,10 @@ The scope intentionally stops before retrieval, autonomous tool calls, procureme
 ## Primary documentation
 
 - [Pydantic v2: Models](https://docs.pydantic.dev/latest/concepts/models/)
+- [Hugging Face: Chat templates](https://huggingface.co/docs/transformers/main/chat_templating)
+- [Pydantic v2: Strict mode](https://docs.pydantic.dev/latest/concepts/strict_mode/)
+- [Python 3.13: JSON decoding and duplicate names](https://docs.python.org/3.13/library/json.html#repeated-names-within-an-object)
+- [JSON Schema: object properties, required fields, and extra properties](https://json-schema.org/understanding-json-schema/reference/object)
 - [Pydantic v2: JSON Schema](https://docs.pydantic.dev/latest/concepts/json_schema/)
 - [Python 3.13: `decimal`](https://docs.python.org/3.13/library/decimal.html)
 - [Python 3.13: `datetime`](https://docs.python.org/3.13/library/datetime.html)

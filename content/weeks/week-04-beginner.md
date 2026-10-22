@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 4
+phase: 1
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-21
+estimated_hours: 8
 permalink: /weeks/week-04/beginner/
 title: "Prompting and structured output: a beginner's introduction"
 description: Learn to turn one procurement document into typed, reviewable data without trusting a model's prose.
@@ -11,7 +17,7 @@ alternate_label: Production version
 alternate_url: /weeks/week-04/
 ---
 
-## One document, one bounded job
+## From a readable document to predictable data
 
 Imagine an operations inbox receives this synthetic procurement document:
 
@@ -26,7 +32,7 @@ Delivery date: 2026-08-18
 Payment terms: Net 30 after inspection approval
 ```
 
-An analyst can read this in seconds. A downstream system cannot safely rely on someone copying it into a spreadsheet, nor can it reliably consume an assistant response such as “Atlas will deliver copper wire for twelve dollars next month.” We want an extractor that returns the facts in a predictable shape:
+An analyst can understand this quickly. A program needs more help: which number is the quantity, which currency belongs to the price, and does the payment condition depend on an inspection? A response such as “Atlas will deliver copper wire for twelve dollars next month” leaves those questions open. We want each fact under a predictable field name:
 
 ```json
 {
@@ -44,9 +50,15 @@ An analyst can read this in seconds. A downstream system cannot safely rely on s
 
 This is the application's final result, including its validation status. The model may propose the source fields, but it does not produce the authoritative status and is not the authority on whether a field is true. The document is still untrusted input, model output is still untrusted input, and a syntactically valid JSON object may still contain the wrong supplier, a guessed date, or a swapped currency.
 
-This lesson follows that one document from raw text to a bounded extraction result. The goal is not to make an assistant sound convincing. It is to define a contract, check it deterministically, preserve evidence for review, and expose failure instead of silently inventing a value.
+We will follow that document through the whole process: define the fields, ask for a candidate, check its shape, compare its values with the source, and decide whether it can be used. When information is missing, a visible review result is more useful than a plausible guess.
 
 **Checkpoint.** Does valid JSON prove that Atlas Metals agreed to the stated terms? No. It proves only that some text has the required JSON shape. Factual support still needs evidence from the supplied document and the appropriate business review.
+
+### What you need for this lesson
+
+You should recognise a Python function, a JSON object, and a basic test. Week 1 introduces the validation habits; Week 3 explains why a model can produce a plausible but unsupported answer. You can run this week's offline lab without a GPU or an API key.
+
+Your target is to explain five things in your own words: what message roles do, how examples affect prompting, why a schema helps, why evidence checks are separate, and when to stop retrying. Spend about two hours on the explanations, then use the practical work in the production version for the rest of your eight-hour week.
 
 ## The extraction contract comes before the prompt
 
@@ -99,8 +111,9 @@ For a simple extractor, make the task boundary clear with delimiters. Delimiters
 
 ```text
 Extract only facts explicitly stated in the procurement document.
-Return one JSON object matching the supplied schema.
-Do not infer missing values. Use the validation-status rules.
+Return one candidate JSON object matching the supplied schema.
+Do not infer missing values. Use null only where the schema permits it.
+Do not add validation_status or confidence; the application sets status.
 
 <procurement_document>
 Supplier: Atlas Metals
@@ -159,7 +172,7 @@ It does not give the model procurement expertise, access to a contract system, p
 ```text
 Extract only text supported by the delimited document.
 Return fields exactly as defined by the schema.
-For an absent required field, do not guess; return the declared non-valid status.
+For an absent delivery date, use null. Do not guess or add a status field.
 ```
 
 Role language can remain as a small orienting sentence. The extraction contract, schema, validation, evidence capture, and review policy do the safety-critical work.
@@ -223,6 +236,8 @@ class ProcurementCandidate(BaseModel):
 
 `extra="forbid"` prevents unnoticed fields—including a model-authored status or confidence—from slipping through the stated candidate contract. `Decimal` and `date` express the types needed by the application after parsing. The annotation `date | None` has no default, so the key remains required even though its value may be null. The application assigns a null date `needs_review` after validation; the candidate cannot certify itself. The `Literal` examples are intentionally narrow for this bounded exercise; a real currency or unit policy should be explicitly designed, not expanded implicitly by a model response.
 
+This short model illustrates the types. The complete lab adds decimal-string checks, non-blank text rules, repeated-key rejection, and input/output size bounds. In particular, `strict=True` by itself does not mean “all JSON prices must be strings.” That wire rule needs an explicit validator.
+
 Because the candidate arrives as JSON, validate the raw JSON bytes or text with `ProcurementCandidate.model_validate_json(...)`. Pydantic's strict JSON handling can convert the JSON string forms shown above into `Decimal` and `date`; validating an already-decoded Python dictionary follows different strict-conversion rules.
 
 Validation can establish facts such as “quantity is a positive decimal” and “delivery date parses as an ISO date.” It cannot establish “this delivery date was actually stated in the document.” Add separate semantic checks and evidence where needed. One simple approach is to preserve the source span or quoted text supporting each field, then compare it with the candidate value under a deterministic normalization policy.
@@ -262,7 +277,7 @@ Failures have different causes and need different handling.
 
 A **transport retry** addresses a failure before a usable model response arrives: a local runtime is temporarily unavailable, a connection resets, or a timeout occurs. It should be bounded, use a documented backoff policy, and preserve the original request identity. Repeating it does not change the task or prompt.
 
-A **validation repair** begins after a response arrives but fails parsing, schema validation, or a declared semantic check. The repair request should say what failed while preserving the original document, contract, and candidate. For example:
+A **validation repair** begins after a response arrives but fails parsing, schema validation, or a declared semantic check. The repair request should say what failed while preserving the original document and contract. Keep a digest or separately authorised record of the failed candidate; request a replacement rather than treating the previous answer as evidence. For example:
 
 ```text
 The previous candidate failed validation because delivery_date must use YYYY-MM-DD.
@@ -274,7 +289,7 @@ This is not permission to keep asking until a convenient answer appears. Cap rep
 ```text
 attempt 1: candidate fails date validation
 attempt 2: explicit repair candidate fails evidence check
-attempt 3: stop; status = needs_review, preserve both attempts
+stop after the cap: status = needs_review, preserve both model-call records
 ```
 
 Avoid silent prompt mutation such as automatically adding increasingly forceful instructions without recording them. It destroys reproducibility and can conceal a model's sensitivity to wording. It is also dangerous to retry a validation failure as though it were a network error: the two failures signal different operational problems.
@@ -338,6 +353,41 @@ valid result or preserved needs-review outcome
 
 This Week 4 scope ends at extraction and validation. It does not retrieve external knowledge, execute tools on a model's behalf, update a procurement system, or decide that payment is due. Those functions require distinct future designs and controls.
 
+## Try it in a small working lab
+
+The [Week 4 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_04) gives you the complete example. From the repository root, with the project's Python dependencies installed, run:
+
+```shell
+python -m labs.week_04.extractor
+python -m pytest tests/test_week04_extractor.py -q
+```
+
+The demonstration uses a scripted response. It is a way to learn validation and recovery without first operating a model server. The output says `scripted; no LLM call`; it should show `valid` and one attempt. No inference accuracy or speed can be inferred from that result.
+
+Try these three changes before reading the assertions in the tests:
+
+1. Change the candidate's date to `2026-08-19`. It still looks like a date, so structural parsing succeeds. Comparison with the source rejects it.
+2. Remove the date from the document and set the candidate's date to null. This is honest missing-data handling, so the application returns `needs_review` without asking for an invented date.
+3. Shorten the payment term to `Net 30`. The missing inspection condition changes meaning, so the evidence check fails. By comparison, price strings `12.0` and `12.00` become equal decimal values.
+
+Now imagine a timeout. Repeating the same request can recover a temporary connection problem. If a response arrived but contained a bad candidate, the next request is a recorded repair with a different prompt version. With two transport attempts and one repair round, there can be at most four model calls, not an endless loop.
+
+### A limitation worth understanding
+
+For a document that always uses these exact labels, a deterministic parser can already extract the values. We use a model proposal here to study the application boundary. A real project should add an LLM only when it provides a needed capability, such as handling broader wording. That broader input would need a new evidence policy; this lab's label parser cannot verify arbitrary free-form contracts.
+
+### A short knowledge check
+
+1. The model returns an extra `confidence: 0.99`. Should the application trust it?
+2. The candidate contains `2026-08-19`, while the source says `2026-08-18`. Which check fails?
+3. A few-shot prompt passes the one example you included in it. Have you shown it generalises?
+4. Why does null differ from a missing key?
+5. Who decides whether the final result is `valid`?
+
+**Answers:** (1) No; this contract rejects the extra field. (2) The source-evidence check, even though the date is well-formed. (3) No; test separate held-out cases. (4) Null explicitly represents absence where permitted; a missing required key violates the contract. (5) Deterministic application checks, never the candidate itself.
+
+For your interview notebook, practise this answer: “Structured output gives software named fields and a checkable contract. It avoids reparsing changing prose. It still needs evidence checks, because a perfectly valid object can contain the wrong facts.”
+
 ## Readiness checklist
 
 - [ ] I can define an extraction contract before choosing prompt wording.
@@ -352,3 +402,9 @@ This Week 4 scope ends at extraction and validation. It does not retrieve extern
 - [ ] I can describe a prompt-sensitivity evaluation without assuming local or hosted output is trusted.
 
 Continue with the [production version]({{ '/weeks/week-04/' | relative_url }}). It hardens this contract with fuller interfaces, failure handling, tests, and operational trade-offs.
+
+## Further reading
+
+- [Pydantic strict mode and JSON input](https://docs.pydantic.dev/latest/concepts/strict_mode/)
+- [Pydantic JSON Schema generation](https://docs.pydantic.dev/latest/concepts/json_schema/)
+- [JSON Schema object requirements](https://json-schema.org/understanding-json-schema/reference/object)
