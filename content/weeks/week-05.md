@@ -1,7 +1,13 @@
 ---
 layout: week
+week: 5
+phase: 2
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-05/
-title: "Embeddings and vector retrieval: build a defensible local search boundary"
+title: "Embeddings and vector retrieval: find useful source passages"
 description: Build a typed, local-only semantic-search baseline that protects document access, preserves vector provenance, and measures retrieval rather than mistaking similarity for truth.
 summary: Follow P-101 through P-104 from bounded procurement documents to an authorization-filtered exact cosine index, a versioned manifest, and a controlled evaluation of retrieval quality and ANN trade-offs.
 kicker_primary: Embeddings and vector retrieval
@@ -11,11 +17,13 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-05/beginner/
 ---
 
-## Four documents, one retrieval boundary
+## Find the clause an analyst actually needs
 
-Week 4 turned a purchase confirmation into a typed candidate and required visible document evidence before accepting any extracted field. That discipline continues here. Retrieval does not answer a procurement question; it selects source passages that may be worth reading.
+In Week 4, we checked whether extracted fields were supported by a supplied document. Now imagine the analyst has hundreds of documents and does not yet know which one contains the needed clause. Before extracting or answering anything, we need a way to find useful passages.
 
-The synthetic corpus remains deliberately small:
+We will start with four synthetic documents so that you can read the whole collection and judge every search result yourself.
+
+Keep these four records in mind throughout the lesson:
 
 ```text
 P-101 | Atlas Metals purchase confirmation
@@ -41,9 +49,9 @@ An authorised analyst asks:
 
 > Which supplier documents state that approval or sign-off is required before payment?
 
-The expected candidates are P-101 and P-104. P-103 is related to inspection and quality, but it does not state a payment condition. P-102 mentions invoice terms, but not approval. A system that returns P-103 above either expected record is not merely “a little vague”: it has failed the declared retrieval intent.
+The expected candidates are P-101 and P-104. P-103 is related to inspection and quality, but it does not state a payment condition. P-102 mentions invoice terms, but not approval. Returning P-103 first would be an understandable error: it shares language about inspection and quality. But the analyst asked about a payment condition. Related subject matter does not satisfy that request.
 
-The goal is a narrow semantic-search service with these properties:
+Our first implementation follows a short path. Each result keeps its source identity, version, and text so the analyst can check it:
 
 ```text
 untrusted sensitive documents
@@ -64,17 +72,34 @@ No component generates an answer, writes to a procurement system, approves payme
 
 ### What this lesson proves, and what it does not
 
-The code below proves deterministic behavior of its contracts on a synthetic corpus. It proves that a denied object is excluded before scoring, that an incompatible embedder is refused, that ranking ties resolve predictably, and that the exact index returns the expected synthetic candidates. It does **not** prove that a toy embedder understands procurement language, that a chosen local model is safe or licensed, or that a high cosine score establishes a contractual fact.
+The runnable examples let us test concrete behavior: an unauthorised object is excluded before scoring, an incompatible embedder is rejected, ties have a stable order, and the fixture returns the two expected candidates. It does **not** prove that a toy embedder understands procurement language, that a chosen local model is safe or licensed, or that a high cosine score establishes a contractual fact.
 
 The scope stops at retrieval. Detailed long-document splitting is deferred to Week 6. This system returns only selected source records; it has no generated answer, external service, database infrastructure, or capability invocation.
 
 **Checkpoint.** If P-104 is retrieved, what may the caller conclude? Only that the stored P-104 text is a candidate relevant to the query under this model, metric, and index. The caller must inspect its text, identity, active version, and business context before asserting a payment rule.
 
+### Before you begin
+
+You need basic Python, frozen dataclasses, exceptions, and tests from Week 1, plus the vector intuition from Week 3. Week 4's separation of a candidate from a verified fact is useful here too. The core lab uses the standard library and an injected embedding interface; no orchestration framework, vector database service, GPU, or API key is needed for the teaching run.
+
+By the end, you should be able to:
+
+- trace loading, initial chunking, document embedding, storage, query embedding, and top-k search;
+- calculate dot product, Euclidean distance, and cosine similarity and explain their ranking differences;
+- enforce vector dimensions, model/preprocessing identity, source versions, and access policy;
+- distinguish exact nearest neighbours, ANN neighbour recall, and human-labelled relevance;
+- evaluate a model and a value of `k` on the intended procurement task;
+- explain why a fluent semantic match can still miss an entity, negation, number, or payment condition.
+
+Plan for eight hours: two on concepts, one on interview and recall practice, three on the guided lab, and two on tests, metrics, and your evaluation log. Read the vector intuition before assembling the index. Treat an actual model run as an additional integration step when you already have an approved local embedding artifact.
+
+The [Week 5 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_05) contains the four-document JSONL corpus, twelve labelled practice queries, exact retrieval, metric calculations, tests, and an optional local Sentence Transformers adapter. The default teaching embedder uses hand-written features; its rankings are fixtures, not a learned semantic model's accuracy.
+
 ## 1. Semantic embeddings are model outputs, not facts
 
-### Orienting question: what has changed when text becomes a vector?
+### What has changed when text becomes a vector?
 
-An **embedding** is a fixed-width vector of numbers produced for text by an embedding model. The model is trained so that texts used in related contexts often occupy useful nearby positions under a chosen metric. It is a representation optimized for a task family, not an explanation of text and not a live lookup into the source system.
+An **embedding** is a fixed-width vector produced from text by an embedding model. Training gives the vector space useful structure: related inputs can have nearby representations under a chosen comparison rule. This gives us a way to rank a passage saying “signs off” for a query saying “approval,” even when the exact words differ. The vector remains a compressed representation; it does not explain or authenticate the passage.
 
 For intuition only, imagine:
 
@@ -99,11 +124,11 @@ Embeddings are distinct from three nearby concepts:
 
 Treat any embedding as untrusted model output. It is derived from untrusted text, can leak corpus membership or sensitive semantic content, and can be corrupted by an adapter fault or configuration mismatch. Store it only under the same tenant and retention controls as the source. Do not let a client submit arbitrary vectors into a shared index, and never accept a caller-supplied tenant or document identifier as authorization.
 
-**Bridge.** A vector is useful only relative to the model convention that produced it. Query/document roles make that convention explicit.
+A vector is useful only relative to the model convention that produced it. Query/document roles make that convention explicit.
 
 ## 2. Query and document representations may be asymmetric
 
-### Orienting question: why not call one `embed(text)` method everywhere?
+### Why not call one `embed(text)` method everywhere?
 
 In a symmetric similarity task, both inputs play the same role: “Are these two sentences related?” A single representation function can be appropriate. Retrieval has different roles. A short analyst query asks for evidence; a document or passage supplies evidence. An embedding model may be trained with distinct query and document encoders, or with role-specific prefixes/instructions, to make this asymmetric relation useful.
 
@@ -137,9 +162,11 @@ That arithmetic explains why dimension affects storage, memory bandwidth, latenc
 
 **Checkpoint.** Can a 768-dimensional query be compared with a 384-dimensional document vector? No. The operation is undefined. A dimension match is necessary, but it is not enough: two unrelated models can emit the same width.
 
+For a concrete storage estimate, 100,000 vectors with 384 float32 coordinates need `100000 × 384 × 4 = 153,600,000` bytes, or 153.6 MB, for packed coordinates alone. At 768 dimensions that becomes 307.2 MB. Source text, IDs, metadata, index structures, and runtime allocations add to that amount. The lab's Python tuples and Python floats consume more than packed float32 storage; do not use this calculation as a measured process-memory result or a hardware-fit guarantee.
+
 ## 3. Similarity metrics encode different geometry
 
-### Orienting question: what exactly does a score compare?
+### What exactly does a score compare?
 
 Let `a` and `b` be equal-length vectors. Three common comparisons are worth keeping separate.
 
@@ -196,9 +223,9 @@ The baseline below stores normalized vectors and still calls `cosine_similarity`
 
 ## 4. State retrieval invariants before starting a local model
 
-### Orienting question: what must be impossible rather than merely discouraged?
+### What must be impossible rather than merely discouraged?
 
-The service has six non-negotiable invariants:
+Before writing the search loop, agree on six rules that its tests can check:
 
 1. An indexed source record has a non-empty tenant, immutable document ID/version, bounded text, and SHA-256 content digest.
 2. Initial chunking makes exactly one chunk from one already-short document. It never silently truncates or splits a longer document.
@@ -209,7 +236,9 @@ The service has six non-negotiable invariants:
 
 These are small but consequential contracts. They make a failure explicit at the right boundary rather than producing a plausible result after an incompatible rebuild or unauthorised search.
 
-The Python 3.13 baseline uses only the standard library. It models a local adapter with a `Protocol`; an actual approved local runtime belongs behind that protocol. No lesson code downloads a model, starts a server, or sends a document over the network.
+The baseline uses standard-library Python, with stable norms and explicit finite-value checks to avoid avoidable overflow/underflow during cosine calculation. Boolean values are rejected as vector coordinates. The index checks adapter identity both before and after embedding calls, so an observed configuration change cannot silently enter a build or query. These checks compare exposed metadata; they do not authenticate a dishonest adapter.
+
+The Python 3.13-style baseline uses only the standard library. It models a local adapter with a `Protocol`; an actual approved local runtime belongs behind that protocol. No lesson code downloads a model, starts a server, or sends a document over the network.
 
 ```python
 from __future__ import annotations
@@ -218,7 +247,7 @@ from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from hashlib import sha256
-from math import isfinite, sqrt
+from math import fsum, hypot, isfinite
 from re import fullmatch
 from typing import Protocol, Self
 
@@ -226,7 +255,7 @@ from typing import Protocol, Self
 Vector = tuple[float, ...]
 MAX_DOCUMENT_CHARS = 1_000
 MAX_TITLE_CHARS = 200
-INDEX_SCHEMA_VERSION = "procurement-semantic-index/1.0.0"
+INDEX_SCHEMA_VERSION = "procurement-semantic-index/1.1.0"
 SOURCE_ID_PATTERN = r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}"
 
 
@@ -257,13 +286,16 @@ def digest_text(value: str) -> str:
 def validate_vector(vector: Vector) -> None:
     if not vector:
         raise VectorInvariantError("vectors must be non-empty")
-    if any(not isfinite(value) for value in vector):
+    if any(type(value) not in (int, float) or not isfinite(value) for value in vector):
         raise VectorInvariantError("vectors must contain only finite values")
 
 
 def l2_norm(vector: Vector) -> float:
     validate_vector(vector)
-    return sqrt(sum(value * value for value in vector))
+    length = hypot(*vector)
+    if not isfinite(length):
+        raise VectorInvariantError("vector norm exceeds finite range")
+    return length
 
 
 def dot_product(left: Vector, right: Vector) -> float:
@@ -271,7 +303,13 @@ def dot_product(left: Vector, right: Vector) -> float:
     validate_vector(right)
     if len(left) != len(right):
         raise VectorInvariantError("vectors must have matching dimensions")
-    return sum(a * b for a, b in zip(left, right, strict=True))
+    try:
+        value = fsum(a * b for a, b in zip(left, right, strict=True))
+    except (OverflowError, ValueError) as exc:
+        raise VectorInvariantError("dot product exceeds finite range") from exc
+    if not isfinite(value):
+        raise VectorInvariantError("dot product exceeds finite range")
+    return value
 
 
 def euclidean_distance(left: Vector, right: Vector) -> float:
@@ -279,31 +317,35 @@ def euclidean_distance(left: Vector, right: Vector) -> float:
     validate_vector(right)
     if len(left) != len(right):
         raise VectorInvariantError("vectors must have matching dimensions")
-    return sqrt(sum((a - b) ** 2 for a, b in zip(left, right, strict=True)))
+    distance = hypot(*(a - b for a, b in zip(left, right, strict=True)))
+    if not isfinite(distance):
+        raise VectorInvariantError("distance exceeds finite range")
+    return distance
 
 
 def normalize(vector: Vector) -> Vector:
-    length = l2_norm(vector)
-    if length == 0.0:
+    validate_vector(vector)
+    scale = max(abs(value) for value in vector)
+    if scale == 0.0:
         raise VectorInvariantError("cannot normalize a zero vector")
-    return tuple(value / length for value in vector)
+    scaled = tuple(value / scale for value in vector)
+    length = hypot(*scaled)
+    return tuple(value / length for value in scaled)
 
 
 def cosine_similarity(left: Vector, right: Vector) -> float:
-    left_length = l2_norm(left)
-    right_length = l2_norm(right)
-    if left_length == 0.0 or right_length == 0.0:
-        raise VectorInvariantError("cosine similarity is undefined for zero vectors")
-    return dot_product(left, right) / (left_length * right_length)
+    # Normalize before multiplying to avoid overflow/underflow in norm products.
+    value = dot_product(normalize(left), normalize(right))
+    return max(-1.0, min(1.0, value))
 ```
 
 The functions are pure and testable. Empty vectors and non-finite values such as `NaN` or infinity are rejected before they can undermine norm and ordering checks. `VectorInvariantError` deliberately distinguishes an invalid vector from a document loader failure or a runtime failure. Callers can expose a safe operational status without suppressing the cause, while logs should record identifiers and digests rather than sensitive document/query text.
 
-**Bridge.** The math contract protects comparison; source records protect the text and tenant relationship being compared.
+The math contract protects comparison; source records protect the text and tenant relationship being compared.
 
 ## 5. Load bounded source records and make the initial chunk policy explicit
 
-### Orienting question: what information must survive embedding?
+### What information must survive embedding?
 
 Embedding a naked string loses the identity needed to explain or authorise a result. Preserve tenant, document ID, immutable document version, content digest, and original text in frozen records. The loader treats its inputs as untrusted values. It validates size and identifiers, but it is not an upload parser: type allowlists, file scanning, parser isolation, retention, and audit logging belong at the actual file-ingestion boundary.
 
@@ -359,6 +401,11 @@ def load_documents(records: Iterable[UntrustedDocument]) -> tuple[SourceDocument
             raise DocumentRejectedError("document title exceeds the bounded policy")
         if len(record.text) > MAX_DOCUMENT_CHARS:
             raise DocumentRejectedError("document exceeds the initial bounded policy")
+        try:
+            record.title.encode("utf-8")
+            record.text.encode("utf-8")
+        except UnicodeEncodeError as exc:
+            raise DocumentRejectedError("source must be valid UTF-8 text") from exc
         seen.add(identity)
         loaded.append(
             SourceDocument(
@@ -399,7 +446,7 @@ The content digest lets an operator distinguish “P-101 version 1 with these ex
 
 ## 6. Inject a local embedding adapter and version its behavior
 
-### Orienting question: where does model-specific code stop?
+### Where does model-specific code stop?
 
 The index depends on an interface, not an embedding library. `EmbeddingModelIdentity` makes the model artifact, runtime, preprocessing, dimension, metric, and query/document mode durable inputs to compatibility checks. `LocalEmbeddingAdapter` separates query and document calls. An adapter may call a loopback process, an in-process local library, or a test fake; the index does not need to know which.
 
@@ -424,7 +471,7 @@ class EmbeddingModelIdentity:
         )
         if not all(value.strip() for value in text_fields):
             raise ValueError("embedding identity fields must be non-empty")
-        if self.dimension < 1:
+        if type(self.dimension) is not int or self.dimension < 1:
             raise ValueError("embedding dimension must be positive")
 
     def fingerprint(self) -> str:
@@ -491,15 +538,15 @@ The fake maps a few lexical features to the same dimensions and thereby makes th
 
 A real local adapter should implement the same protocol and add bounded batch sizes, timeouts, explicit `EmbeddingRuntimeError` translation, artifact verification, controlled runtime configuration, and redacted observability. It should never silently fall back to a remote endpoint. The adapter identity should be constructed from observed artifact/runtime configuration, not a model nickname copied from a README.
 
-**Bridge.** Adapter identity says what produced a vector. The index manifest makes that identity inseparable from the stored corpus.
+Adapter identity says what produced a vector. The index manifest makes that identity inseparable from the stored corpus.
 
 ## 7. Build an exact, immutable in-memory cosine index
 
-### Orienting question: what does a correctness baseline look like?
+### What does a correctness baseline look like?
 
 For a modest corpus, compare the query vector with every authorised stored vector. This **exact nearest-neighbour** baseline is simple and gives a reference ranking for tests and later ANN evaluation. It is not a claim that exhaustive scans will meet every latency target. It is the measurement oracle: if an approximate path disagrees, quantify the disagreement rather than assuming the fast result is correct.
 
-The manifest records the source/chunk policy, corpus digest, model fingerprint, metric, dimension, vector count, and deterministic build timestamp. It is metadata, not a substitute for the actual source/version records.
+The manifest records the source/chunk policy, corpus digest, model fingerprint, metric, dimension, vector count, and build timestamp. Its logical index ID identifies a build recipe. It is not a checksum of vector bytes: identical configuration metadata does not prove bitwise-identical floating-point output. A persisted index would also need a snapshot checksum and an atomic promotion/recovery policy. This lab keeps the vectors in memory.
 
 ```python
 @dataclass(frozen=True)
@@ -592,6 +639,8 @@ class InMemoryCosineIndex:
     def __post_init__(self) -> None:
         if self.manifest.schema_version != INDEX_SCHEMA_VERSION:
             raise IndexCompatibilityError("index schema version is unsupported")
+        if self.manifest.vector_count < 1 or self.manifest.dimension < 1:
+            raise VectorInvariantError("manifest needs positive count and dimension")
         if self.manifest.metric != "cosine":
             raise IndexCompatibilityError("index manifest must declare cosine")
         if self.manifest.created_at.tzinfo is None:
@@ -642,12 +691,15 @@ class InMemoryCosineIndex:
             raise ValueError("index build time must be timezone-aware")
         if adapter.identity.metric != "cosine":
             raise IndexCompatibilityError("baseline index requires cosine metric")
+        identity = adapter.identity
         document_vectors = adapter.embed_documents([chunk.text for chunk in chunks])
+        if adapter.identity != identity:
+            raise IndexCompatibilityError("embedding identity changed during build")
         if len(document_vectors) != len(chunks):
             raise EmbeddingRuntimeError("adapter must return one vector per document")
         entries: list[IndexedVector] = []
         for chunk, raw_vector in zip(chunks, document_vectors, strict=True):
-            if len(raw_vector) != adapter.identity.dimension:
+            if len(raw_vector) != identity.dimension:
                 raise VectorInvariantError(
                     "adapter returned an unexpected document dimension"
                 )
@@ -655,7 +707,7 @@ class InMemoryCosineIndex:
                 IndexedVector(
                     source=chunk,
                     vector=normalize(raw_vector),
-                    model_fingerprint=adapter.identity.fingerprint(),
+                    model_fingerprint=identity.fingerprint(),
                 )
             )
         ordered_entries = tuple(
@@ -664,7 +716,7 @@ class InMemoryCosineIndex:
         corpus_fingerprint = corpus_digest([entry.source for entry in ordered_entries])
         index_id = logical_index_id(
             schema_version=INDEX_SCHEMA_VERSION,
-            model_fingerprint=adapter.identity.fingerprint(),
+            model_fingerprint=identity.fingerprint(),
             corpus_fingerprint=corpus_fingerprint,
             chunk_policy="one-short-document-one-chunk/v1",
         )
@@ -674,8 +726,8 @@ class InMemoryCosineIndex:
             created_at=created_at.astimezone(UTC),
             chunk_policy="one-short-document-one-chunk/v1",
             metric="cosine",
-            dimension=adapter.identity.dimension,
-            model_fingerprint=adapter.identity.fingerprint(),
+            dimension=identity.dimension,
+            model_fingerprint=identity.fingerprint(),
             corpus_digest=corpus_fingerprint,
             vector_count=len(ordered_entries),
         )
@@ -706,8 +758,14 @@ class InMemoryCosineIndex:
             raise ValueError("principal and query text must be strings")
         if not request.principal_id.strip() or not request.query_text.strip():
             raise ValueError("principal and query text must be non-empty")
-        if type(request.top_k) is not int:
-            raise ValueError("top_k must be an integer")
+        if len(request.query_text) > MAX_DOCUMENT_CHARS:
+            raise ValueError("query exceeds the bounded text policy")
+        try:
+            request.query_text.encode("utf-8")
+        except UnicodeEncodeError as exc:
+            raise ValueError("query must be valid UTF-8 text") from exc
+        if type(request.top_k) is not int or request.top_k < 1:
+            raise ValueError("top_k must be a positive integer")
         self._validate_query_adapter(adapter)
         authorised = tuple(
             entry
@@ -718,7 +776,10 @@ class InMemoryCosineIndex:
             return ()
         if not 1 <= request.top_k <= len(authorised):
             raise ValueError("top_k must fit the authorised candidate set")
+        identity = adapter.identity
         query_vectors = adapter.embed_queries([request.query_text])
+        if adapter.identity != identity:
+            raise IndexCompatibilityError("embedding identity changed during query")
         if len(query_vectors) != 1:
             raise EmbeddingRuntimeError("adapter must return exactly one query vector")
         query_vector = query_vectors[0]
@@ -755,7 +816,7 @@ The deterministic key sorts first by descending score and then by `chunk_id`. Fl
 
 ## 8. Assemble P-101 through P-104 and test contracts, not model folklore
 
-### Orienting question: which behavior can run without a downloaded model?
+### Which behavior can run without a downloaded model?
 
 The following uses the teaching fake. It makes exactly four vectors, builds one index at a fixed UTC time, grants a principal access to all four documents, and retrieves two results. The test functions use only `assert`, so the displayed code runs sequentially as a standalone script and remains pytest-style when collected by pytest.
 
@@ -942,7 +1003,7 @@ The index ID derives from the schema, model fingerprint, corpus digest, and chun
 
 ```python
 index = sample_index()
-assert index.manifest.schema_version == "procurement-semantic-index/1.0.0"
+assert index.manifest.schema_version == "procurement-semantic-index/1.1.0"
 assert index.manifest.metric == "cosine"
 assert index.manifest.dimension == 5
 assert index.manifest.vector_count == 4
@@ -955,7 +1016,7 @@ An operational manifest should additionally reference an immutable source snapsh
 
 ## 9. Dense retrieval and the exact baseline
 
-### Orienting question: what does “dense retrieval” buy and lose?
+### What does “dense retrieval” buy and lose?
 
 Dense retrieval stores one dense vector per source unit and ranks vectors by a metric. It can bridge wording changes: P-101 says `approval`, while P-104 says `signs off`. It is useful when literal overlap is insufficient.
 
@@ -971,7 +1032,7 @@ Exact does not mean relevant. An exact scan returns the closest vectors under th
 
 ## 10. Approximate nearest-neighbour search is a measured trade-off
 
-### Orienting question: why approximate a correct baseline?
+### Why approximate a correct baseline?
 
 At large `N × D`, exhaustive comparison can exceed latency or memory-bandwidth budgets. **Approximate nearest-neighbour (ANN)** methods inspect a strategically selected portion of vector space and return likely neighbours more quickly. Graph- and partition-based algorithms differ internally, but the contract is common: parameters exchange exact-neighbour recall, latency, build cost, and memory.
 
@@ -993,13 +1054,13 @@ ANN recall@k = |ANN_top_k intersect exact_top_k| / |exact_top_k|
 
 This is not relevance Recall@k. It asks whether ANN recovered the baseline’s vector neighbours. Report it beside end-to-end relevance metrics, p50/p95/p99 latency at an explicit measurement boundary, memory footprint, build duration, update/rebuild cost, and failure behavior. Tune on one governed development set; hold out another set for final comparison. Never select parameters based on the final held-out results and call that result unbiased.
 
-For an access-controlled corpus, make the filtering semantics part of the comparison. An ANN structure built over all tenants cannot authorize a query by searching all candidates and merely hiding the final text. The candidate generation itself must respect the allowed partition or trustworthy pre-filter. The teaching index solves this simply by filtering frozen entries before exact scoring; it does not claim to solve scalable multi-tenant ANN.
+For an access-controlled corpus, make the filtering semantics part of the comparison. An ANN structure built over all tenants cannot authorize a query by searching all candidates and merely hiding the final text. The candidate generation itself must respect the allowed partition or trustworthy pre-filter. The teaching index filters frozen entries before exact scoring. That prevents forbidden result records from entering its ranking, but it is not a constant-time implementation or a proof against all timing side channels. Scalable multi-tenant ANN needs a separate partitioning/filtering and threat model.
 
 **Checkpoint.** If ANN recall@10 is 0.98, does that mean relevance Recall@10 is 0.98? No. It means the ANN result overlaps the exact vector neighbours at the configured cutoff. Both paths can be irrelevant to the user’s question.
 
 ## 11. Domain-specific models require domain-specific evidence
 
-### Orienting question: when is a general embedding model not enough?
+### When is a general embedding model not enough?
 
 Procurement text can contain terms with local meaning: approval types, receiving codes, product identifiers, amendment references, abbreviations, multilingual vendor notes, and legal exceptions. A broad model may perform well on generic semantic similarity while mishandling one distinction that controls a financial workflow.
 
@@ -1019,7 +1080,7 @@ Local execution changes the network boundary, not the trust model. A local model
 
 ## 12. Evaluate retrieval as a held-out experiment
 
-### Orienting question: how do you know P-101/P-104 is not a cherry-picked demo?
+### How do you know P-101/P-104 is not a cherry-picked demo?
 
 Build a governed evaluation collection before choosing a real model. It should contain source snapshots, query IDs, relevance judgments, label provenance, subset tags, and a split assignment. Avoid adding a query to both model selection and final reporting merely because it is convenient.
 
@@ -1052,6 +1113,40 @@ Record metric definition, `k`, corpus snapshot, chunk policy, access-policy test
 
 Label quality is part of evaluation quality. Keep adjudication notes, distinguish “not enough context to judge” from “non-relevant,” and measure reviewer disagreement before compressing judgments into one number. Do not let a model, prompt, or ranking result generate labels for the same held-out data used to promote it unless that procedure is the explicitly evaluated task. Where relevance depends on a private policy interpretation, record the policy version and route disagreements to the authorised owners. A benchmark with perfect arithmetic over unstable or leaked labels is not reliable evidence for deployment.
 
+### Work through one imperfect ranking
+
+Suppose the relevant set is `{P-101, P-104}`, but a model returns this order:
+
+```text
+rank 1: P-103   not directly relevant
+rank 2: P-101   relevant
+rank 3: P-102   not directly relevant
+rank 4: P-104   relevant
+```
+
+At `k=2`, only one of two returned passages is relevant, so Precision@2 is `1/2`. We also recovered one of the two relevant passages, so Recall@2 is `1/2`. The first relevant passage is at rank two, giving reciprocal rank `1/2`. Mean reciprocal rank averages that value across queries; it is not the metric's name for one isolated query.
+
+At `k=4`, recall rises to `2/2 = 1`, while precision is still `2/4 = 0.5`. The analyst sees both clauses, with two distracting results mixed in. This is the top-k trade-off in a form you can inspect.
+
+For a binary nDCG calculation, give each relevant item gain 1 and each other item 0. Discount rank `r` by `log2(r+1)`. The observed DCG@4 is `1/log2(3) + 1/log2(5)`; the ideal puts both relevant items first, giving `1 + 1/log2(3)`. Their ratio is approximately `0.6509`. The lab uses this binary convention; the graded version discussed above needs a separate gain mapping.
+
+Run the same calculation with the lab helper:
+
+```python
+from labs.week_05.metrics import evaluate_ranking
+
+metrics = evaluate_ranking(
+    ["P-103", "P-101", "P-102", "P-104"],
+    frozenset({"P-101", "P-104"}),
+    k=2,
+)
+assert metrics.precision_at_k == 0.5
+assert metrics.recall_at_k == 0.5
+assert metrics.reciprocal_rank_at_k == 0.5
+```
+
+The helper keeps Precision@k's denominator equal to the requested `k`, even if fewer results are returned. It rejects repeated result IDs. For a query with no labelled relevant source, Recall, reciprocal rank, and nDCG are reported as `None` rather than inventing a perfect or zero relevance score. Report those no-gold queries separately, including how many candidates were returned and how the review/abstention policy behaved. An empty label set describes this source snapshot and rubric, not a universal statement that no answer exists.
+
 ### Operational and failure analysis belongs beside scores
 
 Measure latency at a declared boundary: for example, from accepted authorized query to returned result records, including local embedding and index search but excluding UI rendering. Report distributions, not a single best run: p50, p95, p99, cold/warm status, corpus size, dimension, batch behavior, hardware, and concurrency. Measure memory separately for artifact loading, raw vectors, and any index structure.
@@ -1062,7 +1157,7 @@ Stratify metrics by document type, language, query length, supplier/product-code
 
 ## 13. Semantic similarity can be operationally wrong
 
-### Orienting question: why might P-103 outrank P-104?
+### Why might P-103 outrank P-104?
 
 The vector geometry may associate `quality checks`, `inspection`, and `approval` strongly. P-103 contains quality language and Atlas context, so an embedding can rank it highly despite the absence of a payment condition. That is a semantic near miss, not a source of truth.
 
@@ -1080,7 +1175,7 @@ Mitigations are not a score threshold alone. Preserve source text and provenance
 
 ## 14. Top-k is a recall/noise and workflow decision
 
-### Orienting question: why not always return more records?
+### Why not always return more records?
 
 `top_k` controls the number of highest-ranked authorised candidates returned. Increasing `k` often improves Recall@k because more relevant evidence has room to appear. It also increases review noise, latency/payload, and the chance that a reader treats a weakly related passage as decisive.
 
@@ -1092,7 +1187,7 @@ Do not confuse top-k with a confidence threshold. A result appears at rank one e
 
 ## 15. Rebuild, promotion, rollback, and observability
 
-### Orienting question: what happens after a model or document changes?
+### What happens after a model or document changes?
 
 An index is a materialized view of an immutable corpus under a model configuration. It must be rebuilt when the embedding artifact, runtime, preprocessing, normalization rule, dimension, metric, query/document convention, or source/chunk policy changes. New document versions should produce new source records and a new corpus digest; never mutate an old vector in place while retaining old provenance.
 
@@ -1224,11 +1319,86 @@ Write a label guide for 30 held-out procurement queries. Include at least five n
 
 Specify an ANN experiment: exact baseline, eligible corpus partition, development/held-out split, ANN recall@k, relevance metrics, p50/p95/p99 boundary, memory measurement, build budget, rollback condition, and an access-control test. Do not choose a product or use a production corpus until those requirements are approved.
 
+## 20. Guided build: run a complete local retrieval path
+
+Start from the repository root in your Python environment:
+
+```shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_05.demo
+python -m pytest tests/test_week05_retrieval.py -q
+```
+
+The default demo loads `labs/week_05/corpus.jsonl`, validates the four source records, makes one chunk per already-short document, creates teaching vectors, stores them in an immutable exact index, and retrieves two authorised candidates. It should return P-101 followed by P-104. The fixture scores tie at approximately `0.57735`; stable chunk IDs decide the order. This number comes from the hand-written feature vectors and is not a probability or a real model benchmark.
+
+Follow the files in this order:
+
+1. **`data.py`: source loading.** A bounded UTF-8 JSONL reader rejects malformed records and duplicate keys. The document loader retains tenant, document/version IDs, title, text, and text digest.
+2. **`retrieval.py`: initial chunks and vectors.** One short document becomes one traceable chunk. Oversized inputs are rejected; they are not silently chopped to fit the teaching policy. Week 6 compares real chunking strategies.
+3. **`InMemoryCosineIndex.build`: storage.** The adapter embeds documents; dimension, finite-value, non-zero, normalization, identity, and manifest checks run before the completed index is exposed.
+4. **`search`: retrieval.** A server-owned access policy chooses eligible entries before scoring. A compatible query vector is compared with those entries, ties sort predictably, and results retain source/version provenance.
+5. **`metrics.py`: evaluation arithmetic.** Evaluate an independently labelled ranking. Do not treat the demo's expected fixture order as proof that the feature embedder generalises.
+
+The baseline deliberately requires `1 <= top_k <= number_of_authorised_candidates`; if no objects are authorised, it returns an empty tuple. This is an explicit API policy, not a universal vector-database convention. No score threshold, answer generator, or ANN implementation is hidden in it.
+
+### Try an actual local embedding model when ready
+
+The optional adapter loads an already-reviewed, materialized Sentence Transformers model directory. It uses separate `encode_query` and `encode_document` paths, records the directory digest and runtime identity, and includes explicit query/document prefixes in its preprocessing fingerprint. It checks the full prompted text against the model token limit before encoding, so the loader's character limit is not mistaken for a token guarantee.
+
+Install the optional dependency in a suitable model environment:
+
+```shell
+python -m pip install -r labs/week_05/requirements-local-model.txt
+python -m labs.week_05.demo --model-directory .runtime/embedding-model
+```
+
+Place a complete, compatible model directory there yourself; this command does not download one. Read that model's card and pass its required prefixes with `--query-prefix` and `--document-prefix` when applicable. Empty prefixes are suitable only when the selected model requires none. Set `HF_HUB_OFFLINE=1` before a real run to prevent Hub HTTP calls. Keep `trust_remote_code=False` and review local artifacts; those flags do not certify arbitrary local model files.
+
+The adapter assumes a text encoder whose explicit prefix-plus-text tokenization matches its encoding API. Models with custom chat preprocessing need their own adapter and contract tests. Start with CPU operation and measure the selected model's actual memory/latency before choosing GPU settings. The adapter's fake-backend tests verify wiring, limits, and output checks; a real artifact run and semantic accuracy measurement remain separate integration work.
+
+### Use the practice data without contaminating your evaluation
+
+`queries.jsonl` contains twelve **practice** queries, their families, and expected relevant document IDs for this four-document snapshot. Some have no supporting passage, such as a missing product code, a missing unit price, or an explicit “approval not required” clause. A dense model may still return something similar; the score does not make that answer supported.
+
+All twelve are marked `practice`, because they are shown and discussed here. They are not an independent held-out benchmark. Use them to learn the metric code and label guide. Then follow Exercise D to create a separate, governed 30-query evaluation set; group paraphrases, source families, and amendments when assigning development versus holdout splits. Keep the expected labels out of model messages and model selection on the holdout set.
+
+## 21. Mini-project and weekly handoff
+
+Deliver a small procurement-search application with document loading, explicit initial chunking, a replaceable embedding boundary, vector storage, and authorised top-k results. Begin with exact cosine search and make the result text inspectable. If you run a real model, record the exact artifact, preprocessing, prefixes, dimension, runtime, corpus, and hardware alongside your measurements.
+
+| Deliverable | What you should be able to show |
+| --- | --- |
+| Corpus | bounded records with stable document/version IDs and source digests |
+| Chunks | one source per short chunk, with a visible policy and no silent truncation |
+| Embeddings | separate document/query behavior and compatible model identity |
+| Index | validated dimensions, finite non-zero vectors, normalization, stable ties, immutable manifest |
+| Retrieval | access policy applied before scoring, explicit top-k policy, traceable text |
+| Evaluation | labelled queries, stated denominators, no-gold handling, and recorded unmeasured fields |
+| Explanation | why a top-ranked passage can still fail the user's question |
+
+### Definition of done
+
+- [ ] I can run the four-document demo and explain exactly why its teaching vectors return P-101/P-104.
+- [ ] I can calculate cosine, Precision@k, Recall@k, reciprocal rank, and the stated nDCG convention on a tiny example.
+- [ ] Zero/non-finite/mismatched vectors, invalid queries, incompatible models, and malformed sources fail visibly.
+- [ ] Another tenant or an unauthorised document version never enters the scoring set or returned records.
+- [ ] Changing the source/model/preprocessing contract produces a new logical index identity; I understand that this ID is not a vector-byte checksum.
+- [ ] I have completed the five independent exercises above, including a documented ANN proposal rather than an unmeasured performance claim.
+- [ ] I have kept fixture tests, real-model integration observations, and semantic quality measurements separate.
+- [ ] My interview notebook answers all three roadmap questions: evaluation, semantically related mistakes, and top-k's recall/noise trade-off.
+
+Update your evaluation log and weekly changelog. Record an architecture decision on starting with exact retrieval and one short document per chunk. A real-model comparison can extend this baseline; Week 6 will test how document parsing and chunk choices change what the retriever can find.
+
 ## Next action: replace the teaching adapter only after the benchmark exists
 
 Keep the one-short-document/one-chunk exact baseline and its tests. Create the governed relevance set, baseline a candidate local embedding model, record its identity in the manifest, and compare it against exact retrieval before considering an approximate path. The next design task is chunk policy, not answer generation.
 
 ## Primary documentation and research
+
+- [Hugging Face Hub: offline environment configuration](https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables)
+
+- [Sentence Transformers: local model loading and query/document encoding](https://www.sbert.net/docs/package_reference/sentence_transformer/SentenceTransformer.html)
+- [Sentence Transformers 6.1.0 release and installation](https://github.com/huggingface/sentence-transformers/releases/tag/v6.1.0)
 
 - [Python 3.13 typing: `Protocol` and typed interfaces](https://docs.python.org/3.13/library/typing.html)
 - [Python 3.13 `dataclasses`](https://docs.python.org/3.13/library/dataclasses.html)

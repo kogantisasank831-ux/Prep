@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 5
+phase: 2
+status: approved
+version: 1.1.0
+last_reviewed: 2026-10-22
+estimated_hours: 8
 permalink: /weeks/week-05/beginner/
 title: "Embeddings and vector retrieval: a beginner's introduction"
 description: Learn how a small, local semantic-search system can find related procurement text without treating a match as proof.
@@ -11,9 +17,9 @@ alternate_label: Production version
 alternate_url: /weeks/week-05/
 ---
 
-## Start with a search problem, not an answer generator
+## Find the passage that helps answer the question
 
-Imagine a procurement team has a small collection of synthetic supplier documents:
+In Week 4, we extracted fields from a document we already had. This week, we first need to find that document. Imagine an analyst searching these four synthetic records:
 
 ```text
 P-101 | Atlas Metals purchase confirmation
@@ -35,7 +41,7 @@ An analyst asks: **“Which supplier documents say that approval or sign-off is 
 
 A keyword search for `approval` finds P-101, but it can miss P-104 because it says `signs off` instead. A search system that notices related meanings could return both. That is the narrow job of **semantic search**: rank stored text by how relevant it appears to a query’s meaning.
 
-Semantic search is not an assistant that writes a conclusion. It does not approve an invoice, decide that a contract applies, or prove that a returned passage is current or correct. It proposes relevant evidence for a person or a later deterministic process to inspect. The documents are untrusted input, and a high similarity score is not factual truth.
+The search result is a passage to inspect. Even a good match still needs the correct supplier, active version, and exact condition. Returning a passage about sign-off does not approve an invoice or settle which contract applies. Keep that distinction as we move from text to vectors.
 
 Our small system will keep this boundary explicit:
 
@@ -57,7 +63,13 @@ untrusted procurement documents + untrusted query
 
 There is no answer-generation step in this lesson. We will not ask a language model to summarize the results, use an orchestration framework, connect to a hosted service, or add database infrastructure. First learn the retrieval boundary itself.
 
-**Checkpoint.** If P-104 is returned for the query, has the system proved that Cedar Fasteners owes payment only after approval? No. It has found a passage worth checking. A person must read the exact passage, identify the applicable document and version, and apply the relevant policy.
+**Checkpoint.** If P-104 is returned for the query, has the system proved that payment to Cedar Fasteners is due only after approval? No. It has found a passage worth checking. A person must read the exact passage, identify the applicable document and version, and apply the relevant policy.
+
+### Before you start
+
+You need basic Python and JSON familiarity, plus the idea that a vector is a list of numbers. The next sections refresh the vector intuition. You can use the teaching lab without downloading a model or setting up a database.
+
+Your target is to explain how the document becomes a vector, how a query is compared with it, what top-k means, and why the first result can still be the wrong evidence. Spend roughly two hours on the concepts, then use the production version's guided build and exercises for the rest of your eight-hour week.
 
 ## An embedding is a numeric representation of text
 
@@ -469,6 +481,45 @@ bounded source documents
 
 The important discipline is to keep the last arrow. Retrieval can make the right evidence easier to find; it cannot turn relevance into truth.
 
+## Try the four-document lab
+
+From the repository root, with the Python environment and project dependencies ready:
+
+```shell
+python -m labs.week_05.demo
+python -m pytest tests/test_week05_retrieval.py -q
+```
+
+The [lab files](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_05) include the actual JSONL corpus. The default run uses hand-written teaching features rather than a learned semantic encoder. Expect P-101 and P-104, in that order, with tied fixture scores of about `0.57735`. The tie is resolved by stable source IDs. Do not read that number as 57.7% confidence.
+
+Trace one run: load the text records, create one short chunk per document, embed each chunk, store the vectors, embed the question, filter by access policy, score eligible vectors, and return two passages with their source versions. The implementation filters before scoring; the exact placement of query embedding relative to filtering is an application choice, while the access boundary must remain enforced.
+
+### Compare one good result with one tempting mistake
+
+For the payment-approval question, P-101 is useful because it states `Net 30 after inspection approval`. P-103 mentions quality checks and the same product but says nothing about payment. Explain that difference before looking at a score. It is the relevance rule your evaluation labels should express.
+
+Suppose a ranking starts with P-103, followed by P-101, and the relevant set is P-101/P-104. At `k=2`, Precision@2 is `1/2` and Recall@2 is also `1/2`: one returned passage is relevant, and one of the two relevant passages was found. At `k=4`, you can recover both relevant passages but also show two distracting ones. More results change the review workload.
+
+### Three practical changes
+
+1. Ask for `top_k=1`, then `2`, then `4`, and read the extra passages. The baseline requires k to fit the authorised candidate count; it does not silently grant access to more documents.
+2. Remove access to P-104 and confirm that its ID, score, and text do not appear. A hidden document should not enter the scoring set.
+3. Change a document's text and version, then rebuild. Compare its source digest and logical index ID. The logical ID identifies the source/configuration recipe; storing an index on disk would additionally require checking its actual snapshot bytes.
+
+The production lesson also includes a local Sentence Transformers adapter for an already-downloaded compatible model. Query/document prefixes must follow that model's card, and token limits must be checked rather than relying on a character count. Its fake-backend tests exercise the adapter contract; actual model accuracy needs a separate run on labelled queries.
+
+## A short knowledge check
+
+1. Does an embedding dimension usually have a stable label such as “payment”?
+2. What must be true before dot product equals cosine similarity?
+3. If a vector index returns the mathematically nearest vector, is its text necessarily relevant?
+4. Why can negation or a product code cause a semantic-search mistake?
+5. Can a model be evaluated from the fixture's P-101/P-104 ranking?
+
+**Answers:** (1) Usually no; learned meaning is distributed. (2) Both non-zero vectors must be L2-normalized. (3) No; exact geometry and relevance are separate. (4) Broad topical similarity may lose the exact condition or identifier. (5) No; the fixture demonstrates plumbing, while model quality needs independent relevance labels.
+
+Finish by explaining the pipeline aloud without framework names: “I load and version the documents, make traceable chunks, embed queries and documents with a compatible model, search the authorised vectors, and show the source passages. I evaluate whether the retrieved passages support the question.”
+
 ## Readiness checklist
 
 - [ ] I can define a semantic embedding and distinguish it from raw keyword matching and from a generative model’s token embedding.
@@ -483,3 +534,9 @@ The important discipline is to keep the last arrow. Retrieval can make the right
 - [ ] I can choose and justify top-k as a recall-versus-noise trade-off rather than a default constant.
 
 Continue with the [production version]({{ '/weeks/week-05/' | relative_url }}). It hardens this pipeline with versioned model and index contracts, authorization-before-scoring, deterministic exact retrieval, governed evaluation, and operational lifecycle controls.
+
+## Further reading
+
+- [Sentence-BERT and sentence embeddings](https://aclanthology.org/D19-1410/)
+- [Faiss: cosine normalization and metric choices](https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances)
+- [BEIR: evaluating retrieval across tasks](https://arxiv.org/abs/2104.08663)

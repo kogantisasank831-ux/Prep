@@ -1,0 +1,4 @@
+{"tenant_id": "northwind-procurement", "document_id": "P-101", "document_version": "1", "title": "Atlas Metals purchase confirmation", "text": "Copper wire will ship after incoming-material inspection. Invoice terms: Net 30 after inspection approval."}
+{"tenant_id": "northwind-procurement", "document_id": "P-102", "document_version": "1", "title": "Beacon Plastics purchase confirmation", "text": "Polymer pellets will ship on 2026-09-03. Invoice terms: Net 15 from receipt."}
+{"tenant_id": "northwind-procurement", "document_id": "P-103", "document_version": "1", "title": "Atlas Metals delivery update", "text": "The copper-wire shipment is delayed by two days while quality checks finish."}
+{"tenant_id": "northwind-procurement", "document_id": "P-104", "document_version": "1", "title": "Cedar Fasteners payment note", "text": "Payment is due after the receiving team signs off on the delivered bolts."}

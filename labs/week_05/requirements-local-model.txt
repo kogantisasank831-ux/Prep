@@ -1,0 +1,3 @@
+# Optional local semantic inference only; not needed by the teaching demo/tests.
+# Install in a separate environment if its torch/transformers stack differs.
+sentence-transformers==6.1.0
