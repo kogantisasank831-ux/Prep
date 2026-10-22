@@ -1,0 +1,91 @@
+{
+  "schema": "week08-same-pool-comparison/1.0.0",
+  "scope": "visible synthetic practice; default reranker uses handwritten teaching rules",
+  "query_count": 14,
+  "labelled_query_count": 10,
+  "no_gold_query_count": 4,
+  "accepted_documents": 8,
+  "ingestion_issues": [
+    {
+      "source_key": "northwind-procurement/P-106/1",
+      "status": "needs_review",
+      "reasons": [
+        "table row requires labelled numeric review"
+      ]
+    }
+  ],
+  "input_digest": "fc5ad68b6b3f5402b3714b46cc9ab05dd8e480b768a0a0a23c17f98f6ecea018",
+  "query_digest": "b9f66537a615140deb31f1a93c94340704284bd4212eb6ae9d033ebdc8549630",
+  "config": {
+    "candidate_count": 6,
+    "retrieval_depth": 8,
+    "evidence_count": 3,
+    "context_chars": 1400,
+    "compression": "none",
+    "max_sentences": 2
+  },
+  "reranker": {
+    "name": "teaching-pair-rules",
+    "version": "1.0.0",
+    "artifact_digest": "synthetic",
+    "runtime": "python-stdlib",
+    "preprocessing": "unique-terms-and-commercial-phrases/v1"
+  },
+  "first_stage": {
+    "dense": {
+      "adapter_id": "demo-procurement-features",
+      "artifact_digest": "synthetic-only",
+      "runtime_id": "python-stdlib/3.12.14",
+      "preprocessing_version": "identifier-dropping-positive-candidates/v2",
+      "metric": "jaccard-features",
+      "minimum_score": 0.0,
+      "dimension": null
+    },
+    "bm25": {
+      "k1": 1.2,
+      "b": 0.75,
+      "algorithm": "log1p-idf-unique-query/v1"
+    },
+    "token_contract": {
+      "name": "identifier-preserving",
+      "version": "1.0.0",
+      "pattern": "[a-z0-9]+(?:[-_/][a-z0-9]+)*"
+    },
+    "fusion": {
+      "rank_constant": 60,
+      "weights": [
+        [
+          "bm25",
+          1.0
+        ],
+        [
+          "dense",
+          1.0
+        ]
+      ]
+    }
+  },
+  "quality": {
+    "candidate_recall": 1.0,
+    "context_support_complete_fraction": 1,
+    "hybrid": {
+      "precision_at_k": 0.39999999999999997,
+      "recall_at_k": 0.9666666666666667,
+      "reciprocal_rank_at_k": 0.9,
+      "ndcg_at_k": 0.9161651027548701
+    },
+    "reranked": {
+      "precision_at_k": 0.4333333333333333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank_at_k": 0.95,
+      "ndcg_at_k": 0.9630929753571458
+    }
+  },
+  "unmeasured": [
+    "learned reranker quality",
+    "generated answer faithfulness",
+    "latency",
+    "memory",
+    "position effects"
+  ]
+}
