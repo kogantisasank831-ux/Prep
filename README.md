@@ -106,3 +106,47 @@ it does not establish a complete HTTP-body or upload-storage limit.
 The existing service stays UTF-8 `.txt` only. Markdown support, configurable
 limits and review-item classification in the lesson are exercises. Keep sample
 uploads local and use synthetic text; the API has no authentication or persistence.
+
+## Weekly assessments
+
+[Week 1 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-01/)
+has 100 authored questions: 30 single-choice, 20 multiple-correct, 15 matching,
+15 short syntax and 20 Python coding tasks. Each random paper takes two of each
+format without duplicates. A shareable seed and bank version reproduce both
+question selection and option order. Print produces a blank question paper.
+
+Every question is worth 10 marks. Single-choice and short answers use exact
+declared keys; surrounding spaces are ignored for short answers and their case
+policy is shown. Multiple-correct requires the complete set. Matching gives
+2.5 per correct pair with one use per option. Coding gives 2 per passed check.
+There are no negative marks. Explanations and references appear after submission.
+
+The site stays static. A coding run downloads pinned Pyodide 0.29.3 from its
+documented jsDelivr distribution into a separate browser worker. This version
+uses Python 3.13, matching the lesson's language family. The app terminates each
+worker after its run, after Stop, or after the 5-second execution deadline.
+Runtime loading has a separate 45-second deadline. The checks use only the
+standard library, without running FastAPI/Pydantic or sending learner code to
+a remote execution API. Loading the CDN still makes normal network requests.
+
+Google Colab is an optional external workspace requiring Google sign-in:
+learners copy their code there and paste it back for local checks. Results are
+not imported from that tool.
+When the runtime is unavailable, submitted coding marks stay pending and can be
+retried; the displayed score clearly separates graded and pending marks.
+
+Attempts are stored in the current browser, separately by week, bank version and
+paper seed. They can be resumed by link and downloaded as JSON. This is a public
+practice bank with client-side scoring; neither answer secrecy nor authenticated
+exam results are provided. No central learner database or score upload is added.
+
+The engine is reusable, but only Week 1 is enabled. Future weeks need their own
+reviewed 100-question JSON bank and assessment page before being added to
+`ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
+version's paper link is rejected instead of silently changing its questions.
+The current coding checker is Python-specific; another language needs its own
+execution integration when that week's assessment is added.
+
+Run `python -m pytest tests/test_week01_assessment.py` to validate bank structure,
+reference solutions, negative submissions and grading/selection behavior. The
+JavaScript checks in that suite use the existing Node executable (Node 20+).

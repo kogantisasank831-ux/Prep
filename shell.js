@@ -1,6 +1,7 @@
 "use strict";
 
 window.PUBLISHED_WEEKS = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+window.ASSESSMENT_WEEKS = new Set([1]);
 
 const shellScriptUrl = new URL(document.currentScript.src);
 const roadmapBasePath = shellScriptUrl.pathname.replace(/\/shell\.js$/, "");
@@ -51,7 +52,7 @@ function parseWeekNavigation(markdown) {
 }
 
 function currentWeekNumber() {
-  const pathMatch = window.location.pathname.match(/\/weeks\/week-(\d+)\//);
+  const pathMatch = window.location.pathname.match(/\/(?:weeks|assessments)\/week-(\d+)\//);
   if (pathMatch) return Number(pathMatch[1]);
   const hashMatch = window.location.hash.match(/^#week-(\d+)$/);
   return hashMatch ? Number(hashMatch[1]) : null;

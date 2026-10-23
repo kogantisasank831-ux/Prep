@@ -201,6 +201,13 @@ function renderRoadmap() {
         lessonLink.setAttribute("aria-label", `Open the full Week ${week.number} lesson`);
         lessonLink.hidden = false;
       }
+      if (window.ASSESSMENT_WEEKS?.has(week.number)) {
+        const assessmentLink = document.createElement("a");
+        assessmentLink.className = "week-direct-link";
+        assessmentLink.href = `assessments/week-${String(week.number).padStart(2, "0")}/`;
+        assessmentLink.textContent = "Take a 10-question assessment →";
+        card.insertBefore(assessmentLink, weeklyPlan);
+      }
       weeklyPlan.addEventListener("toggle", () => {
         card.classList.toggle("plan-open", weeklyPlan.open);
         for (const grid of document.querySelectorAll(".week-grid")) {

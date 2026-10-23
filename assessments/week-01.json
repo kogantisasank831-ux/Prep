@@ -1,0 +1,3174 @@
+{
+  "schema_version": 1,
+  "week": 1,
+  "version": "1.0.0",
+  "title": "Python service foundations",
+  "source_lesson": "/weeks/week-01/",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W01-Q001",
+      "type": "single",
+      "topic": "Functions",
+      "difficulty": "foundation",
+      "prompt": "Which implementation normalizes CRLF and CR to LF while preserving other whitespace?",
+      "explanation": "Replace CRLF first so its two characters become one newline. Then replace remaining CR. Stripping or splitting would change other whitespace.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "text.strip()"
+        },
+        {
+          "id": "o2",
+          "text": "text.replace(\"\\r\\n\", \"\\n\").replace(\"\\r\", \"\\n\")"
+        },
+        {
+          "id": "o3",
+          "text": "text.replace(\"\\r\", \"\\n\").replace(\"\\r\\n\", \"\\n\")"
+        },
+        {
+          "id": "o4",
+          "text": "\" \".join(text.split())"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q002",
+      "type": "single",
+      "topic": "Mutability",
+      "difficulty": "foundation",
+      "prompt": "What is printed after these two names refer to the same list?",
+      "explanation": "Assignment copies a reference, not the list. Mutating alias changes the same object observed through labels.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "['a']"
+        },
+        {
+          "id": "o2",
+          "text": "['a', 'b']"
+        },
+        {
+          "id": "o3",
+          "text": "['b']"
+        },
+        {
+          "id": "o4",
+          "text": "A TypeError"
+        }
+      ],
+      "correct": [
+        "o2"
+      ],
+      "snippet": "labels = ['a']\nalias = labels\nalias.append('b')\nprint(labels)",
+      "verification": {
+        "stdout": "['a', 'b']\n"
+      }
+    },
+    {
+      "id": "W01-Q003",
+      "type": "single",
+      "topic": "Classes",
+      "difficulty": "foundation",
+      "prompt": "A service stores request-specific items in a mutable class attribute. What is the main risk?",
+      "explanation": "A mutable class attribute is shared unless shadowed. Put request-specific state on the appropriate instance or pass it as an argument.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Each instance gets a fresh list automatically"
+        },
+        {
+          "id": "o2",
+          "text": "Instances can accidentally share request state"
+        },
+        {
+          "id": "o3",
+          "text": "The list becomes immutable"
+        },
+        {
+          "id": "o4",
+          "text": "Python rejects class-level lists"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q004",
+      "type": "single",
+      "topic": "Composition",
+      "difficulty": "foundation",
+      "prompt": "The extraction service receives a reader in its constructor. Which relationship does this express?",
+      "explanation": "Composition keeps decoding replaceable without claiming the coordinator is itself a decoder.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The service is a reader"
+        },
+        {
+          "id": "o2",
+          "text": "The service has a reader"
+        },
+        {
+          "id": "o3",
+          "text": "The reader is a FastAPI route"
+        },
+        {
+          "id": "o4",
+          "text": "Every reader must inherit from the service"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q005",
+      "type": "single",
+      "topic": "Typing",
+      "difficulty": "foundation",
+      "prompt": "What does ClassVar[str] communicate to a type checker?",
+      "explanation": "ClassVar describes where an attribute belongs for static analysis. It does not make it a runtime constant or validate its value.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The value is a per-request secret"
+        },
+        {
+          "id": "o2",
+          "text": "The attribute is class-level policy, not an instance field"
+        },
+        {
+          "id": "o3",
+          "text": "The value cannot ever change at runtime"
+        },
+        {
+          "id": "o4",
+          "text": "The string has been validated"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q006",
+      "type": "single",
+      "topic": "Typing",
+      "difficulty": "foundation",
+      "prompt": "A function annotated text: str is called with a list. What does ordinary Python do before entering the function?",
+      "explanation": "Ordinary annotations do not perform runtime input validation. The function may still fail or even accept the value depending on its operations.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Always raises ValidationError"
+        },
+        {
+          "id": "o2",
+          "text": "Automatically converts the list to str"
+        },
+        {
+          "id": "o3",
+          "text": "Does not enforce the annotation by itself"
+        },
+        {
+          "id": "o4",
+          "text": "Runs mypy automatically"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q007",
+      "type": "single",
+      "topic": "Typing",
+      "difficulty": "foundation",
+      "prompt": "Which branch safely narrows preferred: str | None before returning a str?",
+      "explanation": "The explicit None check narrows the value to str. A truthiness check can incorrectly treat an intentionally empty string as absent.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "if preferred is not None: return preferred"
+        },
+        {
+          "id": "o2",
+          "text": "return preferred without checking"
+        },
+        {
+          "id": "o3",
+          "text": "if preferred is None: return preferred"
+        },
+        {
+          "id": "o4",
+          "text": "return None"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W01-Q008",
+      "type": "single",
+      "topic": "Pydantic",
+      "difficulty": "foundation",
+      "prompt": "When DocumentRequest.model_validate receives an extra key, which model setting rejects it?",
+      "explanation": "extra=\"forbid\" governs extra keys supplied to the model. The route separately decides which multipart fields it passes to that model.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "frozen=True"
+        },
+        {
+          "id": "o2",
+          "text": "extra=\"forbid\""
+        },
+        {
+          "id": "o3",
+          "text": "slots=True"
+        },
+        {
+          "id": "o4",
+          "text": "strict=False"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q009",
+      "type": "single",
+      "topic": "Pydantic",
+      "difficulty": "foundation",
+      "prompt": "Why use strict=True at an untrusted scalar model boundary?",
+      "explanation": "Strictness concerns representation and conversion. It does not supply authentication, body admission limits or encryption.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To authenticate the supplier"
+        },
+        {
+          "id": "o2",
+          "text": "To request strict validation rather than permissive coercion for the configured types"
+        },
+        {
+          "id": "o3",
+          "text": "To limit the HTTP body to 1 MiB"
+        },
+        {
+          "id": "o4",
+          "text": "To encrypt the request"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q010",
+      "type": "single",
+      "topic": "Dataclasses",
+      "difficulty": "foundation",
+      "prompt": "A frozen dataclass contains values: list[str]. Which operation can still succeed?",
+      "explanation": "Freezing prevents ordinary field rebinding. The nested list remains mutable, so deep immutability requires different nested values or copying.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assigning a new list to the frozen field normally"
+        },
+        {
+          "id": "o2",
+          "text": "Appending to the existing list"
+        },
+        {
+          "id": "o3",
+          "text": "Adding any new field normally"
+        },
+        {
+          "id": "o4",
+          "text": "Deleting the frozen field normally"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q011",
+      "type": "single",
+      "topic": "Encoding",
+      "difficulty": "foundation",
+      "prompt": "Strict UTF-8 decoding encounters b\"\\xff\". Which low-level exception is expected?",
+      "explanation": "The codec raises UnicodeDecodeError. The reader and service then translate it into their own failure vocabulary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "UnicodeDecodeError"
+        },
+        {
+          "id": "o2",
+          "text": "KeyError"
+        },
+        {
+          "id": "o3",
+          "text": "StopIteration"
+        },
+        {
+          "id": "o4",
+          "text": "ValidationError from Pydantic"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W01-Q012",
+      "type": "single",
+      "topic": "Exceptions",
+      "difficulty": "foundation",
+      "prompt": "What does raise DocumentDecodingError(...) from exc preserve?",
+      "explanation": "Explicit chaining preserves the cause for diagnosis while allowing the next boundary to use an application-specific error.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The entire upload in the response"
+        },
+        {
+          "id": "o2",
+          "text": "The causal exception through __cause__"
+        },
+        {
+          "id": "o3",
+          "text": "The current transaction automatically"
+        },
+        {
+          "id": "o4",
+          "text": "A retry guarantee"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q013",
+      "type": "single",
+      "topic": "Logging",
+      "difficulty": "foundation",
+      "prompt": "Which logger construction lets application configuration control handlers and levels?",
+      "explanation": "A module logger identifies the source of events without configuring the root logger as an import side effect.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "logging.basicConfig() in every library module"
+        },
+        {
+          "id": "o2",
+          "text": "logging.getLogger(__name__)"
+        },
+        {
+          "id": "o3",
+          "text": "print(document_text)"
+        },
+        {
+          "id": "o4",
+          "text": "A new root handler for every request"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q014",
+      "type": "single",
+      "topic": "Testing",
+      "difficulty": "foundation",
+      "prompt": "A formatter omits LogRecord extra fields. Where should a caplog test inspect correlation_id?",
+      "explanation": "extra creates record attributes. caplog.text depends on the formatter, while caplog.records exposes the actual records.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only caplog.text"
+        },
+        {
+          "id": "o2",
+          "text": "caplog.records"
+        },
+        {
+          "id": "o3",
+          "text": "The uploaded filename"
+        },
+        {
+          "id": "o4",
+          "text": "sys.argv"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q015",
+      "type": "single",
+      "topic": "Generators",
+      "difficulty": "foundation",
+      "prompt": "When does a generator function begin executing its body?",
+      "explanation": "Calling a generator function creates a generator object. Advancing it begins execution and proceeds until a yield or completion.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When its module is parsed"
+        },
+        {
+          "id": "o2",
+          "text": "When the generator is created"
+        },
+        {
+          "id": "o3",
+          "text": "When iteration first advances it"
+        },
+        {
+          "id": "o4",
+          "text": "Only after list() has completed"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q016",
+      "type": "single",
+      "topic": "Generators",
+      "difficulty": "foundation",
+      "prompt": "What does the second list(items) produce?",
+      "explanation": "A generator is single-pass. The first list call exhausts it; replay requires constructing a new generator.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "[1, 2]"
+        },
+        {
+          "id": "o2",
+          "text": "[2]"
+        },
+        {
+          "id": "o3",
+          "text": "[]"
+        },
+        {
+          "id": "o4",
+          "text": "A fresh generator"
+        }
+      ],
+      "correct": [
+        "o3"
+      ],
+      "snippet": "items = (n for n in [1, 2])\nlist(items)\nprint(list(items))",
+      "verification": {
+        "stdout": "[]\n"
+      }
+    },
+    {
+      "id": "W01-Q017",
+      "type": "single",
+      "topic": "Generators",
+      "difficulty": "foundation",
+      "prompt": "Why is a generator over text.splitlines() not fully streaming?",
+      "explanation": "The generator makes downstream consumption lazy, but the initial split still allocates all line strings.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "yield forces all future work eagerly"
+        },
+        {
+          "id": "o2",
+          "text": "splitlines() already materializes a list"
+        },
+        {
+          "id": "o3",
+          "text": "Python generators cannot yield strings"
+        },
+        {
+          "id": "o4",
+          "text": "The text must be ASCII"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q018",
+      "type": "single",
+      "topic": "Async",
+      "difficulty": "foundation",
+      "prompt": "An async route calls a slow blocking SDK directly. What can happen?",
+      "explanation": "Async syntax does not transform blocking code. Choose an awaitable client or a measured, bounded offload strategy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The SDK automatically moves into a process"
+        },
+        {
+          "id": "o2",
+          "text": "The event-loop thread can be blocked"
+        },
+        {
+          "id": "o3",
+          "text": "The work becomes parallel because the function is async"
+        },
+        {
+          "id": "o4",
+          "text": "The SDK is automatically cancelled after one second"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q019",
+      "type": "single",
+      "topic": "Uploads",
+      "difficulty": "foundation",
+      "prompt": "Why read limit + 1 bytes instead of exactly limit bytes?",
+      "explanation": "The sentinel byte detects oversize while bounding the route read. It does not by itself limit earlier parsing or upload storage.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To add a newline"
+        },
+        {
+          "id": "o2",
+          "text": "To distinguish an exactly-at-limit file from a larger file with the same prefix"
+        },
+        {
+          "id": "o3",
+          "text": "To validate UTF-8 without decoding"
+        },
+        {
+          "id": "o4",
+          "text": "To force the whole HTTP body into memory"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q020",
+      "type": "single",
+      "topic": "Encoding",
+      "difficulty": "foundation",
+      "prompt": "What is printed for this UTF-8 string?",
+      "explanation": "The Python string contains one code point; its UTF-8 encoding requires two bytes. Upload limits count bytes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1 1"
+        },
+        {
+          "id": "o2",
+          "text": "2 2"
+        },
+        {
+          "id": "o3",
+          "text": "1 2"
+        },
+        {
+          "id": "o4",
+          "text": "2 1"
+        }
+      ],
+      "correct": [
+        "o3"
+      ],
+      "snippet": "text = 'é'\nprint(len(text), len(text.encode('utf-8')))",
+      "verification": {
+        "stdout": "1 2\n"
+      }
+    },
+    {
+      "id": "W01-Q021",
+      "type": "single",
+      "topic": "HTTP boundaries",
+      "difficulty": "foundation",
+      "prompt": "The correlation identifier contains a space. In the current route, what occurs before its bounded endpoint read?",
+      "explanation": "The parsing dependency validates DocumentRequest before the endpoint body executes. Multipart parsing can still have occurred earlier.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The service normalizes the identifier"
+        },
+        {
+          "id": "o2",
+          "text": "Scalar request validation rejects it"
+        },
+        {
+          "id": "o3",
+          "text": "The reader decodes the document"
+        },
+        {
+          "id": "o4",
+          "text": "The response model repairs it"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q022",
+      "type": "single",
+      "topic": "Format policy",
+      "difficulty": "foundation",
+      "prompt": "Both media-type signals say application/pdf, and the filename is note.txt. What should the current service do?",
+      "explanation": "Agreement is necessary but not sufficient. The only supported media type in the existing service is text/plain.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Accept because the two signals agree"
+        },
+        {
+          "id": "o2",
+          "text": "Reject the unsupported declared format"
+        },
+        {
+          "id": "o3",
+          "text": "Accept if the bytes are UTF-8"
+        },
+        {
+          "id": "o4",
+          "text": "Rename the file"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q023",
+      "type": "single",
+      "topic": "Validation",
+      "difficulty": "foundation",
+      "prompt": "A file ends in .txt and both type signals say text/plain. What remains unproven?",
+      "explanation": "Caller-controlled metadata does not establish byte encoding. Strict decoding and blank-content checks are still needed.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether the metadata strings agree"
+        },
+        {
+          "id": "o2",
+          "text": "Whether its bytes decode as strict UTF-8"
+        },
+        {
+          "id": "o3",
+          "text": "Whether its suffix passed the policy"
+        },
+        {
+          "id": "o4",
+          "text": "Whether text/plain is the declared supported type"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q024",
+      "type": "single",
+      "topic": "HTTP boundaries",
+      "difficulty": "foundation",
+      "prompt": "A client sees HTTP 422. Which assumption is unsafe for the current application?",
+      "explanation": "FastAPI request-validation failures use a detail list; the application document-error handlers use a different stable body.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It indicates an unsuccessful request"
+        },
+        {
+          "id": "o2",
+          "text": "Every 422 body has code, message and correlation_id"
+        },
+        {
+          "id": "o3",
+          "text": "The client should inspect the body schema"
+        },
+        {
+          "id": "o4",
+          "text": "Scalar validation and document errors can both use this status"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q025",
+      "type": "single",
+      "topic": "Functions",
+      "difficulty": "foundation",
+      "prompt": "Normalization receives \"  alpha  \\r\\n\". Which output preserves the lesson contract?",
+      "explanation": "Only newline representation changes. Leading and trailing spaces remain; whitespace-only rejection is a separate rule.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "\"alpha\""
+        },
+        {
+          "id": "o2",
+          "text": "\"alpha\\n\""
+        },
+        {
+          "id": "o3",
+          "text": "\"  alpha  \\n\""
+        },
+        {
+          "id": "o4",
+          "text": "An empty string"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q026",
+      "type": "single",
+      "topic": "Line counting",
+      "difficulty": "foundation",
+      "prompt": "Under count_logical_lines based on splitlines(), how many lines does \"alpha\\n\" have?",
+      "explanation": "A trailing line boundary does not add another element to str.splitlines(). The helper uses at least one line for its internal contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "0"
+        },
+        {
+          "id": "o2",
+          "text": "1"
+        },
+        {
+          "id": "o3",
+          "text": "2"
+        },
+        {
+          "id": "o4",
+          "text": "It depends on the operating system"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q027",
+      "type": "single",
+      "topic": "Functions",
+      "difficulty": "foundation",
+      "prompt": "What is the problem with def add(item, bucket=[]): bucket.append(item)?",
+      "explanation": "Default arguments are evaluated when the function is defined. Use a None default and create the appropriate fresh value inside the call.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The default list is created afresh for every call"
+        },
+        {
+          "id": "o2",
+          "text": "Calls that omit bucket can share the same list"
+        },
+        {
+          "id": "o3",
+          "text": "Lists cannot be default values"
+        },
+        {
+          "id": "o4",
+          "text": "append returns the new list"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q028",
+      "type": "single",
+      "topic": "Resource lifetime",
+      "difficulty": "foundation",
+      "prompt": "A generator yields from a file opened inside with. What must a partial-consumption caller consider?",
+      "explanation": "Suspension retains the active context. Design deterministic closure rather than relying on finalization timing.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The with block always ended before the first yield"
+        },
+        {
+          "id": "o2",
+          "text": "The generator can retain the open resource while suspended"
+        },
+        {
+          "id": "o3",
+          "text": "All yielded values remain replayable"
+        },
+        {
+          "id": "o4",
+          "text": "Yield automatically closes the file after each line"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q029",
+      "type": "single",
+      "topic": "Python syntax",
+      "difficulty": "foundation",
+      "prompt": "Which function header correctly annotates an int argument and int return value?",
+      "explanation": "Python parameter annotations use a colon, the return annotation uses an arrow, and the function header ends in a colon.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "def size(value int) int:"
+        },
+        {
+          "id": "o2",
+          "text": "def size(value: int) -> int:"
+        },
+        {
+          "id": "o3",
+          "text": "function size(value: int): int"
+        },
+        {
+          "id": "o4",
+          "text": "def size(value -> int): int"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q030",
+      "type": "single",
+      "topic": "Python syntax",
+      "difficulty": "foundation",
+      "prompt": "Which expression returns a list of the lengths of the strings in lines?",
+      "explanation": "A list comprehension places its output expression before the for clause. It materializes the resulting list.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "[len(line) for line in lines]"
+        },
+        {
+          "id": "o2",
+          "text": "[for line in lines: len(line)]"
+        },
+        {
+          "id": "o3",
+          "text": "len(line) in lines"
+        },
+        {
+          "id": "o4",
+          "text": "list(len(lines) for line)"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W01-Q031",
+      "type": "multiple",
+      "topic": "Validation",
+      "difficulty": "applied",
+      "prompt": "Which controls actually inspect runtime input in the Week 1 path? Select all correct choices.",
+      "explanation": "Models, decoding and the size branch execute runtime checks. Ordinary annotations communicate intent without enforcing those properties.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pydantic scalar-field validation"
+        },
+        {
+          "id": "o2",
+          "text": "Strict UTF-8 decoding"
+        },
+        {
+          "id": "o3",
+          "text": "The route sentinel size check"
+        },
+        {
+          "id": "o4",
+          "text": "A bytes annotation by itself"
+        },
+        {
+          "id": "o5",
+          "text": "A Protocol annotation by itself"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q032",
+      "type": "multiple",
+      "topic": "Immutability",
+      "difficulty": "applied",
+      "prompt": "Which statements about the lesson's frozen values are correct?",
+      "explanation": "Freezing and slots govern object representation, not authentication or decoding. Nested mutability must be considered separately.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Frozen prevents ordinary attribute rebinding"
+        },
+        {
+          "id": "o2",
+          "text": "A nested list may still mutate"
+        },
+        {
+          "id": "o3",
+          "text": "A tuple of immutable scalar values is useful for value-like state"
+        },
+        {
+          "id": "o4",
+          "text": "Frozen automatically provides tenant authorization"
+        },
+        {
+          "id": "o5",
+          "text": "slots=True validates byte encoding"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q033",
+      "type": "multiple",
+      "topic": "Logging",
+      "difficulty": "applied",
+      "prompt": "Which fields fit an allowlisted operational success event? Select all correct choices.",
+      "explanation": "Counts and supported, allowlisted media types fit the stated event. An arbitrary identifier is not the constrained correlation context used by the lesson; validate metadata before treating it as safe. Document text and unreviewed messages can expose content.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An arbitrary caller-provided correlation identifier"
+        },
+        {
+          "id": "o2",
+          "text": "The normalized document character count"
+        },
+        {
+          "id": "o3",
+          "text": "A supported, allowlisted media type"
+        },
+        {
+          "id": "o4",
+          "text": "The entire supplier note"
+        },
+        {
+          "id": "o5",
+          "text": "An arbitrary third-party exception message"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q034",
+      "type": "multiple",
+      "topic": "Format policy",
+      "difficulty": "applied",
+      "prompt": "Which are required for a successful existing Week 1 upload?",
+      "explanation": "Success combines metadata policy and byte/content checks. The API accepts uploaded bytes, not a path on the server.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A case-insensitive .txt suffix"
+        },
+        {
+          "id": "o2",
+          "text": "Declared and upload types exactly text/plain"
+        },
+        {
+          "id": "o3",
+          "text": "Non-whitespace strict UTF-8 text"
+        },
+        {
+          "id": "o4",
+          "text": "A .pdf suffix if the document looks readable"
+        },
+        {
+          "id": "o5",
+          "text": "A server filesystem path supplied by the client"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q035",
+      "type": "multiple",
+      "topic": "Format policy",
+      "difficulty": "applied",
+      "prompt": "Which inputs must fail the existing format policy?",
+      "explanation": "The uppercase .TXT suffix is supported. Unsupported suffixes, unsupported declared types and mismatched signals are distinct rejection paths.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "note.pdf with text/plain metadata"
+        },
+        {
+          "id": "o2",
+          "text": "note.txt with application/pdf in both type signals"
+        },
+        {
+          "id": "o3",
+          "text": "note.txt with mismatched type signals"
+        },
+        {
+          "id": "o4",
+          "text": "note.TXT with matching text/plain and valid nonblank UTF-8"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q036",
+      "type": "multiple",
+      "topic": "Async",
+      "difficulty": "applied",
+      "prompt": "Which workload choices are reasonable starting points, subject to measurement?",
+      "explanation": "Concurrency choices follow workload and lifecycle. Unbounded task creation is not admission control, and async alone does not parallelize Python CPU work.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Async for awaitable network I/O"
+        },
+        {
+          "id": "o2",
+          "text": "A bounded thread pool for a blocking I/O library"
+        },
+        {
+          "id": "o3",
+          "text": "A process or external worker for expensive CPU parsing"
+        },
+        {
+          "id": "o4",
+          "text": "Unbounded create_task calls as backpressure"
+        },
+        {
+          "id": "o5",
+          "text": "Assuming async makes CPU work parallel"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q037",
+      "type": "multiple",
+      "topic": "Generators",
+      "difficulty": "applied",
+      "prompt": "Which generator properties must a caller account for?",
+      "explanation": "Laziness changes execution and lifetime. Single-pass consumption and eager upstream steps still matter.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The body starts when iteration advances"
+        },
+        {
+          "id": "o2",
+          "text": "Errors can occur during iteration"
+        },
+        {
+          "id": "o3",
+          "text": "A suspended generator may retain a resource"
+        },
+        {
+          "id": "o4",
+          "text": "Replaying exhausted values requires constructing a new generator"
+        },
+        {
+          "id": "o5",
+          "text": "A generator always eliminates all upstream materialization"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W01-Q038",
+      "type": "multiple",
+      "topic": "Exceptions",
+      "difficulty": "applied",
+      "prompt": "Which practices preserve useful failure boundaries?",
+      "explanation": "Translate deliberately and retain causes. Suppression and raw public tracebacks destroy the intended stable failure contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Chain a translated exception when preserving its cause"
+        },
+        {
+          "id": "o2",
+          "text": "Translate when a layer adds meaningful vocabulary"
+        },
+        {
+          "id": "o3",
+          "text": "Let an unchanged failure propagate when the layer adds no policy"
+        },
+        {
+          "id": "o4",
+          "text": "Catch every exception and return empty text"
+        },
+        {
+          "id": "o5",
+          "text": "Expose a decoder traceback as the public API body"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q039",
+      "type": "multiple",
+      "topic": "Representations",
+      "difficulty": "applied",
+      "prompt": "Which representation choices fit their stated responsibilities?",
+      "explanation": "Choose a representation according to its responsibility. Framework coupling and inheritance need a concrete reason.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pydantic for untrusted scalar parsing"
+        },
+        {
+          "id": "o2",
+          "text": "A frozen dataclass for an internal command"
+        },
+        {
+          "id": "o3",
+          "text": "A plain class for orchestration with an injected dependency"
+        },
+        {
+          "id": "o4",
+          "text": "A BaseModel for every internal variable"
+        },
+        {
+          "id": "o5",
+          "text": "Inheritance just because two classes share a few lines"
+        },
+        {
+          "id": "o6",
+          "text": "A protocol for the narrow reader behavior"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o6"
+      ]
+    },
+    {
+      "id": "W01-Q040",
+      "type": "multiple",
+      "topic": "Testing",
+      "difficulty": "applied",
+      "prompt": "Which direct tests support the newline-normalization contract?",
+      "explanation": "The function owns newline representation only. Authentication and trimming are unrelated to its declared behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "CRLF becomes LF"
+        },
+        {
+          "id": "o2",
+          "text": "Standalone CR becomes LF"
+        },
+        {
+          "id": "o3",
+          "text": "Non-newline spaces are preserved"
+        },
+        {
+          "id": "o4",
+          "text": "Every output is stripped"
+        },
+        {
+          "id": "o5",
+          "text": "A successful normalization authenticates a supplier"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q041",
+      "type": "multiple",
+      "topic": "Testing",
+      "difficulty": "applied",
+      "prompt": "Which boundary cases belong in upload size/encoding checks?",
+      "explanation": "Check both sides of the byte boundary and distinguish encoding length from decoded character count.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exactly 1,048,576 bytes"
+        },
+        {
+          "id": "o2",
+          "text": "1,048,577 bytes"
+        },
+        {
+          "id": "o3",
+          "text": "Multibyte UTF-8 showing byte count differs from character count"
+        },
+        {
+          "id": "o4",
+          "text": "Only the filename length"
+        },
+        {
+          "id": "o5",
+          "text": "Only a normal ten-byte document"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q042",
+      "type": "multiple",
+      "topic": "Modules",
+      "difficulty": "applied",
+      "prompt": "Which dependency directions preserve the existing separation?",
+      "explanation": "Keep framework assembly at the outside. The service depends on small application contracts rather than transport objects.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Service imports the TextReader protocol"
+        },
+        {
+          "id": "o2",
+          "text": "Application wiring imports a concrete reader and service"
+        },
+        {
+          "id": "o3",
+          "text": "Domain values avoid importing the FastAPI route"
+        },
+        {
+          "id": "o4",
+          "text": "Domain errors construct HTTP responses directly"
+        },
+        {
+          "id": "o5",
+          "text": "The service constructs UploadFile objects internally"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q043",
+      "type": "multiple",
+      "topic": "Pydantic",
+      "difficulty": "applied",
+      "prompt": "Which claims about validation are correct?",
+      "explanation": "Validation checks a specific representation and local rules. Transport selection, content safety and factual authority are different concerns.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A field validator can enforce a rule on one field"
+        },
+        {
+          "id": "o2",
+          "text": "An after-model validator can inspect the parsed instance"
+        },
+        {
+          "id": "o3",
+          "text": "Schema validation does not establish that a supplier statement is true"
+        },
+        {
+          "id": "o4",
+          "text": "strict=True supplies malware scanning"
+        },
+        {
+          "id": "o5",
+          "text": "extra=\"forbid\" necessarily rejects all undeclared multipart fields before the route selects model inputs"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q044",
+      "type": "multiple",
+      "topic": "Testing",
+      "difficulty": "applied",
+      "prompt": "Which testing practices help keep failures understandable?",
+      "explanation": "Behavioral assertions and exact bytes support evidence. Restore dependency overrides after their test, and do not mock the service method whose orchestration the test is meant to exercise.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assert public outputs or failure categories"
+        },
+        {
+          "id": "o2",
+          "text": "Use byte-exact input for encoding/newline cases"
+        },
+        {
+          "id": "o3",
+          "text": "Leave every dependency override installed for later tests"
+        },
+        {
+          "id": "o4",
+          "text": "Mock the service method being tested and call that a service test"
+        },
+        {
+          "id": "o5",
+          "text": "Assert only private helper call counts for business behavior"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W01-Q045",
+      "type": "multiple",
+      "topic": "Encoding",
+      "difficulty": "applied",
+      "prompt": "Which statements about the successful response are correct?",
+      "explanation": "The response uses its declared splitlines-based line policy and normalized-text character count. A trailing newline does not automatically add a line, and UTF-8 byte length can differ from decoded character count.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "line_count always equals newline-character count plus one"
+        },
+        {
+          "id": "o2",
+          "text": "line_count follows the declared splitlines-based policy"
+        },
+        {
+          "id": "o3",
+          "text": "A UTF-8 character may require several upload bytes"
+        },
+        {
+          "id": "o4",
+          "text": "character_count always equals the original byte length"
+        },
+        {
+          "id": "o5",
+          "text": "Normalization must strip all trailing whitespace"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q046",
+      "type": "multiple",
+      "topic": "Dependency injection",
+      "difficulty": "applied",
+      "prompt": "Which benefits follow from supplying the reader explicitly?",
+      "explanation": "Injection improves ownership and replaceability. It does not itself validate a dependency or require global state.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A test can provide a small fake reader"
+        },
+        {
+          "id": "o2",
+          "text": "The service's collaborator is visible at construction"
+        },
+        {
+          "id": "o3",
+          "text": "A different reader implementation can satisfy the same narrow protocol"
+        },
+        {
+          "id": "o4",
+          "text": "The reader automatically becomes trustworthy"
+        },
+        {
+          "id": "o5",
+          "text": "Every collaborator must use a global singleton"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q047",
+      "type": "multiple",
+      "topic": "Methods",
+      "difficulty": "applied",
+      "prompt": "Which method statements are correct?",
+      "explanation": "Method forms express different ownership. A plain function remains appropriate when it has no class-related responsibility.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An instance method receives self"
+        },
+        {
+          "id": "o2",
+          "text": "A class method receives cls"
+        },
+        {
+          "id": "o3",
+          "text": "A static method receives neither automatically"
+        },
+        {
+          "id": "o4",
+          "text": "Class methods cannot refer to class policy"
+        },
+        {
+          "id": "o5",
+          "text": "A stateless module function must be wrapped as a static method"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q048",
+      "type": "multiple",
+      "topic": "Reusable code",
+      "difficulty": "applied",
+      "prompt": "Which choices make a transformation easier to reuse and test?",
+      "explanation": "Explicit contracts and small responsibilities reduce hidden dependencies. I/O and application configuration belong at their own boundaries.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Explicit inputs and outputs"
+        },
+        {
+          "id": "o2",
+          "text": "Separating file I/O from pure normalization"
+        },
+        {
+          "id": "o3",
+          "text": "Keeping global mutable request state out of the function"
+        },
+        {
+          "id": "o4",
+          "text": "Reading a hidden server path inside every normalizer call"
+        },
+        {
+          "id": "o5",
+          "text": "Configuring root logging as a domain-module import side effect"
+        },
+        {
+          "id": "o6",
+          "text": "Passing explicit trusted configuration assembled at the application edge"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o6"
+      ]
+    },
+    {
+      "id": "W01-Q049",
+      "type": "multiple",
+      "topic": "Operational limits",
+      "difficulty": "applied",
+      "prompt": "Which claims about the sentinel read and cancellation are correct?",
+      "explanation": "Limits and cancellation must be designed at the boundaries they control. A bounded endpoint read does not govern the whole deployment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The endpoint requests at most limit + 1 bytes"
+        },
+        {
+          "id": "o2",
+          "text": "Earlier multipart parsing may already have buffered the upload"
+        },
+        {
+          "id": "o3",
+          "text": "Cancelling a coroutine does not safely force-kill a running Python thread"
+        },
+        {
+          "id": "o4",
+          "text": "The sentinel is a complete server-wide memory limit"
+        },
+        {
+          "id": "o5",
+          "text": "An async timeout guarantees every underlying worker stopped"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W01-Q050",
+      "type": "multiple",
+      "topic": "HTTP errors",
+      "difficulty": "applied",
+      "prompt": "Which application failure/status mappings match the current service?",
+      "explanation": "Unsupported format, oversize and infrastructure failures use 415, 413 and 503. Blank text and decoding failures use application 422 responses.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "unsupported_document_format → 415"
+        },
+        {
+          "id": "o2",
+          "text": "document_too_large → 413"
+        },
+        {
+          "id": "o3",
+          "text": "document_infrastructure_failure → 503"
+        },
+        {
+          "id": "o4",
+          "text": "empty_document → 422"
+        },
+        {
+          "id": "o5",
+          "text": "document_decoding_failed → 500"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W01-Q051",
+      "type": "match",
+      "topic": "Representations",
+      "difficulty": "foundation",
+      "prompt": "Match each responsibility to its most direct representation.",
+      "explanation": "Ownership determines representation; the four tools are complementary rather than interchangeable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Stateless newline transformation"
+        },
+        {
+          "id": "l2",
+          "text": "Orchestration with an injected reader"
+        },
+        {
+          "id": "l3",
+          "text": "Trusted internal command value"
+        },
+        {
+          "id": "l4",
+          "text": "Untrusted scalar parsing boundary"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Function"
+        },
+        {
+          "id": "r2",
+          "text": "Plain class"
+        },
+        {
+          "id": "r3",
+          "text": "Frozen dataclass"
+        },
+        {
+          "id": "r4",
+          "text": "Pydantic model"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q052",
+      "type": "match",
+      "topic": "Failure boundaries",
+      "difficulty": "foundation",
+      "prompt": "Match each failure stage to the vocabulary or representation it owns.",
+      "explanation": "Each translation adds boundary-specific meaning while preserving the underlying cause.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "UTF-8 codec"
+        },
+        {
+          "id": "l2",
+          "text": "Reader adapter"
+        },
+        {
+          "id": "l3",
+          "text": "Extraction service"
+        },
+        {
+          "id": "l4",
+          "text": "Application HTTP handler"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "UnicodeDecodeError"
+        },
+        {
+          "id": "r2",
+          "text": "ReaderDecodingError"
+        },
+        {
+          "id": "r3",
+          "text": "DocumentDecodingError"
+        },
+        {
+          "id": "r4",
+          "text": "422 document-error JSON"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q053",
+      "type": "match",
+      "topic": "pytest",
+      "difficulty": "foundation",
+      "prompt": "Match each pytest feature to its purpose.",
+      "explanation": "These features support different kinds of evidence; none requires mocking the subject under test.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "pytest.mark.parametrize"
+        },
+        {
+          "id": "l2",
+          "text": "A fixture"
+        },
+        {
+          "id": "l3",
+          "text": "caplog.records"
+        },
+        {
+          "id": "l4",
+          "text": "pytest.raises"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Run the same behavioral test over named input cases"
+        },
+        {
+          "id": "r2",
+          "text": "Provide reusable setup with a defined lifecycle"
+        },
+        {
+          "id": "r3",
+          "text": "Inspect structured LogRecord attributes"
+        },
+        {
+          "id": "r4",
+          "text": "Assert that an operation raises a particular exception"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q054",
+      "type": "match",
+      "topic": "Logging",
+      "difficulty": "foundation",
+      "prompt": "Match each logging API to its usual role in this lesson's examples.",
+      "explanation": "Severity follows the operational contract. logger.exception records exception context and should not expose sensitive payloads.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "logger.info"
+        },
+        {
+          "id": "l2",
+          "text": "logger.warning"
+        },
+        {
+          "id": "l3",
+          "text": "logger.exception"
+        },
+        {
+          "id": "l4",
+          "text": "logger.debug"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A successful extraction lifecycle event"
+        },
+        {
+          "id": "r2",
+          "text": "A handled document-policy failure"
+        },
+        {
+          "id": "r3",
+          "text": "An unexpected failure recorded with traceback in an exception handler"
+        },
+        {
+          "id": "r4",
+          "text": "Optional diagnostic detail under application configuration"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q055",
+      "type": "match",
+      "topic": "Concurrency",
+      "difficulty": "foundation",
+      "prompt": "Match each workload to a reasonable initial execution choice.",
+      "explanation": "Choose the model from the actual waiting or CPU work, then define admission, cleanup and cancellation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Awaitable remote request"
+        },
+        {
+          "id": "l2",
+          "text": "Blocking I/O-only SDK"
+        },
+        {
+          "id": "l3",
+          "text": "Expensive CPU parsing"
+        },
+        {
+          "id": "l4",
+          "text": "Small bounded local normalization"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Async task"
+        },
+        {
+          "id": "r2",
+          "text": "Bounded thread pool when needed"
+        },
+        {
+          "id": "r3",
+          "text": "Process or external worker when justified"
+        },
+        {
+          "id": "r4",
+          "text": "Synchronous function"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q056",
+      "type": "match",
+      "topic": "Request fields",
+      "difficulty": "foundation",
+      "prompt": "Match each value to its source in the current boundary.",
+      "explanation": "Metadata signals come from different inputs. Their agreement does not replace byte validation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Original upload filename"
+        },
+        {
+          "id": "l2",
+          "text": "Upload-part media type"
+        },
+        {
+          "id": "l3",
+          "text": "Declared scalar media type"
+        },
+        {
+          "id": "l4",
+          "text": "Bytes held by the internal command"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "file.filename"
+        },
+        {
+          "id": "r2",
+          "text": "file.content_type"
+        },
+        {
+          "id": "r3",
+          "text": "request.media_type"
+        },
+        {
+          "id": "r4",
+          "text": "command.content"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q057",
+      "type": "match",
+      "topic": "Typing",
+      "difficulty": "foundation",
+      "prompt": "Match each annotation to its intent.",
+      "explanation": "These are static contracts, not automatic runtime trust or encoding checks.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "str | None"
+        },
+        {
+          "id": "l2",
+          "text": "ClassVar[str]"
+        },
+        {
+          "id": "l3",
+          "text": "Protocol"
+        },
+        {
+          "id": "l4",
+          "text": "Iterator[str]"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A value that may be absent"
+        },
+        {
+          "id": "r2",
+          "text": "Class-level policy attribute"
+        },
+        {
+          "id": "r3",
+          "text": "Structural behavior contract"
+        },
+        {
+          "id": "r4",
+          "text": "A single advancing stream of strings"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q058",
+      "type": "match",
+      "topic": "Text representation",
+      "difficulty": "foundation",
+      "prompt": "Match each named character sequence to its Python escape spelling.",
+      "explanation": "Normalize newline sequences without confusing them with tabs or other whitespace.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Carriage return plus line feed"
+        },
+        {
+          "id": "l2",
+          "text": "Carriage return"
+        },
+        {
+          "id": "l3",
+          "text": "Line feed"
+        },
+        {
+          "id": "l4",
+          "text": "Tab"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "\\r\\n"
+        },
+        {
+          "id": "r2",
+          "text": "\\r"
+        },
+        {
+          "id": "r3",
+          "text": "\\n"
+        },
+        {
+          "id": "r4",
+          "text": "\\t"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q059",
+      "type": "match",
+      "topic": "HTTP errors",
+      "difficulty": "foundation",
+      "prompt": "Match each application failure to its status.",
+      "explanation": "These status mappings belong to application HTTP handlers, not to the framework-free decoder.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Unsupported format"
+        },
+        {
+          "id": "l2",
+          "text": "Oversized upload"
+        },
+        {
+          "id": "l3",
+          "text": "Whitespace-only decoded document"
+        },
+        {
+          "id": "l4",
+          "text": "Upload read infrastructure failure"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "415"
+        },
+        {
+          "id": "r2",
+          "text": "413"
+        },
+        {
+          "id": "r3",
+          "text": "422"
+        },
+        {
+          "id": "r4",
+          "text": "503"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q060",
+      "type": "match",
+      "topic": "Lifetime",
+      "difficulty": "foundation",
+      "prompt": "Match each object or control to the property a caller must remember.",
+      "explanation": "Collection behavior, resource lifetime and cancellation are separate design concerns.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Materialized list"
+        },
+        {
+          "id": "l2",
+          "text": "Exhausted generator"
+        },
+        {
+          "id": "l3",
+          "text": "with around an owned resource"
+        },
+        {
+          "id": "l4",
+          "text": "Cancellation of a waiting coroutine"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Supports repeat traversal of its stored values"
+        },
+        {
+          "id": "r2",
+          "text": "Does not replay its values"
+        },
+        {
+          "id": "r3",
+          "text": "Defines a deterministic exit/cleanup boundary"
+        },
+        {
+          "id": "r4",
+          "text": "Does not safely force-kill an already running thread"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q061",
+      "type": "match",
+      "topic": "Python syntax",
+      "difficulty": "foundation",
+      "prompt": "Match each keyword to its role.",
+      "explanation": "Recognizing syntax should accompany understanding of the boundaries that use it.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "def"
+        },
+        {
+          "id": "l2",
+          "text": "class"
+        },
+        {
+          "id": "l3",
+          "text": "return"
+        },
+        {
+          "id": "l4",
+          "text": "raise"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Define a function"
+        },
+        {
+          "id": "r2",
+          "text": "Define a class"
+        },
+        {
+          "id": "r3",
+          "text": "Finish the current function call with a value"
+        },
+        {
+          "id": "r4",
+          "text": "Signal an exception"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q062",
+      "type": "match",
+      "topic": "Python builtins",
+      "difficulty": "foundation",
+      "prompt": "Match each call to its result for the shown input.",
+      "explanation": "len counts characters in the shown string; sorted and list materialize values; next advances one iterator step.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "len(\"a\\nb\")"
+        },
+        {
+          "id": "l2",
+          "text": "sorted([3, 1])"
+        },
+        {
+          "id": "l3",
+          "text": "list(iter([7, 8]))"
+        },
+        {
+          "id": "l4",
+          "text": "next(iter([9, 10]))"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "3"
+        },
+        {
+          "id": "r2",
+          "text": "[1, 3]"
+        },
+        {
+          "id": "r3",
+          "text": "[7, 8]"
+        },
+        {
+          "id": "r4",
+          "text": "9"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q063",
+      "type": "match",
+      "topic": "Modules",
+      "difficulty": "foundation",
+      "prompt": "Match the repository module to its main responsibility.",
+      "explanation": "Module cohesion makes the service and its transport boundary independently understandable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "domain.py"
+        },
+        {
+          "id": "l2",
+          "text": "ports.py"
+        },
+        {
+          "id": "l3",
+          "text": "readers.py"
+        },
+        {
+          "id": "l4",
+          "text": "main.py"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Internal values and pure text helpers"
+        },
+        {
+          "id": "r2",
+          "text": "The TextReader protocol"
+        },
+        {
+          "id": "r3",
+          "text": "Strict UTF-8 adapter"
+        },
+        {
+          "id": "r4",
+          "text": "Application assembly and HTTP exception handlers"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q064",
+      "type": "match",
+      "topic": "Model configuration",
+      "difficulty": "foundation",
+      "prompt": "Match each configuration option to its intended effect.",
+      "explanation": "None of these options supplies authentication, deep immutability or a complete upload admission policy.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Dataclass frozen=True"
+        },
+        {
+          "id": "l2",
+          "text": "Dataclass slots=True"
+        },
+        {
+          "id": "l3",
+          "text": "Pydantic strict=True"
+        },
+        {
+          "id": "l4",
+          "text": "Pydantic extra=\"forbid\""
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Prevent ordinary field reassignment"
+        },
+        {
+          "id": "r2",
+          "text": "Avoid an ordinary per-instance attribute dictionary"
+        },
+        {
+          "id": "r3",
+          "text": "Request strict type validation where configured"
+        },
+        {
+          "id": "r4",
+          "text": "Reject undeclared keys supplied to that model"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q065",
+      "type": "match",
+      "topic": "Testing boundaries",
+      "difficulty": "foundation",
+      "prompt": "Match each test input to the closest relevant component.",
+      "explanation": "Begin with the narrowest boundary that owns the rule, then verify composition separately.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "A direct normalization string"
+        },
+        {
+          "id": "l2",
+          "text": "A mapping with an unsafe correlation identifier"
+        },
+        {
+          "id": "l3",
+          "text": "Byte-exact invalid UTF-8"
+        },
+        {
+          "id": "l4",
+          "text": "A multipart request through TestClient"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Pure domain function"
+        },
+        {
+          "id": "r2",
+          "text": "Pydantic request model"
+        },
+        {
+          "id": "r3",
+          "text": "Reader adapter"
+        },
+        {
+          "id": "r4",
+          "text": "Composed HTTP endpoint"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W01-Q066",
+      "type": "short",
+      "topic": "Python syntax",
+      "difficulty": "foundation",
+      "prompt": "Fill the blank with the Python keyword that starts an ordinary function definition.",
+      "explanation": "A function definition begins with def, followed by its name, parameters, optional return annotation and colon.",
+      "accepted": [
+        "def"
+      ],
+      "case_sensitive": true,
+      "snippet": "___ normalize(text: str) -> str:\n    return text"
+    },
+    {
+      "id": "W01-Q067",
+      "type": "short",
+      "topic": "Classes",
+      "difficulty": "foundation",
+      "prompt": "What conventional first parameter name is used by an instance method? Enter the identifier only.",
+      "explanation": "self names the current instance by convention and makes instance state available to the method.",
+      "accepted": [
+        "self"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q068",
+      "type": "short",
+      "topic": "Classes",
+      "difficulty": "foundation",
+      "prompt": "What special method name initializes a newly constructed instance? Include both pairs of underscores.",
+      "explanation": "__init__ receives constructor arguments and establishes the instance state; it is not written init without underscores.",
+      "accepted": [
+        "__init__"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q069",
+      "type": "short",
+      "topic": "Typing",
+      "difficulty": "foundation",
+      "prompt": "Fill the blank in str | ___ to express that a string value may be absent.",
+      "explanation": "The union str | None explicitly represents optional absence and should be narrowed before operations that need a string.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q070",
+      "type": "short",
+      "topic": "Generators",
+      "difficulty": "foundation",
+      "prompt": "Which keyword suspends a generator function and produces its next value?",
+      "explanation": "yield creates the suspension/resumption behavior of a generator; return completes it.",
+      "accepted": [
+        "yield"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q071",
+      "type": "short",
+      "topic": "Async",
+      "difficulty": "foundation",
+      "prompt": "Which keyword is used inside async def to suspend while waiting for an awaitable?",
+      "explanation": "await can yield control while an awaitable operation is waiting; it does not make arbitrary blocking work non-blocking.",
+      "accepted": [
+        "await"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q072",
+      "type": "short",
+      "topic": "Typing",
+      "difficulty": "foundation",
+      "prompt": "Which typing name supplies the structural behavior contract used by TextReader? Enter the class name only.",
+      "explanation": "Protocol describes required behavior without demanding inheritance from a particular concrete reader base class.",
+      "accepted": [
+        "Protocol"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q073",
+      "type": "short",
+      "topic": "Dataclasses",
+      "difficulty": "foundation",
+      "prompt": "Fill the decorator name used to generate the internal carrier's initialization and value methods.",
+      "explanation": "The dataclass decorator generates routine value-class methods. frozen and slots are separate options.",
+      "accepted": [
+        "dataclass"
+      ],
+      "case_sensitive": true,
+      "snippet": "@___(frozen=True, slots=True)\nclass Command:\n    content: bytes"
+    },
+    {
+      "id": "W01-Q074",
+      "type": "short",
+      "topic": "Exceptions",
+      "difficulty": "foundation",
+      "prompt": "Which exception attribute holds the explicitly chained cause set by raise NewError(...) from exc?",
+      "explanation": "__cause__ preserves the original exception object used in an explicit chained raise.",
+      "accepted": [
+        "__cause__"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q075",
+      "type": "short",
+      "topic": "Pydantic",
+      "difficulty": "foundation",
+      "prompt": "Which Pydantic exception class represents model-validation errors? Enter the class name only.",
+      "explanation": "The scalar parsing dependency catches ValidationError and adapts it to FastAPI request-validation vocabulary.",
+      "accepted": [
+        "ValidationError"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q076",
+      "type": "short",
+      "topic": "pytest",
+      "difficulty": "foundation",
+      "prompt": "Enter the qualified pytest helper used in with ___(ValueError): to assert an exception.",
+      "explanation": "pytest.raises is a context manager for asserting an expected exception from the operation inside its block.",
+      "accepted": [
+        "pytest.raises"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q077",
+      "type": "short",
+      "topic": "Logging tests",
+      "difficulty": "foundation",
+      "prompt": "Enter the caplog attribute expression used to inspect individual LogRecord objects.",
+      "explanation": "caplog.records exposes record attributes that may be omitted by the text formatter.",
+      "accepted": [
+        "caplog.records"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q078",
+      "type": "short",
+      "topic": "Uploads",
+      "difficulty": "foundation",
+      "prompt": "For a 1,048,576-byte policy, what integer is passed to the sentinel read? Enter a decimal integer literal.",
+      "explanation": "The application requests one byte beyond the maximum so it can detect a longer upload with the same prefix.",
+      "accepted": [
+        "1048577",
+        "1_048_577"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q079",
+      "type": "short",
+      "topic": "Python syntax",
+      "difficulty": "foundation",
+      "prompt": "Which two-character symbol introduces the return annotation in a function header?",
+      "explanation": "The arrow appears after the parameter list and before the return type; the header still ends with a colon.",
+      "accepted": [
+        "->"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q080",
+      "type": "short",
+      "topic": "Cleanup",
+      "difficulty": "foundation",
+      "prompt": "Which clause after try/except expresses cleanup that runs when control leaves the try statement, including during an exception?",
+      "explanation": "finally expresses cleanup for the owned scope. A context manager is often clearer when it owns the resource lifetime.",
+      "accepted": [
+        "finally"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W01-Q081",
+      "type": "code",
+      "topic": "Functions",
+      "difficulty": "applied",
+      "prompt": "Implement normalize_newlines(text). Replace CRLF and standalone CR with LF. Preserve all other characters and whitespace.",
+      "explanation": "Normalize CRLF before CR so a single CRLF does not become two line feeds. Do not strip other whitespace.",
+      "starter": "def normalize_newlines(text: str) -> str:\n    raise NotImplementedError\n",
+      "reference": "def normalize_newlines(text: str) -> str:\n    return text.replace(\"\\r\\n\", \"\\n\").replace(\"\\r\", \"\\n\")\n",
+      "checks": [
+        {
+          "label": "Mixed newlines",
+          "code": "assert normalize_newlines(\"a\\r\\nb\\rc\") == \"a\\nb\\nc\""
+        },
+        {
+          "label": "Whitespace preservation",
+          "code": "assert normalize_newlines(\"  a  \\r\\n\") == \"  a  \\n\""
+        },
+        {
+          "label": "Empty input",
+          "code": "assert normalize_newlines(\"\") == \"\""
+        },
+        {
+          "label": "Existing LF",
+          "code": "assert normalize_newlines(\"a\\nb\") == \"a\\nb\""
+        },
+        {
+          "label": "CRLF is one boundary",
+          "code": "assert normalize_newlines(\"\\r\\n\") == \"\\n\""
+        }
+      ]
+    },
+    {
+      "id": "W01-Q082",
+      "type": "code",
+      "topic": "Encoding",
+      "difficulty": "applied",
+      "prompt": "Implement decode_utf8(content). Decode bytes using strict UTF-8. Preserve the decoded text and let UnicodeDecodeError propagate for invalid bytes.",
+      "explanation": "Strict decoding inspects the actual bytes. Decoding and newline normalization are separate responsibilities.",
+      "starter": "def decode_utf8(content: bytes) -> str:\n    raise NotImplementedError\n",
+      "reference": "def decode_utf8(content: bytes) -> str:\n    return content.decode(\"utf-8\", errors=\"strict\")\n",
+      "checks": [
+        {
+          "label": "ASCII",
+          "code": "assert decode_utf8(b\"alpha\") == \"alpha\""
+        },
+        {
+          "label": "Multibyte text",
+          "code": "assert decode_utf8(\"éभारत\".encode()) == \"éभारत\""
+        },
+        {
+          "label": "Invalid bytes",
+          "code": "assert raises(UnicodeDecodeError, decode_utf8, b\"\\xff\")"
+        },
+        {
+          "label": "Empty bytes",
+          "code": "assert decode_utf8(b\"\") == \"\""
+        },
+        {
+          "label": "Newlines preserved",
+          "code": "assert decode_utf8(b\"a\\r\\nb\") == \"a\\r\\nb\""
+        }
+      ]
+    },
+    {
+      "id": "W01-Q083",
+      "type": "code",
+      "topic": "Uploads",
+      "difficulty": "applied",
+      "prompt": "Implement accepts_size(content, limit=1_048_576). Return whether len(content) is at most limit. Raise ValueError if limit is zero or negative. Count bytes, not decoded characters.",
+      "explanation": "Use an inclusive comparison for the allowed size. Configuration validity is a separate explicit guard.",
+      "starter": "def accepts_size(content: bytes, limit: int = 1_048_576) -> bool:\n    raise NotImplementedError\n",
+      "reference": "def accepts_size(content: bytes, limit: int = 1_048_576) -> bool:\n    if limit <= 0:\n        raise ValueError(\"limit must be positive\")\n    return len(content) <= limit\n",
+      "checks": [
+        {
+          "label": "Exactly at limit",
+          "code": "assert accepts_size(b\"abc\", 3) is True"
+        },
+        {
+          "label": "Over limit",
+          "code": "assert accepts_size(b\"abcd\", 3) is False"
+        },
+        {
+          "label": "Empty bytes",
+          "code": "assert accepts_size(b\"\", 1) is True"
+        },
+        {
+          "label": "Invalid limit",
+          "code": "assert raises(ValueError, accepts_size, b\"a\", 0) and raises(ValueError, accepts_size, b\"a\", -1)"
+        },
+        {
+          "label": "UTF-8 byte length",
+          "code": "assert accepts_size(\"é\".encode(), 1) is False"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q084",
+      "type": "code",
+      "topic": "Line counting",
+      "difficulty": "applied",
+      "prompt": "Implement logical_lines(text) using the lesson's splitlines-based policy: return the number of split lines, or 1 when that number is zero. The service separately rejects blank documents.",
+      "explanation": "str.splitlines has a defined trailing-boundary policy. Do not substitute newline count plus one without checking that contract.",
+      "starter": "def logical_lines(text: str) -> int:\n    raise NotImplementedError\n",
+      "reference": "def logical_lines(text: str) -> int:\n    return len(text.splitlines()) or 1\n",
+      "checks": [
+        {
+          "label": "One line",
+          "code": "assert logical_lines(\"a\") == 1"
+        },
+        {
+          "label": "Trailing newline",
+          "code": "assert logical_lines(\"a\\n\") == 1"
+        },
+        {
+          "label": "Mixed boundaries",
+          "code": "assert logical_lines(\"a\\r\\nb\\rc\") == 3"
+        },
+        {
+          "label": "Empty helper input",
+          "code": "assert logical_lines(\"\") == 1"
+        },
+        {
+          "label": "Blank line",
+          "code": "assert logical_lines(\"\\n\") == 1"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q085",
+      "type": "code",
+      "topic": "Generators",
+      "difficulty": "applied",
+      "prompt": "Implement nonblank_lines(text) as a generator. Skip lines whose strip() is empty, but yield each retained line without stripping its spaces.",
+      "explanation": "Use yield for a generator, and separate the blankness test from the value you retain. splitlines itself still materializes its list.",
+      "starter": "from collections.abc import Iterator\n\ndef nonblank_lines(text: str) -> Iterator[str]:\n    raise NotImplementedError\n",
+      "reference": "from collections.abc import Iterator\n\ndef nonblank_lines(text: str) -> Iterator[str]:\n    for line in text.splitlines():\n        if line.strip():\n            yield line\n",
+      "checks": [
+        {
+          "label": "Keep nonblank lines",
+          "code": "assert list(nonblank_lines(\"a\\n\\nb\")) == [\"a\", \"b\"]"
+        },
+        {
+          "label": "Preserve spaces",
+          "code": "assert list(nonblank_lines(\"  a  \\n \")) == [\"  a  \"]"
+        },
+        {
+          "label": "Empty input",
+          "code": "assert list(nonblank_lines(\"\")) == []"
+        },
+        {
+          "label": "Actual generator",
+          "code": "import inspect\nassert inspect.isgenerator(nonblank_lines(\"a\"))"
+        },
+        {
+          "label": "Single pass",
+          "code": "items = nonblank_lines(\"a\\nb\")\nassert list(items) == [\"a\", \"b\"] and list(items) == []"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q086",
+      "type": "code",
+      "topic": "Validation",
+      "difficulty": "applied",
+      "prompt": "Implement safe_id(value). Return True only for 1–64 ASCII characters: the first must be a letter or digit; the rest may also be dot, underscore or hyphen. Return False otherwise.",
+      "explanation": "Use a full match over the complete identifier. ASCII and length requirements are part of this representation policy, not authentication.",
+      "starter": "def safe_id(value: str) -> bool:\n    raise NotImplementedError\n",
+      "reference": "import re\n\ndef safe_id(value: str) -> bool:\n    return re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._-]{0,63}\", value) is not None\n",
+      "checks": [
+        {
+          "label": "Accepted identifier",
+          "code": "assert safe_id(\"request-42.A_b\") is True"
+        },
+        {
+          "label": "Whitespace rejected",
+          "code": "assert safe_id(\"has space\") is False and safe_id(\"a\\n\") is False"
+        },
+        {
+          "label": "Length boundaries",
+          "code": "assert safe_id(\"a\" * 64) is True and safe_id(\"a\" * 65) is False"
+        },
+        {
+          "label": "First character",
+          "code": "assert safe_id(\"_a\") is False and safe_id(\"../path\") is False"
+        },
+        {
+          "label": "ASCII and empty",
+          "code": "assert safe_id(\"é\") is False and safe_id(\"\") is False"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q087",
+      "type": "code",
+      "topic": "Dataclasses",
+      "difficulty": "applied",
+      "prompt": "Define DocumentInfo as a frozen, slotted dataclass with fields correlation_id: str and character_count: int. It should have ordinary dataclass value equality. No Pydantic dependency is needed.",
+      "explanation": "The decorator options control representation and rebinding. They do not validate arbitrary runtime input or make nested mutable objects immutable.",
+      "starter": "from dataclasses import dataclass\n\n# Define DocumentInfo here.\n",
+      "reference": "from dataclasses import dataclass\n\n@dataclass(frozen=True, slots=True)\nclass DocumentInfo:\n    correlation_id: str\n    character_count: int\n",
+      "checks": [
+        {
+          "label": "Field construction",
+          "code": "value = DocumentInfo(\"r1\", 3)\nassert value.correlation_id == \"r1\" and value.character_count == 3"
+        },
+        {
+          "label": "Value equality",
+          "code": "assert DocumentInfo(\"r1\", 3) == DocumentInfo(\"r1\", 3)"
+        },
+        {
+          "label": "Frozen fields",
+          "code": "from dataclasses import FrozenInstanceError\nassert raises(FrozenInstanceError, setattr, DocumentInfo(\"r1\", 3), \"character_count\", 4)"
+        },
+        {
+          "label": "Slotted instance",
+          "code": "assert not hasattr(DocumentInfo(\"r1\", 3), \"__dict__\")"
+        },
+        {
+          "label": "Annotations",
+          "code": "from typing import get_type_hints\nassert get_type_hints(DocumentInfo) == {\"correlation_id\": str, \"character_count\": int}"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q088",
+      "type": "code",
+      "topic": "Immutability",
+      "difficulty": "applied",
+      "prompt": "Implement freeze_labels(labels). Return an immutable tuple snapshot, preserving order and duplicates. Later mutation of the caller's list must not change that snapshot.",
+      "explanation": "Changing the nested representation can remove aliasing surprises. These labels are immutable strings, so a tuple is a suitable snapshot.",
+      "starter": "def freeze_labels(labels: list[str]) -> tuple[str, ...]:\n    raise NotImplementedError\n",
+      "reference": "def freeze_labels(labels: list[str]) -> tuple[str, ...]:\n    return tuple(labels)\n",
+      "checks": [
+        {
+          "label": "Tuple result",
+          "code": "assert freeze_labels([\"a\", \"b\"]) == (\"a\", \"b\")"
+        },
+        {
+          "label": "Snapshot isolation",
+          "code": "source = [\"a\"]\nvalue = freeze_labels(source)\nsource.append(\"b\")\nassert value == (\"a\",)"
+        },
+        {
+          "label": "Empty input",
+          "code": "assert freeze_labels([]) == ()"
+        },
+        {
+          "label": "Duplicates retained",
+          "code": "assert freeze_labels([\"a\", \"a\"]) == (\"a\", \"a\")"
+        },
+        {
+          "label": "Immutable type",
+          "code": "assert isinstance(freeze_labels([\"a\"]), tuple)"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q089",
+      "type": "code",
+      "topic": "Logging",
+      "difficulty": "applied",
+      "prompt": "Implement event_metadata(correlation_id, text, filename). Return exactly correlation_id, character_count and line_count. Text is already normalized. Count lines with len(text.splitlines()) or 1. Exclude both text and filename from the metadata.",
+      "explanation": "Construct a small allowlist of fields. Do not copy an entire command or payload into an operational log record.",
+      "starter": "def event_metadata(correlation_id: str, text: str, filename: str) -> dict:\n    raise NotImplementedError\n",
+      "reference": "def event_metadata(correlation_id: str, text: str, filename: str) -> dict:\n    return {\"correlation_id\": correlation_id, \"character_count\": len(text), \"line_count\": len(text.splitlines()) or 1}\n",
+      "checks": [
+        {
+          "label": "Expected fields",
+          "code": "assert event_metadata(\"r1\", \"a\\nb\", \"secret.txt\") == {\"correlation_id\": \"r1\", \"character_count\": 3, \"line_count\": 2}"
+        },
+        {
+          "label": "No payload field",
+          "code": "assert set(event_metadata(\"r1\", \"SECRET-TEXT\", \"private.txt\")) == {\"correlation_id\", \"character_count\", \"line_count\"}"
+        },
+        {
+          "label": "No filename value",
+          "code": "assert \"PRIVATE-FILENAME\" not in str(event_metadata(\"r1\", \"abc\", \"PRIVATE-FILENAME\"))"
+        },
+        {
+          "label": "Unicode count",
+          "code": "assert event_metadata(\"r2\", \"é\", \"x.txt\")[\"character_count\"] == 1"
+        },
+        {
+          "label": "Empty helper input",
+          "code": "assert event_metadata(\"r1\", \"\", \"x.txt\")[\"line_count\"] == 1"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q090",
+      "type": "code",
+      "topic": "Async",
+      "difficulty": "applied",
+      "prompt": "Implement async read_utf8(reader). Await reader.read() once, then strictly decode the returned bytes as UTF-8. Preserve newlines. Let decode errors propagate.",
+      "explanation": "Await the I/O boundary; the small local decode remains synchronous. Returning an unawaited coroutine is not a decoded string.",
+      "starter": "async def read_utf8(reader) -> str:\n    raise NotImplementedError\n",
+      "reference": "async def read_utf8(reader) -> str:\n    content = await reader.read()\n    return content.decode(\"utf-8\", errors=\"strict\")\n",
+      "checks": [
+        {
+          "label": "Awaitable reader",
+          "code": "class Reader:\n    async def read(self):\n        return b\"alpha\"\nassert await read_utf8(Reader()) == \"alpha\""
+        },
+        {
+          "label": "Multibyte text",
+          "code": "class Reader:\n    async def read(self):\n        return \"é\".encode()\nassert await read_utf8(Reader()) == \"é\""
+        },
+        {
+          "label": "One read only",
+          "code": "class Reader:\n    def __init__(self):\n        self.calls = 0\n    async def read(self):\n        self.calls += 1\n        return b\"\"\nreader = Reader()\nassert await read_utf8(reader) == \"\" and reader.calls == 1"
+        },
+        {
+          "label": "Newlines unchanged",
+          "code": "class Reader:\n    async def read(self):\n        return b\"a\\r\\nb\"\nassert await read_utf8(Reader()) == \"a\\r\\nb\""
+        },
+        {
+          "label": "Strict failure",
+          "code": "class Reader:\n    async def read(self):\n        return b\"\\xff\"\ntry:\n    await read_utf8(Reader())\nexcept UnicodeDecodeError:\n    pass\nelse:\n    raise AssertionError(\"invalid UTF-8 was accepted\")"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q091",
+      "type": "code",
+      "topic": "Format policy",
+      "difficulty": "applied",
+      "prompt": "Implement supported_upload(filename, declared_type, upload_type). Return True only when the suffix is .txt case-insensitively and both type strings equal text/plain exactly.",
+      "explanation": "Treat all three signals as independent policy inputs. A matching but unsupported pair still fails.",
+      "starter": "def supported_upload(filename: str, declared_type: str, upload_type: str) -> bool:\n    raise NotImplementedError\n",
+      "reference": "def supported_upload(filename: str, declared_type: str, upload_type: str) -> bool:\n    return filename.lower().endswith(\".txt\") and declared_type == upload_type == \"text/plain\"\n",
+      "checks": [
+        {
+          "label": "Valid upload",
+          "code": "assert supported_upload(\"note.txt\", \"text/plain\", \"text/plain\") is True"
+        },
+        {
+          "label": "Uppercase suffix",
+          "code": "assert supported_upload(\"note.TXT\", \"text/plain\", \"text/plain\") is True"
+        },
+        {
+          "label": "Wrong suffix",
+          "code": "assert supported_upload(\"note.pdf\", \"text/plain\", \"text/plain\") is False"
+        },
+        {
+          "label": "Matching unsupported types",
+          "code": "assert supported_upload(\"note.txt\", \"application/pdf\", \"application/pdf\") is False"
+        },
+        {
+          "label": "Exact type match",
+          "code": "assert supported_upload(\"note.txt\", \"text/plain\", \"text/plain; charset=utf-8\") is False"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q092",
+      "type": "code",
+      "topic": "HTTP errors",
+      "difficulty": "applied",
+      "prompt": "Implement error_status(code). Map unsupported_document_format→415, document_too_large→413, empty_document and document_decoding_failed→422, document_infrastructure_failure→503. Return 500 for every other string.",
+      "explanation": "This exercise isolates the transport mapping. A real domain service should not need to construct HTTP responses.",
+      "starter": "def error_status(code: str) -> int:\n    raise NotImplementedError\n",
+      "reference": "def error_status(code: str) -> int:\n    return {\"unsupported_document_format\": 415, \"document_too_large\": 413, \"empty_document\": 422, \"document_decoding_failed\": 422, \"document_infrastructure_failure\": 503}.get(code, 500)\n",
+      "checks": [
+        {
+          "label": "Unsupported format",
+          "code": "assert error_status(\"unsupported_document_format\") == 415"
+        },
+        {
+          "label": "Oversized upload",
+          "code": "assert error_status(\"document_too_large\") == 413"
+        },
+        {
+          "label": "Extraction failures",
+          "code": "assert error_status(\"empty_document\") == 422 and error_status(\"document_decoding_failed\") == 422"
+        },
+        {
+          "label": "Infrastructure failure",
+          "code": "assert error_status(\"document_infrastructure_failure\") == 503"
+        },
+        {
+          "label": "Unknown code",
+          "code": "assert error_status(\"unknown\") == 500 and error_status(\"\") == 500"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q093",
+      "type": "code",
+      "topic": "Dependency injection",
+      "difficulty": "applied",
+      "prompt": "Implement decode_using(reader, content). Call the supplied reader's decode(content) once and return its result unchanged. Do not construct a different reader or suppress its failures.",
+      "explanation": "The caller supplies the dependency. This adapter-sized function should not silently add a new decoding or normalization policy.",
+      "starter": "def decode_using(reader, content: bytes) -> str:\n    raise NotImplementedError\n",
+      "reference": "def decode_using(reader, content: bytes) -> str:\n    return reader.decode(content)\n",
+      "checks": [
+        {
+          "label": "Injected behavior",
+          "code": "class Reader:\n    def decode(self, content):\n        return \"controlled\"\nassert decode_using(Reader(), b\"anything\") == \"controlled\""
+        },
+        {
+          "label": "Exact bytes",
+          "code": "class Reader:\n    def decode(self, content):\n        assert content == b\"\\x00a\"\n        return \"ok\"\nassert decode_using(Reader(), b\"\\x00a\") == \"ok\""
+        },
+        {
+          "label": "One call",
+          "code": "class Reader:\n    def __init__(self):\n        self.calls = 0\n    def decode(self, content):\n        self.calls += 1\n        return \"ok\"\nreader = Reader()\nassert decode_using(reader, b\"x\") == \"ok\" and reader.calls == 1"
+        },
+        {
+          "label": "Failure propagation",
+          "code": "class Reader:\n    def decode(self, content):\n        raise ValueError(\"reader failed\")\nassert raises(ValueError, decode_using, Reader(), b\"x\")"
+        },
+        {
+          "label": "Whitespace unchanged",
+          "code": "class Reader:\n    def decode(self, content):\n        return \"  a  \"\nassert decode_using(Reader(), b\"x\") == \"  a  \""
+        }
+      ]
+    },
+    {
+      "id": "W01-Q094",
+      "type": "code",
+      "topic": "Functions",
+      "difficulty": "applied",
+      "prompt": "Implement add_label(label, labels=None). Return a fresh list containing the existing labels followed by label. Never mutate the caller's list or share a default list between calls.",
+      "explanation": "A None default avoids a shared mutable object. Copying the caller's list separately preserves ownership of an explicitly supplied list.",
+      "starter": "def add_label(label: str, labels: list[str] | None = None) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def add_label(label: str, labels: list[str] | None = None) -> list[str]:\n    result = [] if labels is None else list(labels)\n    result.append(label)\n    return result\n",
+      "checks": [
+        {
+          "label": "Default result",
+          "code": "assert add_label(\"a\") == [\"a\"]"
+        },
+        {
+          "label": "Fresh defaults",
+          "code": "first = add_label(\"a\")\nsecond = add_label(\"b\")\nassert first == [\"a\"] and second == [\"b\"] and first is not second"
+        },
+        {
+          "label": "Caller list unchanged",
+          "code": "source = [\"a\"]\nresult = add_label(\"b\", source)\nassert source == [\"a\"] and result == [\"a\", \"b\"] and result is not source"
+        },
+        {
+          "label": "Empty caller list",
+          "code": "source = []\nassert add_label(\"a\", source) == [\"a\"] and source == []"
+        },
+        {
+          "label": "Order and duplicates",
+          "code": "assert add_label(\"a\", [\"b\", \"a\"]) == [\"b\", \"a\", \"a\"]"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q095",
+      "type": "code",
+      "topic": "Iterators",
+      "difficulty": "applied",
+      "prompt": "Implement first_or_default(values, default). Return the first available item, or default when the iterable is empty. Consume only that first item; do not materialize the iterable.",
+      "explanation": "next(iterator, default) handles exhaustion directly. Do not confuse a falsey first value with absence.",
+      "starter": "def first_or_default(values, default):\n    raise NotImplementedError\n",
+      "reference": "def first_or_default(values, default):\n    return next(iter(values), default)\n",
+      "checks": [
+        {
+          "label": "List input",
+          "code": "assert first_or_default([4, 5], 9) == 4"
+        },
+        {
+          "label": "Empty input",
+          "code": "assert first_or_default([], 9) == 9"
+        },
+        {
+          "label": "Generator input",
+          "code": "assert first_or_default((n for n in [7, 8]), 0) == 7"
+        },
+        {
+          "label": "Only one item consumed",
+          "code": "items = iter([1, 2, 3])\nassert first_or_default(items, 0) == 1 and next(items) == 2"
+        },
+        {
+          "label": "Falsey first item",
+          "code": "assert first_or_default([0, 1], 9) == 0"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q096",
+      "type": "code",
+      "topic": "Exceptions",
+      "difficulty": "applied",
+      "prompt": "Define IntegerParseError as a ValueError subclass. Implement parse_integer(text) using int(text). If int raises ValueError, raise IntegerParseError(\"invalid integer\") from that error. Preserve normal int behavior for valid strings.",
+      "explanation": "Catch the specific parsing failure and translate it with an explicit cause. A successful parse should not need a wrapper object.",
+      "starter": "class IntegerParseError(ValueError):\n    pass\n\ndef parse_integer(text: str) -> int:\n    raise NotImplementedError\n",
+      "reference": "class IntegerParseError(ValueError):\n    pass\n\ndef parse_integer(text: str) -> int:\n    try:\n        return int(text)\n    except ValueError as error:\n        raise IntegerParseError(\"invalid integer\") from error\n",
+      "checks": [
+        {
+          "label": "Positive integer",
+          "code": "assert parse_integer(\"12\") == 12"
+        },
+        {
+          "label": "Whitespace and sign",
+          "code": "assert parse_integer(\" -2 \") == -2"
+        },
+        {
+          "label": "Correct application type",
+          "code": "assert issubclass(IntegerParseError, ValueError) and raises(IntegerParseError, parse_integer, \"bad\")"
+        },
+        {
+          "label": "Stable message",
+          "code": "try:\n    parse_integer(\"bad\")\nexcept IntegerParseError as error:\n    assert str(error) == \"invalid integer\"\nelse:\n    raise AssertionError(\"failure was suppressed\")"
+        },
+        {
+          "label": "Causal chain",
+          "code": "try:\n    parse_integer(\"bad\")\nexcept IntegerParseError as error:\n    assert isinstance(error.__cause__, ValueError)\nelse:\n    raise AssertionError(\"failure was suppressed\")"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q097",
+      "type": "code",
+      "topic": "Service composition",
+      "difficulty": "applied",
+      "prompt": "Implement build_result(correlation_id, content). Strictly decode UTF-8, normalize CRLF/CR, reject whitespace-only text with ValueError, and return exactly correlation_id, text, character_count and line_count. Use len(text.splitlines()) or 1 for lines.",
+      "explanation": "Compose explicit small rules and derive counts from the normalized result. This is a Python exercise, not an added API feature.",
+      "starter": "def build_result(correlation_id: str, content: bytes) -> dict:\n    raise NotImplementedError\n",
+      "reference": "def build_result(correlation_id: str, content: bytes) -> dict:\n    text = content.decode(\"utf-8\", errors=\"strict\").replace(\"\\r\\n\", \"\\n\").replace(\"\\r\", \"\\n\")\n    if not text.strip():\n        raise ValueError(\"blank document\")\n    return {\"correlation_id\": correlation_id, \"text\": text, \"character_count\": len(text), \"line_count\": len(text.splitlines()) or 1}\n",
+      "checks": [
+        {
+          "label": "Normalized result",
+          "code": "assert build_result(\"r1\", b\"a\\r\\nb\") == {\"correlation_id\": \"r1\", \"text\": \"a\\nb\", \"character_count\": 3, \"line_count\": 2}"
+        },
+        {
+          "label": "Spaces preserved",
+          "code": "assert build_result(\"r1\", b\"  a  \")[\"text\"] == \"  a  \""
+        },
+        {
+          "label": "Unicode counts",
+          "code": "assert build_result(\"r2\", \"é\".encode())[\"character_count\"] == 1"
+        },
+        {
+          "label": "Blank rejection",
+          "code": "assert raises(ValueError, build_result, \"r1\", b\" \\t\\r\\n\")"
+        },
+        {
+          "label": "Strict decoding",
+          "code": "assert raises(UnicodeDecodeError, build_result, \"r1\", b\"\\xff\")"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q098",
+      "type": "code",
+      "topic": "Logging",
+      "difficulty": "applied",
+      "prompt": "Implement log_summary(logger, correlation_id, character_count). Call logger.info exactly once with event name document_processed and extra containing exactly correlation_id and character_count. Return None.",
+      "explanation": "Emit one named event with allowlisted structured fields. The application owns handlers and formatting.",
+      "starter": "def log_summary(logger, correlation_id: str, character_count: int) -> None:\n    raise NotImplementedError\n",
+      "reference": "def log_summary(logger, correlation_id: str, character_count: int) -> None:\n    logger.info(\"document_processed\", extra={\"correlation_id\": correlation_id, \"character_count\": character_count})\n",
+      "checks": [
+        {
+          "label": "Event name",
+          "code": "class Logger:\n    def info(self, message, *, extra):\n        assert message == \"document_processed\"\nlog_summary(Logger(), \"r1\", 3)"
+        },
+        {
+          "label": "Exact metadata",
+          "code": "class Logger:\n    def info(self, message, *, extra):\n        assert extra == {\"correlation_id\": \"r1\", \"character_count\": 3}\nlog_summary(Logger(), \"r1\", 3)"
+        },
+        {
+          "label": "One call",
+          "code": "class Logger:\n    def __init__(self):\n        self.calls = 0\n    def info(self, message, *, extra):\n        self.calls += 1\nlogger = Logger()\nlog_summary(logger, \"r1\", 3)\nassert logger.calls == 1"
+        },
+        {
+          "label": "Zero count",
+          "code": "class Logger:\n    def info(self, message, *, extra):\n        assert extra[\"character_count\"] == 0\nlog_summary(Logger(), \"r1\", 0)"
+        },
+        {
+          "label": "No return payload",
+          "code": "class Logger:\n    def info(self, message, *, extra):\n        pass\nassert log_summary(Logger(), \"r1\", 3) is None"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q099",
+      "type": "code",
+      "topic": "Typing and runtime",
+      "difficulty": "applied",
+      "prompt": "Implement document_length(content: bytes) -> int with those exact resolved annotations. Reject non-bytes values with TypeError, then return the byte length. A bytearray does not satisfy this task's bytes-only contract.",
+      "explanation": "The annotations communicate the contract; the isinstance branch enforces this runtime type rule. Byte length still differs from decoded character count.",
+      "starter": "def document_length(content: bytes) -> int:\n    raise NotImplementedError\n",
+      "reference": "def document_length(content: bytes) -> int:\n    if not isinstance(content, bytes):\n        raise TypeError(\"content must be bytes\")\n    return len(content)\n",
+      "checks": [
+        {
+          "label": "Byte length",
+          "code": "assert document_length(b\"abc\") == 3"
+        },
+        {
+          "label": "Empty input",
+          "code": "assert document_length(b\"\") == 0"
+        },
+        {
+          "label": "String rejected",
+          "code": "assert raises(TypeError, document_length, \"abc\")"
+        },
+        {
+          "label": "Bytearray rejected",
+          "code": "assert raises(TypeError, document_length, bytearray(b\"a\"))"
+        },
+        {
+          "label": "Annotations and encoding",
+          "code": "from typing import get_type_hints\nassert get_type_hints(document_length) == {\"content\": bytes, \"return\": int}\nassert document_length(\"é\".encode()) == 2"
+        }
+      ]
+    },
+    {
+      "id": "W01-Q100",
+      "type": "code",
+      "topic": "Classes and composition",
+      "difficulty": "applied",
+      "prompt": "Implement TextService(reader) with extract(content). Use the injected reader.decode(content), normalize CRLF/CR to LF, reject whitespace-only decoded text with ValueError, and return the normalized string. Propagate reader errors unchanged.",
+      "explanation": "A class owns the dependency; the transform remains a small policy. It does not need to inherit from the reader or import a web framework.",
+      "starter": "class TextService:\n    def __init__(self, reader) -> None:\n        raise NotImplementedError\n\n    def extract(self, content: bytes) -> str:\n        raise NotImplementedError\n",
+      "reference": "class TextService:\n    def __init__(self, reader) -> None:\n        self._reader = reader\n\n    def extract(self, content: bytes) -> str:\n        text = self._reader.decode(content).replace(\"\\r\\n\", \"\\n\").replace(\"\\r\", \"\\n\")\n        if not text.strip():\n            raise ValueError(\"blank document\")\n        return text\n",
+      "checks": [
+        {
+          "label": "Reader used and normalized",
+          "code": "class Reader:\n    def decode(self, content):\n        return \"a\\r\\nb\\rc\"\nassert TextService(Reader()).extract(b\"ignored\") == \"a\\nb\\nc\""
+        },
+        {
+          "label": "Bytes passed through",
+          "code": "class Reader:\n    def decode(self, content):\n        assert content == b\"exact\"\n        return \"ok\"\nassert TextService(Reader()).extract(b\"exact\") == \"ok\""
+        },
+        {
+          "label": "Blank rejection",
+          "code": "class Reader:\n    def decode(self, content):\n        return \" \\r\\n\"\nassert raises(ValueError, TextService(Reader()).extract, b\"x\")"
+        },
+        {
+          "label": "Reader failure preserved",
+          "code": "class Reader:\n    def decode(self, content):\n        raise RuntimeError(\"reader failure\")\nassert raises(RuntimeError, TextService(Reader()).extract, b\"x\")"
+        },
+        {
+          "label": "Whitespace preserved",
+          "code": "class Reader:\n    def decode(self, content):\n        return \"  a  \"\nassert TextService(Reader()).extract(b\"x\") == \"  a  \""
+        }
+      ]
+    }
+  ]
+}

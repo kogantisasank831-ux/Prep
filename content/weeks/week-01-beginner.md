@@ -285,3 +285,5 @@ Before switching, try answering these questions:
 6. Cooperative scheduling only helps when work yields. A blocking call or CPU-heavy operation can keep the event-loop thread occupied.
 
 If the answers are roughly clear—even without remembering every class name—you have enough context for the detailed lesson.
+
+Use the [Week 1 assessment]({{ '/assessments/week-01/' | relative_url }}) to put the ideas into practice. A random paper includes ten questions across five formats, including two Python solutions. The coding tasks check syntax and behavior; the result explains the selected answers and gives you a reference solution after submission.

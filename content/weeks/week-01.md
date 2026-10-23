@@ -34,6 +34,8 @@ If the vocabulary is unfamiliar, begin with the [simpler introduction]({{ '/week
 
 Use the [local service setup](https://github.com/kogantisasank831-ux/Prep#run-the-week-1-python-service) to install the pinned requirements and run the existing tests. Read the component lessons first, then send the sample multipart request after the HTTP and testing chapters. Keep its normalized text, counts and one failure response so that the final request trace describes behavior you have seen yourself.
 
+When you are ready to evaluate your understanding, [take the Week 1 assessment]({{ '/assessments/week-01/' | relative_url }}). Each paper draws ten questions from a bank of 100, including Python solutions you write and run, syntax answers and concept checks. You can also print the questions or download the scored result for review.
+
 ### The contract, stated precisely
 
 For this first version, success means all of the following are true:
