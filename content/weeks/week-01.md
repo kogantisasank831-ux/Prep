@@ -19,7 +19,7 @@ Start with the answer a downstream system needs, not with FastAPI, a directory d
   "correlation_id": "procurement-2026-0042",
   "media_type": "text/plain",
   "text": "Supplier confirms delivery on 18 August.\nEscalate any delay.",
-  "character_count": 62,
+  "character_count": 60,
   "line_count": 2
 }
 ```
@@ -27,6 +27,12 @@ Start with the answer a downstream system needs, not with FastAPI, a directory d
 The service is intentionally narrow. It accepts multipart form data with `media_type`, `correlation_id`, and a `file`; it supports UTF-8 `.txt` documents only; and it returns either the stable result above or a safe, stable failure category. A caller uploads bytes. It does **not** submit a path on the application server. That distinction prevents the API from becoming a way to read files that happen to be accessible to the server process.
 
 We will build the explanation in the same order that a reliable implementation becomes necessary. First make one transformation trustworthy. Then decide where state belongs. Then make contracts precise, make failures useful, and make evidence safe. Only after those pieces are familiar will we assemble the HTTP application around them.
+
+### Work with one real request
+
+If the vocabulary is unfamiliar, begin with the [simpler introduction]({{ '/weeks/week-01/beginner/' | relative_url }}). Otherwise, follow one supplier note through the chapters. After each checkpoint, explain which component owns the rule before looking at its implementation.
+
+Use the [local service setup](https://github.com/kogantisasank831-ux/Prep#run-the-week-1-python-service) to install the pinned requirements and run the existing tests. Read the component lessons first, then send the sample multipart request after the HTTP and testing chapters. Keep its normalized text, counts and one failure response so that the final request trace describes behavior you have seen yourself.
 
 ### The contract, stated precisely
 
@@ -210,6 +216,8 @@ payload = request.model_dump()
 
 `model_dump()` is serialization at a typed boundary. A field validator is appropriate when one field can be checked alone. A model validator would be appropriate for a rule involving multiple declared fields. Neither should be used to validate upload bytes, because those bytes arrive through a different HTTP object.
 
+The route supplies only its two named scalar fields to this model. `extra="forbid"` rejects extra keys in a mapping passed to model validation; it does not make this route reject every unknown multipart field. Keep a model's validation contract distinct from the transport's field selection.
+
 **Boundary.** “Validated” does not mean “true.” A caller can label non-text bytes `text/plain`; strict UTF-8 decoding must still inspect the bytes. A valid correlation identifier does not establish identity or tenant authorization.
 
 **Checkpoint.** Why not parse `UploadFile` into this model too? The model owns scalar form metadata; file reading and upload content type belong to FastAPI’s upload boundary.
@@ -381,6 +389,8 @@ assert all(
 assert "SUPPLIER-SECRET" not in caplog.text
 ```
 
+Inspect the value's origin as well as its name. The sample's start event records the declared media type before the service checks whether it is supported. That field is length-bounded at the request model, but it is still caller-controlled. The existing content/filename non-leakage test does not prove every metadata value is safe; a deployment needs a deliberate allowlist or redaction policy for such fields.
+
 **Boundary.** A correlation ID must itself be handled as governed metadata. The constrained format here helps avoid uncontrolled values in logs, but it is not a substitute for an organizational retention policy. Filenames are often sensitive enough to exclude.
 
 **Checkpoint.** Why is logging a document’s character count usually safer than logging its text? The count supports capacity and outcome diagnosis without reproducing the document’s semantic content.
@@ -487,6 +497,8 @@ if len(content) > MAX_UPLOAD_BYTES:
 
 Reading exactly 1,048,576 bytes cannot distinguish an exactly-at-limit upload from the first 1,048,576 bytes of a larger upload. The sentinel byte makes that distinction while bounding the application read. Exactly 1 MiB proceeds to service validation; 1 MiB plus one byte produces the stable `document_too_large` category and HTTP 413. Byte size is not decoded character count: UTF-8 characters can require multiple bytes.
 
+This bounds the route's read, not the complete HTTP body or all upload storage. Multipart parsing can already have buffered or spooled the file before the endpoint runs. Request-body, parser and server admission limits need their own deployment controls; the sentinel is not a substitute for them.
+
 If `UploadFile.read` raises `OSError`, the route translates it to `DocumentInfrastructureError`, because the route owns that upload I/O boundary. It does not expose an operating-system message to the client.
 
 Third, build the domain command from the correct sources:
@@ -506,6 +518,8 @@ return ExtractionResponse.from_domain(result)
 The fallback upload media type fails the strict supported-type policy. The service, not the route, checks suffix, declared type, upload type, strict decoding, whitespace-only content, normalization, and output counts. `ExtractionResponse` is a separate Pydantic serialization boundary that makes the successful JSON shape explicit.
 
 Finally, the application maps semantic failures to HTTP. Unsupported format maps to 415; oversized content to 413; request validation and extraction failures to 422; upload infrastructure failure to 503. The stable response is an `ErrorResponse` containing `code`, a safe message, and correlation ID. HTTP mapping is deliberately outside the domain service: the service remains useful and testable without a web server.
+
+The `code`/`message`/`correlation_id` body belongs to the application's document errors. Missing or invalid scalar form fields instead use FastAPI's request-validation response with a `detail` list. Both can produce 422, so a client should not infer a JSON shape from the status alone.
 
 **Boundary.** A thin route is not a route with zero code. A bounded `UploadFile` read and 413 response are inherently HTTP concerns. Passing `UploadFile` into the service would make the service depend on FastAPI’s transport object and blur this boundary.
 
@@ -773,7 +787,7 @@ None can attest to supplier identity, contract validity, or the factual content 
 
 ### A model validator is not an excuse to collapse boundaries
 
-Suppose a future external JSON API supplies *both* a declared type and a claimed checksum. A model validator could check a relation between those scalar fields:
+An after-model validator can inspect the complete parsed instance and must return it. This small example shows that mechanism with a checksum-algorithm allowlist:
 
 ```python
 from typing import Self
@@ -789,7 +803,7 @@ class Metadata(BaseModel):
         return self
 ```
 
-This is a relationship within one parsed model. Computing a checksum of a file, imposing a maximum read, or comparing a digest to bytes is an I/O and content-processing concern. Keep the validation at the boundary where all of the needed trusted inputs are available; do not force large upload content through scalar validation merely for aesthetic uniformity.
+The particular rule above checks only `checksum_algorithm`, so a field validator would be the simpler choice for that rule. Reserve a model validator for a relation that actually needs several fields, such as requiring two declared digests to agree. Computing a checksum of a file, imposing a maximum read, or comparing a digest to bytes is an I/O and content-processing concern. Keep the validation at the boundary where all of the needed trusted inputs are available; do not force large upload content through scalar validation merely for aesthetic uniformity.
 
 ### Generator cleanup is a lifetime design, not a syntax trick
 
@@ -904,6 +918,8 @@ This service intentionally stops before authentication, authorization, persisten
 The next roadmap topics can reuse this design discipline for model inputs, retrieval documents, evaluation records, and AI-assisted outputs. In each case, an LLM or parser output remains untrusted until deterministic validation accepts it; a recommendation remains separate from an action; and useful observability must not become a sensitive-data leak.
 
 When the implementation changes, repeat the proof ladder rather than relying on the lesson narrative: test the smallest changed rule, the boundary that supplies its inputs, the error and logging behavior, then the end-to-end contract. That keeps a new feature from silently weakening a guarantee that downstream systems already depend on.
+
+Before moving on, keep three pieces of evidence: a successful request with counts you calculated independently, a failed request with its actual status and body, and a short explanation of one test at each boundary. Complete the prediction exercise before choosing an extension. The size-configuration, Markdown-support and review-item tasks are practice changes with their own acceptance criteria; they are not features already present in the service.
 
 ## Primary documentation
 

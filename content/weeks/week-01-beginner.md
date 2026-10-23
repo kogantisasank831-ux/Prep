@@ -37,23 +37,19 @@ The service deliberately supports only:
 
 PDF parsing, databases, authentication, LLM calls, deployment and high-volume concurrency are not part of this introduction. They require separate design decisions.
 
+Read one concept at a time and keep the same small supplier note in mind. When you reach testing, use the [local service setup](https://github.com/kogantisasank831-ux/Prep#run-the-week-1-python-service) to send the sample request. Predict the normalized text and counts before checking the response.
+
 ## Follow one request through the system
 
 A successful request moves through a few clear stages:
 
-```text
-uploaded file
-    ↓
-FastAPI reads a bounded number of bytes
-    ↓
-Pydantic validates request metadata
-    ↓
-the service checks document rules
-    ↓
-a reader decodes UTF-8 bytes into text
-    ↓
-the result becomes JSON
-```
+1. FastAPI parses the multipart form and creates the upload object.
+2. A dependency uses Pydantic to validate the scalar request metadata.
+3. The route reads at most the upload limit plus one sentinel byte.
+4. The service checks the filename and media-type rules.
+5. The reader decodes the bytes as strict UTF-8.
+6. The service normalizes newlines, rejects blank text and calculates counts.
+7. The response model turns the result into JSON.
 
 Each stage has one main responsibility. This separation helps us answer important questions:
 
@@ -179,7 +175,10 @@ Low-level errors should be translated where the vocabulary changes:
 try:
     return reader.decode(content)
 except ReaderDecodingError as exc:
-    raise DocumentDecodingError("document is not valid UTF-8") from exc
+    raise DocumentDecodingError(
+        "document is not valid UTF-8",
+        correlation_id=command.correlation_id,
+    ) from exc
 ```
 
 `raise ... from exc` keeps the original cause for diagnosis while exposing a stable application-level failure. FastAPI exception handlers can later map that failure to an HTTP status and safe JSON response. Domain exceptions should not need to know about HTTP.
@@ -208,7 +207,7 @@ def non_empty_lines(text: str) -> Iterator[str]:
             yield line
 ```
 
-Generators can reduce memory use and allow early stopping. They are normally consumed once, and errors may occur later while iterating. A suspended generator may also keep a file, cursor or network response open. For our bounded 1 MiB document, a normal list may be simpler and entirely adequate.
+Generators can reduce memory use and allow early stopping when the whole pipeline supports incremental work. In this example, `text.splitlines()` still builds a list before the loop yields its items; wrapping it in a generator does not make the split itself stream. Generators are normally consumed once, and errors may occur later while iterating. A suspended generator may also keep a file, cursor or network response open. For our bounded 1 MiB document, a normal list may be simpler and entirely adequate.
 
 `async def` is useful when work can wait without blocking the event-loop thread. FastAPI's upload read is awaitable:
 
@@ -217,6 +216,8 @@ content = await file.read(MAX_UPLOAD_BYTES + 1)
 ```
 
 The extra byte tells us whether the upload is larger than the limit. Reading exactly 1 MiB cannot distinguish a complete 1 MiB file from the first 1 MiB of a larger file.
+
+That is a limit on this route's read. The framework may already have buffered the upload, so deployment-level request and storage limits remain separate concerns.
 
 Putting blocking or CPU-heavy work inside `async def` does not make it non-blocking. Awaitable I/O often fits async tasks; blocking I/O may need a bounded thread pool; CPU-heavy Python may need processes or external workers. Sequential processing is often the correct first design for small bounded work.
 
@@ -238,6 +239,16 @@ Arrange the inputs, act once, then assert the public result or failure. Parametr
 Boundary cases matter. Test exactly 1,048,576 bytes and 1,048,577 bytes separately. Test empty, whitespace-only and invalid UTF-8 content. Test mismatched declared and uploaded media types. Use direct byte strings when newline or encoding behavior matters.
 
 Tests provide evidence for the cases they execute. They do not prove deployment security, authentication, persistence safety or production capacity.
+
+### Try three small changes to the input
+
+Use the setup's `alpha`/`beta` sample as your baseline. It should become `alpha\nbeta`: ten characters and two logical lines. Then predict these results before sending each request:
+
+1. Keep valid UTF-8 text but name the file `note.pdf`. The service should reject the suffix with HTTP 415 and `unsupported_document_format`.
+2. Upload a `.txt` file containing only spaces and newlines. Decoding should succeed, then the service should return HTTP 422 and `empty_document`.
+3. Keep the valid file but put a space in the correlation identifier. Scalar metadata validation should return HTTP 422 with FastAPI's `detail` response, before the route performs its bounded read.
+
+For each case, name the responsible boundary. Two 422 responses can have different JSON shapes because request validation and document failures use different handlers.
 
 ## You are ready for the production version
 
@@ -263,5 +274,14 @@ Before switching, try answering these questions:
 4. What information must never appear in the logs?
 5. Why does the route read one byte beyond the upload limit?
 6. Why can blocking work still block inside `async def`?
+
+### Check your answers
+
+1. A type hint expresses an expectation; untrusted runtime values still need validation.
+2. Use a dataclass for an internal value after the relevant boundary checks. Use Pydantic when parsing or serializing an external schema.
+3. Supplying the reader from outside makes its ownership visible and lets tests substitute a small fake.
+4. Keep document content, filenames, credentials and arbitrary exception text out of logs. Treat declared metadata as untrusted too.
+5. The sentinel distinguishes an exactly-at-limit document from a longer one with the same prefix.
+6. Cooperative scheduling only helps when work yields. A blocking call or CPU-heavy operation can keep the event-loop thread occupied.
 
 If the answers are roughly clear—even without remembering every class name—you have enough context for the detailed lesson.
