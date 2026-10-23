@@ -11,6 +11,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-03/
 ---
 
+Test your understanding with the [Week 3 assessment]({{ '/assessments/week-03/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on attention, sampling and controlled comparisons.
+
 ## Begin with one note and one request
 
 Suppose you are a procurement analyst and a supplier sends this note:

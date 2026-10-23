@@ -127,6 +127,16 @@ written PostgreSQL query tasks. Topics follow Week 2's procurement model,
 including joins, cutoff dates, CTEs, windows, comparable prices, indexes,
 normalization, transactions and locking.
 
+[Week 3 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-03/)
+has the same 100-question distribution and balanced paper policy. Its twenty
+standard-library Python tasks cover context budgets, stable softmax, sampling,
+causal visibility, embedding lookup, attention/residual arithmetic, strict JSON,
+prompt hashes, baseline settings, loopback origins, response/metric validation,
+frozen schedules and evidence idempotency. Synthetic inputs run through the
+existing Python worker; no LLM, weights, server, GPU or inference API is needed.
+The full local-model experiment and its Windows storage/lifecycle integration
+remain separate from these portable coding checks.
+
 The site stays static. A Python coding run downloads pinned Pyodide 0.29.3 from its
 documented jsDelivr distribution into a separate browser worker. This version
 uses Python 3.13, matching the lesson's language family. The app terminates each
@@ -158,7 +168,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 and 2 use the shared engine. Future weeks need their own
+Weeks 1, 2 and 3 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -173,3 +183,7 @@ Run `python -m pytest tests/test_week02_assessment.py` for Week 2 bank/engine
 contracts. To check actual PostgreSQL results, install the pinned runtime outside
 tracked source (for example, `npm install --prefix .qa-week02-assessment/tools @electric-sql/pglite@0.5.11`) and run
 `node scripts/verify_sql_assessment.mjs .qa-week02-assessment/tools/node_modules/@electric-sql/pglite/dist/index.js`.
+
+Run `python -m pytest tests/test_week03_assessment.py` for the Week 3 bank,
+all twenty references and plausible incorrect implementations, numerical
+properties, and shared paper/scoring/restoration contracts.

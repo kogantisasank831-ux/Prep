@@ -11,6 +11,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-03/beginner/
 ---
 
+Test your understanding with the [Week 3 assessment]({{ '/assessments/week-03/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on attention, sampling and controlled comparisons.
+
 ## One prompt, two continuations
 
 Imagine you receive this note from a supplier:

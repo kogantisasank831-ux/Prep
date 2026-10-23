@@ -1,0 +1,3158 @@
+{
+  "schema_version": 1,
+  "week": 3,
+  "version": "1.0.0",
+  "title": "LLM foundations and controlled comparisons",
+  "source_lesson": "/weeks/week-03/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W03-Q001",
+      "type": "single",
+      "topic": "Token identity",
+      "difficulty": "foundation",
+      "prompt": "A tokenizer assigns IDs 9017 and 9018 to two vocabulary entries. What can you infer from the IDs being adjacent?",
+      "explanation": "IDs select entries in a learned table. Their integer distance is not a semantic distance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only that they are different vocabulary labels; semantic closeness is not established"
+        },
+        {
+          "id": "o2",
+          "text": "Their meanings must be almost identical"
+        },
+        {
+          "id": "o3",
+          "text": "Their embedding vectors must be one unit apart"
+        },
+        {
+          "id": "o4",
+          "text": "They must each represent exactly one English word"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q002",
+      "type": "single",
+      "topic": "Token budgets",
+      "difficulty": "applied",
+      "prompt": "Two models count the same supplier note as 114 and 109 prompt tokens. What is the defensible interpretation?",
+      "explanation": "Tokenization and chat templates can change counts without changing the note's factual content. Cross-model token rates need verified unit equivalence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The first model received more facts"
+        },
+        {
+          "id": "o2",
+          "text": "The second model has a larger context window"
+        },
+        {
+          "id": "o3",
+          "text": "The first tokenizer is necessarily less accurate"
+        },
+        {
+          "id": "o4",
+          "text": "Preserve both counts with tokenizer/template identities; equal token units have not been established"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q003",
+      "type": "single",
+      "topic": "Embedding shapes",
+      "difficulty": "applied",
+      "prompt": "A token embedding table has vocabulary size 8 and width 4. What shape results from looking up three token IDs?",
+      "explanation": "Each of the three positions selects one width-four row. Vocabulary size determines how many lookup rows exist, not output width.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "[4, 8]"
+        },
+        {
+          "id": "o2",
+          "text": "[3, 8]"
+        },
+        {
+          "id": "o3",
+          "text": "[3, 4]"
+        },
+        {
+          "id": "o4",
+          "text": "[8, 3]"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q004",
+      "type": "single",
+      "topic": "Logits",
+      "difficulty": "foundation",
+      "prompt": "At the final prediction position, a model has vocabulary size 50,000 and hidden width 2,048. How many next-token logits does its vocabulary projection produce?",
+      "explanation": "The output projection maps the hidden state to one score per vocabulary candidate.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One score for the entire completed answer"
+        },
+        {
+          "id": "o2",
+          "text": "50,000"
+        },
+        {
+          "id": "o3",
+          "text": "2,048"
+        },
+        {
+          "id": "o4",
+          "text": "52,048"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q005",
+      "type": "single",
+      "topic": "Softmax stability",
+      "difficulty": "applied",
+      "prompt": "Why subtract the largest logit before exponentiating in softmax?",
+      "explanation": "A shared additive shift cancels between softmax numerator and denominator. Subtracting the maximum improves numerical stability.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It preserves the probabilities while avoiding unnecessarily large exponentials"
+        },
+        {
+          "id": "o2",
+          "text": "It makes every token equally likely"
+        },
+        {
+          "id": "o3",
+          "text": "It inserts a factuality check"
+        },
+        {
+          "id": "o4",
+          "text": "It changes the vocabulary size"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q006",
+      "type": "single",
+      "topic": "Autoregression",
+      "difficulty": "applied",
+      "prompt": "After a model selects one output token, what happens next in autoregressive generation?",
+      "explanation": "Generation conditions on the growing prefix with fixed inference parameters. It is not ordinarily an online training step.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Choose the entire remaining answer from a fixed list"
+        },
+        {
+          "id": "o2",
+          "text": "Remove all earlier prompt tokens by definition"
+        },
+        {
+          "id": "o3",
+          "text": "Update the trained weights after every generated token"
+        },
+        {
+          "id": "o4",
+          "text": "Append it to the prefix, then compute the next-token distribution"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q007",
+      "type": "single",
+      "topic": "Attention arithmetic",
+      "difficulty": "foundation",
+      "prompt": "For query [2, 0], key [1, 3] and key width 2, what is the scaled dot-product score before masking/softmax?",
+      "explanation": "The dot product is 2*1 + 0*3 = 2, then the score is divided by sqrt(d_k).",
+      "options": [
+        {
+          "id": "o1",
+          "text": "sqrt(2) / 6"
+        },
+        {
+          "id": "o2",
+          "text": "2 * sqrt(2)"
+        },
+        {
+          "id": "o3",
+          "text": "2 / sqrt(2)"
+        },
+        {
+          "id": "o4",
+          "text": "6 / sqrt(2)"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q008",
+      "type": "single",
+      "topic": "Attention roles",
+      "difficulty": "applied",
+      "prompt": "You keep queries and keys fixed but swap value vectors. What can change?",
+      "explanation": "Queries and keys determine matching scores. Values determine which information those weights mix.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The attention weights must become uniform"
+        },
+        {
+          "id": "o2",
+          "text": "The mixed output can change even when the attention weights stay the same"
+        },
+        {
+          "id": "o3",
+          "text": "The vocabulary IDs must change"
+        },
+        {
+          "id": "o4",
+          "text": "The causal mask must disappear"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q009",
+      "type": "single",
+      "topic": "Causal visibility",
+      "difficulty": "applied",
+      "prompt": "Using zero-based positions, which keys may a standard causal self-attention query at position 2 inspect?",
+      "explanation": "The usual causal decoder mask permits the current and earlier positions while blocking later positions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Positions 0, 1 and 2"
+        },
+        {
+          "id": "o2",
+          "text": "Only position 2"
+        },
+        {
+          "id": "o3",
+          "text": "All positions including future tokens"
+        },
+        {
+          "id": "o4",
+          "text": "Positions 0 and 1 but never itself"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q010",
+      "type": "single",
+      "topic": "Attention scaling",
+      "difficulty": "foundation",
+      "prompt": "With the same number of heads, doubling sequence length from T to 2T changes the number of full-attention score entries by what factor?",
+      "explanation": "A full attention head has a T by T score matrix. (2T)*(2T) is four times T*T; this is not a claim that total runtime always scales by exactly four.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "2"
+        },
+        {
+          "id": "o2",
+          "text": "1"
+        },
+        {
+          "id": "o3",
+          "text": "8"
+        },
+        {
+          "id": "o4",
+          "text": "4"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q011",
+      "type": "single",
+      "topic": "Grouped-query attention",
+      "difficulty": "applied",
+      "prompt": "What does grouped-query attention share among groups of query heads?",
+      "explanation": "GQA uses fewer key/value heads than query heads. The query heads still have their own learned lookups.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All model weights with a hosted service"
+        },
+        {
+          "id": "o2",
+          "text": "The causal mask's future tokens"
+        },
+        {
+          "id": "o3",
+          "text": "Key and value heads"
+        },
+        {
+          "id": "o4",
+          "text": "The final chosen token across all requests"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q012",
+      "type": "single",
+      "topic": "Order signals",
+      "difficulty": "applied",
+      "prompt": "Which statement about order in decoder-only Transformers is accurate?",
+      "explanation": "Many architectures use explicit positional mechanisms, while NoPE designs exploit causal structure. Follow the selected architecture instead of asserting one universal implementation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Token IDs already encode each token's position in the current prompt"
+        },
+        {
+          "id": "o2",
+          "text": "Order must enter the computation; some causal decoder designs omit a separate explicit positional embedding"
+        },
+        {
+          "id": "o3",
+          "text": "Every decoder must add the same sinusoidal vector"
+        },
+        {
+          "id": "o4",
+          "text": "A causal mask is a decoding temperature"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q013",
+      "type": "single",
+      "topic": "RoPE",
+      "difficulty": "foundation",
+      "prompt": "In the lesson's simplified RoPE explanation, where does positional rotation act?",
+      "explanation": "RoPE modifies query/key representations so position affects attention scores. It is distinct from the causal visibility mask.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "On attention queries and keys"
+        },
+        {
+          "id": "o2",
+          "text": "On the HTTP response status"
+        },
+        {
+          "id": "o3",
+          "text": "Only on the next-token ID after sampling"
+        },
+        {
+          "id": "o4",
+          "text": "On the stored prompt hash"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q014",
+      "type": "single",
+      "topic": "Residual paths",
+      "difficulty": "applied",
+      "prompt": "A residual update is x + delta. If delta is a zero vector, what is passed onward?",
+      "explanation": "A residual connection preserves the input signal while adding a learned update.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A zero vector regardless of x"
+        },
+        {
+          "id": "o2",
+          "text": "The vocabulary's largest ID"
+        },
+        {
+          "id": "o3",
+          "text": "A new random vector"
+        },
+        {
+          "id": "o4",
+          "text": "x"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q015",
+      "type": "single",
+      "topic": "Feed-forward sublayer",
+      "difficulty": "applied",
+      "prompt": "Which statement describes the standard position-wise FFN in a decoder block?",
+      "explanation": "Attention exchanges information across positions; the FFN transforms each resulting state. Shared parameters do not make the input states identical.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It verifies facts against a live database"
+        },
+        {
+          "id": "o2",
+          "text": "It chooses the HTTP timeout"
+        },
+        {
+          "id": "o3",
+          "text": "It applies the same learned transformation separately to each position's contextual state"
+        },
+        {
+          "id": "o4",
+          "text": "It directly joins every pair of positions through a T by T matrix"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q016",
+      "type": "single",
+      "topic": "Pretraining",
+      "difficulty": "foundation",
+      "prompt": "What does next-token pretraining directly optimize?",
+      "explanation": "Matching observed token sequences can build useful capabilities without certifying truth or provenance for each later output.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A universal model-family leaderboard"
+        },
+        {
+          "id": "o2",
+          "text": "Likelihood assigned to observed training continuations"
+        },
+        {
+          "id": "o3",
+          "text": "A guarantee that every generated proposition has a live citation"
+        },
+        {
+          "id": "o4",
+          "text": "The user's current database constraints"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q017",
+      "type": "single",
+      "topic": "Training stages",
+      "difficulty": "applied",
+      "prompt": "Which stage most directly uses examples of instructions paired with desired responses?",
+      "explanation": "Instruction tuning trains assistant-style task following. Preference alignment uses preferences or reward-like objectives; neither guarantees truth.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Supervised instruction tuning"
+        },
+        {
+          "id": "o2",
+          "text": "A client-side health check"
+        },
+        {
+          "id": "o3",
+          "text": "Greedy decoding"
+        },
+        {
+          "id": "o4",
+          "text": "A runtime artifact hash"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q018",
+      "type": "single",
+      "topic": "Context capacity",
+      "difficulty": "applied",
+      "prompt": "With context 4,096 and 512 tokens reserved for generation, what is the maximum serialized prompt/template budget under this simple shared-budget calculation?",
+      "explanation": "The prompt, chat-template additions and generated output share the configured capacity: 4,096 - 512 = 3,584.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "4,096 tokens in addition to the output"
+        },
+        {
+          "id": "o2",
+          "text": "4,608 tokens"
+        },
+        {
+          "id": "o3",
+          "text": "512 English words"
+        },
+        {
+          "id": "o4",
+          "text": "3,584 tokens"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q019",
+      "type": "single",
+      "topic": "Over-budget requests",
+      "difficulty": "foundation",
+      "prompt": "A serialized prompt/template uses 3,850 tokens and the request reserves 512 output tokens in a 4,096 context. By how much does the requested total exceed capacity?",
+      "explanation": "3,850 + 512 - 4,096 = 266. The runtime's rejection or truncation behavior is a separate contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "512 tokens"
+        },
+        {
+          "id": "o2",
+          "text": "The request fits with 266 tokens spare"
+        },
+        {
+          "id": "o3",
+          "text": "266 tokens"
+        },
+        {
+          "id": "o4",
+          "text": "246 tokens"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q020",
+      "type": "single",
+      "topic": "Temperature",
+      "difficulty": "applied",
+      "prompt": "What does lowering a positive sampling temperature primarily change?",
+      "explanation": "Temperature rescales selection scores. It does not add evidence or guarantee a factually supported answer.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The server's model-file SHA-256"
+        },
+        {
+          "id": "o2",
+          "text": "The relative sharpness of the next-token distribution"
+        },
+        {
+          "id": "o3",
+          "text": "The set of facts stored in the model weights"
+        },
+        {
+          "id": "o4",
+          "text": "The truth of a supplied reference"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q021",
+      "type": "single",
+      "topic": "Top-k",
+      "difficulty": "applied",
+      "prompt": "Candidate probabilities are [0.10, 0.45, 0.30, 0.15]. Which zero-based candidate IDs survive top-k with k=2?",
+      "explanation": "Top-k retains the two highest-scoring candidates here. It is a ranking filter, not a filter on vocabulary ID.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1 and 2"
+        },
+        {
+          "id": "o2",
+          "text": "0 and 1"
+        },
+        {
+          "id": "o3",
+          "text": "2 and 3"
+        },
+        {
+          "id": "o4",
+          "text": "All four"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q022",
+      "type": "single",
+      "topic": "Top-p",
+      "difficulty": "foundation",
+      "prompt": "Sorted candidate probabilities are [0.60, 0.25, 0.10, 0.05]. For p=0.80, how many candidates are in the smallest prefix reaching p?",
+      "explanation": "The first candidate reaches 0.60; the first two reach 0.85, so the second candidate must be included.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1"
+        },
+        {
+          "id": "o2",
+          "text": "3"
+        },
+        {
+          "id": "o3",
+          "text": "4"
+        },
+        {
+          "id": "o4",
+          "text": "2"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q023",
+      "type": "single",
+      "topic": "Reproducibility",
+      "difficulty": "applied",
+      "prompt": "A fixed sampling seed is recorded for two different runtimes. What does that establish?",
+      "explanation": "Seeds control part of sampling when supported. Runtime algorithms, hardware and configuration still affect reproducibility.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All later outputs must be factually true"
+        },
+        {
+          "id": "o2",
+          "text": "The experiment no longer needs artifact or template identity"
+        },
+        {
+          "id": "o3",
+          "text": "A recorded sampling control, but not universal bit-for-bit output equality"
+        },
+        {
+          "id": "o4",
+          "text": "The tokenizers and kernels must be identical"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q024",
+      "type": "single",
+      "topic": "Separate criteria",
+      "difficulty": "applied",
+      "prompt": "A summary has three bullets but changes 18 August to 20 August. How should the rubric treat it?",
+      "explanation": "Format and support are distinct observable behaviors. A single blended impression hides the exact failure.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Latency determines whether the date is acceptable"
+        },
+        {
+          "id": "o2",
+          "text": "Format can pass while factual support fails"
+        },
+        {
+          "id": "o3",
+          "text": "Both must pass because the writing is fluent"
+        },
+        {
+          "id": "o4",
+          "text": "Both must fail because criteria cannot be separated"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q025",
+      "type": "single",
+      "topic": "Operator boundary",
+      "difficulty": "foundation",
+      "prompt": "In the Week 3 build, who starts, switches and stops the native llama-server process?",
+      "explanation": "The comparison harness calls a separately managed local boundary. Artifact downloads and process lifecycle are explicit operator work.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The operator, outside the inference harness"
+        },
+        {
+          "id": "o2",
+          "text": "The harness silently downloads and substitutes models"
+        },
+        {
+          "id": "o3",
+          "text": "A hosted generation API"
+        },
+        {
+          "id": "o4",
+          "text": "The assessment's short-answer checker"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q026",
+      "type": "single",
+      "topic": "Readiness and identity",
+      "difficulty": "applied",
+      "prompt": "The local /health route responds successfully, but /v1/models reports the wrong model. What should the comparison do?",
+      "explanation": "Readiness does not identify the intended artifact. Silent substitution invalidates the frozen comparison.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Generate anyway because a health response proves identity"
+        },
+        {
+          "id": "o2",
+          "text": "Choose a different hosted model automatically"
+        },
+        {
+          "id": "o3",
+          "text": "Change the recorded model name after seeing its answer"
+        },
+        {
+          "id": "o4",
+          "text": "Preserve a configuration failure and stop that mismatched request"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q027",
+      "type": "single",
+      "topic": "Timing boundaries",
+      "difficulty": "applied",
+      "prompt": "What does the baseline's non-streaming request_wall_time include?",
+      "explanation": "The timer spans dispatch through reading, parsing and validating the complete response. Non-streaming total duration does not provide TTFT.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only time to the first token"
+        },
+        {
+          "id": "o2",
+          "text": "Only model-file download time"
+        },
+        {
+          "id": "o3",
+          "text": "Local transport, queueing, prompt processing, decoding and complete response validation"
+        },
+        {
+          "id": "o4",
+          "text": "Only GPU kernel execution"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q028",
+      "type": "single",
+      "topic": "Unavailable metrics",
+      "difficulty": "foundation",
+      "prompt": "The runtime omits completion-token usage. Which record is appropriate?",
+      "explanation": "Missing measurements must remain distinguishable from observed zero. Estimation would require a different declared provenance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The other model's completion-token count"
+        },
+        {
+          "id": "o2",
+          "text": "A null value with an explicit unavailable reason"
+        },
+        {
+          "id": "o3",
+          "text": "Zero, since omission means no tokens were generated"
+        },
+        {
+          "id": "o4",
+          "text": "A word count labelled as exact runtime tokens"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W03-Q029",
+      "type": "single",
+      "topic": "Held-out evaluation",
+      "difficulty": "applied",
+      "prompt": "You inspect a held-out answer and decide to revise the prompt and rubric. What is required?",
+      "explanation": "Held-out evidence cannot also serve as same-version tuning data without leakage. Preserve the old observations and version the new protocol.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Create a new protocol version and acknowledge that the inspected case was used for tuning"
+        },
+        {
+          "id": "o2",
+          "text": "Keep calling the same suite untouched held-out evaluation"
+        },
+        {
+          "id": "o3",
+          "text": "Delete all failures and repeat until satisfied"
+        },
+        {
+          "id": "o4",
+          "text": "Change only the output ID so the version can stay the same"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W03-Q030",
+      "type": "single",
+      "topic": "Request integrity",
+      "difficulty": "applied",
+      "prompt": "Why does the generation fingerprint include timeout_seconds?",
+      "explanation": "A request's outcome depends on its operating limits as well as its prompt and decoding fields. A client timeout only means the client stopped waiting.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A timeout proves the server cancelled generation"
+        },
+        {
+          "id": "o2",
+          "text": "Timeouts alter the model's pretrained vocabulary"
+        },
+        {
+          "id": "o3",
+          "text": "Timeouts replace the need to record sampling settings"
+        },
+        {
+          "id": "o4",
+          "text": "Changing a timeout can change whether a trial succeeds and therefore changes the experiment"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q031",
+      "type": "multiple",
+      "topic": "Claim provenance",
+      "difficulty": "foundation",
+      "prompt": "Which statements correctly distinguish a source-backed fact, observation and inference?",
+      "explanation": "Keep source descriptions, measured outcomes and interpretation distinct. This prevents a bounded experiment from becoming an unsupported general claim.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A paper describing attention is background evidence, not a measurement from this laptop"
+        },
+        {
+          "id": "o2",
+          "text": "A captured timeout is an observed outcome for its recorded configuration"
+        },
+        {
+          "id": "o3",
+          "text": "Explaining a quality difference requires assumptions and alternative explanations"
+        },
+        {
+          "id": "o4",
+          "text": "One attractive response establishes a model family as universally best"
+        },
+        {
+          "id": "o5",
+          "text": "A model card's context capacity proves quality at every context position"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q032",
+      "type": "multiple",
+      "topic": "Token representations",
+      "difficulty": "applied",
+      "prompt": "Which statements about tokenization and representations are correct?",
+      "explanation": "Vocabulary labels, lookup vectors and contextual states are different objects. Retrieval usefulness depends on the model objective and task.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Initial token embeddings are lookup vectors"
+        },
+        {
+          "id": "o2",
+          "text": "Hidden states can differ for the same token in different contexts"
+        },
+        {
+          "id": "o3",
+          "text": "Integer ID distance directly measures semantic similarity"
+        },
+        {
+          "id": "o4",
+          "text": "Every generative hidden state is automatically a good retrieval embedding"
+        },
+        {
+          "id": "o5",
+          "text": "A token may contain whitespace, punctuation or part of a word"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q033",
+      "type": "multiple",
+      "topic": "Budgeting",
+      "difficulty": "applied",
+      "prompt": "Which components can consume the configured context budget in the lesson?",
+      "explanation": "Count the effective serialized model input and output with the selected tokenizer/template. Offline metadata does not consume model context unless included.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Generated output"
+        },
+        {
+          "id": "o2",
+          "text": "Only the number of English words"
+        },
+        {
+          "id": "o3",
+          "text": "The SHA-256 hex string in an offline file even when it is not sent in the prompt"
+        },
+        {
+          "id": "o4",
+          "text": "Serialized prompt text"
+        },
+        {
+          "id": "o5",
+          "text": "Chat-template or special tokens"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q034",
+      "type": "multiple",
+      "topic": "Attention computation",
+      "difficulty": "foundation",
+      "prompt": "Which statements about scaled dot-product self-attention are correct?",
+      "explanation": "Matching, normalization and value mixing form a computational data flow. A heat map alone does not establish a faithful causal explanation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Values are vocabulary IDs chosen by top-k"
+        },
+        {
+          "id": "o2",
+          "text": "Attention weights alone certify why an answer was produced"
+        },
+        {
+          "id": "o3",
+          "text": "Queries are compared with keys"
+        },
+        {
+          "id": "o4",
+          "text": "The normalized weights mix values"
+        },
+        {
+          "id": "o5",
+          "text": "Scaling by sqrt(d_k) controls score magnitudes"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q035",
+      "type": "multiple",
+      "topic": "Causal masks",
+      "difficulty": "applied",
+      "prompt": "Which statements about a standard decoder causal mask are true?",
+      "explanation": "The mask controls sequence visibility. Decoding selects tokens, and application controls must separately address unsafe instructions and factuality.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It selects the highest-probability next token"
+        },
+        {
+          "id": "o2",
+          "text": "It blocks later key positions for each query position"
+        },
+        {
+          "id": "o3",
+          "text": "It supports parallel processing of training positions without future-label access"
+        },
+        {
+          "id": "o4",
+          "text": "When generating the first answer token, the full preceding prompt can be permitted context"
+        },
+        {
+          "id": "o5",
+          "text": "It guarantees resistance to prompt injection"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q036",
+      "type": "multiple",
+      "topic": "Architecture variation",
+      "difficulty": "applied",
+      "prompt": "Which statements avoid overgeneralizing a simplified Transformer diagram?",
+      "explanation": "Learn the role of each mechanism while recording the chosen model's architecture. A teaching diagram is not a universal implementation contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Normalization placement can differ between architectures"
+        },
+        {
+          "id": "o2",
+          "text": "GQA shares key/value heads among query-head groups"
+        },
+        {
+          "id": "o3",
+          "text": "Some causal designs use no separate explicit position embedding"
+        },
+        {
+          "id": "o4",
+          "text": "Every head has a fixed human-readable job assigned by its designer"
+        },
+        {
+          "id": "o5",
+          "text": "Every decoder uses exactly the same sinusoidal addition"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q037",
+      "type": "multiple",
+      "topic": "Training objectives",
+      "difficulty": "foundation",
+      "prompt": "Which statements about training stages are correct?",
+      "explanation": "These objectives shape behavior. They do not replace references, validation or product authorization.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Instruction tuning uses task-style input/response examples"
+        },
+        {
+          "id": "o2",
+          "text": "Preference optimization shifts behavior toward preferred responses under an objective"
+        },
+        {
+          "id": "o3",
+          "text": "Any aligned response is guaranteed true"
+        },
+        {
+          "id": "o4",
+          "text": "At inference every selected token necessarily updates the trained weights"
+        },
+        {
+          "id": "o5",
+          "text": "Pretraining fits observed token continuations"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q038",
+      "type": "multiple",
+      "topic": "Sampling limits",
+      "difficulty": "applied",
+      "prompt": "Which statements about sampling controls are true?",
+      "explanation": "Selection controls alter continuations, not knowledge. Record their exact settings and interpret limits within the runtime.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An output cap can stop an answer before it finishes"
+        },
+        {
+          "id": "o2",
+          "text": "Low temperature repairs missing source facts"
+        },
+        {
+          "id": "o3",
+          "text": "A seed proves cross-runtime determinism"
+        },
+        {
+          "id": "o4",
+          "text": "Top-k limits the candidate set by rank"
+        },
+        {
+          "id": "o5",
+          "text": "Top-p limits a high-probability prefix by cumulative mass"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q039",
+      "type": "multiple",
+      "topic": "Unsupported output",
+      "difficulty": "applied",
+      "prompt": "Which are plausible causes of an unsupported or incorrect answer?",
+      "explanation": "Failures can come from evidence, context, task interpretation, learned patterns and selection. Diagnose the specific cause before choosing a control.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A three-bullet format inherently proves all details"
+        },
+        {
+          "id": "o2",
+          "text": "Only high temperature can produce a false statement"
+        },
+        {
+          "id": "o3",
+          "text": "Relevant context was truncated or buried"
+        },
+        {
+          "id": "o4",
+          "text": "The prompt was ambiguous"
+        },
+        {
+          "id": "o5",
+          "text": "An early unsupported continuation steered later tokens"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q040",
+      "type": "multiple",
+      "topic": "External controls",
+      "difficulty": "foundation",
+      "prompt": "Which controls can help a reference-backed summary application?",
+      "explanation": "Model output remains untrusted data. Evidence checks, separate criteria and application boundaries address different failure modes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat the causal mask as a source-verification service"
+        },
+        {
+          "id": "o2",
+          "text": "Validate deterministic fields against the supplied reference"
+        },
+        {
+          "id": "o3",
+          "text": "Score factual support separately from format"
+        },
+        {
+          "id": "o4",
+          "text": "Keep consequential system changes behind explicit application authorization"
+        },
+        {
+          "id": "o5",
+          "text": "Execute a fluent answer directly as a shell command"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q041",
+      "type": "multiple",
+      "topic": "Local operation",
+      "difficulty": "applied",
+      "prompt": "Which statements about hosted and local inference are accurate?",
+      "explanation": "Operating-model choices move responsibilities and costs; they do not remove governance or guarantee capability.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Local inference still needs host/file security and retention decisions"
+        },
+        {
+          "id": "o2",
+          "text": "Open weights still require license and artifact review"
+        },
+        {
+          "id": "o3",
+          "text": "Provider-managed inference introduces a provider boundary and its own terms"
+        },
+        {
+          "id": "o4",
+          "text": "Local always means zero cost and perfect privacy"
+        },
+        {
+          "id": "o5",
+          "text": "Open weights imply an unrestricted license"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q042",
+      "type": "multiple",
+      "topic": "Artifact provenance",
+      "difficulty": "applied",
+      "prompt": "Which records help describe the declared runtime/model configuration?",
+      "explanation": "An alias is a consistency check. Artifacts and runtime configuration need their own provenance; unkeyed hashes do not authenticate the process.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Ordered GGUF shard names, sizes and hashes"
+        },
+        {
+          "id": "o2",
+          "text": "Tokenizer/chat-template identity and quantization"
+        },
+        {
+          "id": "o3",
+          "text": "Requested/effective offload and hardware context"
+        },
+        {
+          "id": "o4",
+          "text": "Only a friendly model alias returned by a health endpoint"
+        },
+        {
+          "id": "o5",
+          "text": "Runtime binary SHA-256 and revision"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q043",
+      "type": "multiple",
+      "topic": "Loopback transport",
+      "difficulty": "foundation",
+      "prompt": "Which controls belong to the lesson's deliberately narrow HTTP boundary?",
+      "explanation": "The controls prevent undeclared routing and unbounded responses. They do not establish model quality or prove the local process is trusted.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject redirects"
+        },
+        {
+          "id": "o2",
+          "text": "Bound response reads"
+        },
+        {
+          "id": "o3",
+          "text": "Automatically follow a redirect to a hosted completion endpoint"
+        },
+        {
+          "id": "o4",
+          "text": "A literal 127.0.0.1 HTTP origin with explicit port"
+        },
+        {
+          "id": "o5",
+          "text": "Disable ambient proxies"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q044",
+      "type": "multiple",
+      "topic": "Frozen request",
+      "difficulty": "applied",
+      "prompt": "Which fields belong in the generation/request fingerprint or frozen schedule?",
+      "explanation": "The request contract must capture settings that change the trial. Human scoring is separate evidence, not a substitute for request identity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only the final human preference"
+        },
+        {
+          "id": "o2",
+          "text": "A replacement prompt chosen after viewing each held-out answer"
+        },
+        {
+          "id": "o3",
+          "text": "Prompt hash and case identity"
+        },
+        {
+          "id": "o4",
+          "text": "Sampling settings and seed"
+        },
+        {
+          "id": "o5",
+          "text": "Output/context limits, stop strings and timeout"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q045",
+      "type": "multiple",
+      "topic": "Metric validity",
+      "difficulty": "applied",
+      "prompt": "Which values are invalid as an observed token-count measurement?",
+      "explanation": "Token counts are finite non-negative integers, explicitly excluding booleans. Missing usage needs a null and reason, while observed zero remains valid.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The integer zero reported by the runtime"
+        },
+        {
+          "id": "o2",
+          "text": "True, because bool is not a token-count observation"
+        },
+        {
+          "id": "o3",
+          "text": "A negative count"
+        },
+        {
+          "id": "o4",
+          "text": "NaN or infinity"
+        },
+        {
+          "id": "o5",
+          "text": "A fractional token count such as 3.5"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q046",
+      "type": "multiple",
+      "topic": "Timing",
+      "difficulty": "foundation",
+      "prompt": "Which statements about the non-streaming baseline are correct?",
+      "explanation": "Name the timer boundary and report only measurements actually available. Client waiting and server lifecycle are different facts.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Wall time includes transport and queueing"
+        },
+        {
+          "id": "o2",
+          "text": "TTFT remains unavailable without a suitable first-token measurement"
+        },
+        {
+          "id": "o3",
+          "text": "A timeout does not prove cancellation inside the server"
+        },
+        {
+          "id": "o4",
+          "text": "Total wall time equals GPU decoding time by definition"
+        },
+        {
+          "id": "o5",
+          "text": "Divide total duration by two to infer TTFT"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W03-Q047",
+      "type": "multiple",
+      "topic": "Evidence recovery",
+      "difficulty": "applied",
+      "prompt": "Which behaviors preserve a partially completed comparison?",
+      "explanation": "Recovery keeps the original sample and detects integrity problems. Selective retries or deletion bias the evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject the same record ID with conflicting content"
+        },
+        {
+          "id": "o2",
+          "text": "Retain failures as part of the trial evidence"
+        },
+        {
+          "id": "o3",
+          "text": "Rerun durable trials until a more attractive output appears"
+        },
+        {
+          "id": "o4",
+          "text": "Silently discard malformed JSONL records"
+        },
+        {
+          "id": "o5",
+          "text": "Reuse an identical already persisted trial"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q048",
+      "type": "multiple",
+      "topic": "JSONL durability",
+      "difficulty": "applied",
+      "prompt": "Which properties belong to the lesson's append-only evidence contract?",
+      "explanation": "Versioned records, idempotency checks and durable appends support review. They do not turn a single-writer file into a multi-writer transactional database.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Flush and fsync before reporting a durable append"
+        },
+        {
+          "id": "o2",
+          "text": "Overwrite prior measured records when the rubric changes"
+        },
+        {
+          "id": "o3",
+          "text": "Accept NaN as a portable strict JSON number"
+        },
+        {
+          "id": "o4",
+          "text": "One complete strict UTF-8 JSON value per line"
+        },
+        {
+          "id": "o5",
+          "text": "Reject a truncated final line with its corruption location"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q049",
+      "type": "multiple",
+      "topic": "Blinding",
+      "difficulty": "foundation",
+      "prompt": "Which practices support a less biased quality comparison?",
+      "explanation": "Blinding reduces identity cues. Quality criteria remain separate from latency and token measurements.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Show the model size next to every answer before scoring"
+        },
+        {
+          "id": "o2",
+          "text": "Let a faster wall time replace the factual-support criterion"
+        },
+        {
+          "id": "o3",
+          "text": "Present opaque output IDs without model identity"
+        },
+        {
+          "id": "o4",
+          "text": "Store the identity mapping separately until scoring finishes"
+        },
+        {
+          "id": "o5",
+          "text": "Use a recorded seed to randomize presentation order"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W03-Q050",
+      "type": "multiple",
+      "topic": "Bounded conclusions",
+      "difficulty": "applied",
+      "prompt": "Which conclusions are justified by the stated evidence?",
+      "explanation": "Software checks, operating observations and quality evaluations prove different things. Keep conclusions within the recorded configuration.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A test suite without real inference proves that the 7B model fits the laptop"
+        },
+        {
+          "id": "o2",
+          "text": "A successful smoke test establishes one observed HTTP contract crossing"
+        },
+        {
+          "id": "o3",
+          "text": "A failed load belongs in the report for that attempted configuration"
+        },
+        {
+          "id": "o4",
+          "text": "A two-model trial can be confounded by block order, cache and thermal state"
+        },
+        {
+          "id": "o5",
+          "text": "A successful health check proves full GPU offload and factual correctness"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W03-Q051",
+      "type": "match",
+      "topic": "Representation vocabulary",
+      "difficulty": "applied",
+      "prompt": "Match each object to what it represents.",
+      "explanation": "Do not collapse IDs, initial vectors, evolving states and task-oriented retrieval vectors into one meaning.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Token ID"
+        },
+        {
+          "id": "l2",
+          "text": "Token embedding"
+        },
+        {
+          "id": "l3",
+          "text": "Contextual hidden state"
+        },
+        {
+          "id": "l4",
+          "text": "Retrieval embedding"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A vocabulary entry label"
+        },
+        {
+          "id": "r2",
+          "text": "An initial learned lookup vector"
+        },
+        {
+          "id": "r3",
+          "text": "A position's representation after context processing"
+        },
+        {
+          "id": "r4",
+          "text": "A text vector evaluated for similarity/search use"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q052",
+      "type": "match",
+      "topic": "Attention roles",
+      "difficulty": "foundation",
+      "prompt": "Match each attention object to its role.",
+      "explanation": "Scores compare queries and keys; permitted normalized weights mix values.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Query"
+        },
+        {
+          "id": "l2",
+          "text": "Key"
+        },
+        {
+          "id": "l3",
+          "text": "Value"
+        },
+        {
+          "id": "l4",
+          "text": "Causal mask"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "The projection used to seek/match information"
+        },
+        {
+          "id": "r2",
+          "text": "The projection compared with a query"
+        },
+        {
+          "id": "r3",
+          "text": "The representation mixed under attention weights"
+        },
+        {
+          "id": "r4",
+          "text": "The restriction on visible key positions"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q053",
+      "type": "match",
+      "topic": "Tensor shapes",
+      "difficulty": "applied",
+      "prompt": "Match each tensor to its shape in one simplified head, with T positions, key width d_k, value width d_v and vocabulary V.",
+      "explanation": "Distinguish positions, head dimensions and output vocabulary rather than treating every width as the same quantity.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Q"
+        },
+        {
+          "id": "l2",
+          "text": "Q K^T"
+        },
+        {
+          "id": "l3",
+          "text": "Attention output"
+        },
+        {
+          "id": "l4",
+          "text": "Next-token logits at one position"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "T by d_k"
+        },
+        {
+          "id": "r2",
+          "text": "T by T"
+        },
+        {
+          "id": "r3",
+          "text": "T by d_v"
+        },
+        {
+          "id": "r4",
+          "text": "V"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q054",
+      "type": "match",
+      "topic": "Decoder components",
+      "difficulty": "applied",
+      "prompt": "Match each block component to its main role.",
+      "explanation": "A decoder combines these mechanisms; attention is only one part of its computation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Attention"
+        },
+        {
+          "id": "l2",
+          "text": "Position-wise FFN"
+        },
+        {
+          "id": "l3",
+          "text": "Residual addition"
+        },
+        {
+          "id": "l4",
+          "text": "Normalization"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Exchange information across permitted positions"
+        },
+        {
+          "id": "r2",
+          "text": "Transform each position independently"
+        },
+        {
+          "id": "r3",
+          "text": "Preserve the input while adding an update"
+        },
+        {
+          "id": "r4",
+          "text": "Manage internal activation scale"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q055",
+      "type": "match",
+      "topic": "Order mechanisms",
+      "difficulty": "foundation",
+      "prompt": "Match each mechanism to its description.",
+      "explanation": "Order can enter in different ways. None of these descriptions makes sampling or truth verification a positional operation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Learned absolute positions"
+        },
+        {
+          "id": "l2",
+          "text": "Sinusoidal positions"
+        },
+        {
+          "id": "l3",
+          "text": "RoPE"
+        },
+        {
+          "id": "l4",
+          "text": "NoPE causal design"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Learn a position vector to combine with token representations"
+        },
+        {
+          "id": "r2",
+          "text": "Use fixed functions of position"
+        },
+        {
+          "id": "r3",
+          "text": "Rotate queries/keys according to position"
+        },
+        {
+          "id": "r4",
+          "text": "Omit a separate explicit position embedding"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q056",
+      "type": "match",
+      "topic": "Training and generation",
+      "difficulty": "applied",
+      "prompt": "Match each process to its objective or action.",
+      "explanation": "Training changes parameters; inference conditions on an expanding prefix with frozen model parameters.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Pretraining"
+        },
+        {
+          "id": "l2",
+          "text": "Supervised instruction tuning"
+        },
+        {
+          "id": "l3",
+          "text": "Preference alignment"
+        },
+        {
+          "id": "l4",
+          "text": "Autoregressive inference"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Fit observed next-token continuations"
+        },
+        {
+          "id": "r2",
+          "text": "Learn from instruction/desired-response pairs"
+        },
+        {
+          "id": "r3",
+          "text": "Favor outputs according to preference information"
+        },
+        {
+          "id": "r4",
+          "text": "Append a selected token and predict again"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q057",
+      "type": "match",
+      "topic": "Decoding controls",
+      "difficulty": "applied",
+      "prompt": "Match each control to what it changes.",
+      "explanation": "Decoding controls choose among learned continuations; they do not create verified evidence.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Temperature"
+        },
+        {
+          "id": "l2",
+          "text": "Top-k"
+        },
+        {
+          "id": "l3",
+          "text": "Top-p"
+        },
+        {
+          "id": "l4",
+          "text": "Output-token cap"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Distribution sharpness through logit rescaling"
+        },
+        {
+          "id": "r2",
+          "text": "Candidate set limited by score rank"
+        },
+        {
+          "id": "r3",
+          "text": "Candidate prefix reaching a probability threshold"
+        },
+        {
+          "id": "r4",
+          "text": "Maximum generated length"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q058",
+      "type": "match",
+      "topic": "Experimental records",
+      "difficulty": "foundation",
+      "prompt": "Match each record to the question it answers.",
+      "explanation": "Separate intent, configuration, observation and judgment to make comparisons reviewable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Frozen plan"
+        },
+        {
+          "id": "l2",
+          "text": "Run manifest"
+        },
+        {
+          "id": "l3",
+          "text": "Trial observation"
+        },
+        {
+          "id": "l4",
+          "text": "Blinded evaluation"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "What experiment and schedule were intended?"
+        },
+        {
+          "id": "r2",
+          "text": "Which artifact/runtime/configuration was declared?"
+        },
+        {
+          "id": "r3",
+          "text": "What success or failure occurred?"
+        },
+        {
+          "id": "r4",
+          "text": "How did an output score against the rubric?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q059",
+      "type": "match",
+      "topic": "HTTP boundaries",
+      "difficulty": "applied",
+      "prompt": "Match each route or policy to its role.",
+      "explanation": "Readiness, identity and generation are distinct checks. A responsive process may still be the wrong model.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "/health"
+        },
+        {
+          "id": "l2",
+          "text": "/v1/models"
+        },
+        {
+          "id": "l3",
+          "text": "/v1/chat/completions"
+        },
+        {
+          "id": "l4",
+          "text": "Redirect rejection"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Check the local server's readiness response"
+        },
+        {
+          "id": "r2",
+          "text": "Check the expected reported model identity"
+        },
+        {
+          "id": "r3",
+          "text": "Submit the configured generation request"
+        },
+        {
+          "id": "r4",
+          "text": "Prevent an undeclared destination hop"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q060",
+      "type": "match",
+      "topic": "Metric provenance",
+      "difficulty": "applied",
+      "prompt": "Match each label or value to its meaning.",
+      "explanation": "An unavailable metric must not be silently replaced by zero or an unlabeled estimate.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "client_observed"
+        },
+        {
+          "id": "l2",
+          "text": "runtime_reported"
+        },
+        {
+          "id": "l3",
+          "text": "derived"
+        },
+        {
+          "id": "l4",
+          "text": "null plus reason"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Measured at the harness's declared boundary"
+        },
+        {
+          "id": "r2",
+          "text": "Supplied by the runtime response"
+        },
+        {
+          "id": "r3",
+          "text": "Computed from other values with a stated formula/provenance"
+        },
+        {
+          "id": "r4",
+          "text": "Explicitly unavailable evidence"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q061",
+      "type": "match",
+      "topic": "Failure handling",
+      "difficulty": "foundation",
+      "prompt": "Match each situation to its interpretation.",
+      "explanation": "Stable failure categories preserve what happened without silently substituting a different endpoint or model.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Responsive server reports wrong model"
+        },
+        {
+          "id": "l2",
+          "text": "Client stops waiting at its deadline"
+        },
+        {
+          "id": "l3",
+          "text": "Completion response is invalid UTF-8/JSON"
+        },
+        {
+          "id": "l4",
+          "text": "Server is not ready"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Configuration failure"
+        },
+        {
+          "id": "r2",
+          "text": "Timeout without proof of server cancellation"
+        },
+        {
+          "id": "r3",
+          "text": "Protocol failure"
+        },
+        {
+          "id": "r4",
+          "text": "Readiness failure"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q062",
+      "type": "match",
+      "topic": "Integrity and authenticity",
+      "difficulty": "applied",
+      "prompt": "Match each check to its actual scope.",
+      "explanation": "Unkeyed hashes detect inconsistency but do not authenticate which bytes a process loaded.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Hash exact prompt text"
+        },
+        {
+          "id": "l2",
+          "text": "Hash canonical request settings"
+        },
+        {
+          "id": "l3",
+          "text": "Compare a reported alias"
+        },
+        {
+          "id": "l4",
+          "text": "Independent trusted artifact verification"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Detect a change to that text"
+        },
+        {
+          "id": "r2",
+          "text": "Link the trial to declared generation settings"
+        },
+        {
+          "id": "r3",
+          "text": "Check consistency of the reported identity"
+        },
+        {
+          "id": "r4",
+          "text": "Establish provenance beyond a self-declared hash"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q063",
+      "type": "match",
+      "topic": "Evidence storage",
+      "difficulty": "applied",
+      "prompt": "Match each storage event to the required behavior.",
+      "explanation": "Recovery preserves observations rather than replacing them with cleaner-looking results.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Same ID and identical record"
+        },
+        {
+          "id": "l2",
+          "text": "Same ID and different record"
+        },
+        {
+          "id": "l3",
+          "text": "Truncated JSONL final line"
+        },
+        {
+          "id": "l4",
+          "text": "Successful new durable append"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Idempotent no-op"
+        },
+        {
+          "id": "r2",
+          "text": "Reject the conflict"
+        },
+        {
+          "id": "r3",
+          "text": "Report corruption instead of skipping it"
+        },
+        {
+          "id": "r4",
+          "text": "Write a complete line, flush and fsync"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q064",
+      "type": "match",
+      "topic": "Rubric anchors",
+      "difficulty": "foundation",
+      "prompt": "Match each score to its stated meaning.",
+      "explanation": "These are criterion-level judgments. Keep latency and token measurements separate from the human rubric.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "0"
+        },
+        {
+          "id": "l2",
+          "text": "1"
+        },
+        {
+          "id": "l3",
+          "text": "2"
+        },
+        {
+          "id": "l4",
+          "text": "null"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Criterion violated"
+        },
+        {
+          "id": "r2",
+          "text": "Partial or ambiguous satisfaction"
+        },
+        {
+          "id": "r3",
+          "text": "Criterion satisfied"
+        },
+        {
+          "id": "r4",
+          "text": "Not applicable, with a reason"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q065",
+      "type": "match",
+      "topic": "Corrective questions",
+      "difficulty": "applied",
+      "prompt": "Match each weak claim to a useful check.",
+      "explanation": "Match a control to the actual failure; no single fluent answer or operational check proves all dimensions.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "It answered quickly, so it is correct"
+        },
+        {
+          "id": "l2",
+          "text": "The health route passed, so the right model ran"
+        },
+        {
+          "id": "l3",
+          "text": "The context fits, so all evidence was used"
+        },
+        {
+          "id": "l4",
+          "text": "The rerun was nicer, so replace the failed trial"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Check factual support against the reference"
+        },
+        {
+          "id": "r2",
+          "text": "Check identity and independent artifact provenance"
+        },
+        {
+          "id": "r3",
+          "text": "Evaluate behavior with the relevant evidence placement"
+        },
+        {
+          "id": "r4",
+          "text": "Preserve the original outcome and version any new protocol"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W03-Q066",
+      "type": "short",
+      "topic": "Softmax syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing Python math function: exp_scores = [math.____(x - max_score) for x in logits].",
+      "explanation": "Exponentials of shifted logits form stable softmax numerators.",
+      "accepted": [
+        "exp"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q067",
+      "type": "short",
+      "topic": "Scaling syntax",
+      "difficulty": "foundation",
+      "prompt": "Fill only the missing Python math function: scaled_score = dot_product / math.____(key_width).",
+      "explanation": "Scaled dot-product attention divides by the square root of key width.",
+      "accepted": [
+        "sqrt"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q068",
+      "type": "short",
+      "topic": "Causal arithmetic",
+      "difficulty": "applied",
+      "prompt": "For a length-4 causal mask with rows=query and columns=key, how many True entries are there? Type one integer.",
+      "explanation": "The rows permit 1, 2, 3 and 4 positions: 1+2+3+4=10.",
+      "accepted": [
+        "10"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W03-Q069",
+      "type": "short",
+      "topic": "Head width",
+      "difficulty": "applied",
+      "prompt": "In a simplified equal-width MHA design with d_model=768 and 12 heads, what is d_model / heads? Type one integer.",
+      "explanation": "768/12=64. Actual architecture details must still be inspected.",
+      "accepted": [
+        "64"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W03-Q070",
+      "type": "short",
+      "topic": "Context arithmetic",
+      "difficulty": "foundation",
+      "prompt": "A 4,096 context reserves 512 output tokens; prompt/template currently uses 3,000. How many additional prompt tokens fit? Type one integer.",
+      "explanation": "4,096 - 512 - 3,000 leaves 584 tokens.",
+      "accepted": [
+        "584"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W03-Q071",
+      "type": "short",
+      "topic": "Finite validation",
+      "difficulty": "applied",
+      "prompt": "Fill only the Python math function that rejects NaN/infinity: math.____(temperature).",
+      "explanation": "Range comparisons alone are not a complete non-finite policy. Explicit finite validation documents the contract.",
+      "accepted": [
+        "isfinite"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q072",
+      "type": "short",
+      "topic": "Canonical JSON",
+      "difficulty": "applied",
+      "prompt": "Fill only the Boolean literal in json.dumps(value, allow_nan=____) for strict JSON that rejects NaN.",
+      "explanation": "Python's False disables non-standard NaN/Infinity serialization.",
+      "accepted": [
+        "False"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q073",
+      "type": "short",
+      "topic": "JSON ordering",
+      "difficulty": "foundation",
+      "prompt": "Fill only the keyword argument name: json.dumps(data, ____=True) sorts object keys.",
+      "explanation": "sort_keys fixes dictionary-key order for the chosen canonical representation.",
+      "accepted": [
+        "sort_keys"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q074",
+      "type": "short",
+      "topic": "UTF-8 hashing",
+      "difficulty": "applied",
+      "prompt": "Fill only the method name: hashlib.sha256(prompt.encode('utf-8')).____() returns the hexadecimal digest.",
+      "explanation": "A hex digest identifies the exact UTF-8 bytes; whitespace and Unicode normalization choices must not change silently.",
+      "accepted": [
+        "hexdigest"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q075",
+      "type": "short",
+      "topic": "Loopback literal",
+      "difficulty": "applied",
+      "prompt": "Type only the literal IPv4 hostname required by this lesson's local origin policy.",
+      "explanation": "This intentionally narrower policy rejects localhost, LAN hosts and wildcard bindings.",
+      "accepted": [
+        "127.0.0.1"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W03-Q076",
+      "type": "short",
+      "topic": "Completion route",
+      "difficulty": "foundation",
+      "prompt": "Type only the path used by the lesson's non-streaming chat-completion request.",
+      "explanation": "The harness submits generation to this configured local HTTP route; model readiness/identity use separate routes.",
+      "accepted": [
+        "/v1/chat/completions"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q077",
+      "type": "short",
+      "topic": "Streaming policy",
+      "difficulty": "applied",
+      "prompt": "Fill only the Python literal for the baseline's streaming flag: stream = ____.",
+      "explanation": "The baseline is non-streaming; a total response timer does not measure TTFT.",
+      "accepted": [
+        "False"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q078",
+      "type": "short",
+      "topic": "Durability syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the function name: os.____(output.fileno()) requests synchronization after flushing a JSONL append.",
+      "explanation": "fsync supports durable append semantics but does not provide a multi-writer transactional database.",
+      "accepted": [
+        "fsync"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q079",
+      "type": "short",
+      "topic": "Unavailable JSON",
+      "difficulty": "foundation",
+      "prompt": "Type only the strict JSON literal for an unavailable metric's value.",
+      "explanation": "JSON null accompanies an unavailable reason; it is not the observed number zero.",
+      "accepted": [
+        "null"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W03-Q080",
+      "type": "short",
+      "topic": "Evidence schedule",
+      "difficulty": "applied",
+      "prompt": "With four held-out cases, two models and three measured trials per case/model, how many measured trial outcomes are expected, excluding warm-ups? Type one integer.",
+      "explanation": "4*2*3=24. Preserve a failure record when a scheduled trial fails; do not count warm-up as held-out evidence.",
+      "accepted": [
+        "24"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W03-Q081",
+      "type": "code",
+      "topic": "Token-budget function",
+      "difficulty": "applied",
+      "prompt": "Implement remaining_budget(context, prompt_tokens, output_reserve). All three inputs must be exact Python ints (not bool); context must be positive, and the others non-negative. Return context - prompt_tokens - output_reserve. Raise ValueError for invalid input or a negative result. prompt_tokens already includes the active chat template; do not estimate tokens from words.",
+      "explanation": "Budget the actual serialized token counts and reserved output, then validate types and boundaries. A fitted budget still does not establish answer quality.",
+      "starter": "def remaining_budget(context: int, prompt_tokens: int, output_reserve: int) -> int:\n    raise NotImplementedError\n",
+      "reference": "def remaining_budget(context: int, prompt_tokens: int, output_reserve: int) -> int:\n    if any(type(x) is not int for x in (context, prompt_tokens, output_reserve)):\n        raise ValueError(\"integer counts required\")\n    if context <= 0 or prompt_tokens < 0 or output_reserve < 0:\n        raise ValueError(\"invalid token counts\")\n    remaining = context - prompt_tokens - output_reserve\n    if remaining < 0:\n        raise ValueError(\"context exceeded\")\n    return remaining\n",
+      "checks": [
+        {
+          "label": "Reserve prompt and output",
+          "code": "assert remaining_budget(4096,3000,512)==584"
+        },
+        {
+          "label": "Exact fit",
+          "code": "assert remaining_budget(4096,3584,512)==0"
+        },
+        {
+          "label": "Empty prompt and no reserve",
+          "code": "assert remaining_budget(16,0,0)==16"
+        },
+        {
+          "label": "Reject over-budget and negative counts",
+          "code": "assert raises(ValueError,remaining_budget,4096,3850,512)\nassert raises(ValueError,remaining_budget,0,0,0)\nassert raises(ValueError,remaining_budget,10,-1,0)"
+        },
+        {
+          "label": "Reject bools and fractional counts",
+          "code": "assert raises(ValueError,remaining_budget,True,0,0)\nassert raises(ValueError,remaining_budget,10,1.5,0)\nassert raises(ValueError,remaining_budget,10,0,False)"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q082",
+      "type": "code",
+      "topic": "Stable softmax",
+      "difficulty": "foundation",
+      "prompt": "Implement stable_softmax(logits). Accept a non-empty list of finite int/float scores, excluding bool. Raise ValueError otherwise. Return a new list of probabilities using exp(x - max(logits)) and normalization; preserve candidate order and do not mutate the input. Only Python's standard library is needed.",
+      "explanation": "Subtracting the largest logit avoids overflow while preserving the normalized distribution. Equal scores must receive equal probabilities.",
+      "starter": "def stable_softmax(logits: list[float]) -> list[float]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef stable_softmax(logits: list[float]) -> list[float]:\n    if not logits or any(type(x) not in (int,float) or not math.isfinite(x) for x in logits):\n        raise ValueError(\"finite logits required\")\n    peak = max(logits)\n    weights = [math.exp(x-peak) for x in logits]\n    total = math.fsum(weights)\n    return [w/total for w in weights]\n",
+      "checks": [
+        {
+          "label": "Known equal logits",
+          "code": "assert stable_softmax([0.0,0.0])==[0.5,0.5]"
+        },
+        {
+          "label": "Non-uniform probabilities",
+          "code": "import math\nr=stable_softmax([0.0,math.log(3.0)])\nassert all(math.isclose(a,b,abs_tol=1e-12) for a,b in zip(r,[0.25,0.75])) and len(r)==2"
+        },
+        {
+          "label": "Large shift without overflow",
+          "code": "import math\na=stable_softmax([10000.0,10000.0,10000.0]);assert len(a)==3 and all(math.isclose(x,1/3,abs_tol=1e-12) for x in a)"
+        },
+        {
+          "label": "Order and non-mutation",
+          "code": "x=[-2.0,0.0,1.0];r=stable_softmax(x)\nassert x==[-2.0,0.0,1.0] and r[0]<r[1]<r[2] and abs(sum(r)-1)<1e-12"
+        },
+        {
+          "label": "Reject empty or non-finite values",
+          "code": "assert raises(ValueError,stable_softmax,[])\nassert raises(ValueError,stable_softmax,[float('nan')])\nassert raises(ValueError,stable_softmax,[float('inf')])\nassert raises(ValueError,stable_softmax,[True])"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q083",
+      "type": "code",
+      "topic": "Temperature rescaling",
+      "difficulty": "applied",
+      "prompt": "Implement scale_logits(logits, temperature). logits is a non-empty list of finite int/float values (no bool). temperature must be a finite int/float greater than zero (no bool). Return a new list containing x / temperature for each logit. Raise ValueError for invalid inputs; leave logits unchanged. This exercise excludes the special runtime convention for temperature zero.",
+      "explanation": "Temperature divides logits before the rest of decoding. Validate its numeric domain without claiming it adds facts to the model.",
+      "starter": "def scale_logits(logits: list[float], temperature: float) -> list[float]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef scale_logits(logits: list[float], temperature: float) -> list[float]:\n    if type(temperature) not in (int,float) or not math.isfinite(temperature) or temperature <= 0:\n        raise ValueError(\"positive finite temperature required\")\n    if not logits or any(type(x) not in (int,float) or not math.isfinite(x) for x in logits):\n        raise ValueError(\"finite logits required\")\n    return [x/temperature for x in logits]\n",
+      "checks": [
+        {
+          "label": "Lower temperature expands score differences",
+          "code": "assert scale_logits([1.0,2.0],0.5)==[2.0,4.0]"
+        },
+        {
+          "label": "Higher temperature compresses differences",
+          "code": "assert scale_logits([-2,4],2)==[-1.0,2.0]"
+        },
+        {
+          "label": "Identity and source preservation",
+          "code": "x=[1.0,0.0];r=scale_logits(x,1);assert r==x and r is not x and x==[1.0,0.0]"
+        },
+        {
+          "label": "Reject zero, negative and non-finite temperatures",
+          "code": "assert raises(ValueError,scale_logits,[1],0)\nassert raises(ValueError,scale_logits,[1],-1)\nassert raises(ValueError,scale_logits,[1],float('nan'))\nassert raises(ValueError,scale_logits,[1],True)"
+        },
+        {
+          "label": "Reject invalid logits",
+          "code": "assert raises(ValueError,scale_logits,[],1)\nassert raises(ValueError,scale_logits,[float('inf')],1)\nassert raises(ValueError,scale_logits,[False],1)"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q084",
+      "type": "code",
+      "topic": "Top-k candidate IDs",
+      "difficulty": "applied",
+      "prompt": "Implement top_k_ids(scores, k). scores is a non-empty list of finite int/float values excluding bool; k is an exact positive int, not bool. Return up to k zero-based candidate IDs ordered by descending score, with lower ID first on a tie. If k exceeds the vocabulary size, return all IDs. Raise ValueError for invalid inputs and do not mutate scores.",
+      "explanation": "Top-k is a ranking filter. Deterministic tie rules make the small policy testable without a random sampler.",
+      "starter": "def top_k_ids(scores: list[float], k: int) -> list[int]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef top_k_ids(scores: list[float], k: int) -> list[int]:\n    if type(k) is not int or k <= 0 or not scores:\n        raise ValueError(\"nonempty scores and positive k required\")\n    if any(type(x) not in (int,float) or not math.isfinite(x) for x in scores):\n        raise ValueError(\"finite scores required\")\n    return sorted(range(len(scores)),key=lambda i:(-scores[i],i))[:k]\n",
+      "checks": [
+        {
+          "label": "Select by score rather than vocabulary order",
+          "code": "assert top_k_ids([.10,.45,.30,.15],2)==[1,2]"
+        },
+        {
+          "label": "Stable equal-score tie",
+          "code": "assert top_k_ids([4,4,1],1)==[0]"
+        },
+        {
+          "label": "Large k keeps all in ranked order",
+          "code": "assert top_k_ids([-4,-1,-3],10)==[1,2,0]"
+        },
+        {
+          "label": "Preserve source values",
+          "code": "x=[3,1,2];assert top_k_ids(x,2)==[0,2] and x==[3,1,2]"
+        },
+        {
+          "label": "Reject invalid k and score values",
+          "code": "assert raises(ValueError,top_k_ids,[1],0)\nassert raises(ValueError,top_k_ids,[1],True)\nassert raises(ValueError,top_k_ids,[],1)\nassert raises(ValueError,top_k_ids,[float('nan')],1)"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q085",
+      "type": "code",
+      "topic": "Top-p nucleus",
+      "difficulty": "foundation",
+      "prompt": "Implement nucleus_ids(probabilities, p). Require a non-empty list of finite non-negative int/float probabilities excluding bool, summing to 1 within absolute tolerance 1e-9. p must be finite with 0 < p <= 1, excluding bool. Sort IDs by descending probability and then ascending ID. Return the smallest non-empty prefix whose cumulative probability reaches p (allow 1e-12 boundary tolerance). Raise ValueError on invalid input; do not mutate probabilities.",
+      "explanation": "Top-p must include the candidate that crosses the cumulative threshold. Sorting by probability is separate from preserving the candidate IDs.",
+      "starter": "def nucleus_ids(probabilities: list[float], p: float) -> list[int]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef nucleus_ids(probabilities: list[float], p: float) -> list[int]:\n    if type(p) not in (int,float) or not math.isfinite(p) or not 0 < p <= 1:\n        raise ValueError(\"invalid p\")\n    if not probabilities or any(type(x) not in (int,float) or not math.isfinite(x) or x < 0 for x in probabilities):\n        raise ValueError(\"invalid probabilities\")\n    if not math.isclose(math.fsum(probabilities),1.0,rel_tol=0,abs_tol=1e-9):\n        raise ValueError(\"probabilities must sum to one\")\n    chosen = []\n    for i in sorted(range(len(probabilities)),key=lambda i:(-probabilities[i],i)):\n        chosen.append(i)\n        if math.fsum(probabilities[j] for j in chosen) + 1e-12 >= p:\n            return chosen\n    return chosen\n",
+      "checks": [
+        {
+          "label": "Include the threshold-crossing candidate",
+          "code": "assert nucleus_ids([.60,.25,.10,.05],.80)==[0,1]"
+        },
+        {
+          "label": "Sort first and resolve ties",
+          "code": "assert nucleus_ids([.10,.45,.45],.60)==[1,2]"
+        },
+        {
+          "label": "Exact boundary and zero tail",
+          "code": "assert nucleus_ids([.6,.3,.1],.9)==[0,1]\nassert nucleus_ids([.5,.5,0],1)==[0,1]"
+        },
+        {
+          "label": "Preserve input and nonempty tiny-p result",
+          "code": "x=[.2,.8];assert nucleus_ids(x,.01)==[1] and x==[.2,.8]"
+        },
+        {
+          "label": "Reject invalid distribution or threshold",
+          "code": "assert raises(ValueError,nucleus_ids,[],.5)\nassert raises(ValueError,nucleus_ids,[.2,.2],.5)\nassert raises(ValueError,nucleus_ids,[-.1,1.1],.5)\nassert raises(ValueError,nucleus_ids,[1],0)\nassert raises(ValueError,nucleus_ids,[1],float('nan'))\nassert raises(ValueError,nucleus_ids,[True],1)"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q086",
+      "type": "code",
+      "topic": "Greedy selection",
+      "difficulty": "applied",
+      "prompt": "Implement greedy_id(logits). Given a non-empty list of finite int/float scores excluding bool, return the zero-based ID with greatest score. On a tie use the lowest ID. Raise ValueError for empty/non-finite/invalid scores. Do not mutate the list. No random sampling is required.",
+      "explanation": "Greedy selection chooses an ID by score and a declared tie policy. A deterministic choice still may be unsupported by the reference.",
+      "starter": "def greedy_id(logits: list[float]) -> int:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef greedy_id(logits: list[float]) -> int:\n    if not logits or any(type(x) not in (int,float) or not math.isfinite(x) for x in logits):\n        raise ValueError(\"finite nonempty logits required\")\n    return max(range(len(logits)),key=lambda i:logits[i])\n",
+      "checks": [
+        {
+          "label": "Select the best score's ID",
+          "code": "assert greedy_id([.1,.9,.2])==1"
+        },
+        {
+          "label": "Tie picks the lowest ID",
+          "code": "assert greedy_id([3,3,1])==0"
+        },
+        {
+          "label": "Negative scores",
+          "code": "assert greedy_id([-10,-2,-3])==1"
+        },
+        {
+          "label": "Single score and no mutation",
+          "code": "x=[4];assert greedy_id(x)==0 and x==[4]"
+        },
+        {
+          "label": "Reject invalid input",
+          "code": "assert raises(ValueError,greedy_id,[])\nassert raises(ValueError,greedy_id,[float('inf')])\nassert raises(ValueError,greedy_id,[float('nan')])\nassert raises(ValueError,greedy_id,[True])"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q087",
+      "type": "code",
+      "topic": "Causal visibility matrix",
+      "difficulty": "applied",
+      "prompt": "Implement causal_mask(length). length must be an exact non-negative int, not bool; raise ValueError otherwise. Return a new length-by-length list of lists of bool, with True exactly when key column j <= query row i. A zero length returns []. Each row must be independent, so editing one row cannot change another.",
+      "explanation": "Visibility is a lower-triangular boolean relation including the diagonal. It does not itself choose a generated token.",
+      "starter": "def causal_mask(length: int) -> list[list[bool]]:\n    raise NotImplementedError\n",
+      "reference": "def causal_mask(length: int) -> list[list[bool]]:\n    if type(length) is not int or length < 0:\n        raise ValueError(\"nonnegative length required\")\n    return [[j <= i for j in range(length)] for i in range(length)]\n",
+      "checks": [
+        {
+          "label": "Three-position visibility",
+          "code": "assert causal_mask(3)==[[True,False,False],[True,True,False],[True,True,True]]"
+        },
+        {
+          "label": "Empty and singleton masks",
+          "code": "assert causal_mask(0)==[] and causal_mask(1)==[[True]]"
+        },
+        {
+          "label": "Lower triangle count and actual bool values",
+          "code": "r=causal_mask(4);assert sum(sum(row) for row in r)==10 and all(type(v) is bool for row in r for v in row)"
+        },
+        {
+          "label": "Rows do not alias",
+          "code": "r=causal_mask(2);r[0][0]=False;assert r[1][0] is True"
+        },
+        {
+          "label": "Reject invalid lengths",
+          "code": "assert raises(ValueError,causal_mask,-1)\nassert raises(ValueError,causal_mask,True)\nassert raises(ValueError,causal_mask,2.5)"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q088",
+      "type": "code",
+      "topic": "Value mixing",
+      "difficulty": "foundation",
+      "prompt": "Implement mix_values(weights, values). weights is a non-empty list of finite non-negative int/float values (no bool) summing to 1 within absolute tolerance 1e-9. values has one non-empty vector per weight; all vectors have equal width and finite int/float entries (no bool). Return their weighted sum as a new vector; never mutate inputs. Raise ValueError for invalid shapes, weights or entries.",
+      "explanation": "Attention mixes values under normalized weights. A changed value vector can change the result even if all weights stay fixed.",
+      "starter": "def mix_values(weights: list[float], values: list[list[float]]) -> list[float]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef mix_values(weights: list[float], values: list[list[float]]) -> list[float]:\n    if not weights or len(weights)!=len(values) or any(type(w) not in (int,float) or not math.isfinite(w) or w<0 for w in weights):\n        raise ValueError(\"invalid weights\")\n    if not math.isclose(math.fsum(weights),1,rel_tol=0,abs_tol=1e-9):\n        raise ValueError(\"weights must sum to one\")\n    width=len(values[0])\n    if width==0 or any(len(row)!=width or any(type(x) not in (int,float) or not math.isfinite(x) for x in row) for row in values):\n        raise ValueError(\"invalid value vectors\")\n    return [math.fsum(w*row[j] for w,row in zip(weights,values)) for j in range(width)]\n",
+      "checks": [
+        {
+          "label": "Weighted mixture, not raw mean",
+          "code": "assert mix_values([.25,.75],[[2,4],[6,0]])==[5.0,1.0]"
+        },
+        {
+          "label": "One-hot selection",
+          "code": "assert mix_values([0,1],[[100,200],[3,4]])==[3,4]"
+        },
+        {
+          "label": "Single vector and independent output",
+          "code": "v=[[1,2,3]];r=mix_values([1],v);r[0]=9;assert v==[[1,2,3]]"
+        },
+        {
+          "label": "Reject invalid probability weights",
+          "code": "assert raises(ValueError,mix_values,[],[])\nassert raises(ValueError,mix_values,[.5],[[1]])\nassert raises(ValueError,mix_values,[-1,2],[[1],[2]])"
+        },
+        {
+          "label": "Reject ragged or non-finite vectors",
+          "code": "assert raises(ValueError,mix_values,[.5,.5],[[1],[2,3]])\nassert raises(ValueError,mix_values,[1],[[float('nan')]])\nassert raises(ValueError,mix_values,[1],[[]])"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q089",
+      "type": "code",
+      "topic": "Embedding lookup",
+      "difficulty": "applied",
+      "prompt": "Implement lookup_embeddings(token_ids, table). The table is supplied as a non-empty rectangular list of numeric rows. Validate that each token ID is an exact int (not bool), with 0 <= id < len(table), raising ValueError otherwise. Return a list containing a separate copy of the selected table row for every ID, preserving ID order and repetitions. An empty ID list returns []; changing a returned row must not change table or another returned row.",
+      "explanation": "A token ID selects one lookup row. Repeated vocabulary items can start from equal vectors while later contextual states diverge.",
+      "starter": "def lookup_embeddings(token_ids: list[int], table: list[list[float]]) -> list[list[float]]:\n    raise NotImplementedError\n",
+      "reference": "def lookup_embeddings(token_ids: list[int], table: list[list[float]]) -> list[list[float]]:\n    if any(type(i) is not int or not 0 <= i < len(table) for i in token_ids):\n        raise ValueError(\"invalid vocabulary ID\")\n    return [list(table[i]) for i in token_ids]\n",
+      "checks": [
+        {
+          "label": "Preserve selected ID order",
+          "code": "assert lookup_embeddings([2,0],[[1,2],[3,4],[5,6]])==[[5,6],[1,2]]"
+        },
+        {
+          "label": "Repeated IDs remain repeated",
+          "code": "assert lookup_embeddings([1,1],[[1],[9]])==[[9],[9]]"
+        },
+        {
+          "label": "No row aliasing",
+          "code": "t=[[1,2]];r=lookup_embeddings([0,0],t);r[0][0]=9;assert t==[[1,2]] and r[1]==[1,2]"
+        },
+        {
+          "label": "Empty token sequence",
+          "code": "assert lookup_embeddings([],[[1,2]])==[]"
+        },
+        {
+          "label": "Reject invalid IDs including negative indexing",
+          "code": "assert raises(ValueError,lookup_embeddings,[-1],[[1]])\nassert raises(ValueError,lookup_embeddings,[1],[[1]])\nassert raises(ValueError,lookup_embeddings,[True],[[1],[2]])\nassert raises(ValueError,lookup_embeddings,[0.0],[[1]])"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q090",
+      "type": "code",
+      "topic": "Scaled query-key scores",
+      "difficulty": "applied",
+      "prompt": "Implement attention_scores(query, keys). query is a non-empty finite numeric vector; each key must have the same width and finite numeric entries. Exclude bool; raise ValueError for invalid inputs. Return dot(query, key) / sqrt(len(query)) for each key in order. Empty keys returns []. Do not apply softmax, a mask or mutate inputs.",
+      "explanation": "The scale uses key/query width, not number of candidate keys. This computes only the scores; normalization and value mixing are later steps.",
+      "starter": "def attention_scores(query: list[float], keys: list[list[float]]) -> list[float]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef attention_scores(query: list[float], keys: list[list[float]]) -> list[float]:\n    if not query or any(type(x) not in (int,float) or not math.isfinite(x) for x in query):\n        raise ValueError(\"invalid query\")\n    if any(len(k)!=len(query) or any(type(x) not in (int,float) or not math.isfinite(x) for x in k) for k in keys):\n        raise ValueError(\"invalid keys\")\n    return [math.fsum(a*b for a,b in zip(query,k))/math.sqrt(len(query)) for k in keys]\n",
+      "checks": [
+        {
+          "label": "Known width-two scores",
+          "code": "import math\nr=attention_scores([2,0],[[1,3],[0,4]]);assert len(r)==2 and math.isclose(r[0],math.sqrt(2),abs_tol=1e-12) and r[1]==0"
+        },
+        {
+          "label": "Unit-width scores",
+          "code": "assert attention_scores([3],[[2],[-1]])==[6,-3]"
+        },
+        {
+          "label": "Zero query components and no mutation",
+          "code": "q=[0,0,0,0];k=[[1,2,3,4]];assert attention_scores(q,k)==[0] and q==[0,0,0,0] and k==[[1,2,3,4]]"
+        },
+        {
+          "label": "No key candidates",
+          "code": "assert attention_scores([1,2],[])==[]"
+        },
+        {
+          "label": "Reject invalid widths or values",
+          "code": "assert raises(ValueError,attention_scores,[],[])\nassert raises(ValueError,attention_scores,[1,2],[[1]])\nassert raises(ValueError,attention_scores,[float('inf')],[[1]])\nassert raises(ValueError,attention_scores,[True],[[1]])"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q091",
+      "type": "code",
+      "topic": "Residual addition",
+      "difficulty": "foundation",
+      "prompt": "Implement residual_add(state, update). Both inputs are finite int/float vectors excluding bool and must have equal length; raise ValueError otherwise. Return a new vector with elementwise state + update. Empty paired vectors return []. Preserve both inputs.",
+      "explanation": "A residual path adds an update instead of replacing the original state. Equal shape is needed for the addition.",
+      "starter": "def residual_add(state: list[float], update: list[float]) -> list[float]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef residual_add(state: list[float], update: list[float]) -> list[float]:\n    if len(state)!=len(update) or any(type(x) not in (int,float) or not math.isfinite(x) for x in state+update):\n        raise ValueError(\"matching finite vectors required\")\n    return [x+y for x,y in zip(state,update)]\n",
+      "checks": [
+        {
+          "label": "Elementwise sum",
+          "code": "assert residual_add([1,2],[-.5,3])==[.5,5]"
+        },
+        {
+          "label": "Zero update preserves the signal",
+          "code": "assert residual_add([2,-4],[0,0])==[2,-4]"
+        },
+        {
+          "label": "Empty vectors",
+          "code": "assert residual_add([],[])==[]"
+        },
+        {
+          "label": "Independent result",
+          "code": "x=[1,2];u=[3,4];r=residual_add(x,u);r[0]=99;assert x==[1,2] and u==[3,4]"
+        },
+        {
+          "label": "Reject shape and value errors",
+          "code": "assert raises(ValueError,residual_add,[1],[1,2])\nassert raises(ValueError,residual_add,[float('nan')],[0])\nassert raises(ValueError,residual_add,[True],[0])"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q092",
+      "type": "code",
+      "topic": "Canonical strict JSON",
+      "difficulty": "applied",
+      "prompt": "Implement canonical_json(value). For JSON-compatible values with string object keys, return json.dumps using sorted keys, compact separators (comma and colon without extra spaces), ensure_ascii=False and allow_nan=False. Do not mutate the input. Let unsupported values raise TypeError and non-finite floats raise ValueError.",
+      "explanation": "A chosen canonical representation makes integrity checks reproducible. It is not an authentication signature.",
+      "starter": "def canonical_json(value: object) -> str:\n    raise NotImplementedError\n",
+      "reference": "import json\ndef canonical_json(value: object) -> str:\n    return json.dumps(value,sort_keys=True,separators=(\",\",\":\"),ensure_ascii=False,allow_nan=False)\n",
+      "checks": [
+        {
+          "label": "Sorted compact object",
+          "code": "assert canonical_json({'z':2,'a':1})=='{\"a\":1,\"z\":2}'"
+        },
+        {
+          "label": "UTF-8 text stays readable",
+          "code": "assert canonical_json({'name':'தமிழ்'})=='{\"name\":\"தமிழ்\"}'"
+        },
+        {
+          "label": "Nested keys, null and bool",
+          "code": "assert canonical_json({'b':[None,True],'a':{'z':0,'x':1}})=='{\"a\":{\"x\":1,\"z\":0},\"b\":[null,true]}'"
+        },
+        {
+          "label": "Reject non-finite numbers",
+          "code": "assert raises(ValueError,canonical_json,{'x':float('nan')})\nassert raises(ValueError,canonical_json,[float('inf')])"
+        },
+        {
+          "label": "Unsupported values and source preservation",
+          "code": "assert raises(TypeError,canonical_json,{'x':{1,2}})\nx={'b':2,'a':1};canonical_json(x);assert list(x)==['b','a']"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q093",
+      "type": "code",
+      "topic": "Exact prompt fingerprint",
+      "difficulty": "applied",
+      "prompt": "Implement prompt_sha256(prompt). Accept only str, raising TypeError otherwise. Return the lowercase SHA-256 hexadecimal digest of the prompt's exact UTF-8 bytes. Do not strip whitespace, replace newlines or normalize Unicode. Empty text is valid for this hashing exercise (the full request validator separately rejects blank prompts).",
+      "explanation": "Hash the actual bytes that identify the prompt. An unkeyed hash detects changes but does not prove trusted authorship.",
+      "starter": "def prompt_sha256(prompt: str) -> str:\n    raise NotImplementedError\n",
+      "reference": "import hashlib\ndef prompt_sha256(prompt: str) -> str:\n    if not isinstance(prompt,str):\n        raise TypeError(\"prompt must be str\")\n    return hashlib.sha256(prompt.encode(\"utf-8\")).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Known ASCII digest",
+          "code": "assert prompt_sha256('abc')=='ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'"
+        },
+        {
+          "label": "Empty bytes digest",
+          "code": "assert prompt_sha256('')=='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'"
+        },
+        {
+          "label": "Whitespace and newline identity",
+          "code": "assert prompt_sha256('note')!=prompt_sha256('note ')\nassert prompt_sha256('a\\r\\nb')!=prompt_sha256('a\\nb')"
+        },
+        {
+          "label": "Exact non-ASCII bytes",
+          "code": "import hashlib\nassert prompt_sha256('é')==hashlib.sha256(bytes([195,169])).hexdigest()\nassert prompt_sha256('é')!=prompt_sha256('e\\u0301')"
+        },
+        {
+          "label": "Reject already-encoded bytes and other types",
+          "code": "assert raises(TypeError,prompt_sha256,b'abc')\nassert raises(TypeError,prompt_sha256,None)"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q094",
+      "type": "code",
+      "topic": "Frozen sampling validation",
+      "difficulty": "foundation",
+      "prompt": "Implement valid_baseline(settings), returning bool. Require a dict with all these fields: exact int context_size=4096, exact int max_output_tokens=512, stream is False, finite numeric 0<=temperature<=2, exact int top_k>=0, finite numeric 0<top_p<=1, and finite numeric 0<timeout_seconds<=3600. Numeric means int/float excluding bool. Return False for missing/invalid fields or non-dicts; ignore extra keys. This exercise validates only this settings subset, not the full request model.",
+      "explanation": "The baseline is an experimental invariant, not a universal choice of best temperature. Exact types exclude bool-as-int surprises and non-finite measurements.",
+      "starter": "def valid_baseline(settings: dict[str, object]) -> bool:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef valid_baseline(settings: dict[str, object]) -> bool:\n    if not isinstance(settings,dict):\n        return False\n    def number(x):\n        return type(x) is int or (type(x) is float and math.isfinite(x))\n    c=settings.get(\"context_size\");o=settings.get(\"max_output_tokens\")\n    t=settings.get(\"temperature\");k=settings.get(\"top_k\")\n    p=settings.get(\"top_p\");timeout=settings.get(\"timeout_seconds\")\n    return (type(c) is int and c==4096 and type(o) is int and o==512\n        and settings.get(\"stream\") is False and number(t) and 0<=t<=2\n        and type(k) is int and k>=0 and number(p) and 0<p<=1\n        and number(timeout) and 0<timeout<=3600)\n",
+      "checks": [
+        {
+          "label": "Valid ordinary policy",
+          "code": "assert valid_baseline({'context_size':4096,'max_output_tokens':512,'stream':False,'temperature':0.2,'top_k':40,'top_p':0.9,'timeout_seconds':60.0}) is True"
+        },
+        {
+          "label": "Inclusive numeric boundaries",
+          "code": "x={'context_size':4096,'max_output_tokens':512,'stream':False,'temperature':0.2,'top_k':40,'top_p':0.9,'timeout_seconds':60.0};x.update(temperature=0,top_k=0,top_p=1,timeout_seconds=3600);assert valid_baseline(x) is True\nx['temperature']=2;assert valid_baseline(x) is True"
+        },
+        {
+          "label": "Reject changed equality fields and stream",
+          "code": "x={'context_size':4096,'max_output_tokens':512,'stream':False,'temperature':0.2,'top_k':40,'top_p':0.9,'timeout_seconds':60.0}\nfor key,value in [('context_size',8192),('max_output_tokens',511),('stream',True),('context_size',4096.0),('max_output_tokens',512.0),('stream',0)]:\n    assert valid_baseline({**x,key:value}) is False"
+        },
+        {
+          "label": "Reject invalid sampling types and ranges",
+          "code": "x={'context_size':4096,'max_output_tokens':512,'stream':False,'temperature':0.2,'top_k':40,'top_p':0.9,'timeout_seconds':60.0}\nfor key,value in [('temperature',float('nan')),('temperature',2.1),('temperature',False),('top_k',True),('top_k',-1),('top_p',0),('top_p',1.1),('timeout_seconds',0),('timeout_seconds',float('inf'))]:\n    assert valid_baseline({**x,key:value}) is False"
+        },
+        {
+          "label": "Missing data and source preservation",
+          "code": "x={'context_size':4096,'max_output_tokens':512,'stream':False,'temperature':0.2,'top_k':40,'top_p':0.9,'timeout_seconds':60.0};y=dict(x);assert valid_baseline(None) is False and valid_baseline({}) is False\nassert valid_baseline({**x,'extra':'ignored'}) is True and x==y\ndel x['stream'];assert valid_baseline(x) is False"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q095",
+      "type": "code",
+      "topic": "Literal local origin",
+      "difficulty": "applied",
+      "prompt": "Implement allowed_origin(url), returning bool. This small policy accepts only an exact lowercase string http://127.0.0.1:<port>, with 1 to 5 ASCII decimal digits for port and numeric port 1..65535. No whitespace, credentials, slash/path, query, fragment or other hostname is permitted. Reject non-strings. This validates a string only: do not resolve DNS or contact any server.",
+      "explanation": "A literal origin allowlist is inspectable without DNS or network access. It does not prove that the local process or artifact is trustworthy.",
+      "starter": "def allowed_origin(url: str) -> bool:\n    raise NotImplementedError\n",
+      "reference": "import re\ndef allowed_origin(url: str) -> bool:\n    if not isinstance(url,str):\n        return False\n    match=re.fullmatch(r\"http://127\\.0\\.0\\.1:([0-9]{1,5})\",url)\n    return match is not None and 1<=int(match.group(1))<=65535\n",
+      "checks": [
+        {
+          "label": "Explicit local ports",
+          "code": "assert allowed_origin('http://127.0.0.1:8080') is True and allowed_origin('http://127.0.0.1:1') is True and allowed_origin('http://127.0.0.1:65535') is True"
+        },
+        {
+          "label": "Reject alternate or look-alike hosts",
+          "code": "assert all(allowed_origin(x) is False for x in ['http://localhost:8080','http://[::1]:8080','http://127.0.0.1.evil:8080','http://0.0.0.0:8080'])"
+        },
+        {
+          "label": "Reject credentials and suffixes",
+          "code": "assert all(allowed_origin(x) is False for x in ['http://user@127.0.0.1:8080','http://127.0.0.1:8080/','http://127.0.0.1:8080?','http://127.0.0.1:8080#x'])"
+        },
+        {
+          "label": "Reject invalid scheme or ports",
+          "code": "assert all(allowed_origin(x) is False for x in ['https://127.0.0.1:8080','http://127.0.0.1','http://127.0.0.1:0','http://127.0.0.1:65536','http://127.0.0.1:000001','http://127.0.0.1:٨٠'])"
+        },
+        {
+          "label": "Reject whitespace and non-strings",
+          "code": "assert allowed_origin('http://127.0.0.1:80\\n') is False and allowed_origin(' http://127.0.0.1:80') is False and allowed_origin(None) is False"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q096",
+      "type": "code",
+      "topic": "Unavailable usage metrics",
+      "difficulty": "applied",
+      "prompt": "Implement token_metric(value). Return a new dict with exactly value, unit and unavailable_reason. For an exact non-negative int (not bool), use {'value': value, 'unit': 'tokens', 'unavailable_reason': None}. For any other input use value=None, unit='tokens', and unavailable_reason='not a non-negative integer'. Do not estimate missing usage from words.",
+      "explanation": "Observed zero is meaningful. Unavailable usage must remain null with a reason, instead of becoming a fabricated measurement.",
+      "starter": "def token_metric(value: object) -> dict[str, object]:\n    raise NotImplementedError\n",
+      "reference": "def token_metric(value: object) -> dict[str, object]:\n    valid=type(value) is int and value>=0\n    return {\"value\":value if valid else None,\"unit\":\"tokens\",\n            \"unavailable_reason\":None if valid else \"not a non-negative integer\"}\n",
+      "checks": [
+        {
+          "label": "Observed positive count",
+          "code": "assert token_metric(17)=={'value':17,'unit':'tokens','unavailable_reason':None}"
+        },
+        {
+          "label": "Observed zero stays zero",
+          "code": "assert token_metric(0)=={'value':0,'unit':'tokens','unavailable_reason':None}"
+        },
+        {
+          "label": "Missing usage has a reason",
+          "code": "assert token_metric(None)=={'value':None,'unit':'tokens','unavailable_reason':'not a non-negative integer'}"
+        },
+        {
+          "label": "Reject bool, fractions and non-finite values",
+          "code": "for x in [True,-1,2.0,2.5,float('nan'),float('inf'),'3']:\n    assert token_metric(x)=={'value':None,'unit':'tokens','unavailable_reason':'not a non-negative integer'}"
+        },
+        {
+          "label": "Independent records",
+          "code": "a=token_metric(1);b=token_metric(1);a['value']=9;assert b['value']==1 and a is not b"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q097",
+      "type": "code",
+      "topic": "Completion response validation",
+      "difficulty": "foundation",
+      "prompt": "Implement completion_text(payload, expected_model). payload is an already-decoded object. Require a dict with model equal to the non-empty string expected_model; choices must be a list containing exactly one dict, with a message dict whose content is str. Ignore additional fields and accept empty string content. Return that content; raise ValueError for every invalid shape/identity. Do not make HTTP calls or log payload text.",
+      "explanation": "Validate an external response before returning typed content. A successful parse is a protocol check, not a factual-quality score.",
+      "starter": "def completion_text(payload: object, expected_model: str) -> str:\n    raise NotImplementedError\n",
+      "reference": "def completion_text(payload: object, expected_model: str) -> str:\n    if not isinstance(expected_model,str) or not expected_model or not isinstance(payload,dict) or payload.get(\"model\")!=expected_model:\n        raise ValueError(\"identity mismatch\")\n    choices=payload.get(\"choices\")\n    if not isinstance(choices,list) or len(choices)!=1 or not isinstance(choices[0],dict):\n        raise ValueError(\"invalid choices\")\n    message=choices[0].get(\"message\")\n    if not isinstance(message,dict) or not isinstance(message.get(\"content\"),str):\n        raise ValueError(\"invalid content\")\n    return message[\"content\"]\n",
+      "checks": [
+        {
+          "label": "Extract expected content",
+          "code": "assert completion_text({'model':'local-A','choices':[{'message':{'content':'18 August'}}]},'local-A')=='18 August'"
+        },
+        {
+          "label": "Accept empty content and extra metadata",
+          "code": "assert completion_text({'model':'A','choices':[{'message':{'content':''}}],'usage':{}},'A')==''"
+        },
+        {
+          "label": "Reject wrong model identity",
+          "code": "assert raises(ValueError,completion_text,{'model':'B','choices':[{'message':{'content':'x'}}]},'A')"
+        },
+        {
+          "label": "Reject missing/multiple choices",
+          "code": "for p in [None,{}, {'model':'A','choices':[]},{'model':'A','choices':[{},{}]},{'model':'A','choices':{}}]:\n    assert raises(ValueError,completion_text,p,'A')"
+        },
+        {
+          "label": "Reject malformed messages and non-string content",
+          "code": "for choice in [None,{}, {'message':None},{'message':{'content':None}},{'message':{'content':3}}]:\n    assert raises(ValueError,completion_text,{'model':'A','choices':[choice]},'A')\nassert raises(ValueError,completion_text,{},'')"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q098",
+      "type": "code",
+      "topic": "Frozen trial order",
+      "difficulty": "applied",
+      "prompt": "Implement trial_schedule(case_ids). Accept a list of unique non-empty, non-blank strings; raise ValueError if an entry is invalid or repeated. Return (case_id, trial_number) tuples in the supplied case order, with trial numbers 1, 2, 3 for each case. An empty case list returns []. Do not sort IDs or modify the list. These are measured trials only; warm-up is separate.",
+      "explanation": "A deterministic schedule binds measured observations to the frozen suite. Do not insert warm-ups into the measured trial set.",
+      "starter": "def trial_schedule(case_ids: list[str]) -> list[tuple[str, int]]:\n    raise NotImplementedError\n",
+      "reference": "def trial_schedule(case_ids: list[str]) -> list[tuple[str,int]]:\n    if any(not isinstance(c,str) or not c.strip() for c in case_ids) or len(set(case_ids))!=len(case_ids):\n        raise ValueError(\"unique nonblank case IDs required\")\n    return [(case_id,number) for case_id in case_ids for number in (1,2,3)]\n",
+      "checks": [
+        {
+          "label": "Three measured trials per case",
+          "code": "assert trial_schedule(['a','b'])==[('a',1),('a',2),('a',3),('b',1),('b',2),('b',3)]"
+        },
+        {
+          "label": "Keep frozen case order",
+          "code": "assert trial_schedule(['z','a'])[0]==('z',1) and trial_schedule(['z','a'])[3]==('a',1)"
+        },
+        {
+          "label": "Empty suite",
+          "code": "assert trial_schedule([])==[]"
+        },
+        {
+          "label": "Reject duplicate or invalid identifiers",
+          "code": "assert raises(ValueError,trial_schedule,['a','a'])\nassert raises(ValueError,trial_schedule,[' '])\nassert raises(ValueError,trial_schedule,[1])"
+        },
+        {
+          "label": "Do not mutate or normalize IDs",
+          "code": "x=[' b ','a'];r=trial_schedule(x);assert x==[' b ','a'] and r[0]==(' b ',1) and len(r)==6"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q099",
+      "type": "code",
+      "topic": "Idempotent evidence",
+      "difficulty": "applied",
+      "prompt": "Implement add_record(records, record), an in-memory analogue of evidence idempotency. Inputs are JSON-compatible dicts with non-empty string 'id' fields; records has unique IDs. If record's ID is new, return a deep-copied list with it appended. If an existing ID has equal content, return a deep copy without another append. If the same ID has different content, raise ValueError. Never mutate or alias either input. This exercise does not implement disk locking or durability.",
+      "explanation": "Preserve a trial instead of overwriting or regenerating it. The full store adds validation, locking and durable append semantics beyond this pure exercise.",
+      "starter": "def add_record(records: list[dict], record: dict) -> list[dict]:\n    raise NotImplementedError\n",
+      "reference": "from copy import deepcopy\ndef add_record(records: list[dict], record: dict) -> list[dict]:\n    for existing in records:\n        if existing[\"id\"]==record[\"id\"]:\n            if existing!=record:\n                raise ValueError(\"record identity conflict\")\n            return deepcopy(records)\n    return deepcopy([*records,record])\n",
+      "checks": [
+        {
+          "label": "Append a new identity",
+          "code": "assert add_record([{'id':'a','value':1}],{'id':'b','value':2})==[{'id':'a','value':1},{'id':'b','value':2}]"
+        },
+        {
+          "label": "Identical record is a no-op",
+          "code": "assert add_record([{'id':'a','value':1}],{'value':1,'id':'a'})==[{'id':'a','value':1}]"
+        },
+        {
+          "label": "Reject conflicting evidence",
+          "code": "assert raises(ValueError,add_record,[{'id':'a','value':1}],{'id':'a','value':2})"
+        },
+        {
+          "label": "Do not alias old or new nested data",
+          "code": "rows=[{'id':'a','values':[1]}];new={'id':'b','values':[2]};out=add_record(rows,new);out[0]['values'].append(9);out[1]['values'].append(8);assert rows==[{'id':'a','values':[1]}] and new=={'id':'b','values':[2]}"
+        },
+        {
+          "label": "Empty collection and deep-copy on reuse",
+          "code": "assert add_record([],{'id':'a'})==[{'id':'a'}]\nx=[{'id':'a','values':[1]}];y=add_record(x,{'id':'a','values':[1]});y[0]['values'].append(2);assert x==[{'id':'a','values':[1]}]"
+        }
+      ]
+    },
+    {
+      "id": "W03-Q100",
+      "type": "code",
+      "topic": "One-criterion score",
+      "difficulty": "foundation",
+      "prompt": "Implement criterion_total(scores) for ONE rubric criterion across several outputs. Each entry must be an exact int in {0,1,2} (not bool), or None for a not-applicable score whose reason was recorded separately. Raise ValueError for any other entry. Return (sum_of_applicable_scores, 2 * applicable_count). Exclude None from both values; empty/all-None input gives (0,0). Do not invent scores or combine different criteria into a weighted winner.",
+      "explanation": "Not-applicable is different from a failed criterion. Preserve denominators and compare each rubric dimension separately.",
+      "starter": "def criterion_total(scores: list[int | None]) -> tuple[int, int]:\n    raise NotImplementedError\n",
+      "reference": "def criterion_total(scores: list[int | None]) -> tuple[int,int]:\n    if any(s is not None and (type(s) is not int or s not in (0,1,2)) for s in scores):\n        raise ValueError(\"invalid rubric score\")\n    applicable=[s for s in scores if s is not None]\n    return sum(applicable),2*len(applicable)\n",
+      "checks": [
+        {
+          "label": "Sum one criterion's observations",
+          "code": "assert criterion_total([2,1,0])==(3,6)"
+        },
+        {
+          "label": "Exclude not-applicable entries",
+          "code": "assert criterion_total([2,None,1])==(3,4)"
+        },
+        {
+          "label": "No applicable scores",
+          "code": "assert criterion_total([])==(0,0) and criterion_total([None,None])==(0,0)"
+        },
+        {
+          "label": "Zero is an applicable failure",
+          "code": "assert criterion_total([0,None])==(0,2)"
+        },
+        {
+          "label": "Reject bool, fractional and out-of-range scores",
+          "code": "for x in [True,2.0,-1,3,'2',float('nan')]:\n    assert raises(ValueError,criterion_total,[x])"
+        }
+      ]
+    }
+  ]
+}
