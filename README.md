@@ -137,6 +137,16 @@ existing Python worker; no LLM, weights, server, GPU or inference API is needed.
 The full local-model experiment and its Windows storage/lifecycle integration
 remain separate from these portable coding checks.
 
+[Week 4 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-04/)
+has 100 questions with the same distribution and balanced paper policy. Twenty
+standard-library Python tasks cover decimal/date/text contracts, required and
+extra keys, duplicate JSON names, UTF-8 limits, labelled evidence, exact field
+comparison, status precedence, document serialization, versioned request
+digests, bounded recovery and separate structural/support rates. They run in
+the existing Python worker on synthetic inputs. The full Pydantic extraction
+lab and any real-model evaluation remain separate; no new runtime dependency
+or inference service is added.
+
 The site stays static. A Python coding run downloads pinned Pyodide 0.29.3 from its
 documented jsDelivr distribution into a separate browser worker. This version
 uses Python 3.13, matching the lesson's language family. The app terminates each
@@ -168,7 +178,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1, 2 and 3 use the shared engine. Future weeks need their own
+Weeks 1, 2, 3 and 4 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -187,3 +197,7 @@ tracked source (for example, `npm install --prefix .qa-week02-assessment/tools @
 Run `python -m pytest tests/test_week03_assessment.py` for the Week 3 bank,
 all twenty references and plausible incorrect implementations, numerical
 properties, and shared paper/scoring/restoration contracts.
+
+Run `python -m pytest tests/test_week04_assessment.py tests/test_week04_extractor.py`
+for the Week 4 bank, all twenty coding references/starters/incorrect solutions,
+composed business checks, shared scoring contracts and the existing offline lab.

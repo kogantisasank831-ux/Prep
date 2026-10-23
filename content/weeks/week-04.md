@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-04/beginner/
 ---
 
+Test your understanding with the [Week 4 assessment]({{ '/assessments/week-04/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on structured extraction, evidence checks and bounded recovery.
+
 ## Turn a purchase confirmation into data a program can use
 
 Last week, we compared what two models said about the same input. This week, the next question is practical: how do we turn a model response into something another program can use?

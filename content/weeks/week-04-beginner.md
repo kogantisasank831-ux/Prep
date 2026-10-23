@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-04/
 ---
 
+Test your understanding with the [Week 4 assessment]({{ '/assessments/week-04/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on structured extraction, evidence checks and bounded recovery.
+
 ## From a readable document to predictable data
 
 Imagine an operations inbox receives this synthetic procurement document:
