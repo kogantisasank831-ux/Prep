@@ -1,0 +1,4623 @@
+{
+  "schema_version": 1,
+  "week": 2,
+  "version": "1.0.0",
+  "title": "SQL and procurement data modelling",
+  "source_lesson": "/weeks/week-02/",
+  "code_language": "sql",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "sql_schema": "-- Small synthetic assessment schema, separate from the full Week 2 lab.\n-- All prices use each order's currency and the line's unit.\n-- Zero quantity is permitted here only to exercise denominator guards.\nCREATE TABLE suppliers (id integer PRIMARY KEY, name text NOT NULL, active boolean NOT NULL);\nCREATE TABLE orders (\n id integer PRIMARY KEY, supplier_id integer NOT NULL REFERENCES suppliers(id),\n ordered_on date NOT NULL, status text NOT NULL, currency text NOT NULL);\nCREATE TABLE lines (\n id integer PRIMARY KEY, order_id integer NOT NULL REFERENCES orders(id), product text NOT NULL,\n quantity numeric NOT NULL CHECK (quantity >= 0), unit text NOT NULL,\n unit_price numeric NOT NULL CHECK (unit_price >= 0), promised_on date NOT NULL);\nCREATE TABLE receipts (\n id integer PRIMARY KEY, line_id integer NOT NULL REFERENCES lines(id), received_on date NOT NULL,\n delivered numeric NOT NULL, accepted numeric NOT NULL CHECK (accepted >= 0 AND accepted <= delivered));\nCREATE TABLE prices (\n id integer PRIMARY KEY, product text NOT NULL, priced_on date NOT NULL,\n unit text NOT NULL, currency text NOT NULL, price numeric NOT NULL);\n",
+  "sql_fixtures": {
+    "example": "INSERT INTO suppliers VALUES (1, 'Aster', TRUE), (2, 'Birch', TRUE), (3, 'Cedar', FALSE);\nINSERT INTO orders VALUES (1, 1, '2026-06-01', 'issued', 'USD'), (2, 1, '2026-06-15', 'issued', 'USD'), (3, 2, '2026-06-30', 'issued', 'EUR'), (4, 2, '2026-05-01', 'cancelled', 'USD'), (5, 2, '2026-07-01', 'issued', 'USD'), (6, 3, '2026-06-01', 'issued', 'USD');\nINSERT INTO lines VALUES (11, 1, 'copper', 1000, 'kg', 12, '2026-06-20'), (12, 1, 'bolt', 10, 'ea', 2, '2026-06-30'), (21, 2, 'copper', 50, 'kg', 10, '2026-06-10'), (31, 3, 'copper', 20, 'kg', 15, '2026-06-30'), (41, 4, 'bolt', 5, 'ea', 2, '2026-05-20'), (51, 5, 'copper', 25, 'kg', 14, '2026-07-20');\nINSERT INTO receipts VALUES (1, 11, '2026-06-18', 400, 400), (2, 11, '2026-06-25', 500, 470), (3, 11, '2026-07-05', 130, 130), (4, 12, '2026-06-30', 10, 10), (5, 21, '2026-06-10', 20, 20), (6, 21, '2026-06-10', 30, 25), (7, 31, '2026-07-01', 20, 20);\nINSERT INTO prices VALUES (1, 'copper', '2026-05-01', 'kg', 'USD', 9), (2, 'copper', '2026-06-01', 'kg', 'USD', 10), (3, 'copper', '2026-06-15', 'kg', 'USD', 11), (4, 'copper', '2026-06-15', 'kg', 'USD', 8), (5, 'copper', '2026-07-01', 'kg', 'USD', 20), (6, 'copper', '2026-06-10', 'kg', 'EUR', 13), (7, 'bolt', '2026-06-01', 'ea', 'USD', 1.5);",
+    "boundaries": "INSERT INTO suppliers VALUES (11, 'Zulu', TRUE), (12, 'Able', TRUE), (13, 'NoOrders', FALSE), (14, 'Idle', TRUE);\nINSERT INTO orders VALUES (101, 11, '2026-06-30', 'issued', 'USD'), (102, 11, '2026-07-01', 'issued', 'USD'), (103, 12, '2026-05-31', 'issued', 'EUR'), (104, 12, '2026-06-01', 'cancelled', 'USD'), (105, 12, '2026-06-15', 'draft', 'USD');\nINSERT INTO lines VALUES (1001, 101, 'copper', 0, 'kg', 3, '2026-06-30'), (1002, 103, 'copper', 2.5, 'kg', 10, '2026-05-31'), (1003, 105, 'bolt', 3, 'ea', 0, '2026-06-29');\nINSERT INTO receipts VALUES (1001, 1002, '2026-05-31', 2.5, 2.5), (1002, 1002, '2026-06-01', 0.5, 0), (1003, 1003, '2026-06-30', 3, 3);\nINSERT INTO prices VALUES (1001, 'copper', '2026-06-15', 'kg', 'USD', 10), (1002, 'copper', '2026-06-16', 'kg', 'USD', 99), (1003, 'copper', '2026-05-31', 'kg', 'EUR', 9), (1004, 'bolt', '2026-06-15', 'ea', 'USD', 0);",
+    "sparse": "INSERT INTO suppliers VALUES (21, 'NoReceipts', TRUE), (22, 'NoQuotes', TRUE), (23, 'Inactive', FALSE);\nINSERT INTO orders VALUES (201, 21, '2026-05-01', 'issued', 'USD'), (202, 22, '2026-06-01', 'issued', 'USD');\nINSERT INTO lines VALUES (2001, 201, 'alloy', 7.5, 'kg', 2.25, '2026-06-01'), (2002, 201, 'bolt', 3, 'ea', 4, '2026-07-01'), (2003, 202, 'copper', 20, 'kg', 10, '2026-06-30');\nINSERT INTO receipts VALUES (2001, 2003, '2026-07-01', 20, 20), (2002, 2002, '2026-06-01', 1, 0);\nINSERT INTO prices VALUES (2001, 'alloy', '2026-05-01', 'kg', 'EUR', 9), (2002, 'alloy', '2026-05-01', 'ea', 'USD', 1), (2003, 'copper', '2026-07-02', 'kg', 'USD', 12);",
+    "ties": "INSERT INTO suppliers VALUES (31, 'First', TRUE), (32, 'Second', TRUE), (33, 'Third', FALSE);\nINSERT INTO orders VALUES (301, 31, '2026-06-01', 'issued', 'USD'), (302, 32, '2026-06-01', 'issued', 'USD'), (303, 31, '2026-06-15', 'issued', 'EUR'), (304, 32, '2026-06-15', 'issued', 'EUR'), (305, 33, '2026-06-01', 'cancelled', 'USD');\nINSERT INTO lines VALUES (3001, 301, 'bolt', 2, 'ea', 5, '2026-06-20'), (3002, 301, 'bolt', 2, 'ea', 5, '2026-06-20'), (3003, 302, 'bolt', 2, 'ea', 5, '2026-06-20'), (3004, 303, 'copper', 10, 'kg', 9, '2026-06-15'), (3005, 304, 'copper', 10, 'kg', 11, '2026-06-15'), (3006, 305, 'bolt', 1, 'ea', 99, '2026-06-15');\nINSERT INTO receipts VALUES (3001, 3001, '2026-06-01', 1, 1), (3002, 3001, '2026-06-01', 1, 1), (3003, 3002, '2026-06-02', 2, 2), (3004, 3003, '2026-06-01', 1, 1), (3005, 3004, '2026-06-15', 12, 10), (3006, 3005, '2026-06-30', 10, 10);\nINSERT INTO prices VALUES (3001, 'bolt', '2026-06-01', 'ea', 'USD', 4), (3002, 'bolt', '2026-06-01', 'ea', 'USD', 6), (3003, 'copper', '2026-06-01', 'kg', 'EUR', 10), (3004, 'copper', '2026-06-15', 'kg', 'USD', 20);",
+    "empty": "-- Empty tables for the empty-input check."
+  },
+  "questions": [
+    {
+      "id": "W02-Q001",
+      "type": "single",
+      "topic": "Grain",
+      "difficulty": "foundation",
+      "prompt": "Two receipt events refer to the same PO line. Which fact belongs once at PO-line grain?",
+      "explanation": "A PO line owns the commitment. Receipts own events against that line. Copying the commitment into an event-level total duplicates it.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The ordered quantity and committed unit price"
+        },
+        {
+          "id": "o2",
+          "text": "The arrival time of each receipt"
+        },
+        {
+          "id": "o3",
+          "text": "The inspection result of each receipt event"
+        },
+        {
+          "id": "o4",
+          "text": "The accepted quantity of each receipt event"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q002",
+      "type": "single",
+      "topic": "Fan-out",
+      "difficulty": "applied",
+      "prompt": "A line orders 100 kg at USD 12/kg and has two receipts. A direct join repeats the line twice. What does SUM(quantity * unit_price) return?",
+      "explanation": "The join emits two rows, each with a 1,200 line value. Aggregate the receipt facts before joining, or aggregate commitments at their own grain.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "USD 1,200 because SUM understands primary keys"
+        },
+        {
+          "id": "o2",
+          "text": "USD 600 because the order is split in two"
+        },
+        {
+          "id": "o3",
+          "text": "NULL because a one-to-many join cannot aggregate"
+        },
+        {
+          "id": "o4",
+          "text": "USD 2,400, which overstates the USD 1,200 commitment"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q003",
+      "type": "single",
+      "topic": "LEFT JOIN",
+      "difficulty": "applied",
+      "prompt": "You need every PO line, including lines without receipts. Which join is the starting point?",
+      "explanation": "The preserved side must be the PO lines. Missing receipt totals can then be interpreted as zero accepted quantity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "PO lines CROSS JOIN all receipts"
+        },
+        {
+          "id": "o2",
+          "text": "Receipt totals LEFT JOIN PO lines"
+        },
+        {
+          "id": "o3",
+          "text": "PO lines LEFT JOIN receipt totals"
+        },
+        {
+          "id": "o4",
+          "text": "Receipt totals INNER JOIN PO lines"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q004",
+      "type": "single",
+      "topic": "NULL",
+      "difficulty": "foundation",
+      "prompt": "An aggregate over zero input rows evaluates SUM(accepted_quantity). What is its PostgreSQL result?",
+      "explanation": "SUM over no rows returns NULL. COALESCE can turn missing receipt evidence into zero when that is the declared metric.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A SQL error"
+        },
+        {
+          "id": "o2",
+          "text": "NULL"
+        },
+        {
+          "id": "o3",
+          "text": "0"
+        },
+        {
+          "id": "o4",
+          "text": "An empty string"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q005",
+      "type": "single",
+      "topic": "Counting",
+      "difficulty": "applied",
+      "prompt": "Which count correctly reports zero orders for a supplier with no match in a LEFT JOIN?",
+      "explanation": "COUNT of the nullable key ignores the unmatched NULL. COUNT(*) and expressions made non-NULL count the preserved supplier row.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "COUNT(po.purchase_order_id)"
+        },
+        {
+          "id": "o2",
+          "text": "COUNT(*)"
+        },
+        {
+          "id": "o3",
+          "text": "COUNT(s.supplier_id)"
+        },
+        {
+          "id": "o4",
+          "text": "COUNT(COALESCE(po.purchase_order_id, 0))"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q006",
+      "type": "single",
+      "topic": "Grouping",
+      "difficulty": "applied",
+      "prompt": "Which clause filters suppliers AFTER their orders have been grouped?",
+      "explanation": "WHERE filters input rows. HAVING filters groups and can refer to aggregate results.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "WHERE COUNT(*) >= 3"
+        },
+        {
+          "id": "o2",
+          "text": "ORDER BY COUNT(*) >= 3"
+        },
+        {
+          "id": "o3",
+          "text": "LIMIT COUNT(*) >= 3"
+        },
+        {
+          "id": "o4",
+          "text": "HAVING COUNT(*) >= 3"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q007",
+      "type": "single",
+      "topic": "Cutoff",
+      "difficulty": "foundation",
+      "prompt": "A report is as of 30 June 2026. A receipt arrived on 5 July. How should that receipt affect accepted quantity in this report?",
+      "explanation": "Loaded facts and facts visible at a reporting cutoff are different sets. Filter receipts by their event date before aggregation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Move its date back to the promise date"
+        },
+        {
+          "id": "o2",
+          "text": "Include half because it is close to the cutoff"
+        },
+        {
+          "id": "o3",
+          "text": "Exclude it from the receipt totals"
+        },
+        {
+          "id": "o4",
+          "text": "Include it because it is loaded in the database"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q008",
+      "type": "single",
+      "topic": "Time intervals",
+      "difficulty": "applied",
+      "prompt": "Which timestamp condition includes all of June without relying on timestamp precision?",
+      "explanation": "A half-open interval includes the first boundary and excludes the next month's first instant. A June 30 midnight endpoint would miss most of June 30.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "EXTRACT(DAY FROM event_at) <= 30"
+        },
+        {
+          "id": "o2",
+          "text": "event_at >= TIMESTAMP '2026-06-01' AND event_at < TIMESTAMP '2026-07-01'"
+        },
+        {
+          "id": "o3",
+          "text": "event_at BETWEEN TIMESTAMP '2026-06-01' AND TIMESTAMP '2026-06-30'"
+        },
+        {
+          "id": "o4",
+          "text": "event_at = TIMESTAMP '2026-06-30'"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q009",
+      "type": "single",
+      "topic": "Fulfillment",
+      "difficulty": "applied",
+      "prompt": "PO-1042 orders 1,000 kg. Receipts deliver 900 kg and inspection accepts 870 kg by the cutoff. What remains to fulfill under this lesson's definition?",
+      "explanation": "Fulfillment uses accepted quantity: 1,000 minus 870 equals 130 kg. Delivered quantity answers a separate physical-flow question.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "130 kg"
+        },
+        {
+          "id": "o2",
+          "text": "100 kg"
+        },
+        {
+          "id": "o3",
+          "text": "30 kg"
+        },
+        {
+          "id": "o4",
+          "text": "0 kg"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q010",
+      "type": "single",
+      "topic": "Open value",
+      "difficulty": "foundation",
+      "prompt": "At USD 12/kg, what open committed value corresponds to 130 kg remaining on PO-1042?",
+      "explanation": "Remaining accepted quantity times the snapshotted PO unit price gives 130 × 12 = 1,560. It is an open commitment, not an unpaid invoice.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "USD 1,200"
+        },
+        {
+          "id": "o2",
+          "text": "USD 10,440"
+        },
+        {
+          "id": "o3",
+          "text": "USD 12,000"
+        },
+        {
+          "id": "o4",
+          "text": "USD 1,560"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q011",
+      "type": "single",
+      "topic": "Price baselines",
+      "difficulty": "applied",
+      "prompt": "Which market observation is comparable with a PO line ordered on 15 June in USD per kg?",
+      "explanation": "Comparability requires product, currency and unit alignment; the date must not use information from the future.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The lowest price in any currency"
+        },
+        {
+          "id": "o2",
+          "text": "The nearest observation even if it occurs after the order"
+        },
+        {
+          "id": "o3",
+          "text": "The latest selected-source observation on or before 15 June for the same product, USD and kg"
+        },
+        {
+          "id": "o4",
+          "text": "The latest observation in the entire database"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q012",
+      "type": "single",
+      "topic": "Missing evidence",
+      "difficulty": "applied",
+      "prompt": "There is no comparable market price before an order date. Which reported market variance is honest?",
+      "explanation": "A missing baseline is not a zero-price baseline. Keep the unavailable comparison visible rather than inventing a variance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use a future market price without labelling it"
+        },
+        {
+          "id": "o2",
+          "text": "NULL / unavailable"
+        },
+        {
+          "id": "o3",
+          "text": "Zero variance"
+        },
+        {
+          "id": "o4",
+          "text": "The negative of the PO price"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q013",
+      "type": "single",
+      "topic": "Anti-join",
+      "difficulty": "foundation",
+      "prompt": "A nullable value can appear in a subquery. Which pattern most directly tests that a PO line has NO receipt by the cutoff?",
+      "explanation": "NOT EXISTS tests whether a matching row exists and avoids the NULL trap of NOT IN with a nullable subquery result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A correlated NOT EXISTS with the line key and receipt-date condition"
+        },
+        {
+          "id": "o2",
+          "text": "line_id NOT IN (SELECT nullable_line_id FROM another_table) without handling NULL"
+        },
+        {
+          "id": "o3",
+          "text": "An INNER JOIN to receipts"
+        },
+        {
+          "id": "o4",
+          "text": "COUNT(*) OVER () = 0 on an unfiltered join"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q014",
+      "type": "single",
+      "topic": "Window functions",
+      "difficulty": "applied",
+      "prompt": "What distinguishes a window SUM from a grouped SUM?",
+      "explanation": "Window functions annotate rows. GROUP BY changes the output grain by collapsing rows into groups.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A window SUM always returns one row for the whole table"
+        },
+        {
+          "id": "o2",
+          "text": "A window SUM eliminates all duplicate values"
+        },
+        {
+          "id": "o3",
+          "text": "A window SUM cannot use a partition"
+        },
+        {
+          "id": "o4",
+          "text": "A window SUM can retain each input row while calculating across related rows"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q015",
+      "type": "single",
+      "topic": "Deterministic windows",
+      "difficulty": "applied",
+      "prompt": "Two receipts for a line share the same date. Which running-total window gives deterministic row-by-row progress?",
+      "explanation": "A unique tie-breaker defines event order. An explicit ROWS frame expresses a running total through this exact row.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "PARTITION BY receipt_id with no order"
+        },
+        {
+          "id": "o2",
+          "text": "ORDER BY accepted_quantity DESC"
+        },
+        {
+          "id": "o3",
+          "text": "ORDER BY received_on, receipt_id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW"
+        },
+        {
+          "id": "o4",
+          "text": "ORDER BY received_on with an unspecified tie order"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q016",
+      "type": "single",
+      "topic": "Ranking",
+      "difficulty": "foundation",
+      "prompt": "Three scores are 100, 100 and 80. What ranks does RANK() OVER (ORDER BY score DESC) assign?",
+      "explanation": "RANK shares a rank for peers and leaves a gap. DENSE_RANK would return 1, 1, 2.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "3, 2, 1"
+        },
+        {
+          "id": "o2",
+          "text": "1, 1, 3"
+        },
+        {
+          "id": "o3",
+          "text": "1, 2, 3"
+        },
+        {
+          "id": "o4",
+          "text": "1, 1, 2"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q017",
+      "type": "single",
+      "topic": "CTEs",
+      "difficulty": "applied",
+      "prompt": "Why introduce a receipt_totals CTE before the delayed-lines calculation?",
+      "explanation": "A CTE makes grain and business stages reviewable. The planner's treatment and performance must still be inspected.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To expose a named intermediate relation with an explicit line grain"
+        },
+        {
+          "id": "o2",
+          "text": "Because every CTE is automatically faster"
+        },
+        {
+          "id": "o3",
+          "text": "Because CTEs permanently store a table"
+        },
+        {
+          "id": "o4",
+          "text": "Because a CTE removes the need for join keys"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q018",
+      "type": "single",
+      "topic": "Normalization",
+      "difficulty": "applied",
+      "prompt": "A supplier name is repeated on every receipt row and must be updated in many places. What is the main modelling issue?",
+      "explanation": "A supplier entity can own its current descriptive data while receipt rows reference it. This reduces contradictory copies.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Too many primary keys"
+        },
+        {
+          "id": "o2",
+          "text": "The absence of a window function"
+        },
+        {
+          "id": "o3",
+          "text": "The database has become too normalized"
+        },
+        {
+          "id": "o4",
+          "text": "An update anomaly caused by mixing supplier and receipt facts"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q019",
+      "type": "single",
+      "topic": "Historical facts",
+      "difficulty": "foundation",
+      "prompt": "Why retain the agreed PO unit price even after the current contract price changes?",
+      "explanation": "A historical snapshot is an event fact. Replacing it with today's contract price rewrites the meaning of the original order.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It removes the need for a supplier key"
+        },
+        {
+          "id": "o2",
+          "text": "It is always a stale cache that should be overwritten"
+        },
+        {
+          "id": "o3",
+          "text": "The PO price records the historical commitment made when the order was issued"
+        },
+        {
+          "id": "o4",
+          "text": "It guarantees that the market price never changes"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q020",
+      "type": "single",
+      "topic": "Foreign keys",
+      "difficulty": "applied",
+      "prompt": "What does a foreign key from a delivery line to its PO line prove?",
+      "explanation": "A foreign key protects a relationship. It does not enforce an aggregate bound across multiple receipt events or serialize writers.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No concurrent session can insert a receipt"
+        },
+        {
+          "id": "o2",
+          "text": "The referenced PO line exists"
+        },
+        {
+          "id": "o3",
+          "text": "All receipts together stay below the ordered quantity"
+        },
+        {
+          "id": "o4",
+          "text": "Every order is profitable"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q021",
+      "type": "single",
+      "topic": "Constraints",
+      "difficulty": "applied",
+      "prompt": "Which rule is suitable for a row-local CHECK on a receipt line?",
+      "explanation": "The first rule uses values from the same row. Cross-row and cross-table rules need an appropriate write protocol or other database design.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "accepted_quantity >= 0 AND accepted_quantity <= delivered_quantity"
+        },
+        {
+          "id": "o2",
+          "text": "SUM of all receipts for the PO line is below ordered quantity"
+        },
+        {
+          "id": "o3",
+          "text": "The supplier has at least three completed orders"
+        },
+        {
+          "id": "o4",
+          "text": "The referenced contract was active on the order date"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q022",
+      "type": "single",
+      "topic": "Exact arithmetic",
+      "difficulty": "foundation",
+      "prompt": "Which PostgreSQL type matches exact decimal PO prices in this lab?",
+      "explanation": "NUMERIC supports exact decimal arithmetic. Precision, scale, rounding and special-value validation still need explicit contracts.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "REAL because prices are approximate"
+        },
+        {
+          "id": "o2",
+          "text": "DOUBLE PRECISION because it always stores decimal fractions exactly"
+        },
+        {
+          "id": "o3",
+          "text": "TEXT because numeric comparisons are unnecessary"
+        },
+        {
+          "id": "o4",
+          "text": "NUMERIC with an explicit precision and scale policy"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q023",
+      "type": "single",
+      "topic": "Units and currencies",
+      "difficulty": "applied",
+      "prompt": "A dashboard sees 100 kg and 50 individual items. What should it report without a conversion model?",
+      "explanation": "Addition requires compatible quantities. Currency totals likewise remain separate unless an explicit FX model defines conversion.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The average, 75 units"
+        },
+        {
+          "id": "o2",
+          "text": "Only the larger number"
+        },
+        {
+          "id": "o3",
+          "text": "Separate quantity metrics by compatible unit"
+        },
+        {
+          "id": "o4",
+          "text": "150 as a single physical quantity"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q024",
+      "type": "single",
+      "topic": "Indexes",
+      "difficulty": "applied",
+      "prompt": "A small table uses a sequential scan despite an available index. What follows?",
+      "explanation": "Index selection depends on selectivity, table size, statistics and costs. An available index is not a promise that using it is faster.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Force the index for every query"
+        },
+        {
+          "id": "o2",
+          "text": "The planner may reasonably prefer scanning the small table; inspect the actual plan and workload"
+        },
+        {
+          "id": "o3",
+          "text": "The index must be corrupt"
+        },
+        {
+          "id": "o4",
+          "text": "PostgreSQL cannot use indexes with SELECT"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q025",
+      "type": "single",
+      "topic": "Partial indexes",
+      "difficulty": "foundation",
+      "prompt": "A partial index covers WHERE status = 'issued'. When is it eligible for a query?",
+      "explanation": "A partial index contains only a subset of rows. The query must be provably confined to that subset; eligibility still does not guarantee selection.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When the planner can prove the query predicate implies the index predicate"
+        },
+        {
+          "id": "o2",
+          "text": "For every query on the table regardless of filters"
+        },
+        {
+          "id": "o3",
+          "text": "Only when SELECT * is used"
+        },
+        {
+          "id": "o4",
+          "text": "Only after all other indexes are deleted"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q026",
+      "type": "single",
+      "topic": "Atomicity",
+      "difficulty": "applied",
+      "prompt": "The second line insert fails while creating a PO header and two lines in one transaction. What should the application do?",
+      "explanation": "The transaction groups the business write. Rollback prevents a half-created order from being treated as a complete commitment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Commit the header and first line anyway"
+        },
+        {
+          "id": "o2",
+          "text": "Ignore the error and assume COMMIT will repair it"
+        },
+        {
+          "id": "o3",
+          "text": "Delete all suppliers"
+        },
+        {
+          "id": "o4",
+          "text": "Roll back the transaction so no partial PO is committed"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q027",
+      "type": "single",
+      "topic": "Concurrency",
+      "difficulty": "applied",
+      "prompt": "Two sessions each read 130 kg remaining and try to accept 100 kg. What is the essential missing protection in a plain read-then-insert sequence?",
+      "explanation": "Both sessions can pass a stale check. The lab locks the PO header first, then target lines, and rechecks accepted totals while holding the locks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A larger VARCHAR column"
+        },
+        {
+          "id": "o2",
+          "text": "ORDER BY on the final report"
+        },
+        {
+          "id": "o3",
+          "text": "A shared locking/write protocol that serializes the invariant check and write"
+        },
+        {
+          "id": "o4",
+          "text": "A second SELECT without a lock"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q028",
+      "type": "single",
+      "topic": "Privileges",
+      "difficulty": "foundation",
+      "prompt": "The lab write functions use SECURITY INVOKER. What happens if the caller loses direct INSERT privileges required by a function?",
+      "explanation": "Invoker functions use the caller's privileges. The lab's locking protocol does not itself establish a protected production authorization boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The function grants the caller superuser privileges"
+        },
+        {
+          "id": "o2",
+          "text": "The function also loses the ability to perform those inserts for that caller"
+        },
+        {
+          "id": "o3",
+          "text": "The function automatically becomes SECURITY DEFINER"
+        },
+        {
+          "id": "o4",
+          "text": "The function bypasses all table privileges"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W02-Q029",
+      "type": "single",
+      "topic": "Derived summaries",
+      "difficulty": "applied",
+      "prompt": "A supplier-month materialized summary speeds up a dashboard. What must accompany it?",
+      "explanation": "A derived relation can become stale and needs traceable refresh and correction behavior. It is not a replacement for the source of truth.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A refresh/freshness and reconciliation contract back to the source facts"
+        },
+        {
+          "id": "o2",
+          "text": "A claim that it can never become stale"
+        },
+        {
+          "id": "o3",
+          "text": "Deletion of normalized source rows"
+        },
+        {
+          "id": "o4",
+          "text": "A rule to combine all currencies"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W02-Q030",
+      "type": "single",
+      "topic": "Metric meaning",
+      "difficulty": "applied",
+      "prompt": "Can monthly committed PO value answer how much cash was paid in June?",
+      "explanation": "The lesson's spend metric is a commitment measure. Cash paid requires additional payment facts and a different metric contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; a PO is the same as a payment"
+        },
+        {
+          "id": "o2",
+          "text": "Yes; accepted quantity is a bank transaction"
+        },
+        {
+          "id": "o3",
+          "text": "Yes; GROUP BY month changes commitments into cash"
+        },
+        {
+          "id": "o4",
+          "text": "No; the model has no invoice/payment facts"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q031",
+      "type": "multiple",
+      "topic": "Result contracts",
+      "difficulty": "foundation",
+      "prompt": "Which items belong in a defensible procurement metric contract?",
+      "explanation": "Definition, sources, cutoff and output grain establish what each result means and how it can be reproduced.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Metric definition"
+        },
+        {
+          "id": "o2",
+          "text": "Time boundary"
+        },
+        {
+          "id": "o3",
+          "text": "Output grain"
+        },
+        {
+          "id": "o4",
+          "text": "Source facts"
+        },
+        {
+          "id": "o5",
+          "text": "The analyst's favourite chart colour"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q032",
+      "type": "multiple",
+      "topic": "Join safety",
+      "difficulty": "applied",
+      "prompt": "Which actions help avoid duplicating PO commitments when receipts are joined?",
+      "explanation": "Pre-aggregation and cardinality checks address fan-out. DISTINCT on values can incorrectly collapse two different lines with the same monetary amount.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Aggregate receipt quantities to the PO-line key first"
+        },
+        {
+          "id": "o2",
+          "text": "Check the joined row count against the intended grain"
+        },
+        {
+          "id": "o3",
+          "text": "Use SUM(DISTINCT line_value) as a universal fix"
+        },
+        {
+          "id": "o4",
+          "text": "Remove the join condition"
+        },
+        {
+          "id": "o5",
+          "text": "Declare one row per PO line before joining"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q033",
+      "type": "multiple",
+      "topic": "No-receipt lines",
+      "difficulty": "applied",
+      "prompt": "Which statements about a LEFT JOIN from PO lines to receipt totals are correct?",
+      "explanation": "LEFT JOIN preserves unmatched left rows until later filters remove them. Count a nullable right-side key when counting matches.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An unmatched line remains in the result"
+        },
+        {
+          "id": "o2",
+          "text": "COALESCE(received.accepted_qty, 0) can express zero accepted quantity"
+        },
+        {
+          "id": "o3",
+          "text": "A WHERE condition requiring a right-side receipt date can remove unmatched lines"
+        },
+        {
+          "id": "o4",
+          "text": "COUNT(*) necessarily returns zero for an unmatched line"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q034",
+      "type": "multiple",
+      "topic": "NULL semantics",
+      "difficulty": "foundation",
+      "prompt": "Which PostgreSQL NULL statements are correct?",
+      "explanation": "NULL uses three-valued logic. IS NULL and explicit substitution are needed; COUNT(expression) and SUM have distinct empty-input behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "x = NULL evaluates TRUE when x is missing"
+        },
+        {
+          "id": "o2",
+          "text": "SUM over no rows always returns zero"
+        },
+        {
+          "id": "o3",
+          "text": "x IS NULL tests for missing x"
+        },
+        {
+          "id": "o4",
+          "text": "COUNT(x) ignores NULL values"
+        },
+        {
+          "id": "o5",
+          "text": "COALESCE(x, 0) substitutes zero when x is NULL"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q035",
+      "type": "multiple",
+      "topic": "Historical reporting",
+      "difficulty": "applied",
+      "prompt": "Which boundaries are needed for an accepted-quantity snapshot as of 30 June?",
+      "explanation": "A report bounds facts by time but does not undo loaded events. Current status alone cannot recover historical state after later lifecycle changes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assume changing the report cutoff changes write-time database state"
+        },
+        {
+          "id": "o2",
+          "text": "Exclude receipt events dated after 30 June"
+        },
+        {
+          "id": "o3",
+          "text": "Exclude orders placed after 30 June"
+        },
+        {
+          "id": "o4",
+          "text": "Document that current lifecycle status does not reconstruct past status history"
+        },
+        {
+          "id": "o5",
+          "text": "Use all loaded receipts regardless of date"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q036",
+      "type": "multiple",
+      "topic": "Comparable prices",
+      "difficulty": "applied",
+      "prompt": "Which dimensions must align for the lesson's market-price comparison?",
+      "explanation": "A selected source and an observation no later than the order date are also part of the comparison contract. Matching only the product is insufficient.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Product"
+        },
+        {
+          "id": "o2",
+          "text": "Currency"
+        },
+        {
+          "id": "o3",
+          "text": "Unit"
+        },
+        {
+          "id": "o4",
+          "text": "The receipt ID must equal the price ID"
+        },
+        {
+          "id": "o5",
+          "text": "Any observation after the order is automatically valid"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q037",
+      "type": "multiple",
+      "topic": "Deterministic latest row",
+      "difficulty": "foundation",
+      "prompt": "Which choices make a latest-price query reproducible?",
+      "explanation": "Filter applicability before choosing the latest row. A complete order resolves ties instead of relying on storage order.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Order candidate rows by priced_on descending"
+        },
+        {
+          "id": "o2",
+          "text": "Add a stable unique tie-breaker when dates tie"
+        },
+        {
+          "id": "o3",
+          "text": "Use LIMIT 1 without ORDER BY"
+        },
+        {
+          "id": "o4",
+          "text": "Ignore currency and unit"
+        },
+        {
+          "id": "o5",
+          "text": "Restrict priced_on to the applicable cutoff"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q038",
+      "type": "multiple",
+      "topic": "Windows",
+      "difficulty": "applied",
+      "prompt": "Which statements about window functions are true?",
+      "explanation": "Windows preserve detail and define their own partitions/order/frame. Output order must still be requested at the query's outer level.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "ROWS UNBOUNDED PRECEDING can define a running frame"
+        },
+        {
+          "id": "o2",
+          "text": "A window aggregate always collapses rows into one group"
+        },
+        {
+          "id": "o3",
+          "text": "ROW_NUMBER gives tied rows the same number"
+        },
+        {
+          "id": "o4",
+          "text": "PARTITION BY divides the rows used by the window"
+        },
+        {
+          "id": "o5",
+          "text": "Window ORDER BY need not equal final output ORDER BY"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q039",
+      "type": "multiple",
+      "topic": "Ranking choices",
+      "difficulty": "applied",
+      "prompt": "Which descriptions are correct?",
+      "explanation": "The three functions encode different tie policies. Include stable tie-breakers where distinct row positions are required.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "RANK is deterministic for every ROW_NUMBER tie without a tie-breaker"
+        },
+        {
+          "id": "o2",
+          "text": "DENSE_RANK always returns unique numbers"
+        },
+        {
+          "id": "o3",
+          "text": "RANK gives peers the same rank and can leave gaps"
+        },
+        {
+          "id": "o4",
+          "text": "DENSE_RANK gives peers the same rank without gaps"
+        },
+        {
+          "id": "o5",
+          "text": "ROW_NUMBER assigns a distinct sequential number to each row"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q040",
+      "type": "multiple",
+      "topic": "Normalization",
+      "difficulty": "foundation",
+      "prompt": "Which facts support keeping supplier, PO header, PO line and receipt events at distinct grains?",
+      "explanation": "The relationships and lifecycles differ. Separating them avoids repeating commitments and mixing event facts with entity attributes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every receipt must overwrite the original PO price"
+        },
+        {
+          "id": "o2",
+          "text": "A PO can contain several products"
+        },
+        {
+          "id": "o3",
+          "text": "A PO line can arrive in multiple receipts"
+        },
+        {
+          "id": "o4",
+          "text": "A supplier description can change independently of a receipt"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q041",
+      "type": "multiple",
+      "topic": "Database invariants",
+      "difficulty": "applied",
+      "prompt": "Which protections can be expressed with ordinary declared keys/row constraints?",
+      "explanation": "Keys and local checks enforce identity, relationships and row values. Aggregate business invariants and time-dependent performance require more.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A primary key uniquely identifies a PO line"
+        },
+        {
+          "id": "o2",
+          "text": "A foreign key requires a referenced product to exist"
+        },
+        {
+          "id": "o3",
+          "text": "A row CHECK can reject accepted quantity above delivered quantity"
+        },
+        {
+          "id": "o4",
+          "text": "A row CHECK is the correct general mechanism to sum all other receipt rows"
+        },
+        {
+          "id": "o5",
+          "text": "A primary key guarantees a timely delivery"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q042",
+      "type": "multiple",
+      "topic": "Decimals",
+      "difficulty": "applied",
+      "prompt": "Which policies are appropriate for the lab's quantity/price calculations?",
+      "explanation": "Exact storage does not define all domain rules. Explicit validation and the chosen rounding boundary complete the calculation contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Declare precision, scale and output rounding"
+        },
+        {
+          "id": "o2",
+          "text": "Reject NaN where it is not a valid business quantity"
+        },
+        {
+          "id": "o3",
+          "text": "Assume NUMERIC alone excludes all special values"
+        },
+        {
+          "id": "o4",
+          "text": "Round every line early even when the contract requires rounding only the final total"
+        },
+        {
+          "id": "o5",
+          "text": "Use exact NUMERIC arithmetic for persisted decimal prices"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q043",
+      "type": "multiple",
+      "topic": "Indexes",
+      "difficulty": "foundation",
+      "prompt": "Which statements about indexes are true?",
+      "explanation": "Index decisions need workload evidence, and EXPLAIN ANALYZE executes the query. Eligibility and actual selection are different questions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "EXPLAIN (ANALYZE, BUFFERS) supplies execution evidence for the tested query"
+        },
+        {
+          "id": "o2",
+          "text": "Every index makes every query faster"
+        },
+        {
+          "id": "o3",
+          "text": "A partial index is usable even when its predicate cannot be proved"
+        },
+        {
+          "id": "o4",
+          "text": "Indexes consume storage and add write maintenance"
+        },
+        {
+          "id": "o5",
+          "text": "A composite index's column order matters for access paths"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q044",
+      "type": "multiple",
+      "topic": "Transactions",
+      "difficulty": "applied",
+      "prompt": "Which statements about a header-and-lines transaction are correct?",
+      "explanation": "A transaction defines a commit unit. Constraints, isolation and shared locking rules still determine valid concurrent behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "BEGIN disables foreign keys"
+        },
+        {
+          "id": "o2",
+          "text": "COMMIT always repairs an earlier statement error"
+        },
+        {
+          "id": "o3",
+          "text": "ROLLBACK discards the transaction's uncommitted changes"
+        },
+        {
+          "id": "o4",
+          "text": "Constraints still validate individual writes"
+        },
+        {
+          "id": "o5",
+          "text": "Atomicity alone does not solve every concurrent aggregate race"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q045",
+      "type": "multiple",
+      "topic": "Shared lock order",
+      "difficulty": "applied",
+      "prompt": "Which steps belong to the lab's delivery/cancellation protocol?",
+      "explanation": "The shared header lock coordinates incompatible lifecycle changes. Consistent line order reduces inconsistent lock acquisition.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A plain unlocked SELECT is sufficient to reserve the remaining quantity"
+        },
+        {
+          "id": "o2",
+          "text": "Both paths lock the PO header first"
+        },
+        {
+          "id": "o3",
+          "text": "Delivery locks target lines in ascending line order"
+        },
+        {
+          "id": "o4",
+          "text": "Delivery recomputes accepted totals while holding the locks"
+        },
+        {
+          "id": "o5",
+          "text": "Cancellation deliberately uses the opposite lock order"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q046",
+      "type": "multiple",
+      "topic": "Error handling",
+      "difficulty": "foundation",
+      "prompt": "Which statements about concurrent-write failures are correct?",
+      "explanation": "Retry policies must distinguish transient conflicts from requests that violate a business invariant, and must be bounded.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "SQLSTATE 40001 denotes serialization failure"
+        },
+        {
+          "id": "o2",
+          "text": "SQLSTATE 40P01 denotes deadlock"
+        },
+        {
+          "id": "o3",
+          "text": "A domain rejection is different from a retryable database conflict"
+        },
+        {
+          "id": "o4",
+          "text": "Every over-acceptance rejection should be retried forever"
+        },
+        {
+          "id": "o5",
+          "text": "Retries should have no bound"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W02-Q047",
+      "type": "multiple",
+      "topic": "As-of write state",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly separate the PO-1042 snapshot from the full seed?",
+      "explanation": "The June snapshot leaves 130 kg, while the full seed later completes PO-1042. The recorded concurrent-write race uses a separate fresh order.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The full seed also contains a 5 July receipt"
+        },
+        {
+          "id": "o2",
+          "text": "A write function sees loaded state, not a report parameter that hides later receipts"
+        },
+        {
+          "id": "o3",
+          "text": "Setting an earlier report cutoff deletes July receipts"
+        },
+        {
+          "id": "o4",
+          "text": "The dedicated concurrency test order is PO-1042 itself"
+        },
+        {
+          "id": "o5",
+          "text": "At 30 June the analytical snapshot has 870 kg accepted"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q048",
+      "type": "multiple",
+      "topic": "Reliability",
+      "difficulty": "applied",
+      "prompt": "Which conditions belong to the lesson's reliable-suppliers ranking?",
+      "explanation": "Eligibility and time boundaries come before ranking. The fixture makes SUP-A precede SUP-B while SUP-C lacks enough completed orders.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Order by OTIF, rejection and lateness according to the metric contract"
+        },
+        {
+          "id": "o2",
+          "text": "Rank SUP-C as eligible despite only two completed orders"
+        },
+        {
+          "id": "o3",
+          "text": "Let receipts after period_end retroactively change the period's evidence"
+        },
+        {
+          "id": "o4",
+          "text": "Use orders completed in the declared half-open period"
+        },
+        {
+          "id": "o5",
+          "text": "Require at least three eligible completed orders"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q049",
+      "type": "multiple",
+      "topic": "Denormalization",
+      "difficulty": "foundation",
+      "prompt": "Which obligations accompany a derived procurement summary?",
+      "explanation": "Derived data is useful when its freshness and lineage are explicit. A historical PO-price snapshot serves a different purpose.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat the summary as automatically current forever"
+        },
+        {
+          "id": "o2",
+          "text": "Delete all source events once it is created"
+        },
+        {
+          "id": "o3",
+          "text": "Show when it was refreshed"
+        },
+        {
+          "id": "o4",
+          "text": "Reconcile it to source facts"
+        },
+        {
+          "id": "o5",
+          "text": "Define correction and refresh behavior"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W02-Q050",
+      "type": "multiple",
+      "topic": "Syntax and evaluation",
+      "difficulty": "applied",
+      "prompt": "Which PostgreSQL expressions implement the stated operations?",
+      "explanation": "Use date functions, NULLIF and correlated existence tests deliberately. Group filters use HAVING, and missing-value tests use IS NULL.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "price = NULL tests for missing price"
+        },
+        {
+          "id": "o2",
+          "text": "DATE_TRUNC('month', ordered_on) groups dates into month buckets"
+        },
+        {
+          "id": "o3",
+          "text": "NULLIF(ordered_quantity, 0) can prevent a zero denominator"
+        },
+        {
+          "id": "o4",
+          "text": "EXISTS (SELECT 1 FROM receipts r WHERE r.line_id = l.id) tests matching receipt existence"
+        },
+        {
+          "id": "o5",
+          "text": "WHERE SUM(quantity) > 0 filters aggregate groups correctly"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W02-Q051",
+      "type": "match",
+      "topic": "Table grain",
+      "difficulty": "applied",
+      "prompt": "Match each procurement relation to its row meaning.",
+      "explanation": "Distinct grains prevent receipt events from being mistaken for original commitments.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "suppliers"
+        },
+        {
+          "id": "l2",
+          "text": "purchase_orders"
+        },
+        {
+          "id": "l3",
+          "text": "purchase_order_items"
+        },
+        {
+          "id": "l4",
+          "text": "delivery_items"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "One supplier"
+        },
+        {
+          "id": "r2",
+          "text": "One PO header"
+        },
+        {
+          "id": "r3",
+          "text": "One product line on a PO"
+        },
+        {
+          "id": "r4",
+          "text": "One PO line received in one receipt event"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q052",
+      "type": "match",
+      "topic": "Keys and constraints",
+      "difficulty": "foundation",
+      "prompt": "Match each constraint to what it protects.",
+      "explanation": "These are complementary guarantees; none alone enforces all cross-row business rules.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "PRIMARY KEY"
+        },
+        {
+          "id": "l2",
+          "text": "FOREIGN KEY"
+        },
+        {
+          "id": "l3",
+          "text": "NOT NULL"
+        },
+        {
+          "id": "l4",
+          "text": "CHECK (accepted >= 0)"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Unique, non-null row identity"
+        },
+        {
+          "id": "r2",
+          "text": "Existence of a referenced row"
+        },
+        {
+          "id": "r3",
+          "text": "Presence of a value"
+        },
+        {
+          "id": "r4",
+          "text": "A row-local value rule"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q053",
+      "type": "match",
+      "topic": "Query stages",
+      "difficulty": "applied",
+      "prompt": "Match each SQL clause to its role.",
+      "explanation": "Filtering rows, collapsing grain, filtering groups and presenting order are separate stages.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "WHERE"
+        },
+        {
+          "id": "l2",
+          "text": "GROUP BY"
+        },
+        {
+          "id": "l3",
+          "text": "HAVING"
+        },
+        {
+          "id": "l4",
+          "text": "ORDER BY"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Filter input rows"
+        },
+        {
+          "id": "r2",
+          "text": "Form aggregate groups"
+        },
+        {
+          "id": "r3",
+          "text": "Filter aggregate groups"
+        },
+        {
+          "id": "r4",
+          "text": "Request result ordering"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q054",
+      "type": "match",
+      "topic": "Join types",
+      "difficulty": "applied",
+      "prompt": "Match each join type to its row preservation rule.",
+      "explanation": "Join choice and key cardinality jointly determine the output rows.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "INNER JOIN"
+        },
+        {
+          "id": "l2",
+          "text": "LEFT JOIN"
+        },
+        {
+          "id": "l3",
+          "text": "FULL OUTER JOIN"
+        },
+        {
+          "id": "l4",
+          "text": "CROSS JOIN"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Only matching pairs"
+        },
+        {
+          "id": "r2",
+          "text": "All left rows plus matching right rows"
+        },
+        {
+          "id": "r3",
+          "text": "All rows from both sides, matched when possible"
+        },
+        {
+          "id": "r4",
+          "text": "Every left/right combination"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q055",
+      "type": "match",
+      "topic": "Missing values",
+      "difficulty": "foundation",
+      "prompt": "Match each expression to its meaning.",
+      "explanation": "Substitution, null creation, null testing and counting serve different metric needs.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "x IS NULL"
+        },
+        {
+          "id": "l2",
+          "text": "COALESCE(x, 0)"
+        },
+        {
+          "id": "l3",
+          "text": "NULLIF(x, 0)"
+        },
+        {
+          "id": "l4",
+          "text": "COUNT(x)"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Check whether x is missing"
+        },
+        {
+          "id": "r2",
+          "text": "Use zero when x is NULL"
+        },
+        {
+          "id": "r3",
+          "text": "Return NULL when x equals zero"
+        },
+        {
+          "id": "r4",
+          "text": "Count rows whose x is not NULL"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q056",
+      "type": "match",
+      "topic": "Ranking",
+      "difficulty": "applied",
+      "prompt": "Match each function to its behavior.",
+      "explanation": "Window functions require a partition and ordering appropriate to the question.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "ROW_NUMBER()"
+        },
+        {
+          "id": "l2",
+          "text": "RANK()"
+        },
+        {
+          "id": "l3",
+          "text": "DENSE_RANK()"
+        },
+        {
+          "id": "l4",
+          "text": "LAG(x)"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Distinct sequential row positions"
+        },
+        {
+          "id": "r2",
+          "text": "Peer ranks with gaps"
+        },
+        {
+          "id": "r3",
+          "text": "Peer ranks without gaps"
+        },
+        {
+          "id": "r4",
+          "text": "An earlier row's x within the window order"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q057",
+      "type": "match",
+      "topic": "Date boundaries",
+      "difficulty": "applied",
+      "prompt": "Match each boundary expression to its intended scope.",
+      "explanation": "Date contracts prevent future leakage and incomplete end-of-day filters.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "received_on <= DATE '2026-06-30'"
+        },
+        {
+          "id": "l2",
+          "text": "event_at < TIMESTAMP '2026-07-01'"
+        },
+        {
+          "id": "l3",
+          "text": "priced_on <= ordered_on"
+        },
+        {
+          "id": "l4",
+          "text": "DATE_TRUNC('month', ordered_on)"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Receipt dates through 30 June inclusive"
+        },
+        {
+          "id": "r2",
+          "text": "Exclude July's first instant and later"
+        },
+        {
+          "id": "r3",
+          "text": "Do not use future price observations"
+        },
+        {
+          "id": "r4",
+          "text": "The month's starting timestamp bucket"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q058",
+      "type": "match",
+      "topic": "PO-1042 facts",
+      "difficulty": "foundation",
+      "prompt": "Match each June-cutoff measure to its value.",
+      "explanation": "The 130 kg unfulfilled quantity is based on accepted, not delivered, units at USD 12/kg.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Ordered quantity"
+        },
+        {
+          "id": "l2",
+          "text": "Delivered quantity"
+        },
+        {
+          "id": "l3",
+          "text": "Accepted quantity"
+        },
+        {
+          "id": "l4",
+          "text": "Open committed value"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "1,000 kg"
+        },
+        {
+          "id": "r2",
+          "text": "900 kg"
+        },
+        {
+          "id": "r3",
+          "text": "870 kg"
+        },
+        {
+          "id": "r4",
+          "text": "USD 1,560"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q059",
+      "type": "match",
+      "topic": "Metric meanings",
+      "difficulty": "applied",
+      "prompt": "Match each output to its business meaning.",
+      "explanation": "Similar-sounding metrics cannot substitute for one another without changing the source facts.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Monthly committed value"
+        },
+        {
+          "id": "l2",
+          "text": "Rejection quantity"
+        },
+        {
+          "id": "l3",
+          "text": "Accepted fill rate"
+        },
+        {
+          "id": "l4",
+          "text": "Cash paid"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "PO quantities times snapshotted PO prices, by month and currency"
+        },
+        {
+          "id": "r2",
+          "text": "Delivered quantity minus accepted quantity"
+        },
+        {
+          "id": "r3",
+          "text": "Accepted quantity relative to ordered quantity in compatible units"
+        },
+        {
+          "id": "r4",
+          "text": "Requires payment facts absent from this model"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q060",
+      "type": "match",
+      "topic": "Query building blocks",
+      "difficulty": "applied",
+      "prompt": "Match each SQL construct to its main purpose here.",
+      "explanation": "Choose constructs to expose grain and missing-data behavior, rather than assuming one syntax is universally faster.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "CTE"
+        },
+        {
+          "id": "l2",
+          "text": "EXISTS"
+        },
+        {
+          "id": "l3",
+          "text": "LEFT JOIN LATERAL"
+        },
+        {
+          "id": "l4",
+          "text": "Window SUM"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Name an intermediate relation"
+        },
+        {
+          "id": "r2",
+          "text": "Test for at least one matching row"
+        },
+        {
+          "id": "r3",
+          "text": "Find an applicable per-left-row relation while preserving no-match rows"
+        },
+        {
+          "id": "r4",
+          "text": "Calculate related totals while retaining detail"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q061",
+      "type": "match",
+      "topic": "Indexes",
+      "difficulty": "foundation",
+      "prompt": "Match each index/planning term to its meaning.",
+      "explanation": "Index availability, eligibility and cost-based selection are different facts.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Composite index"
+        },
+        {
+          "id": "l2",
+          "text": "Partial index"
+        },
+        {
+          "id": "l3",
+          "text": "Sequential scan"
+        },
+        {
+          "id": "l4",
+          "text": "EXPLAIN ANALYZE"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "An index over multiple ordered keys"
+        },
+        {
+          "id": "r2",
+          "text": "An index containing only rows satisfying a predicate"
+        },
+        {
+          "id": "r3",
+          "text": "Read the relation without using an index access path"
+        },
+        {
+          "id": "r4",
+          "text": "Run the statement and report observed plan execution"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q062",
+      "type": "match",
+      "topic": "Transactions",
+      "difficulty": "applied",
+      "prompt": "Match each command or lock to its role.",
+      "explanation": "Transactions group changes; row locks coordinate conflicting writers under the chosen protocol.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "BEGIN"
+        },
+        {
+          "id": "l2",
+          "text": "COMMIT"
+        },
+        {
+          "id": "l3",
+          "text": "ROLLBACK"
+        },
+        {
+          "id": "l4",
+          "text": "SELECT ... FOR UPDATE"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Start a transaction"
+        },
+        {
+          "id": "r2",
+          "text": "Make a successful transaction's changes durable"
+        },
+        {
+          "id": "r3",
+          "text": "Discard the transaction's uncommitted changes"
+        },
+        {
+          "id": "r4",
+          "text": "Lock selected rows for a coordinated write protocol"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q063",
+      "type": "match",
+      "topic": "Failure categories",
+      "difficulty": "applied",
+      "prompt": "Match each failure to the appropriate interpretation.",
+      "explanation": "A domain rejection, database conflict and infrastructure outage require different handling.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "SQLSTATE 40001"
+        },
+        {
+          "id": "l2",
+          "text": "SQLSTATE 40P01"
+        },
+        {
+          "id": "l3",
+          "text": "Over-acceptance rejection"
+        },
+        {
+          "id": "l4",
+          "text": "Unavailable browser runtime"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Serialization failure"
+        },
+        {
+          "id": "r2",
+          "text": "Deadlock detected"
+        },
+        {
+          "id": "r3",
+          "text": "A business invariant would be violated"
+        },
+        {
+          "id": "r4",
+          "text": "Coding marks remain pending until checking can run"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q064",
+      "type": "match",
+      "topic": "Stored facts",
+      "difficulty": "foundation",
+      "prompt": "Match each stored value to its lifecycle.",
+      "explanation": "These facts change for different reasons and belong at distinct grains.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "PO unit-price snapshot"
+        },
+        {
+          "id": "l2",
+          "text": "Current supplier display name"
+        },
+        {
+          "id": "l3",
+          "text": "Receipt accepted quantity"
+        },
+        {
+          "id": "l4",
+          "text": "Supplier-month summary"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Historical commitment fact"
+        },
+        {
+          "id": "r2",
+          "text": "Mutable entity attribute"
+        },
+        {
+          "id": "r3",
+          "text": "Inspection event fact"
+        },
+        {
+          "id": "r4",
+          "text": "Derived data needing a freshness contract"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q065",
+      "type": "match",
+      "topic": "Corrective actions",
+      "difficulty": "applied",
+      "prompt": "Match each mistake to its correction.",
+      "explanation": "Fix the underlying data contract instead of hiding a plausible-looking wrong result.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Duplicated line value after receipt join"
+        },
+        {
+          "id": "l2",
+          "text": "Missing market quote reported as zero"
+        },
+        {
+          "id": "l3",
+          "text": "Mixed USD and EUR totals"
+        },
+        {
+          "id": "l4",
+          "text": "Two unlocked writers consume the same remaining quantity"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Aggregate receipts to line grain first"
+        },
+        {
+          "id": "r2",
+          "text": "Preserve an unavailable / NULL baseline"
+        },
+        {
+          "id": "r3",
+          "text": "Group by currency or apply an explicit FX contract"
+        },
+        {
+          "id": "r4",
+          "text": "Serialize the invariant check and write with a shared lock protocol"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W02-Q066",
+      "type": "short",
+      "topic": "NULL syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing SQL keyword: price IS ____ tests for an unavailable price.",
+      "explanation": "IS NULL is the missing-value test; equality to NULL does not evaluate TRUE.",
+      "accepted": [
+        "NULL"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q067",
+      "type": "short",
+      "topic": "Aggregation syntax",
+      "difficulty": "foundation",
+      "prompt": "Fill only the missing keyword: SELECT supplier_id, COUNT(*) FROM orders GROUP ____ supplier_id;",
+      "explanation": "GROUP BY declares the grouping expressions.",
+      "accepted": [
+        "BY"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q068",
+      "type": "short",
+      "topic": "Group filters",
+      "difficulty": "applied",
+      "prompt": "Name the one SQL clause that filters COUNT(*) >= 3 after grouping.",
+      "explanation": "HAVING filters groups; WHERE filters rows before aggregation.",
+      "accepted": [
+        "HAVING"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q069",
+      "type": "short",
+      "topic": "Window syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing keyword: SUM(accepted) ____ (PARTITION BY line_id).",
+      "explanation": "OVER turns the aggregate call into a window calculation retaining input rows.",
+      "accepted": [
+        "OVER"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q070",
+      "type": "short",
+      "topic": "Partition syntax",
+      "difficulty": "foundation",
+      "prompt": "Fill only the missing keyword: ROW_NUMBER() OVER (____ BY supplier_id ORDER BY ordered_on, id).",
+      "explanation": "PARTITION BY separates the rows into independent supplier windows.",
+      "accepted": [
+        "PARTITION"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q071",
+      "type": "short",
+      "topic": "Sorting syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing direction keyword: ORDER BY priced_on ____ puts the newest non-null date first.",
+      "explanation": "DESC reverses the date ordering. Null placement is a separate policy if dates can be NULL.",
+      "accepted": [
+        "DESC"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q072",
+      "type": "short",
+      "topic": "Fallback syntax",
+      "difficulty": "applied",
+      "prompt": "Name the PostgreSQL function that returns the first non-NULL argument: ____(accepted_qty, 0).",
+      "explanation": "COALESCE can express zero accepted units when no receipt total exists.",
+      "accepted": [
+        "COALESCE"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q073",
+      "type": "short",
+      "topic": "Division syntax",
+      "difficulty": "foundation",
+      "prompt": "Name the PostgreSQL function in accepted_qty / ____(ordered_qty, 0) that makes a zero denominator NULL.",
+      "explanation": "NULLIF(x, 0) returns NULL when x is zero, avoiding division by zero.",
+      "accepted": [
+        "NULLIF"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q074",
+      "type": "short",
+      "topic": "Existence syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing keyword: WHERE NOT ____ (SELECT 1 FROM receipts r WHERE r.line_id = l.id).",
+      "explanation": "NOT EXISTS expresses the absence of a related row without NOT IN's nullable-subquery trap.",
+      "accepted": [
+        "EXISTS"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q075",
+      "type": "short",
+      "topic": "CTE syntax",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing keyword: ____ receipt_totals AS (SELECT line_id, SUM(accepted) FROM receipts GROUP BY line_id) SELECT * FROM receipt_totals;",
+      "explanation": "WITH introduces a common table expression.",
+      "accepted": [
+        "WITH"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q076",
+      "type": "short",
+      "topic": "Lock syntax",
+      "difficulty": "foundation",
+      "prompt": "Fill only the missing lock keyword: SELECT id FROM orders WHERE id = 7 FOR ____;",
+      "explanation": "FOR UPDATE takes row locks. All competing write paths still need the same protocol.",
+      "accepted": [
+        "UPDATE"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q077",
+      "type": "short",
+      "topic": "Transaction syntax",
+      "difficulty": "applied",
+      "prompt": "Name the single SQL command that discards an uncommitted header-and-lines transaction.",
+      "explanation": "ROLLBACK discards the transaction instead of committing a partial business object.",
+      "accepted": [
+        "ROLLBACK"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q078",
+      "type": "short",
+      "topic": "Combining rows",
+      "difficulty": "applied",
+      "prompt": "Fill only the missing keyword: SELECT product FROM lines UNION ____ SELECT product FROM prices; must retain duplicates.",
+      "explanation": "UNION ALL retains duplicates; UNION removes them.",
+      "accepted": [
+        "ALL"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q079",
+      "type": "short",
+      "topic": "Conditional syntax",
+      "difficulty": "foundation",
+      "prompt": "Fill only the missing keyword: CASE WHEN accepted < quantity THEN 'open' ELSE 'filled' ____ AS state.",
+      "explanation": "CASE expressions terminate with END; the alias follows the complete expression.",
+      "accepted": [
+        "END"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q080",
+      "type": "short",
+      "topic": "Interval syntax",
+      "difficulty": "applied",
+      "prompt": "Type only the comparison operator for the exclusive upper boundary: ordered_on ____ DATE '2026-07-01'.",
+      "explanation": "A half-open interval excludes its end boundary and avoids guessing the last instant of a day.",
+      "accepted": [
+        "<"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W02-Q081",
+      "type": "code",
+      "topic": "Filtering",
+      "difficulty": "applied",
+      "prompt": "List active suppliers. Return id, name, ordered by id ascending. Do not infer active status from whether orders exist.",
+      "explanation": "A boolean filter selects active entities. A supplier may be active without an order; ordering uses the declared ID contract.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT id, name FROM suppliers WHERE active ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "id",
+            "name"
+          ],
+          "rows": [
+            [
+              1,
+              "Aster"
+            ],
+            [
+              2,
+              "Birch"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "id",
+            "name"
+          ],
+          "rows": [
+            [
+              11,
+              "Zulu"
+            ],
+            [
+              12,
+              "Able"
+            ],
+            [
+              14,
+              "Idle"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "id",
+            "name"
+          ],
+          "rows": [
+            [
+              21,
+              "NoReceipts"
+            ],
+            [
+              22,
+              "NoQuotes"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "id",
+            "name"
+          ],
+          "rows": [
+            [
+              31,
+              "First"
+            ],
+            [
+              32,
+              "Second"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "id",
+            "name"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q082",
+      "type": "code",
+      "topic": "Cutoff predicates",
+      "difficulty": "foundation",
+      "prompt": "List orders placed on or before 30 June 2026 whose current status is not cancelled. Include draft orders if they satisfy those conditions. Return id, supplier_id, ordered by id.",
+      "explanation": "The report's order boundary is inclusive. The simplified task deliberately uses current status and does not claim to reconstruct historical status.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT id, supplier_id FROM orders WHERE ordered_on <= DATE '2026-06-30' AND status <> 'cancelled' ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "id",
+            "supplier_id"
+          ],
+          "rows": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              6,
+              3
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "id",
+            "supplier_id"
+          ],
+          "rows": [
+            [
+              101,
+              11
+            ],
+            [
+              103,
+              12
+            ],
+            [
+              105,
+              12
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "id",
+            "supplier_id"
+          ],
+          "rows": [
+            [
+              201,
+              21
+            ],
+            [
+              202,
+              22
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "id",
+            "supplier_id"
+          ],
+          "rows": [
+            [
+              301,
+              31
+            ],
+            [
+              302,
+              32
+            ],
+            [
+              303,
+              31
+            ],
+            [
+              304,
+              32
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "id",
+            "supplier_id"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q083",
+      "type": "code",
+      "topic": "Exact line arithmetic",
+      "difficulty": "applied",
+      "prompt": "For every line, calculate quantity times unit_price. Return id, committed_value, ordered by id. Do not join receipts or filter order status in this task.",
+      "explanation": "A line-level product stays at line grain. Joining event rows before calculating this output is unnecessary and can duplicate values.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT id, quantity * unit_price AS committed_value FROM lines ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "id",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              11,
+              "12000"
+            ],
+            [
+              12,
+              "20"
+            ],
+            [
+              21,
+              "500"
+            ],
+            [
+              31,
+              "300"
+            ],
+            [
+              41,
+              "10"
+            ],
+            [
+              51,
+              "350"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "id",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              1001,
+              "0"
+            ],
+            [
+              1002,
+              "25.0"
+            ],
+            [
+              1003,
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "id",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              2001,
+              "16.875"
+            ],
+            [
+              2002,
+              "12"
+            ],
+            [
+              2003,
+              "200"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "id",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              3001,
+              "10"
+            ],
+            [
+              3002,
+              "10"
+            ],
+            [
+              3003,
+              "10"
+            ],
+            [
+              3004,
+              "90"
+            ],
+            [
+              3005,
+              "110"
+            ],
+            [
+              3006,
+              "99"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "id",
+            "committed_value"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q084",
+      "type": "code",
+      "topic": "Receipt aggregation",
+      "difficulty": "applied",
+      "prompt": "For every line, total accepted receipt quantity through 30 June 2026 inclusive. Keep lines without a receipt and show zero. Return line_id, accepted_qty, ordered by line_id. Include all line/order statuses.",
+      "explanation": "Bound receipt dates before grouping, then preserve each line with a LEFT JOIN and interpret no receipt as zero accepted.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT l.id AS line_id, COALESCE(r.accepted_qty, 0) AS accepted_qty\nFROM lines l LEFT JOIN (\n SELECT line_id, SUM(accepted) AS accepted_qty FROM receipts\n WHERE received_on <= DATE '2026-06-30' GROUP BY line_id\n) r ON r.line_id = l.id ORDER BY l.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id",
+            "accepted_qty"
+          ],
+          "rows": [
+            [
+              11,
+              "870"
+            ],
+            [
+              12,
+              "10"
+            ],
+            [
+              21,
+              "45"
+            ],
+            [
+              31,
+              "0"
+            ],
+            [
+              41,
+              "0"
+            ],
+            [
+              51,
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id",
+            "accepted_qty"
+          ],
+          "rows": [
+            [
+              1001,
+              "0"
+            ],
+            [
+              1002,
+              "2.5"
+            ],
+            [
+              1003,
+              "3"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id",
+            "accepted_qty"
+          ],
+          "rows": [
+            [
+              2001,
+              "0"
+            ],
+            [
+              2002,
+              "0"
+            ],
+            [
+              2003,
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id",
+            "accepted_qty"
+          ],
+          "rows": [
+            [
+              3001,
+              "2"
+            ],
+            [
+              3002,
+              "2"
+            ],
+            [
+              3003,
+              "1"
+            ],
+            [
+              3004,
+              "10"
+            ],
+            [
+              3005,
+              "10"
+            ],
+            [
+              3006,
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id",
+            "accepted_qty"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q085",
+      "type": "code",
+      "topic": "Delayed lines",
+      "difficulty": "foundation",
+      "prompt": "Find delayed lines at 30 June 2026: order date <= cutoff, current status <> cancelled, promised_on strictly before cutoff, and accepted quantity through cutoff below quantity. Return line_id, remaining_qty (quantity minus accepted), ordered by line_id.",
+      "explanation": "The delay rule combines an overdue promise and an unfulfilled accepted quantity at the same cutoff. A promise on the cutoff is not yet late under this task.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "WITH a AS (\n SELECT line_id, SUM(accepted) AS qty FROM receipts\n WHERE received_on <= DATE '2026-06-30' GROUP BY line_id\n)\nSELECT l.id AS line_id, l.quantity - COALESCE(a.qty,0) AS remaining_qty\nFROM lines l JOIN orders o ON o.id=l.order_id LEFT JOIN a ON a.line_id=l.id\nWHERE o.ordered_on <= DATE '2026-06-30' AND o.status <> 'cancelled'\n AND l.promised_on < DATE '2026-06-30' AND COALESCE(a.qty,0) < l.quantity\nORDER BY l.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id",
+            "remaining_qty"
+          ],
+          "rows": [
+            [
+              11,
+              "130"
+            ],
+            [
+              21,
+              "5"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id",
+            "remaining_qty"
+          ],
+          "rows": []
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id",
+            "remaining_qty"
+          ],
+          "rows": [
+            [
+              2001,
+              "7.5"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id",
+            "remaining_qty"
+          ],
+          "rows": [
+            [
+              3003,
+              "1"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id",
+            "remaining_qty"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q086",
+      "type": "code",
+      "topic": "Monthly commitments",
+      "difficulty": "applied",
+      "prompt": "Sum committed line value by order month and currency. Include orders dated <= 30 June 2026 with current status <> cancelled. Return month as YYYY-MM text, currency, committed_value. Order by month then currency ascending. Do not round the exact totals.",
+      "explanation": "Aggregate commitments from orders and lines, without receipt fan-out. Month and currency are both part of the output grain.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT TO_CHAR(o.ordered_on,'YYYY-MM') AS month, o.currency,\n SUM(l.quantity*l.unit_price) AS committed_value\nFROM orders o JOIN lines l ON l.order_id=o.id\nWHERE o.ordered_on <= DATE '2026-06-30' AND o.status <> 'cancelled'\nGROUP BY TO_CHAR(o.ordered_on,'YYYY-MM'), o.currency ORDER BY month, currency;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "month",
+            "currency",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              "2026-06",
+              "EUR",
+              "300"
+            ],
+            [
+              "2026-06",
+              "USD",
+              "12520"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "month",
+            "currency",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              "2026-05",
+              "EUR",
+              "25.0"
+            ],
+            [
+              "2026-06",
+              "USD",
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "month",
+            "currency",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              "2026-05",
+              "USD",
+              "28.875"
+            ],
+            [
+              "2026-06",
+              "USD",
+              "200"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "month",
+            "currency",
+            "committed_value"
+          ],
+          "rows": [
+            [
+              "2026-06",
+              "EUR",
+              "200"
+            ],
+            [
+              "2026-06",
+              "USD",
+              "30"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "month",
+            "currency",
+            "committed_value"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q087",
+      "type": "code",
+      "topic": "Counting preserved entities",
+      "difficulty": "applied",
+      "prompt": "Count eligible orders for every supplier, including inactive suppliers and suppliers with no orders. Eligible means ordered_on <= 30 June 2026 and current status <> cancelled. Return supplier_id, order_count, ordered by supplier_id.",
+      "explanation": "Filter matches in the join so zero-order suppliers survive, then count the nullable order key rather than the preserved left row.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT s.id AS supplier_id, COUNT(o.id) AS order_count\nFROM suppliers s LEFT JOIN orders o ON o.supplier_id=s.id\n AND o.ordered_on <= DATE '2026-06-30' AND o.status <> 'cancelled'\nGROUP BY s.id ORDER BY s.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              1
+            ],
+            [
+              3,
+              1
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              11,
+              1
+            ],
+            [
+              12,
+              2
+            ],
+            [
+              13,
+              0
+            ],
+            [
+              14,
+              0
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              21,
+              1
+            ],
+            [
+              22,
+              1
+            ],
+            [
+              23,
+              0
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              31,
+              2
+            ],
+            [
+              32,
+              2
+            ],
+            [
+              33,
+              0
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q088",
+      "type": "code",
+      "topic": "Anti-join",
+      "difficulty": "foundation",
+      "prompt": "List every line with no receipt event dated on or before 30 June 2026. A fully rejected receipt still counts as an event. Ignore order status. Return line_id, ordered by line_id.",
+      "explanation": "Absence is about qualifying event existence, not whether the accepted sum is positive. Future-only receipts do not count yet.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT l.id AS line_id FROM lines l\nWHERE NOT EXISTS (SELECT 1 FROM receipts r WHERE r.line_id=l.id\n AND r.received_on <= DATE '2026-06-30') ORDER BY l.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id"
+          ],
+          "rows": [
+            [
+              31
+            ],
+            [
+              41
+            ],
+            [
+              51
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id"
+          ],
+          "rows": [
+            [
+              1001
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id"
+          ],
+          "rows": [
+            [
+              2001
+            ],
+            [
+              2003
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id"
+          ],
+          "rows": [
+            [
+              3006
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q089",
+      "type": "code",
+      "topic": "Latest observation",
+      "difficulty": "applied",
+      "prompt": "For each product with a USD/kg price on or before 15 June 2026, choose the latest such observation. Break same-date ties by greatest price-row id, not greatest price. Return product, market_price, ordered by product. Products with no qualifying price produce no row.",
+      "explanation": "DISTINCT ON keeps the first row per product under the declared applicability and deterministic ordering. Other correct PostgreSQL formulations are accepted by result.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT DISTINCT ON (product) product, price AS market_price FROM prices\nWHERE currency='USD' AND unit='kg' AND priced_on <= DATE '2026-06-15'\nORDER BY product, priced_on DESC, id DESC;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "product",
+            "market_price"
+          ],
+          "rows": [
+            [
+              "copper",
+              "8"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "product",
+            "market_price"
+          ],
+          "rows": [
+            [
+              "copper",
+              "10"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "product",
+            "market_price"
+          ],
+          "rows": []
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "product",
+            "market_price"
+          ],
+          "rows": [
+            [
+              "copper",
+              "20"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "product",
+            "market_price"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q090",
+      "type": "code",
+      "topic": "Running windows",
+      "difficulty": "applied",
+      "prompt": "For receipts through 30 June 2026 inclusive, calculate cumulative accepted quantity per line in received_on, id order. Return receipt_id, line_id, running_qty. Final output order is receipt_id ascending, even though each window uses event order.",
+      "explanation": "The partition preserves independent line histories. A unique event order and explicit ROWS frame avoid merging same-day peers into one step.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT id AS receipt_id, line_id,\n SUM(accepted) OVER (PARTITION BY line_id ORDER BY received_on, id\n ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_qty\nFROM receipts WHERE received_on <= DATE '2026-06-30' ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "receipt_id",
+            "line_id",
+            "running_qty"
+          ],
+          "rows": [
+            [
+              1,
+              11,
+              "400"
+            ],
+            [
+              2,
+              11,
+              "870"
+            ],
+            [
+              4,
+              12,
+              "10"
+            ],
+            [
+              5,
+              21,
+              "20"
+            ],
+            [
+              6,
+              21,
+              "45"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "receipt_id",
+            "line_id",
+            "running_qty"
+          ],
+          "rows": [
+            [
+              1001,
+              1002,
+              "2.5"
+            ],
+            [
+              1002,
+              1002,
+              "2.5"
+            ],
+            [
+              1003,
+              1003,
+              "3"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "receipt_id",
+            "line_id",
+            "running_qty"
+          ],
+          "rows": [
+            [
+              2002,
+              2002,
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "receipt_id",
+            "line_id",
+            "running_qty"
+          ],
+          "rows": [
+            [
+              3001,
+              3001,
+              "1"
+            ],
+            [
+              3002,
+              3001,
+              "2"
+            ],
+            [
+              3003,
+              3002,
+              "2"
+            ],
+            [
+              3004,
+              3003,
+              "1"
+            ],
+            [
+              3005,
+              3004,
+              "10"
+            ],
+            [
+              3006,
+              3005,
+              "10"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "receipt_id",
+            "line_id",
+            "running_qty"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q091",
+      "type": "code",
+      "topic": "Previous-event windows",
+      "difficulty": "foundation",
+      "prompt": "For each receipt through 30 June 2026, return the previous receipt's accepted quantity for the same line using received_on, id order. First receipt per line has NULL, not zero. Return receipt_id, previous_accepted; order final rows by receipt_id.",
+      "explanation": "LAG refers to the earlier event in the window, not the previous ID globally. The first event has no predecessor and remains NULL.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT id AS receipt_id,\n LAG(accepted) OVER (PARTITION BY line_id ORDER BY received_on, id) AS previous_accepted\nFROM receipts WHERE received_on <= DATE '2026-06-30' ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "receipt_id",
+            "previous_accepted"
+          ],
+          "rows": [
+            [
+              1,
+              null
+            ],
+            [
+              2,
+              "400"
+            ],
+            [
+              4,
+              null
+            ],
+            [
+              5,
+              null
+            ],
+            [
+              6,
+              "20"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "receipt_id",
+            "previous_accepted"
+          ],
+          "rows": [
+            [
+              1001,
+              null
+            ],
+            [
+              1002,
+              "2.5"
+            ],
+            [
+              1003,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "receipt_id",
+            "previous_accepted"
+          ],
+          "rows": [
+            [
+              2002,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "receipt_id",
+            "previous_accepted"
+          ],
+          "rows": [
+            [
+              3001,
+              null
+            ],
+            [
+              3002,
+              "1"
+            ],
+            [
+              3003,
+              null
+            ],
+            [
+              3004,
+              null
+            ],
+            [
+              3005,
+              null
+            ],
+            [
+              3006,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "receipt_id",
+            "previous_accepted"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q092",
+      "type": "code",
+      "topic": "Supplier ranking",
+      "difficulty": "applied",
+      "prompt": "Count eligible orders for every supplier (including zero), then rank suppliers by that count descending with DENSE_RANK; ties share a rank without gaps. Eligible orders are dated <= 30 June 2026 and not currently cancelled. Return supplier_id, order_count, supplier_rank, ordered by supplier_id.",
+      "explanation": "Count at supplier grain before ranking. Do not put supplier_id inside the ranking order, because that would break ties in the metric.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "WITH c AS (\n SELECT s.id AS supplier_id, COUNT(o.id) AS order_count FROM suppliers s\n LEFT JOIN orders o ON o.supplier_id=s.id AND o.ordered_on <= DATE '2026-06-30'\n AND o.status <> 'cancelled' GROUP BY s.id\n)\nSELECT supplier_id, order_count, DENSE_RANK() OVER (ORDER BY order_count DESC) AS supplier_rank\nFROM c ORDER BY supplier_id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "supplier_id",
+            "order_count",
+            "supplier_rank"
+          ],
+          "rows": [
+            [
+              1,
+              2,
+              1
+            ],
+            [
+              2,
+              1,
+              2
+            ],
+            [
+              3,
+              1,
+              2
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "supplier_id",
+            "order_count",
+            "supplier_rank"
+          ],
+          "rows": [
+            [
+              11,
+              1,
+              2
+            ],
+            [
+              12,
+              2,
+              1
+            ],
+            [
+              13,
+              0,
+              3
+            ],
+            [
+              14,
+              0,
+              3
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "supplier_id",
+            "order_count",
+            "supplier_rank"
+          ],
+          "rows": [
+            [
+              21,
+              1,
+              1
+            ],
+            [
+              22,
+              1,
+              1
+            ],
+            [
+              23,
+              0,
+              2
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "supplier_id",
+            "order_count",
+            "supplier_rank"
+          ],
+          "rows": [
+            [
+              31,
+              2,
+              1
+            ],
+            [
+              32,
+              2,
+              1
+            ],
+            [
+              33,
+              0,
+              2
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "supplier_id",
+            "order_count",
+            "supplier_rank"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q093",
+      "type": "code",
+      "topic": "Comparable averages",
+      "difficulty": "applied",
+      "prompt": "Among lines whose order is dated <= 30 June 2026 and not currently cancelled, find lines priced strictly above the unweighted average unit_price of eligible lines with the same product, unit and order currency. Return line_id, ordered by line_id.",
+      "explanation": "The average is per comparable product/unit/currency cohort and is unweighted as requested. Compute the window first, then filter its result in the outer query.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "WITH p AS (\n SELECT l.id, l.unit_price,\n AVG(l.unit_price) OVER (PARTITION BY l.product,l.unit,o.currency) AS mean_price\n FROM lines l JOIN orders o ON o.id=l.order_id\n WHERE o.ordered_on <= DATE '2026-06-30' AND o.status <> 'cancelled'\n)\nSELECT id AS line_id FROM p WHERE unit_price > mean_price ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id"
+          ],
+          "rows": [
+            [
+              11
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id"
+          ],
+          "rows": []
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id"
+          ],
+          "rows": []
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id"
+          ],
+          "rows": [
+            [
+              3005
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q094",
+      "type": "code",
+      "topic": "Safe percentage",
+      "difficulty": "foundation",
+      "prompt": "For every line, return accepted quantity through 30 June 2026 as a percent of quantity, rounded to 2 decimals. Missing receipts mean zero accepted; zero ordered quantity produces NULL. Include all statuses. Return line_id, accepted_pct, ordered by line_id.",
+      "explanation": "Use exact numeric division, preserve the zero-denominator NULL, and round at the specified output boundary. This small practice schema intentionally permits zero quantity.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "WITH a AS (\n SELECT line_id,SUM(accepted) AS qty FROM receipts\n WHERE received_on <= DATE '2026-06-30' GROUP BY line_id\n)\nSELECT l.id AS line_id, ROUND(100 * COALESCE(a.qty,0) / NULLIF(l.quantity,0),2) AS accepted_pct\nFROM lines l LEFT JOIN a ON a.line_id=l.id ORDER BY l.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id",
+            "accepted_pct"
+          ],
+          "rows": [
+            [
+              11,
+              "87.00"
+            ],
+            [
+              12,
+              "100.00"
+            ],
+            [
+              21,
+              "90.00"
+            ],
+            [
+              31,
+              "0.00"
+            ],
+            [
+              41,
+              "0.00"
+            ],
+            [
+              51,
+              "0.00"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id",
+            "accepted_pct"
+          ],
+          "rows": [
+            [
+              1001,
+              null
+            ],
+            [
+              1002,
+              "100.00"
+            ],
+            [
+              1003,
+              "100.00"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id",
+            "accepted_pct"
+          ],
+          "rows": [
+            [
+              2001,
+              "0.00"
+            ],
+            [
+              2002,
+              "0.00"
+            ],
+            [
+              2003,
+              "0.00"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id",
+            "accepted_pct"
+          ],
+          "rows": [
+            [
+              3001,
+              "100.00"
+            ],
+            [
+              3002,
+              "100.00"
+            ],
+            [
+              3003,
+              "50.00"
+            ],
+            [
+              3004,
+              "100.00"
+            ],
+            [
+              3005,
+              "100.00"
+            ],
+            [
+              3006,
+              "0.00"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id",
+            "accepted_pct"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q095",
+      "type": "code",
+      "topic": "HAVING",
+      "difficulty": "applied",
+      "prompt": "Return suppliers with at least two eligible orders, where eligible means ordered_on <= 30 June 2026 and current status <> cancelled. Return supplier_id, order_count, ordered by supplier_id. Count orders, not lines.",
+      "explanation": "Filter input orders, aggregate by supplier and then filter the groups with HAVING. Counting joined lines could inflate the order count.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT supplier_id,COUNT(*) AS order_count FROM orders\nWHERE ordered_on <= DATE '2026-06-30' AND status <> 'cancelled'\nGROUP BY supplier_id HAVING COUNT(*) >= 2 ORDER BY supplier_id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              12,
+              2
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": []
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": [
+            [
+              31,
+              2
+            ],
+            [
+              32,
+              2
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "supplier_id",
+            "order_count"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q096",
+      "type": "code",
+      "topic": "Rejections",
+      "difficulty": "applied",
+      "prompt": "Find receipt events through 30 June 2026 with delivered > accepted. Return receipt_id, rejected_qty (delivered minus accepted), ordered by receipt_id. Ignore order status.",
+      "explanation": "Inspection rejection is a receipt-level difference. It is distinct from the PO line's remaining quantity.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT id AS receipt_id, delivered-accepted AS rejected_qty FROM receipts WHERE received_on <= DATE '2026-06-30' AND delivered > accepted ORDER BY id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "receipt_id",
+            "rejected_qty"
+          ],
+          "rows": [
+            [
+              2,
+              "30"
+            ],
+            [
+              6,
+              "5"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "receipt_id",
+            "rejected_qty"
+          ],
+          "rows": [
+            [
+              1002,
+              "0.5"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "receipt_id",
+            "rejected_qty"
+          ],
+          "rows": [
+            [
+              2002,
+              "1"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "receipt_id",
+            "rejected_qty"
+          ],
+          "rows": [
+            [
+              3005,
+              "2"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "receipt_id",
+            "rejected_qty"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q097",
+      "type": "code",
+      "topic": "Set operations",
+      "difficulty": "foundation",
+      "prompt": "List distinct product/unit pairs appearing in either lines or prices, regardless of dates, currency or order status. Return product, unit, ordered by product then unit. A repeated pair must occur once.",
+      "explanation": "UNION removes duplicate pairs across and within the two inputs. UNION ALL would retain repeated business values.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT product,unit FROM lines UNION SELECT product,unit FROM prices ORDER BY product,unit;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "product",
+            "unit"
+          ],
+          "rows": [
+            [
+              "bolt",
+              "ea"
+            ],
+            [
+              "copper",
+              "kg"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "product",
+            "unit"
+          ],
+          "rows": [
+            [
+              "bolt",
+              "ea"
+            ],
+            [
+              "copper",
+              "kg"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "product",
+            "unit"
+          ],
+          "rows": [
+            [
+              "alloy",
+              "ea"
+            ],
+            [
+              "alloy",
+              "kg"
+            ],
+            [
+              "bolt",
+              "ea"
+            ],
+            [
+              "copper",
+              "kg"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "product",
+            "unit"
+          ],
+          "rows": [
+            [
+              "bolt",
+              "ea"
+            ],
+            [
+              "copper",
+              "kg"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "product",
+            "unit"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q098",
+      "type": "code",
+      "topic": "Open commitments",
+      "difficulty": "applied",
+      "prompt": "At 30 June 2026, sum open committed value per currency for orders dated <= cutoff and not currently cancelled. Per line use GREATEST(quantity - accepted_through_cutoff, 0) * unit_price. Keep currency groups even if their total is zero. Return currency, open_value ordered by currency; no early rounding.",
+      "explanation": "Pre-aggregate receipts to avoid repeated commitments. Use accepted quantity and keep currencies separate; open value is not a payable balance.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "WITH a AS (\n SELECT line_id,SUM(accepted) AS qty FROM receipts\n WHERE received_on <= DATE '2026-06-30' GROUP BY line_id\n)\nSELECT o.currency,SUM(GREATEST(l.quantity-COALESCE(a.qty,0),0)*l.unit_price) AS open_value\nFROM orders o JOIN lines l ON l.order_id=o.id LEFT JOIN a ON a.line_id=l.id\nWHERE o.ordered_on <= DATE '2026-06-30' AND o.status <> 'cancelled'\nGROUP BY o.currency ORDER BY o.currency;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "currency",
+            "open_value"
+          ],
+          "rows": [
+            [
+              "EUR",
+              "300"
+            ],
+            [
+              "USD",
+              "1610"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "currency",
+            "open_value"
+          ],
+          "rows": [
+            [
+              "EUR",
+              "0.0"
+            ],
+            [
+              "USD",
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "currency",
+            "open_value"
+          ],
+          "rows": [
+            [
+              "USD",
+              "228.875"
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "currency",
+            "open_value"
+          ],
+          "rows": [
+            [
+              "EUR",
+              "0"
+            ],
+            [
+              "USD",
+              "5"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "currency",
+            "open_value"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q099",
+      "type": "code",
+      "topic": "Per-order market baseline",
+      "difficulty": "applied",
+      "prompt": "For each line whose order is dated <= 30 June 2026 and not currently cancelled, find the latest market price on/before that order's date matching product, unit and currency. Break same-date ties by greatest price id. Keep no-match lines with NULL. Return line_id, market_price, ordered by line_id.",
+      "explanation": "LATERAL expresses a per-order applicability lookup, and LEFT JOIN preserves missing evidence. Equal-date observations use a stable ID tie-breaker.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "SELECT l.id AS line_id,p.price AS market_price FROM lines l\nJOIN orders o ON o.id=l.order_id\nLEFT JOIN LATERAL (\n SELECT price FROM prices p WHERE p.product=l.product AND p.unit=l.unit\n AND p.currency=o.currency AND p.priced_on <= o.ordered_on\n ORDER BY p.priced_on DESC,p.id DESC LIMIT 1\n) p ON TRUE\nWHERE o.ordered_on <= DATE '2026-06-30' AND o.status <> 'cancelled' ORDER BY l.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id",
+            "market_price"
+          ],
+          "rows": [
+            [
+              11,
+              "10"
+            ],
+            [
+              12,
+              "1.5"
+            ],
+            [
+              21,
+              "8"
+            ],
+            [
+              31,
+              "13"
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id",
+            "market_price"
+          ],
+          "rows": [
+            [
+              1001,
+              "99"
+            ],
+            [
+              1002,
+              "9"
+            ],
+            [
+              1003,
+              "0"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id",
+            "market_price"
+          ],
+          "rows": [
+            [
+              2001,
+              null
+            ],
+            [
+              2002,
+              null
+            ],
+            [
+              2003,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id",
+            "market_price"
+          ],
+          "rows": [
+            [
+              3001,
+              "6"
+            ],
+            [
+              3002,
+              "6"
+            ],
+            [
+              3003,
+              "6"
+            ],
+            [
+              3004,
+              "10"
+            ],
+            [
+              3005,
+              "10"
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id",
+            "market_price"
+          ],
+          "rows": []
+        }
+      ]
+    },
+    {
+      "id": "W02-Q100",
+      "type": "code",
+      "topic": "Completion pipeline",
+      "difficulty": "foundation",
+      "prompt": "For every line, find the first receipt date on which cumulative accepted quantity reaches or exceeds quantity, using only receipts through 30 June 2026. Use received_on, id event order. If no receipt reaches that threshold, return NULL (also for a zero-quantity line with no receipt). Include all statuses. Return line_id, completed_on as a date, ordered by line_id.",
+      "explanation": "A running accepted total identifies when the threshold was first met. An early partial receipt is not a completion, and future receipts cannot complete the cutoff snapshot.",
+      "starter": "-- Write one PostgreSQL SELECT or WITH query below.\n",
+      "reference": "WITH running AS (\n SELECT line_id,received_on,\n SUM(accepted) OVER (PARTITION BY line_id ORDER BY received_on,id\n ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS qty\n FROM receipts WHERE received_on <= DATE '2026-06-30'\n)\nSELECT l.id AS line_id,MIN(r.received_on) FILTER (WHERE r.qty >= l.quantity) AS completed_on\nFROM lines l LEFT JOIN running r ON r.line_id=l.id GROUP BY l.id ORDER BY l.id;\n",
+      "checks": [
+        {
+          "label": "Split receipts and mixed order states",
+          "fixture": "example",
+          "columns": [
+            "line_id",
+            "completed_on"
+          ],
+          "rows": [
+            [
+              11,
+              null
+            ],
+            [
+              12,
+              "2026-06-30"
+            ],
+            [
+              21,
+              null
+            ],
+            [
+              31,
+              null
+            ],
+            [
+              41,
+              null
+            ],
+            [
+              51,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Exact date boundaries, zero and decimal values",
+          "fixture": "boundaries",
+          "columns": [
+            "line_id",
+            "completed_on"
+          ],
+          "rows": [
+            [
+              1001,
+              null
+            ],
+            [
+              1002,
+              "2026-05-31"
+            ],
+            [
+              1003,
+              "2026-06-30"
+            ]
+          ]
+        },
+        {
+          "label": "Missing receipts and non-comparable prices",
+          "fixture": "sparse",
+          "columns": [
+            "line_id",
+            "completed_on"
+          ],
+          "rows": [
+            [
+              2001,
+              null
+            ],
+            [
+              2002,
+              null
+            ],
+            [
+              2003,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Equal values, tied dates and distinct business rows",
+          "fixture": "ties",
+          "columns": [
+            "line_id",
+            "completed_on"
+          ],
+          "rows": [
+            [
+              3001,
+              "2026-06-01"
+            ],
+            [
+              3002,
+              "2026-06-02"
+            ],
+            [
+              3003,
+              null
+            ],
+            [
+              3004,
+              "2026-06-15"
+            ],
+            [
+              3005,
+              "2026-06-30"
+            ],
+            [
+              3006,
+              null
+            ]
+          ]
+        },
+        {
+          "label": "Empty input tables",
+          "fixture": "empty",
+          "columns": [
+            "line_id",
+            "completed_on"
+          ],
+          "rows": []
+        }
+      ]
+    }
+  ]
+}

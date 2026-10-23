@@ -4,7 +4,7 @@ export const POINTS = 10;
 export const MAX_SOURCE = 20_000;
 export const TYPE_LABELS = {
   single: "Single choice", multiple: "Multiple correct", match: "Match the following",
-  short: "Short syntax answer", code: "Python coding",
+  short: "Short syntax answer", code: "Coding",
 };
 
 function invariant(condition, message) {
@@ -15,6 +15,11 @@ export function validateBank(bank) {
   invariant(bank?.schema_version === 1 && Number.isInteger(bank.week), "Unsupported assessment bank.");
   invariant(typeof bank.version === "string" && bank.questions?.length === 100, "A weekly bank needs exactly 100 questions.");
   invariant(bank.paper_policy?.questions === 10 && bank.paper_policy.per_type === 2 && bank.paper_policy.points_each === POINTS, "Unsupported paper scoring policy.");
+  invariant(["python", "sql"].includes(bank.code_language ?? "python"), "Unsupported coding language.");
+  if (bank.code_language === "sql") {
+    invariant(typeof bank.sql_schema === "string" && bank.sql_schema.length > 10, "SQL needs a fixture schema.");
+    invariant(bank.sql_fixtures && !Array.isArray(bank.sql_fixtures) && typeof bank.sql_fixtures.example === "string" && Object.values(bank.sql_fixtures).every(x => typeof x === "string"), "SQL needs named fixture data including an example.");
+  }
   const ids = new Set();
   for (const q of bank.questions) {
     invariant(typeof q.id === "string" && !ids.has(q.id), "Question IDs must be unique.");
@@ -36,7 +41,12 @@ export function validateBank(bank) {
       invariant(typeof q.case_sensitive === "boolean", `Declare case policy ${q.id}.`);
     } else {
       invariant(typeof q.starter === "string" && typeof q.reference === "string" && q.checks?.length === 5, `Coding needs a starter, reference and five checks ${q.id}.`);
-      invariant(q.checks.every(x => typeof x.label === "string" && typeof x.code === "string"), `Invalid code checks ${q.id}.`);
+      if (bank.code_language === "sql") {
+        invariant(q.checks.every(x => typeof x.label === "string" && typeof x.fixture === "string" && Object.hasOwn(bank.sql_fixtures, x.fixture) &&
+          Array.isArray(x.columns) && x.columns.length > 0 && new Set(x.columns).size === x.columns.length && x.columns.every(c => typeof c === "string" && c.length) &&
+          Array.isArray(x.rows) && x.rows.every(row => Array.isArray(row) && row.length === x.columns.length &&
+            row.every(value => value === null || ["string", "number", "boolean"].includes(typeof value)))), `Invalid SQL checks ${q.id}.`);
+      } else invariant(q.checks.every(x => typeof x.label === "string" && typeof x.code === "string"), `Invalid code checks ${q.id}.`);
     }
   }
   for (const type of TYPES) invariant(bank.questions.filter(q => q.type === type).length >= 2, `Insufficient ${type} questions.`);

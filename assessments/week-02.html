@@ -1,0 +1,51 @@
+---
+layout: week
+permalink: /assessments/week-02/
+title: "Week 2 assessment: SQL and procurement data modelling"
+description: "A 100-question bank with balanced random papers, PostgreSQL query checks, scoring and printable questions."
+summary: "Write SQL, inspect result grains and check your understanding. Each paper draws 10 questions from a bank of 100."
+kicker_primary: Week 2 assessment
+kicker_secondary: 10 questions · 100 marks
+current_label: Assessment
+alternate_label: Back to lesson
+alternate_url: /weeks/week-02/
+---
+<link rel="stylesheet" href="{{ '/assessment.css' | relative_url }}">
+<section class="assessment-app" id="assessment-app" data-bank="{{ '/assessments/week-02.json' | relative_url }}" aria-label="Week 2 assessment">
+  <h2 id="paper-guide">Your paper</h2>
+  <p>Each paper contains two single-choice, two multiple-correct, two matching, two short syntax and two SQL coding questions. All ten questions are worth 10 marks each.</p>
+  <details class="assessment-guide">
+    <summary>Scoring, coding and saved progress</summary>
+    <ul>
+      <li>Single-choice and short answers: 10 or 0. Multiple-correct: select the complete correct set for 10; no partial credit or negative marks.</li>
+      <li>Matching: 2.5 per correct pair; use each option once. Coding: 2 per passed check, with five checks per solution.</li>
+      <li>SQL runs on your device as PostgreSQL in WebAssembly using <a href="https://pglite.dev/" target="_blank" rel="noopener noreferrer">PGlite</a> 0.5.11. Its runtime downloads when you run a solution. Each run uses a disposable browser worker with a 5-second execution limit after loading; Stop ends the worker.</li>
+      <li>Write one SELECT or WITH query, using the requested column names and result order. Five different datasets test values, duplicate rows, NULLs and date boundaries. Each dataset starts fresh, and your query runs in a read-only transaction. The schema and example data are available beside every coding question and on the printed paper.</li>
+      <li>The practice schema is smaller than the full lab and permits zero quantity to test denominator handling. This single-connection runtime does not reproduce the lab's two-session concurrency tests; those are assessed through reasoning questions.</li>
+      <li>If the runtime cannot load, coding marks remain pending. You can retry or open <a href="https://dbfiddle.uk/?rdbms=postgres_18" target="_blank" rel="noopener noreferrer">db&lt;&gt;fiddle with PostgreSQL 18</a>, copy the schema and example data, and paste your query back here. Opening that link does not send your answers; external results do not sync automatically.</li>
+      <li>Progress and results stay in this browser. Download a result for review. The question bank and answer keys are public: this is a practice assessment, and downloaded scores are not authenticated exam records.</li>
+    </ul>
+  </details>
+  <p id="assessment-status" role="status" aria-live="polite">Loading the question bank…</p>
+  <div class="assessment-toolbar" id="assessment-toolbar" hidden>
+    <div><strong id="paper-id"></strong><span id="paper-progress"></span></div>
+    <div class="assessment-actions">
+      <button type="button" id="new-paper">New random paper</button>
+      <button type="button" id="copy-paper">Copy paper link</button>
+      <button type="button" id="print-paper">Print questions</button>
+    </div>
+  </div>
+  <nav class="assessment-jumps" id="question-jumps" aria-label="Question navigation"></nav>
+  <form id="assessment-form" hidden>
+    <div id="assessment-questions"></div>
+    <div class="assessment-submit">
+      <button type="submit" class="assessment-primary" id="submit-paper">Submit and score paper</button>
+      <button type="button" id="stop-code" hidden>Stop coding run</button>
+      <p>Submission locks your answers and shows the explanations. Unanswered questions receive zero.</p>
+    </div>
+  </form>
+  <section class="assessment-result" id="assessment-result" aria-live="polite" hidden></section>
+  <noscript>This assessment needs JavaScript for paper generation and scoring. The lessons remain readable without it.</noscript>
+</section>
+<div id="assessment-print"></div>
+<script type="module" src="{{ '/assessment.mjs' | relative_url }}"></script>

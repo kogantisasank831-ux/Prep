@@ -6,7 +6,7 @@ import {
   restoreAttempt, sanitizeAnswer, scorePaper, validCodeResult, validateBank,
 } from "../assessment-core.mjs";
 
-const bank = validateBank(JSON.parse(fs.readFileSync("assessments/week-01.json", "utf8")));
+const bank = validateBank(JSON.parse(fs.readFileSync(process.argv[2] ?? "assessments/week-01.json", "utf8")));
 const clone = value => JSON.parse(JSON.stringify(value));
 const seed = "00000000000000000000000000000001";
 const original = JSON.stringify(bank);

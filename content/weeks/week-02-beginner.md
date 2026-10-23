@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-02/
 ---
 
+Test your understanding with the [Week 2 assessment]({{ '/assessments/week-02/' | relative_url }}): a random ten-question paper from 100 questions, including written PostgreSQL queries with automatic checks.
+
 ## Your route through Week 2
 
 Start with the order story and explain each table's row meaning before trying the full queries. Use the same eight-hour plan as the production lesson: one hour for grains and keys, two for aggregation/joins/dates, one for nested queries and windows, one for indexes and transactions, two for the lab, and one for practice.

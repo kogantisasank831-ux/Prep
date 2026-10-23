@@ -121,7 +121,13 @@ policy is shown. Multiple-correct requires the complete set. Matching gives
 2.5 per correct pair with one use per option. Coding gives 2 per passed check.
 There are no negative marks. Explanations and references appear after submission.
 
-The site stays static. A coding run downloads pinned Pyodide 0.29.3 from its
+[Week 2 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-02/)
+has the same 30/20/15/15/20 distribution and paper/scoring policy, with twenty
+written PostgreSQL query tasks. Topics follow Week 2's procurement model,
+including joins, cutoff dates, CTEs, windows, comparable prices, indexes,
+normalization, transactions and locking.
+
+The site stays static. A Python coding run downloads pinned Pyodide 0.29.3 from its
 documented jsDelivr distribution into a separate browser worker. This version
 uses Python 3.13, matching the lesson's language family. The app terminates each
 worker after its run, after Stop, or after the 5-second execution deadline.
@@ -129,9 +135,21 @@ Runtime loading has a separate 45-second deadline. The checks use only the
 standard library, without running FastAPI/Pydantic or sending learner code to
 a remote execution API. Loading the CDN still makes normal network requests.
 
-Google Colab is an optional external workspace requiring Google sign-in:
+Week 2 downloads pinned @electric-sql/pglite 0.5.11 from jsDelivr to run
+PostgreSQL in a disposable worker. Its Apache-2.0 package requires no server,
+paid account, API key or build step. Each of five datasets starts with fresh
+synthetic tables. A single query runs in a read-only transaction and is checked
+against independently calculated expected rows, including column names, order,
+duplicates, NULLs and exact decimal values. The same loading/execution deadlines
+apply. PGlite has one connection; the full lab remains the place for two-session
+locking experiments. Query execution stays on the device.
+
+Google Colab is an optional external Python workspace requiring Google sign-in:
 learners copy their code there and paste it back for local checks. Results are
-not imported from that tool.
+not imported from that tool. For SQL, the optional workspace is
+[db<>fiddle with PostgreSQL 18](https://dbfiddle.uk/?rdbms=postgres_18).
+Learners can copy the schema/example data and their query; opening the link does
+not transfer an answer. External SQL results likewise do not sync.
 When the runtime is unavailable, submitted coding marks stay pending and can be
 retried; the displayed score clearly separates graded and pending marks.
 
@@ -140,13 +158,18 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-The engine is reusable, but only Week 1 is enabled. Future weeks need their own
+Weeks 1 and 2 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
-The current coding checker is Python-specific; another language needs its own
-execution integration when that week's assessment is added.
+The page chooses the Python or SQL worker from bank metadata; other languages
+need an explicit execution integration.
 
 Run `python -m pytest tests/test_week01_assessment.py` to validate bank structure,
 reference solutions, negative submissions and grading/selection behavior. The
 JavaScript checks in that suite use the existing Node executable (Node 20+).
+
+Run `python -m pytest tests/test_week02_assessment.py` for Week 2 bank/engine
+contracts. To check actual PostgreSQL results, install the pinned runtime outside
+tracked source (for example, `npm install --prefix .qa-week02-assessment/tools @electric-sql/pglite@0.5.11`) and run
+`node scripts/verify_sql_assessment.mjs .qa-week02-assessment/tools/node_modules/@electric-sql/pglite/dist/index.js`.

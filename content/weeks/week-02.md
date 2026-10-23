@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-02/beginner/
 ---
 
+Test your understanding with the [Week 2 assessment]({{ '/assessments/week-02/' | relative_url }}): a random ten-question paper from 100 questions, including written PostgreSQL queries with automatic checks.
+
 ## Your route through Week 2
 
 The goal is to answer the five procurement questions and explain why their numbers are trustworthy. Work from one row's meaning to joins and dates, then build the supplier measures. Keep your own query results, a short metric-definition note and answers to the eight medium SQL and two product-analytics problems below.

@@ -13,6 +13,8 @@ let submitting = false;
 let stopRequested = false;
 let storageAvailable = true;
 const controls = new Map();
+const language = () => bank.code_language === "sql" ? "SQL" : "Python";
+const typeLabel = q => q.type === "code" ? `${language()} coding` : TYPE_LABELS[q.type];
 
 function element(tag, text = null, attributes = {}) {
   const node = document.createElement(tag);
@@ -104,7 +106,7 @@ function renderQuestions() {
   $("#question-jumps").replaceChildren();
   paper.forEach((q, index) => {
     const card = element("section", null, { class: "assessment-question", id: `question-${index + 1}`, "aria-labelledby": `prompt-${q.id}` });
-    card.append(element("span", `${index + 1}/10 · ${TYPE_LABELS[q.type]} · 10 marks`, { class: "assessment-tag" }));
+    card.append(element("span", `${index + 1}/10 · ${typeLabel(q)} · 10 marks`, { class: "assessment-tag" }));
     card.append(element("h3", q.prompt, { id: `prompt-${q.id}` }));
     if (q.snippet) card.append(codeBlock(q.snippet));
     const control = { card, inputs: [], feedback: element("div", null, { class: "assessment-feedback" }) };
@@ -154,20 +156,25 @@ function renderQuestions() {
       card.append(input); control.inputs.push(input);
     } else {
       const id = `code-${q.id}`;
-      card.append(element("label", "Write your Python solution. Define the requested names; do not read input().", { for: id, class: "assessment-note" }));
+      card.append(element("label", language() === "SQL" ? "Write one PostgreSQL SELECT or WITH query. Use the exact output columns and ordering requested." : "Write your Python solution. Define the requested names; do not read input().", { for: id, class: "assessment-note" }));
+      if (language() === "SQL") {
+        const fixture = element("details");
+        fixture.append(element("summary", "Schema and example dataset"), element("p", "All five checks use this schema with different synthetic data. Copy this setup to an external PostgreSQL workspace if useful."), codeBlock(`${bank.sql_schema}\n${bank.sql_fixtures.example}`));
+        card.append(fixture);
+      }
       const input = element("textarea", null, { id, maxlength: MAX_SOURCE, spellcheck: "false", autocomplete: "off", autocapitalize: "off", autocorrect: "off" });
       input.value = answer || q.starter;
       input.addEventListener("input", () => answerChanged(q, input.value));
       control.inputs.push(input); card.append(input);
       const actions = element("div", null, { class: "assessment-code-actions" });
-      control.runButton = element("button", "Run Python checks", { type: "button" });
+      control.runButton = element("button", `Run ${language()} checks`, { type: "button" });
       control.codeStatus = element("span", "Five checks · 2 marks each", { class: "assessment-code-status", role: "status" });
       control.runButton.addEventListener("click", async () => {
         if (!attempt.submitted_at && !attempt.answers[q.id]) answerChanged(q, input.value);
         await runCode(q);
         if (attempt.submitted_at) renderResult();
       });
-      const external = element("a", "Open Google Colab ↗", { href: "https://colab.research.google.com/", target: "_blank", rel: "noopener noreferrer" });
+      const external = element("a", language() === "SQL" ? "Open db<>fiddle ↗" : "Open Google Colab ↗", { href: language() === "SQL" ? "https://dbfiddle.uk/?rdbms=postgres_18" : "https://colab.research.google.com/", target: "_blank", rel: "noopener noreferrer" });
       actions.append(control.runButton, external, control.codeStatus); card.append(actions);
     }
     card.append(control.feedback); container.append(card);
@@ -178,7 +185,7 @@ function renderQuestions() {
   updateProgress(); setBusyControls();
 }
 
-function executePython(q, source) {
+function executeCode(q, source) {
   return new Promise(resolve => {
     let worker;
     let timer;
@@ -189,13 +196,13 @@ function executePython(q, source) {
       settled = true; clearTimeout(timer); worker?.terminate(); activeRun = null;
       resolve(value);
     };
-    try { worker = new Worker(new URL("./assessment-worker.mjs", import.meta.url), { type: "module" }); }
-    catch { finish({ status: "unavailable", message: "This browser could not start the Python worker." }); return; }
+    try { worker = new Worker(new URL(language() === "SQL" ? "./assessment-sql-worker.mjs" : "./assessment-worker.mjs", import.meta.url), { type: "module" }); }
+    catch { finish({ status: "unavailable", message: `This browser could not start the ${language()} worker.` }); return; }
     activeRun = { cancel: () => finish({ status: "unavailable", message: "Run stopped. Your solution is preserved." }) };
-    timer = setTimeout(() => finish({ status: "unavailable", message: "Python did not load within 45 seconds. Check your connection and retry." }), 45_000);
+    timer = setTimeout(() => finish({ status: "unavailable", message: `${language()} did not load within 45 seconds. Check your connection and retry.` }), 45_000);
     worker.onerror = event => {
       event.preventDefault();
-      finish({ status: "unavailable", message: "Python could not load. Retry, or use the external workspace and paste your solution back here." });
+      finish({ status: "unavailable", message: `${language()} could not load. Retry, or use the external workspace and paste your solution back here.` });
     };
     worker.onmessage = ({ data }) => {
       if (settled) return;
@@ -209,9 +216,9 @@ function executePython(q, source) {
           results: q.checks.map(x => ({ label: x.label, passed: false, detail: "5-second execution limit exceeded" })), output: "",
         }), 5000);
       } else if (data?.kind === "result") finish(data.result);
-      else if (data?.kind === "unavailable") finish({ status: "unavailable", message: "The Python checker could not complete. Your solution is preserved; retry its checks." });
+      else if (data?.kind === "unavailable") finish({ status: "unavailable", message: `The ${language()} checker could not complete. Your solution is preserved; retry its checks.` });
     };
-    worker.postMessage({ kind: "run", source, exercise: { id: q.id, checks: q.checks } });
+    worker.postMessage({ kind: "run", source, exercise: { id: q.id, checks: q.checks, ...(language() === "SQL" ? { schema: bank.sql_schema, fixtures: bank.sql_fixtures } : {}) } });
     setBusyControls();
   });
 }
@@ -221,8 +228,8 @@ async function runCode(q) {
   if (!submitting) stopRequested = false;
   const source = attempt.answers[q.id] ?? "";
   if (!source.trim()) return;
-  controls.get(q.id).codeStatus.textContent = "Loading Python on this device…";
-  const result = await executePython(q, source);
+  controls.get(q.id).codeStatus.textContent = `Loading ${language()} on this device…`;
+  const result = await executeCode(q, source);
   const record = { ...result, source };
   if (validCodeResult(q, source, record)) {
     attempt.code_results[q.id] = record;
@@ -283,12 +290,13 @@ function renderResult() {
 
 function renderPrintPaper() {
   const target = document.querySelector("#assessment-print");
-  target.replaceChildren(element("h2", `Week ${bank.week} · Python assessment · 100 marks`));
+  target.replaceChildren(element("h2", `Week ${bank.week} · ${language()} assessment · 100 marks`));
   target.append(element("p", `Paper ${attempt.seed} · bank ${bank.version} · 10 questions. Name: __________________  Date: __________`));
-  target.append(element("p", "10 marks each. Multiple-correct requires the full set. Matching: 2.5 per pair, each option once. Coding: five checks at 2 marks each. Write Python solutions separately if needed."));
+  target.append(element("p", `10 marks each. Multiple-correct requires the full set. Matching: 2.5 per pair, each option once. Coding: five checks at 2 marks each. Write ${language()} solutions separately if needed.`));
+  if (language() === "SQL") target.append(element("h3", "Coding schema and example data (all SQL tasks)"), codeBlock(`${bank.sql_schema}\n${bank.sql_fixtures.example}`));
   paper.forEach((q, index) => {
     const section = element("section");
-    section.append(element("h3", `${index + 1}. ${q.prompt} [${TYPE_LABELS[q.type]} · 10 marks]`));
+    section.append(element("h3", `${index + 1}. ${q.prompt} [${typeLabel(q)} · 10 marks]`));
     if (q.snippet) section.append(codeBlock(q.snippet));
     if (q.options) q.options.forEach((option, i) => section.append(element("p", `${String.fromCharCode(65 + i)}. ${option.text}`)));
     if (q.type === "match") {
