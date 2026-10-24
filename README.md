@@ -157,6 +157,16 @@ explicit MRR populations, ANN neighbor overlap and exact synthetic retrieval.
 They run in the existing Python worker without model weights or an inference
 API. The full retrieval lab and governed model/ANN evaluation remain separate.
 
+[Week 6 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-06/)
+has the same 100-question distribution and balanced paper policy. Twenty
+standard-library Python tasks cover canonical text, parser review routing,
+fixed/overlap spans, exact block-relative locations, sentence/structure/shared-term
+boundaries, policy/representation checksums, child-only indexing, parent lineage
+and reauthorization, whole-unit context budgets, stored bytes, document recall
+at a chunk cutoff, per-source support completeness and honest measurement
+summaries. They run on synthetic inputs in the existing Python worker; no PDF
+parser, OCR engine, model weights or inference service is added.
+
 The site stays static. A Python coding run downloads pinned Pyodide 0.29.3 from its
 documented jsDelivr distribution into a separate browser worker. This version
 uses Python 3.13, matching the lesson's language family. The app terminates each
@@ -188,7 +198,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1, 2, 3, 4 and 5 use the shared engine. Future weeks need their own
+Weeks 1, 2, 3, 4, 5 and 6 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -216,3 +226,8 @@ Run `python -m pytest tests/test_week05_assessment.py tests/test_week05_retrieva
 for the Week 5 bank, twenty coding references/starters/incorrect solutions,
 composed vector/access/metric checks, shared scoring contracts and the existing
 offline retrieval lab.
+
+Run `python -m pytest tests/test_week06_assessment.py tests/test_week06_chunking.py`
+for the Week 6 bank, twenty coding references/starters/incorrect solutions,
+composed evidence-preservation/access/metric checks, shared scoring contracts
+and the existing offline chunking lab.

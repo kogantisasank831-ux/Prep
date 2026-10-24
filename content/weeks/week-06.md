@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-06/beginner/
 ---
 
+Test your understanding with the [Week 6 assessment]({{ '/assessments/week-06/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on parsing, chunk boundaries, source spans, parent expansion and support completeness.
+
 ## Your route through Week 6
 
 By the end, you should be able to take a parsed document, explain why each chunk boundary exists, trace a result to its source, and compare policies without changing the evidence underneath them. You will run six policies on the same five documents, keep an ambiguous sixth document out of the index, and explain why finding the right document can still leave an answer unsupported.

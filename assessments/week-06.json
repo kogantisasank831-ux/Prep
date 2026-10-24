@@ -1,0 +1,3171 @@
+{
+  "schema_version": 1,
+  "week": 6,
+  "version": "1.0.0",
+  "title": "Document parsing and chunking",
+  "source_lesson": "/weeks/week-06/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W06-Q001",
+      "type": "single",
+      "topic": "Evidence unit",
+      "difficulty": "foundation",
+      "prompt": "For P-105's question about payment on the 1,000 kg copper-wire line, what evidence is needed?",
+      "explanation": "The row identifies the line; the clause supplies the conditional terms; the cross-reference establishes that those terms apply to Schedule A.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The line-item row, the payment clause, and the cross-reference connecting them"
+        },
+        {
+          "id": "o2",
+          "text": "Only the table's numeric quantity"
+        },
+        {
+          "id": "o3",
+          "text": "Only the words Net 30 without their condition"
+        },
+        {
+          "id": "o4",
+          "text": "The highest cosine score with no source text"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q002",
+      "type": "single",
+      "topic": "Parser trust boundary",
+      "difficulty": "applied",
+      "prompt": "A PDF extractor returns readable text. What has been established?",
+      "explanation": "Text extraction alone does not validate reading order, row/header associations, source authenticity or OCR accuracy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every table was reconstructed correctly"
+        },
+        {
+          "id": "o2",
+          "text": "The source is authentic and currently applicable"
+        },
+        {
+          "id": "o3",
+          "text": "Every numeric value has been visually verified"
+        },
+        {
+          "id": "o4",
+          "text": "The extractor produced text; reading order and table relationships still need validation"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q003",
+      "type": "single",
+      "topic": "Scanned input",
+      "difficulty": "applied",
+      "prompt": "A PDF page contains only a scanned image and no usable text layer. What is the appropriate next boundary?",
+      "explanation": "Image-only pages need an OCR-capable process to obtain text. OCR output remains uncertain evidence that must be validated.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat an empty text result as a correct empty contract"
+        },
+        {
+          "id": "o2",
+          "text": "Invent the most likely invoice value"
+        },
+        {
+          "id": "o3",
+          "text": "An OCR-capable path followed by validation/review"
+        },
+        {
+          "id": "o4",
+          "text": "Assume a text-only extractor has read every image character"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q004",
+      "type": "single",
+      "topic": "OCR ambiguity",
+      "difficulty": "foundation",
+      "prompt": "The P-106 fixture contains unit price USD 12.O0. What does the lab do?",
+      "explanation": "This simulated parsed row is ambiguous under the narrow numeric grammar. It remains review-required; the lab never runs an OCR engine.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat the price as a real OCR engine's measured output"
+        },
+        {
+          "id": "o2",
+          "text": "Keep the parsed source in needs_review and exclude it from accepted collections"
+        },
+        {
+          "id": "o3",
+          "text": "Silently replace O with 0 and index it as accepted"
+        },
+        {
+          "id": "o4",
+          "text": "Reject every source in the collection"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q005",
+      "type": "single",
+      "topic": "Rejected versus review",
+      "difficulty": "applied",
+      "prompt": "Which condition is rejected by the parser rather than merely sent to review?",
+      "explanation": "Invalid UTF-8 text violates a hard input contract. Missing table context, replacement characters and heading-only sources are explicit review cases.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A parsed block containing an unpaired surrogate that cannot encode as UTF-8"
+        },
+        {
+          "id": "o2",
+          "text": "A table row missing its table/row metadata"
+        },
+        {
+          "id": "o3",
+          "text": "A document with headings but no substantive body"
+        },
+        {
+          "id": "o4",
+          "text": "A block containing the Unicode replacement character"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q006",
+      "type": "single",
+      "topic": "Canonical text",
+      "difficulty": "applied",
+      "prompt": "For accepted block texts '  Alpha  ' and ' Beta ', what is the canonical text?",
+      "explanation": "The canonical helper strips block edges, skips blank blocks and joins retained text with one newline. The parser separately rejects blank input blocks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "AlphaBeta with no separator"
+        },
+        {
+          "id": "o2",
+          "text": "The raw padded text joined by spaces"
+        },
+        {
+          "id": "o3",
+          "text": "Only the first block"
+        },
+        {
+          "id": "o4",
+          "text": "Alpha followed by one newline followed by Beta"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q007",
+      "type": "single",
+      "topic": "Character offsets",
+      "difficulty": "foundation",
+      "prompt": "What do fixed-window start_char/end_char offsets describe?",
+      "explanation": "These spans refer to the canonical parsed representation and trimmed source blocks. They are neither original-file byte ranges nor tokenizer positions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "PDF bounding-box coordinates"
+        },
+        {
+          "id": "o2",
+          "text": "Embedding-token positions"
+        },
+        {
+          "id": "o3",
+          "text": "Half-open Python-character spans within trimmed parsed block text"
+        },
+        {
+          "id": "o4",
+          "text": "Raw PDF byte offsets"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q008",
+      "type": "single",
+      "topic": "Window stride",
+      "difficulty": "applied",
+      "prompt": "A character window has width 120 and overlap 40. What is its stride?",
+      "explanation": "The next start advances by width minus overlap: 120-40=80. Overlap must remain below the width for forward progress.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "160 characters"
+        },
+        {
+          "id": "o2",
+          "text": "80 characters"
+        },
+        {
+          "id": "o3",
+          "text": "40 characters"
+        },
+        {
+          "id": "o4",
+          "text": "120 characters"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q009",
+      "type": "single",
+      "topic": "Final-window stopping",
+      "difficulty": "applied",
+      "prompt": "For source length 200, width 120 and overlap 40, which spans should the lab emit?",
+      "explanation": "Stop as soon as a window reaches the source end. A third span would be a redundant tail entirely contained in the second window.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "[0,120) and [80,200)"
+        },
+        {
+          "id": "o2",
+          "text": "[0,120), [80,200), and [160,200)"
+        },
+        {
+          "id": "o3",
+          "text": "Only [0,120)"
+        },
+        {
+          "id": "o4",
+          "text": "[0,80) and [120,200)"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q010",
+      "type": "single",
+      "topic": "Window validation",
+      "difficulty": "foundation",
+      "prompt": "Why is overlap equal to width rejected?",
+      "explanation": "Require width>0 and 0<=overlap<width, using exact integer parameters. This avoids zero or negative advancement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It would always produce too few coordinates"
+        },
+        {
+          "id": "o2",
+          "text": "It proves the text has no relevant clause"
+        },
+        {
+          "id": "o3",
+          "text": "Overlap is forbidden for every policy"
+        },
+        {
+          "id": "o4",
+          "text": "It gives zero stride and prevents forward progress"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q011",
+      "type": "single",
+      "topic": "Sentence target",
+      "difficulty": "applied",
+      "prompt": "A single sentence exceeds SentencePolicy's target width. What happens?",
+      "explanation": "The target guides grouping; it is not a hard character ceiling for an indivisible sentence. The global bounded-source policy still applies.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It is dropped to keep every chunk short"
+        },
+        {
+          "id": "o2",
+          "text": "The paragraph is classified as an unauthorized object"
+        },
+        {
+          "id": "o3",
+          "text": "The whole sentence can exceed the soft target"
+        },
+        {
+          "id": "o4",
+          "text": "It is silently sliced at the width"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q012",
+      "type": "single",
+      "topic": "Regex limitations",
+      "difficulty": "applied",
+      "prompt": "What is a limitation of splitting after punctuation followed by whitespace?",
+      "explanation": "The regex is a controlled-prose teaching splitter, not a universal sentence or layout parser. Validate on the actual document distribution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It measures semantic entailment"
+        },
+        {
+          "id": "o2",
+          "text": "Abbreviations and document-specific punctuation may be split incorrectly"
+        },
+        {
+          "id": "o3",
+          "text": "It verifies all table rows against the original PDF"
+        },
+        {
+          "id": "o4",
+          "text": "It guarantees linguistically correct sentences in every language"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q013",
+      "type": "single",
+      "topic": "Nonparagraph units",
+      "difficulty": "foundation",
+      "prompt": "How does SentencePolicy handle headings and table-row blocks?",
+      "explanation": "Keeping the supplied row or heading intact preserves its block-level structure; it does not independently certify the parser's correctness.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Flush pending prose and retain each nonparagraph block atomically"
+        },
+        {
+          "id": "o2",
+          "text": "Remove them because they have no sentence-ending punctuation"
+        },
+        {
+          "id": "o3",
+          "text": "Merge every table in the corpus into one chunk"
+        },
+        {
+          "id": "o4",
+          "text": "Split table cells by individual characters"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q014",
+      "type": "single",
+      "topic": "Heading inheritance",
+      "difficulty": "applied",
+      "prompt": "What does the simple StructurePolicy attach to a body block when enabled?",
+      "explanation": "The active heading gives local context and is cited with the body. This simple policy does not resolve arbitrary cross-section references.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every heading in every source"
+        },
+        {
+          "id": "o2",
+          "text": "A guessed supplier name as a verified fact"
+        },
+        {
+          "id": "o3",
+          "text": "The previous tenant's metadata"
+        },
+        {
+          "id": "o4",
+          "text": "The active heading text and its source location"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q015",
+      "type": "single",
+      "topic": "Isolated headings",
+      "difficulty": "applied",
+      "prompt": "Which statement correctly describes the two structural policies?",
+      "explanation": "The policies have different retention behavior. An isolated heading is an explicit child in the parent-child implementation, while structure emits body-based units.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "StructurePolicy resolves all cross-references automatically"
+        },
+        {
+          "id": "o2",
+          "text": "Neither policy stores any location metadata"
+        },
+        {
+          "id": "o3",
+          "text": "ParentChildPolicy retains isolated headings as children; the simple StructurePolicy may omit them"
+        },
+        {
+          "id": "o4",
+          "text": "Both silently retain every heading as an embedded parent"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q016",
+      "type": "single",
+      "topic": "Boundary heuristic",
+      "difficulty": "foundation",
+      "prompt": "What computes the default 'semantic' policy's adjacent similarity?",
+      "explanation": "The shared-term Jaccard function is a deterministic teaching heuristic. Loading a different retrieval encoder does not replace this boundary function.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A remote LLM review of each contract"
+        },
+        {
+          "id": "o2",
+          "text": "Jaccard overlap of ASCII word sets"
+        },
+        {
+          "id": "o3",
+          "text": "A trained boundary-classification model"
+        },
+        {
+          "id": "o4",
+          "text": "A model generated answer's confidence"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q017",
+      "type": "single",
+      "topic": "Threshold comparison",
+      "difficulty": "applied",
+      "prompt": "Adjacent similarity equals the semantic threshold exactly. What does the lab do?",
+      "explanation": "The boundary rule splits only when score < threshold. Equality therefore remains grouped; version the threshold and similarity identity together.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep the adjacent paragraphs in the same group"
+        },
+        {
+          "id": "o2",
+          "text": "Split because equality is always a failure"
+        },
+        {
+          "id": "o3",
+          "text": "Delete both paragraphs"
+        },
+        {
+          "id": "o4",
+          "text": "Change the threshold after seeing the score"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q018",
+      "type": "single",
+      "topic": "Indexed versus stored",
+      "difficulty": "applied",
+      "prompt": "Under parent-child retrieval, which units are embedded for matching?",
+      "explanation": "Matching units and context units serve different purposes. Stored-count and indexed-count measurements must distinguish them.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Parents only with no children stored"
+        },
+        {
+          "id": "o2",
+          "text": "Both parents and children without distinction"
+        },
+        {
+          "id": "o3",
+          "text": "Every raw source byte as one coordinate"
+        },
+        {
+          "id": "o4",
+          "text": "Children only; parents are also stored for possible context expansion"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q019",
+      "type": "single",
+      "topic": "Parent expansion",
+      "difficulty": "foundation",
+      "prompt": "A child is readable but its parent fails the access policy. What is the expansion result?",
+      "explanation": "Recheck the parent itself before expansion. Child authorization does not grant access to the larger context object.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Remove authorization metadata and return its text"
+        },
+        {
+          "id": "o2",
+          "text": "Copy the parent into another tenant"
+        },
+        {
+          "id": "o3",
+          "text": "Skip the parent context rather than expose it"
+        },
+        {
+          "id": "o4",
+          "text": "Return the parent because child access implies parent access"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q020",
+      "type": "single",
+      "topic": "Section scope",
+      "difficulty": "applied",
+      "prompt": "A hit expands to P-105's Section 3 parent. Does that automatically include Schedule A's row?",
+      "explanation": "Parent expansion follows stored lineage, not arbitrary references. The row, clause and linking statement must actually reach admitted context.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only if the cosine score is above one"
+        },
+        {
+          "id": "o2",
+          "text": "No; the row belongs to another section's parent"
+        },
+        {
+          "id": "o3",
+          "text": "Yes; every parent is the complete corpus"
+        },
+        {
+          "id": "o4",
+          "text": "Yes; a matching payment term resolves every reference"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q021",
+      "type": "single",
+      "topic": "Context budget",
+      "difficulty": "applied",
+      "prompt": "The first expanded unit exceeds the context budget, but a later whole unit fits. What does the lab do?",
+      "explanation": "Context admission is greedy in ranked order and keeps whole units only. Oversized units are skipped; later candidates can still fit.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Skip the too-large unit and consider the later unit"
+        },
+        {
+          "id": "o2",
+          "text": "Truncate the first unit without recording it"
+        },
+        {
+          "id": "o3",
+          "text": "Stop considering every remaining unit"
+        },
+        {
+          "id": "o4",
+          "text": "Ignore the budget whenever a parent exists"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q022",
+      "type": "single",
+      "topic": "Context separators",
+      "difficulty": "foundation",
+      "prompt": "Two selected units contain 3 and 4 Python characters. What is their joined context cost with one newline separator?",
+      "explanation": "Count stored unit text plus the separator between selected units: 3+1+4=8. This is a character budget, not a token measurement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "7 characters"
+        },
+        {
+          "id": "o2",
+          "text": "9 characters"
+        },
+        {
+          "id": "o3",
+          "text": "Exactly 8 tokenizer tokens"
+        },
+        {
+          "id": "o4",
+          "text": "8 characters"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q023",
+      "type": "single",
+      "topic": "Representation identity",
+      "difficulty": "applied",
+      "prompt": "Parser version changes but canonical text stays identical. Which identity can still change?",
+      "explanation": "Representation identity also binds parser, layout, metadata and status. A text-only digest cannot capture those changes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Nothing can change because text is the only provenance"
+        },
+        {
+          "id": "o2",
+          "text": "The source's access grant becomes universal"
+        },
+        {
+          "id": "o3",
+          "text": "The representation fingerprint and derived chunk IDs"
+        },
+        {
+          "id": "o4",
+          "text": "Only the CSS theme"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q024",
+      "type": "single",
+      "topic": "Manifest trust",
+      "difficulty": "applied",
+      "prompt": "A stored-chunk checksum matches a manifest. What is still required?",
+      "explanation": "A digest detects changes relative to a trusted expected value. It is not a signature, authorization decision or independent source-accuracy check.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A guarantee that all parsed prices match the original file"
+        },
+        {
+          "id": "o2",
+          "text": "Trust in the manifest and separate source/authenticity controls"
+        },
+        {
+          "id": "o3",
+          "text": "No access control because hashes grant permission"
+        },
+        {
+          "id": "o4",
+          "text": "A claim that the checksum is a cryptographic signature"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q025",
+      "type": "single",
+      "topic": "Recall at a chunk budget",
+      "difficulty": "foundation",
+      "prompt": "Top three chunks come from documents A,A,B; gold documents are {A,B,C}. What is document_recall_at_chunk_k?",
+      "explanation": "Duplicates consume the chunk budget but a relevant document counts only once in the numerator. Two of three relevant documents were reached.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "2/3"
+        },
+        {
+          "id": "o2",
+          "text": "1 because three chunks were returned"
+        },
+        {
+          "id": "o3",
+          "text": "3/2"
+        },
+        {
+          "id": "o4",
+          "text": "1/3 because duplicate A consumes no slot"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q026",
+      "type": "single",
+      "topic": "Support fraction",
+      "difficulty": "applied",
+      "prompt": "Two sources are labelled relevant. All required atoms are present for one source; the other lacks one atom. What is complete_support_source_fraction?",
+      "explanation": "Score completeness per labelled source first, then average those binary results for the query. Do not pool atoms across documents.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1.0 because at least one atom matched"
+        },
+        {
+          "id": "o2",
+          "text": "The fraction of all individual atoms matched regardless of source"
+        },
+        {
+          "id": "o3",
+          "text": "A generated answer's accuracy"
+        },
+        {
+          "id": "o4",
+          "text": "0.5"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q027",
+      "type": "single",
+      "topic": "No-gold queries",
+      "difficulty": "applied",
+      "prompt": "What does the practice comparison report for recall and support on Q08/Q09?",
+      "explanation": "No-gold queries remain a separate population. Candidates are still returned because no abstention policy is implemented.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Zero as a measured generated-answer grade"
+        },
+        {
+          "id": "o2",
+          "text": "A score inferred from the nearest text"
+        },
+        {
+          "id": "o3",
+          "text": "Null values, excluded from the labelled-query means"
+        },
+        {
+          "id": "o4",
+          "text": "Perfect scores that certify correct abstention"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q028",
+      "type": "single",
+      "topic": "Fair comparison",
+      "difficulty": "foundation",
+      "prompt": "Which variable changes across the default six-policy comparison?",
+      "explanation": "Hold the source representation and evaluation conditions fixed so differences are attributable to the declared policy rather than hidden input changes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The meaning of a character for each policy"
+        },
+        {
+          "id": "o2",
+          "text": "The chunk policy, with shared source/query/model and candidate/context budgets"
+        },
+        {
+          "id": "o3",
+          "text": "The source document set for every strategy"
+        },
+        {
+          "id": "o4",
+          "text": "The gold labels chosen after each ranking"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W06-Q029",
+      "type": "single",
+      "topic": "Measured versus missing",
+      "difficulty": "applied",
+      "prompt": "Which result remains unmeasured/null in the teaching report?",
+      "explanation": "No tokenizer, answer generator or human answer grading is run. Character counts and a support substring proxy do not establish those missing measurements.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Generated-answer quality and average token length"
+        },
+        {
+          "id": "o2",
+          "text": "The number of stored chunks"
+        },
+        {
+          "id": "o3",
+          "text": "Stored UTF-8 text bytes"
+        },
+        {
+          "id": "o4",
+          "text": "Document recall over the visible practice labels"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W06-Q030",
+      "type": "single",
+      "topic": "Overlap cost",
+      "difficulty": "applied",
+      "prompt": "What trade-off should be expected and measured when adding overlap?",
+      "explanation": "Overlap can preserve nearby clauses but increases duplication and cost. It cannot repair bad parsing or guarantee retrieval of cross-section evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Guaranteed lower storage for every document"
+        },
+        {
+          "id": "o2",
+          "text": "Guaranteed perfect answer support"
+        },
+        {
+          "id": "o3",
+          "text": "Automatic correction of OCR errors"
+        },
+        {
+          "id": "o4",
+          "text": "More repeated text and possibly more indexed vectors in exchange for boundary continuity"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q031",
+      "type": "multiple",
+      "topic": "Parser review routing",
+      "difficulty": "foundation",
+      "prompt": "Which conditions are review cases in the fixture parser, assuming no separate rejection condition?",
+      "explanation": "Review keeps uncertain evidence visible. Invalid locations such as negative page indices violate a hard boundary and are rejected instead.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A table row missing table/row location metadata"
+        },
+        {
+          "id": "o2",
+          "text": "An ambiguous labelled numeric table row"
+        },
+        {
+          "id": "o3",
+          "text": "A replacement character in otherwise encodable text"
+        },
+        {
+          "id": "o4",
+          "text": "A document consisting only of headings"
+        },
+        {
+          "id": "o5",
+          "text": "A negative source page number"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q032",
+      "type": "multiple",
+      "topic": "Hard parser boundaries",
+      "difficulty": "applied",
+      "prompt": "Which inputs must be rejected rather than silently repaired?",
+      "explanation": "Reject malformed identities, resources and locations deterministically. The parser does not use sentiment as an admission rule.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An oversized parsed block"
+        },
+        {
+          "id": "o2",
+          "text": "Repeated complete source locations"
+        },
+        {
+          "id": "o3",
+          "text": "A supplied input span instead of a full-block fixture location"
+        },
+        {
+          "id": "o4",
+          "text": "A valid complete paragraph with a negative financial sentiment"
+        },
+        {
+          "id": "o5",
+          "text": "An invalid scoped source identifier"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q033",
+      "type": "multiple",
+      "topic": "Source metadata",
+      "difficulty": "applied",
+      "prompt": "Which fields help trace chunk evidence to its actual representation?",
+      "explanation": "Traceability needs source, version, representation and location records. Confidence and readable text cannot substitute for provenance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Page/block and table/row locations"
+        },
+        {
+          "id": "o2",
+          "text": "Canonical text digest and representation fingerprint"
+        },
+        {
+          "id": "o3",
+          "text": "A guessed confidence number as proof of authenticity"
+        },
+        {
+          "id": "o4",
+          "text": "Tenant/document/version identity"
+        },
+        {
+          "id": "o5",
+          "text": "Parser ID/version and explicitly labelled heuristic metadata; missing supplier labels stay absent"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q034",
+      "type": "multiple",
+      "topic": "PDF extraction limitations",
+      "difficulty": "foundation",
+      "prompt": "Which problems can remain after text has been extracted from a PDF?",
+      "explanation": "PDF layout and OCR can lose relationships even while producing plausible text. Validate structure and route uncertainty to review.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every extracted string is automatically a verified structured table"
+        },
+        {
+          "id": "o2",
+          "text": "Any parser output necessarily preserves all original semantics"
+        },
+        {
+          "id": "o3",
+          "text": "Incorrect multi-column reading order"
+        },
+        {
+          "id": "o4",
+          "text": "Lost table header/row associations"
+        },
+        {
+          "id": "o5",
+          "text": "OCR character ambiguity in a scanned source"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q035",
+      "type": "multiple",
+      "topic": "Window invariants",
+      "difficulty": "applied",
+      "prompt": "Which rules apply to the exact character-window helper?",
+      "explanation": "Explicit types and a positive stride keep boundaries deterministic. Final stopping avoids a redundant tail already covered by the preceding window.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Accept True as width=1 because bool subclasses int"
+        },
+        {
+          "id": "o2",
+          "text": "Width is an exact positive integer"
+        },
+        {
+          "id": "o3",
+          "text": "Overlap is an exact integer with 0<=overlap<width"
+        },
+        {
+          "id": "o4",
+          "text": "Stop after the first window reaches source end"
+        },
+        {
+          "id": "o5",
+          "text": "Keep offsets half-open"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q036",
+      "type": "multiple",
+      "topic": "Overlap limitations",
+      "difficulty": "applied",
+      "prompt": "Which claims about overlap are justified?",
+      "explanation": "Overlap is a boundary policy, not a source repair or evidence guarantee. Measure continuity, duplication and retrieval/support effects separately.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It may retain clauses that cross a fixed boundary"
+        },
+        {
+          "id": "o2",
+          "text": "It can increase repeated text and vector cost"
+        },
+        {
+          "id": "o3",
+          "text": "It needs evaluation under the same candidate budget"
+        },
+        {
+          "id": "o4",
+          "text": "It guarantees all distant cross-references are present"
+        },
+        {
+          "id": "o5",
+          "text": "It makes an uncertain OCR value correct"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W06-Q037",
+      "type": "multiple",
+      "topic": "Sentence policy",
+      "difficulty": "foundation",
+      "prompt": "Which statements match the sentence strategy?",
+      "explanation": "The teaching splitter preserves its supplied units but has linguistic/layout limits. A soft target must not be presented as a universal hard model-token bound.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A long indivisible sentence may exceed that target"
+        },
+        {
+          "id": "o2",
+          "text": "Nonparagraph blocks flush pending prose and remain atomic"
+        },
+        {
+          "id": "o3",
+          "text": "The regex proves language-independent sentence segmentation"
+        },
+        {
+          "id": "o4",
+          "text": "All table rows are discarded"
+        },
+        {
+          "id": "o5",
+          "text": "Whole sentences are grouped greedily under a soft target"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q038",
+      "type": "multiple",
+      "topic": "Structure policy",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly describe the simple structure-aware policy?",
+      "explanation": "Local heading inheritance gives context but does not resolve all references or retain every isolated heading. Parent-child has a separate retention rule.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A table row is a body unit rather than individual unlabelled cell fragments"
+        },
+        {
+          "id": "o2",
+          "text": "It resolves every cross-section reference"
+        },
+        {
+          "id": "o3",
+          "text": "It necessarily emits isolated headings without bodies"
+        },
+        {
+          "id": "o4",
+          "text": "The current heading can prefix each body block"
+        },
+        {
+          "id": "o5",
+          "text": "Heading and body locations are both retained when included"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q039",
+      "type": "multiple",
+      "topic": "Shared-term boundaries",
+      "difficulty": "applied",
+      "prompt": "Which statements are true of the default semantic-boundary example?",
+      "explanation": "Boundary similarity and retrieval embeddings are separate components. Preserve the declared heuristic's identity and measure any learned replacement independently.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Its similarity identity and threshold belong in policy provenance"
+        },
+        {
+          "id": "o2",
+          "text": "A retrieval-model upgrade automatically replaces Jaccard"
+        },
+        {
+          "id": "o3",
+          "text": "Terms are ASCII lowercase word sets"
+        },
+        {
+          "id": "o4",
+          "text": "Duplicate words do not increase Jaccard set overlap"
+        },
+        {
+          "id": "o5",
+          "text": "It is a heuristic rather than a learned boundary model"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q040",
+      "type": "multiple",
+      "topic": "Semantic validation",
+      "difficulty": "foundation",
+      "prompt": "Which values must fail their stated semantic-policy domains?",
+      "explanation": "Thresholds are finite exact numeric values in [0,1]; scores are finite exact numeric values in [-1,1]. Equality does not trigger a split.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A finite similarity score equal to the threshold"
+        },
+        {
+          "id": "o2",
+          "text": "A NaN threshold"
+        },
+        {
+          "id": "o3",
+          "text": "A threshold greater than one"
+        },
+        {
+          "id": "o4",
+          "text": "A bool threshold"
+        },
+        {
+          "id": "o5",
+          "text": "An adjacent similarity score outside [-1,1]"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q041",
+      "type": "multiple",
+      "topic": "Parent-child design",
+      "difficulty": "applied",
+      "prompt": "Which choices match the supplied parent-child retrieval path?",
+      "explanation": "Separate retrieval granularity from context granularity and report both counts. Multiple child matches must not duplicate the same expanded parent.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Index children for matching"
+        },
+        {
+          "id": "o2",
+          "text": "Store parent units as possible context"
+        },
+        {
+          "id": "o3",
+          "text": "Retain explicit child-to-parent lineage"
+        },
+        {
+          "id": "o4",
+          "text": "Deduplicate a parent reached through several child hits"
+        },
+        {
+          "id": "o5",
+          "text": "Embed every parent and call that children-only retrieval"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q042",
+      "type": "multiple",
+      "topic": "Authorized expansion",
+      "difficulty": "applied",
+      "prompt": "What must be checked when a readable child requests a parent?",
+      "explanation": "Lineage, configuration and authorization are independent checks. A child cannot borrow text from another source or grant access to its parent.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The parent is a root, not another child"
+        },
+        {
+          "id": "o2",
+          "text": "Parent and child share full source identity and policy"
+        },
+        {
+          "id": "o3",
+          "text": "The access policy permits reading the parent itself"
+        },
+        {
+          "id": "o4",
+          "text": "A high score can override a failed permission check"
+        },
+        {
+          "id": "o5",
+          "text": "The parent exists in the collection"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q043",
+      "type": "multiple",
+      "topic": "Context admission",
+      "difficulty": "foundation",
+      "prompt": "Which statements match the context selector?",
+      "explanation": "The declared greedy policy prioritizes ranked order and preserves admitted units. It is not a knapsack optimizer or a truncating summarizer.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Skip oversized units while considering later hits"
+        },
+        {
+          "id": "o2",
+          "text": "Keep first-admission order after deduplication"
+        },
+        {
+          "id": "o3",
+          "text": "Silently trim any parent to force it into the budget"
+        },
+        {
+          "id": "o4",
+          "text": "Count one newline between admitted units"
+        },
+        {
+          "id": "o5",
+          "text": "Admit only whole units that fit"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q044",
+      "type": "multiple",
+      "topic": "Representation changes",
+      "difficulty": "applied",
+      "prompt": "Which changes can alter representation fingerprints even when the canonical text digest is unchanged?",
+      "explanation": "Representation provenance extends beyond canonical text. Parser/layout/metadata/status changes need versioned rebuild and comparison handling.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Parse status"
+        },
+        {
+          "id": "o2",
+          "text": "An unrelated dashboard button's color"
+        },
+        {
+          "id": "o3",
+          "text": "Parser version"
+        },
+        {
+          "id": "o4",
+          "text": "Page/block layout"
+        },
+        {
+          "id": "o5",
+          "text": "Metadata"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q045",
+      "type": "multiple",
+      "topic": "Manifest checks",
+      "difficulty": "applied",
+      "prompt": "Which invariants are checked by the chunk-collection contract?",
+      "explanation": "Consistency checks compare records against a trusted manifest. They do not turn checksums into signatures or certify original-file accuracy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The hash proves the source file was signed by the supplier"
+        },
+        {
+          "id": "o2",
+          "text": "Supported schema and declared chunk count"
+        },
+        {
+          "id": "o3",
+          "text": "Stored serialized contents match the manifest digest"
+        },
+        {
+          "id": "o4",
+          "text": "Unique chunk IDs from one source identity"
+        },
+        {
+          "id": "o5",
+          "text": "Valid parent-child lineage and matching policy"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q046",
+      "type": "multiple",
+      "topic": "Metric definitions",
+      "difficulty": "foundation",
+      "prompt": "Which statements describe the default comparison metrics?",
+      "explanation": "The retrieval unit is a chunk, while labels and support grouping are document-scoped in the frozen practice snapshot. Do not mix those units.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Distinct relevant documents reached at top-k chunks determine document recall"
+        },
+        {
+          "id": "o2",
+          "text": "Duplicate document hits still consume chunk slots"
+        },
+        {
+          "id": "o3",
+          "text": "Support atoms are matched within their own labelled document"
+        },
+        {
+          "id": "o4",
+          "text": "Support completeness is a substring proxy, not entailment"
+        },
+        {
+          "id": "o5",
+          "text": "Any atom in any document can satisfy every labelled source"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W06-Q047",
+      "type": "multiple",
+      "topic": "Evaluation hygiene",
+      "difficulty": "applied",
+      "prompt": "Which practices support a defensible policy comparison?",
+      "explanation": "Control confounders and leakage before claiming quality. The visible nine-query collection remains practice data rather than held-out evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Separate tuning from a held-out evaluation set"
+        },
+        {
+          "id": "o2",
+          "text": "Group copied agreements/amendments across split boundaries"
+        },
+        {
+          "id": "o3",
+          "text": "Record label adjudication and source/query fingerprints"
+        },
+        {
+          "id": "o4",
+          "text": "Choose each policy's labels after observing its best examples"
+        },
+        {
+          "id": "o5",
+          "text": "Freeze sources, parsing, model, metric and budgets"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q048",
+      "type": "multiple",
+      "topic": "Honest measurement",
+      "difficulty": "applied",
+      "prompt": "Which statements accurately describe the supplied teaching report?",
+      "explanation": "Keep units and missing measurements explicit. Coordinate estimates exclude IDs, metadata, Python objects, allocator and index overhead.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Token averages and generated-answer grades remain null"
+        },
+        {
+          "id": "o2",
+          "text": "Real PDF/OCR accuracy is unmeasured"
+        },
+        {
+          "id": "o3",
+          "text": "Character counts are measured model token lengths"
+        },
+        {
+          "id": "o4",
+          "text": "Text bytes count stored UTF-8 text only"
+        },
+        {
+          "id": "o5",
+          "text": "Packed vector bytes are indexed_count*dimension*4"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q049",
+      "type": "multiple",
+      "topic": "Practice snapshot",
+      "difficulty": "foundation",
+      "prompt": "Which statements hold for the visible Week 6 practice collection?",
+      "explanation": "These are synthetic parsed fixtures and visible queries. A real multi-version benchmark needs fully scoped labels and active-version rules.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Document-only labels require one tenant/version per document ID here"
+        },
+        {
+          "id": "o2",
+          "text": "It benchmarks production model quality on unseen supplier files"
+        },
+        {
+          "id": "o3",
+          "text": "Five accepted source documents are compared"
+        },
+        {
+          "id": "o4",
+          "text": "P-106 stays quarantined as needs_review"
+        },
+        {
+          "id": "o5",
+          "text": "Seven queries have gold support and two do not"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q050",
+      "type": "multiple",
+      "topic": "Operational handling",
+      "difficulty": "applied",
+      "prompt": "Which choices fit the lesson's rollout and privacy guidance?",
+      "explanation": "Source evidence is data, not application authority. Promotion, privacy and rollback controls remain necessary even for deterministic chunking.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat an instruction embedded in a contract as authorization to call tools"
+        },
+        {
+          "id": "o2",
+          "text": "Version parser and chunk policies before rebuilding"
+        },
+        {
+          "id": "o3",
+          "text": "Retain a rollback manifest and evaluate before promotion"
+        },
+        {
+          "id": "o4",
+          "text": "Prefer IDs/counts/error codes over raw confidential text in routine logs"
+        },
+        {
+          "id": "o5",
+          "text": "Keep prompt-like instructions in document text untrusted"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W06-Q051",
+      "type": "match",
+      "topic": "Policy families",
+      "difficulty": "applied",
+      "prompt": "Match each policy to its main boundary rule.",
+      "explanation": "Each policy preserves and breaks different relationships. Choose from evidence needs and measured outcomes, not a universal preferred size.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Fixed-size"
+        },
+        {
+          "id": "l2",
+          "text": "Overlap"
+        },
+        {
+          "id": "l3",
+          "text": "Sentence"
+        },
+        {
+          "id": "l4",
+          "text": "Structure"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Non-overlapping character windows"
+        },
+        {
+          "id": "r2",
+          "text": "Character windows advanced by width minus overlap"
+        },
+        {
+          "id": "r3",
+          "text": "Greedy groups of complete sentences"
+        },
+        {
+          "id": "r4",
+          "text": "Body blocks with the current heading"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q052",
+      "type": "match",
+      "topic": "Parser outcomes",
+      "difficulty": "foundation",
+      "prompt": "Match each fixture condition to its outcome or limitation.",
+      "explanation": "Boundary acceptance, review and rejection are distinct from source accuracy. The lab's fixture parser never verifies a real PDF or scan.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Valid ordinary paragraph"
+        },
+        {
+          "id": "l2",
+          "text": "Ambiguous 12.O0 table price"
+        },
+        {
+          "id": "l3",
+          "text": "Invalid negative page"
+        },
+        {
+          "id": "l4",
+          "text": "Readable extracted PDF text"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Accepted at the fixture boundary"
+        },
+        {
+          "id": "r2",
+          "text": "Needs review without numeric repair"
+        },
+        {
+          "id": "r3",
+          "text": "Rejected as a location violation"
+        },
+        {
+          "id": "r4",
+          "text": "Original layout accuracy is not yet established"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q053",
+      "type": "match",
+      "topic": "Units and measures",
+      "difficulty": "applied",
+      "prompt": "Match each value to the correct unit.",
+      "explanation": "Characters, encoded bytes, model tokens and layout coordinates are different units. The fixture's character spans do not provide PDF bounding boxes.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Window width"
+        },
+        {
+          "id": "l2",
+          "text": "Stored text size"
+        },
+        {
+          "id": "l3",
+          "text": "Model input length"
+        },
+        {
+          "id": "l4",
+          "text": "PDF table position"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Python characters"
+        },
+        {
+          "id": "r2",
+          "text": "UTF-8 bytes"
+        },
+        {
+          "id": "r3",
+          "text": "Tokenizer-versioned tokens"
+        },
+        {
+          "id": "r4",
+          "text": "Original layout coordinates when supplied by a real parser"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q054",
+      "type": "match",
+      "topic": "P-105 evidence",
+      "difficulty": "applied",
+      "prompt": "Match each evidence piece to its role.",
+      "explanation": "A document hit or local parent can still omit required evidence. Inspect actual admitted context for the row, condition and relation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Schedule A row"
+        },
+        {
+          "id": "l2",
+          "text": "Net 30 after inspection approval"
+        },
+        {
+          "id": "l3",
+          "text": "Controls Schedule A"
+        },
+        {
+          "id": "l4",
+          "text": "Section 3 parent"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Identifies the copper-wire line and quantity"
+        },
+        {
+          "id": "r2",
+          "text": "States the conditional payment terms"
+        },
+        {
+          "id": "r3",
+          "text": "Connects the section condition to the line schedule"
+        },
+        {
+          "id": "r4",
+          "text": "Readable invoicing context without automatically including another section's row"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q055",
+      "type": "match",
+      "topic": "Window arithmetic",
+      "difficulty": "foundation",
+      "prompt": "For length 200, width 120, overlap 40, match each quantity to its value.",
+      "explanation": "The second window reaches source end. Stop there so an extra tail contained in the second window is not emitted.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Stride"
+        },
+        {
+          "id": "l2",
+          "text": "First span"
+        },
+        {
+          "id": "l3",
+          "text": "Second span"
+        },
+        {
+          "id": "l4",
+          "text": "Window count"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "80"
+        },
+        {
+          "id": "r2",
+          "text": "[0,120)"
+        },
+        {
+          "id": "r3",
+          "text": "[80,200)"
+        },
+        {
+          "id": "r4",
+          "text": "2"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q056",
+      "type": "match",
+      "topic": "Provenance roles",
+      "difficulty": "applied",
+      "prompt": "Match each identity to what it binds.",
+      "explanation": "Different digests identify different subjects. None independently authenticates an original supplier file or grants access.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Canonical content digest"
+        },
+        {
+          "id": "l2",
+          "text": "Representation fingerprint"
+        },
+        {
+          "id": "l3",
+          "text": "Policy fingerprint"
+        },
+        {
+          "id": "l4",
+          "text": "Stored contents checksum"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Trimmed block texts joined by newlines"
+        },
+        {
+          "id": "r2",
+          "text": "Parser, layout, metadata, status and source identity"
+        },
+        {
+          "id": "r3",
+          "text": "Policy name, version and ordered parameters"
+        },
+        {
+          "id": "r4",
+          "text": "Serialized chunk records under a trusted manifest"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q057",
+      "type": "match",
+      "topic": "Parent-child vocabulary",
+      "difficulty": "applied",
+      "prompt": "Match each term to its role.",
+      "explanation": "Parent expansion must preserve source scope and permissions, then respect a separate context budget.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Child"
+        },
+        {
+          "id": "l2",
+          "text": "Parent"
+        },
+        {
+          "id": "l3",
+          "text": "Deduplication"
+        },
+        {
+          "id": "l4",
+          "text": "Lineage validation"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Small matching unit with a parent link"
+        },
+        {
+          "id": "r2",
+          "text": "Larger stored unit available for authorized expansion"
+        },
+        {
+          "id": "r3",
+          "text": "Admit a parent once despite repeated child hits"
+        },
+        {
+          "id": "r4",
+          "text": "Require compatible source/policy and a root parent"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q058",
+      "type": "match",
+      "topic": "Similarity boundaries",
+      "difficulty": "foundation",
+      "prompt": "Match each item to its interpretation.",
+      "explanation": "The declared comparison is strict less-than, and set overlap is a teaching heuristic rather than learned semantic understanding.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Jaccard"
+        },
+        {
+          "id": "l2",
+          "text": "Repeated term"
+        },
+        {
+          "id": "l3",
+          "text": "Score below threshold"
+        },
+        {
+          "id": "l4",
+          "text": "Score equal to threshold"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Intersection size divided by union size of term sets"
+        },
+        {
+          "id": "r2",
+          "text": "Does not add another set member"
+        },
+        {
+          "id": "r3",
+          "text": "Starts a new paragraph group"
+        },
+        {
+          "id": "r4",
+          "text": "Stays in the current paragraph group"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q059",
+      "type": "match",
+      "topic": "Retrieval and support",
+      "difficulty": "applied",
+      "prompt": "Match each observation to its supported conclusion.",
+      "explanation": "Finding a source, complete substring support, answer quality and no-gold conditions measure different things.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "One relevant document is hit"
+        },
+        {
+          "id": "l2",
+          "text": "All required atoms within one source's context"
+        },
+        {
+          "id": "l3",
+          "text": "A fluent generated answer"
+        },
+        {
+          "id": "l4",
+          "text": "No gold support labels"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Some relevant source was reached"
+        },
+        {
+          "id": "r2",
+          "text": "That source passes the declared support proxy"
+        },
+        {
+          "id": "r3",
+          "text": "Factual support still needs separate evaluation"
+        },
+        {
+          "id": "r4",
+          "text": "Recall/support are undefined under this practice policy"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q060",
+      "type": "match",
+      "topic": "Comparison counts",
+      "difficulty": "applied",
+      "prompt": "Match each default parent-child count to its value or subject.",
+      "explanation": "Parents cost stored text but only children cost embedding coordinates in this policy. The vector estimate excludes all other memory.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Accepted source count"
+        },
+        {
+          "id": "l2",
+          "text": "Stored chunk count"
+        },
+        {
+          "id": "l3",
+          "text": "Indexed child count"
+        },
+        {
+          "id": "l4",
+          "text": "Packed vector estimate"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "5"
+        },
+        {
+          "id": "r2",
+          "text": "17"
+        },
+        {
+          "id": "r3",
+          "text": "9"
+        },
+        {
+          "id": "r4",
+          "text": "216 bytes for nine six-dimensional float32 vectors"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q061",
+      "type": "match",
+      "topic": "Failure remedies",
+      "difficulty": "foundation",
+      "prompt": "Match each problem to an appropriate response.",
+      "explanation": "Apply a remedy at the correct boundary. Never silently turn uncertainty into a fact or cross source/access boundaries to fill context.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Uncertain OCR number"
+        },
+        {
+          "id": "l2",
+          "text": "A condition crosses a window edge"
+        },
+        {
+          "id": "l3",
+          "text": "Parent exceeds context budget"
+        },
+        {
+          "id": "l4",
+          "text": "Child references a foreign source parent"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Retain evidence and route to review"
+        },
+        {
+          "id": "r2",
+          "text": "Compare a versioned boundary/overlap alternative"
+        },
+        {
+          "id": "r3",
+          "text": "Skip the whole unit under the declared policy"
+        },
+        {
+          "id": "r4",
+          "text": "Reject incompatible lineage"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q062",
+      "type": "match",
+      "topic": "Sentence and structure limits",
+      "difficulty": "applied",
+      "prompt": "Match each case to its documented behavior.",
+      "explanation": "The simple policies have explicit retention limits. A lesson example should not be mistaken for a universal document parser.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Overlong single sentence"
+        },
+        {
+          "id": "l2",
+          "text": "Heading/table block in sentence policy"
+        },
+        {
+          "id": "l3",
+          "text": "Consecutive headings in simple structure policy"
+        },
+        {
+          "id": "l4",
+          "text": "Isolated heading in parent-child policy"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Can exceed the soft grouping target"
+        },
+        {
+          "id": "r2",
+          "text": "Flushed and kept atomically"
+        },
+        {
+          "id": "r3",
+          "text": "Only the active heading attaches to a later body"
+        },
+        {
+          "id": "r4",
+          "text": "Retained as an explicit child"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q063",
+      "type": "match",
+      "topic": "Evaluation populations",
+      "difficulty": "applied",
+      "prompt": "Match each population to its purpose.",
+      "explanation": "Keep practice, tuning, evaluation and missing-positive cases distinct when reporting means and quality claims.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Visible nine-query practice set"
+        },
+        {
+          "id": "l2",
+          "text": "Development split"
+        },
+        {
+          "id": "l3",
+          "text": "Frozen held-out split"
+        },
+        {
+          "id": "l4",
+          "text": "Two no-gold practice queries"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Pipeline inspection and debugging"
+        },
+        {
+          "id": "r2",
+          "text": "Policy and parameter tuning"
+        },
+        {
+          "id": "r3",
+          "text": "Evaluation after tuning choices"
+        },
+        {
+          "id": "r4",
+          "text": "Separate undefined-label population without demonstrated abstention"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q064",
+      "type": "match",
+      "topic": "Security boundaries",
+      "difficulty": "foundation",
+      "prompt": "Match each action to the boundary it protects.",
+      "explanation": "Chunking and similarity never grant business authority. Access checks apply at both matching and expanded-context boundaries.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Filter candidates before ranking"
+        },
+        {
+          "id": "l2",
+          "text": "Reauthorize expanded parent"
+        },
+        {
+          "id": "l3",
+          "text": "Keep document instructions untrusted"
+        },
+        {
+          "id": "l4",
+          "text": "Log IDs and counts instead of raw clauses"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Readable retrieval universe"
+        },
+        {
+          "id": "r2",
+          "text": "Larger context object access"
+        },
+        {
+          "id": "r3",
+          "text": "Application control over tool actions"
+        },
+        {
+          "id": "r4",
+          "text": "Routine telemetry data minimization"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q065",
+      "type": "match",
+      "topic": "Unmeasured outcomes",
+      "difficulty": "applied",
+      "prompt": "Match each missing result to the additional evidence it needs.",
+      "explanation": "Do not fill unmeasured fields with proxy numbers. The synthetic report intentionally leaves these outcomes unavailable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Average model tokens"
+        },
+        {
+          "id": "l2",
+          "text": "Generated-answer quality"
+        },
+        {
+          "id": "l3",
+          "text": "Production latency"
+        },
+        {
+          "id": "l4",
+          "text": "Real OCR accuracy"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A pinned tokenizer and actual prepared-input counts"
+        },
+        {
+          "id": "r2",
+          "text": "Generated answers and a declared grading procedure"
+        },
+        {
+          "id": "r3",
+          "text": "Timed runs at a declared workload boundary"
+        },
+        {
+          "id": "r4",
+          "text": "Representative scans and validated transcription judgments"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W06-Q066",
+      "type": "short",
+      "topic": "Stride expression",
+      "difficulty": "applied",
+      "prompt": "For width w and overlap o, complete the stride expression w ____ o. Type the one-character Python operator.",
+      "explanation": "Stride is width minus overlap. The valid overlap domain guarantees positive advancement.",
+      "accepted": [
+        "-"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q067",
+      "type": "short",
+      "topic": "Half-open slice",
+      "difficulty": "foundation",
+      "prompt": "Complete the exact Python slice for text from start inclusive to end exclusive: text[____]. Type start:end without spaces.",
+      "explanation": "Python slices exclude the end index. These offsets refer to the declared text representation, not raw PDF bytes.",
+      "accepted": [
+        "start:end"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q068",
+      "type": "short",
+      "topic": "Character length",
+      "difficulty": "applied",
+      "prompt": "What Python built-in measures a str's character count here? Type the function name only.",
+      "explanation": "len(text) counts Python string code points. Encoded byte counts and model token counts require separate operations.",
+      "accepted": [
+        "len"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q069",
+      "type": "short",
+      "topic": "Text byte length",
+      "difficulty": "applied",
+      "prompt": "Complete text.encode('____') for the lab's byte-counting and hashing encoding. Include the hyphen.",
+      "explanation": "UTF-8 is the declared encoding. A non-ASCII character can occupy multiple bytes even when len counts one character.",
+      "accepted": [
+        "utf-8"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W06-Q070",
+      "type": "short",
+      "topic": "Grouping threshold",
+      "difficulty": "foundation",
+      "prompt": "Complete the boundary condition score ____ threshold, which splits only below the threshold. Type the operator only.",
+      "explanation": "The policy uses strict less-than. Equality keeps the two paragraphs in the same group.",
+      "accepted": [
+        "<"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q071",
+      "type": "short",
+      "topic": "Canonical separator",
+      "difficulty": "applied",
+      "prompt": "What ASCII decimal code identifies the single newline between canonical blocks? Type the integer only.",
+      "explanation": "The newline character has code point 10. It is part of canonical text and its digest and must be counted in offsets.",
+      "accepted": [
+        "10"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W06-Q072",
+      "type": "short",
+      "topic": "Undefined measurement",
+      "difficulty": "applied",
+      "prompt": "What exact Python literal represents unmeasured generated_answer_quality in the report?",
+      "explanation": "None preserves missing measurement status. It is not a zero score or a measured successful answer.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q073",
+      "type": "short",
+      "topic": "Review status",
+      "difficulty": "foundation",
+      "prompt": "Type the exact lowercase parser status for an ambiguous OCR-like row that remains available for review.",
+      "explanation": "Review-required source text remains visible but cannot enter the accepted chunk collection.",
+      "accepted": [
+        "needs_review"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q074",
+      "type": "short",
+      "topic": "Indexed units",
+      "difficulty": "applied",
+      "prompt": "In parent-child retrieval, are parents or children embedded for matching? Type children or parents.",
+      "explanation": "Children are the indexed matching units; parents are stored separately for authorized context expansion.",
+      "accepted": [
+        "children"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W06-Q075",
+      "type": "short",
+      "topic": "Initial child absence",
+      "difficulty": "applied",
+      "prompt": "What Python literal is used for parent_chunk_id when a chunk has no parent?",
+      "explanation": "A root has no parent link. Testing is not None distinguishes actual child links without relying on arbitrary truthiness.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q076",
+      "type": "short",
+      "topic": "Set union",
+      "difficulty": "foundation",
+      "prompt": "Complete the Python set-union expression left_terms ____ right_terms. Type the one-character operator.",
+      "explanation": "Union counts distinct terms from either input. Jaccard divides the intersection size by this union size.",
+      "accepted": [
+        "|"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q077",
+      "type": "short",
+      "topic": "Set intersection",
+      "difficulty": "applied",
+      "prompt": "Complete the Python set-intersection expression left_terms ____ right_terms. Type the one-character operator.",
+      "explanation": "Intersection finds distinct shared terms. Repeating a word does not create additional members in a set.",
+      "accepted": [
+        "&"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W06-Q078",
+      "type": "short",
+      "topic": "Final stopping",
+      "difficulty": "applied",
+      "prompt": "A length-200 source uses width 120 and overlap 40, stopping at its first end-reaching window. How many windows? Type the integer.",
+      "explanation": "The windows are [0,120) and [80,200). Another [160,200) tail would duplicate a region already fully covered.",
+      "accepted": [
+        "2"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W06-Q079",
+      "type": "short",
+      "topic": "Context arithmetic",
+      "difficulty": "foundation",
+      "prompt": "Two admitted text units have lengths 5 and 6, joined with one newline. Type their total character cost as an integer.",
+      "explanation": "The joined context costs 5+1+6=12 characters. The separator consumes budget too.",
+      "accepted": [
+        "12"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W06-Q080",
+      "type": "short",
+      "topic": "Packed child vectors",
+      "difficulty": "applied",
+      "prompt": "Nine children have six float32 coordinates each. Type the packed coordinate bytes, excluding overhead, as an integer.",
+      "explanation": "The estimate is 9*6*4=216 bytes. Parents, IDs, metadata, source text and index/Python overhead are outside it.",
+      "accepted": [
+        "216"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W06-Q081",
+      "type": "code",
+      "topic": "Canonical parsed text",
+      "difficulty": "applied",
+      "prompt": "Implement canonical_text(blocks). Require list/tuple of UTF-8-encodable strings; raise ValueError for a wrong container, non-string element or unpaired surrogate. Strip the edges of each block, discard blank blocks and join retained blocks with exactly one newline, with no final newline. Empty/all-blank input returns ''. Preserve internal spaces, case and punctuation and do not mutate input. This canonicalization helper permits blanks; the full parser rejects blank source blocks and applies separate resource limits.",
+      "explanation": "Canonical text is deterministic and keeps internal evidence wording. It is a normalization recipe, not proof that the original document or extracted layout is accurate.",
+      "starter": "def canonical_text(blocks) -> str:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\ndef canonical_text(blocks):\n    if not isinstance(blocks,(list,tuple)):\n        raise ValueError(\"list or tuple required\")\n    clean=[valid_text(x).strip() for x in blocks]\n    return '\\n'.join(x for x in clean if x)\n",
+      "checks": [
+        {
+          "label": "Trim edges and use one separator",
+          "code": "assert canonical_text(['  Alpha  ',' Beta '])=='Alpha\\nBeta'"
+        },
+        {
+          "label": "Drop blanks without extra separators",
+          "code": "assert canonical_text(['A','  ','\\n','B'])=='A\\nB'\nassert canonical_text([])=='' and canonical_text([' ','\\t'])==''"
+        },
+        {
+          "label": "Preserve internal wording and Unicode",
+          "code": "assert canonical_text([' Net  30 after approval. ',' café 猫 '])=='Net  30 after approval.\\ncafé 猫'"
+        },
+        {
+          "label": "Reject invalid boundary values",
+          "code": "for x in ['AB',None,[True],[1],['\\ud800']]:\n    assert raises(ValueError,canonical_text,x)"
+        },
+        {
+          "label": "Input remains unchanged",
+          "code": "x=[' A ',' B '];assert canonical_text(x)=='A\\nB' and x==[' A ',' B ']"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q082",
+      "type": "code",
+      "topic": "Parsed block routing",
+      "difficulty": "foundation",
+      "prompt": "Implement block_status(block), returning 'accepted', 'needs_review' or 'rejected'. Require exactly keys kind,text,page,block,table,row in a dict. kind is heading/paragraph/table_row; text is nonblank UTF-8 str of <=1000 original Python characters. page/block are exact positive ints. table is None or a str fully matching [A-Za-z0-9._-]{1,128}; row is None or an exact positive int. Any violation returns rejected. Otherwise replacement character U+FFFD needs review. A table_row also needs review if table/row is absent or its text fails re.search of the exact narrow regex product=[^;]+; quantity=[0-9,]+(?:\\.[0-9]+)? (?:kg|ea); unit price=USD [0-9]+\\.[0-9]{2}\\.?$. Return accepted otherwise. Preserve input. This is single-block routing; heading-only document review and document-wide limits are separate.",
+      "explanation": "Hard shape/encoding/location failures reject; uncertain text/table interpretation needs review. The controlled regex does not independently verify a row against PDF bytes or an image.",
+      "starter": "def block_status(block: object) -> str:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\nimport re\ndef block_status(block):\n    if not isinstance(block,dict) or set(block)!={'kind','text','page','block','table','row'}:\n        return 'rejected'\n    if not isinstance(block['kind'],str) or block['kind'] not in {'heading','paragraph','table_row'}:\n        return 'rejected'\n    try:\n        text=valid_text(block['text'])\n    except ValueError:\n        return 'rejected'\n    if not text.strip() or len(text)>1000:\n        return 'rejected'\n    if any(type(block[k]) is not int or block[k]<1 for k in ('page','block')):\n        return 'rejected'\n    table,row=block['table'],block['row']\n    if table is not None and (not isinstance(table,str) or re.fullmatch(r'[A-Za-z0-9._-]{1,128}',table) is None):\n        return 'rejected'\n    if row is not None and (type(row) is not int or row<1):\n        return 'rejected'\n    review='�' in text\n    if block['kind']=='table_row':\n        review=review or table is None or row is None or re.search(r'product=[^;]+; quantity=[0-9,]+(?:\\.[0-9]+)? (?:kg|ea); unit price=USD [0-9]+\\.[0-9]{2}\\.?$',text) is None\n    return 'needs_review' if review else 'accepted'\n",
+      "checks": [
+        {
+          "label": "Ordinary paragraph and labelled row",
+          "code": "base={'kind':'paragraph','text':'Terms apply.','page':1,'block':1,'table':None,'row':None};assert block_status(base)=='accepted'\nr=dict(base,kind='table_row',table='schedule-a',row=1,text='Row 1: product=copper wire; quantity=1,000 kg; unit price=USD 12.00.');assert block_status(r)=='accepted'"
+        },
+        {
+          "label": "Ambiguity stays in review",
+          "code": "b={'kind':'table_row','text':'product=copper wire; quantity=100 kg; unit price=USD 12.O0.','page':1,'block':1,'table':'T','row':1};assert block_status(b)=='needs_review'\nb['text']='product=copper wire; quantity=100 kg; unit price=USD 12.00.';b['row']=None;assert block_status(b)=='needs_review'\nfor price in ['12x00','12,00','12.00x']:\n    b.update(row=1,text='product=copper wire; quantity=100 kg; unit price=USD '+price);assert block_status(b)=='needs_review'"
+        },
+        {
+          "label": "Replacement character and single heading",
+          "code": "b={'kind':'paragraph','text':'Bad \\ufffd glyph','page':1,'block':1,'table':None,'row':None};assert block_status(b)=='needs_review'\nb.update(kind='heading',text='A heading');assert block_status(b)=='accepted'"
+        },
+        {
+          "label": "Reject invalid locations, kinds and types",
+          "code": "base={'kind':'paragraph','text':'Text','page':1,'block':1,'table':None,'row':None}\nfor k,v in [('page',True),('page',0),('block',-1),('table','bad id'),('row',True),('row',0),('kind',[]),('text',12)]:\n    assert block_status(dict(base,**{k:v}))=='rejected'\nassert block_status({})=='rejected'"
+        },
+        {
+          "label": "Bounds, encoding and input preservation",
+          "code": "base={'kind':'paragraph','text':'x'*1000,'page':1,'block':1,'table':None,'row':None};before=dict(base);assert block_status(base)=='accepted' and base==before\nfor text in ['x'*1001,'  ','\\ud800']:\n    assert block_status(dict(base,text=text))=='rejected'"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q083",
+      "type": "code",
+      "topic": "Exact window spans",
+      "difficulty": "applied",
+      "prompt": "Implement window_spans(length,width,overlap=0). All three values must be exact ints excluding bool. Require length>=0, width>=1 and 0<=overlap<width; raise ValueError otherwise, even for empty input. Return a list of half-open (start,end) tuples. Begin at 0, advance by width-overlap and clamp end to length. Stop at the FIRST end==length, without emitting a redundant contained tail. For length=0 return []. This is span arithmetic; parser input bounds are separate.",
+      "explanation": "The explicit end-reaching stop is essential with overlap. A naive range(0,length,stride) can emit a tail already contained in the previous window.",
+      "starter": "def window_spans(length: int, width: int, overlap: int = 0) -> list[tuple[int, int]]:\n    raise NotImplementedError\n",
+      "reference": "def window_spans(length,width,overlap=0):\n    if any(type(x) is not int for x in (length,width,overlap)) or length<0 or width<1 or not 0<=overlap<width:\n        raise ValueError(\"invalid window parameters\")\n    out=[]\n    start=0\n    while start<length:\n        end=min(start+width,length)\n        out.append((start,end))\n        if end==length:\n            break\n        start+=width-overlap\n    return out\n",
+      "checks": [
+        {
+          "label": "Known overlap without redundant tail",
+          "code": "assert window_spans(200,120,40)==[(0,120),(80,200)]"
+        },
+        {
+          "label": "Fixed windows and partial final piece",
+          "code": "assert window_spans(10,4)==[(0,4),(4,8),(8,10)]\nassert window_spans(8,4)==[(0,4),(4,8)]"
+        },
+        {
+          "label": "Empty and smaller than width",
+          "code": "assert window_spans(0,4,1)==[] and window_spans(2,4,1)==[(0,2)]"
+        },
+        {
+          "label": "High valid overlap still progresses",
+          "code": "assert window_spans(5,3,2)==[(0,3),(1,4),(2,5)]"
+        },
+        {
+          "label": "Reject invalid exact-int bounds",
+          "code": "for args in [(-1,4,0),(1,0,0),(1,4,4),(1,4,-1),(True,4,0),(1,True,0),(1,4,False),(1.0,4,0),(0,4,4)]:\n    assert raises(ValueError,window_spans,*args)"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q084",
+      "type": "code",
+      "topic": "Window text without truncation of fragments",
+      "difficulty": "applied",
+      "prompt": "Implement window_text(text,width,overlap=0). text must be a UTF-8-encodable str of at most 4000 Python characters; raise ValueError otherwise. Apply window_spans parameter rules and first-end-reaching stop. Return text[start:end] for each span whose fragment is not blank. Preserve every retained fragment exactly, including its edge spaces; do not strip, paraphrase or mutate. Empty text yields [], while invalid parameters still raise. This helper deliberately allows empty text; the full accepted-source parser does not.",
+      "explanation": "Filtering a blank-only fragment differs from stripping a retained fragment. Offsets and exact source wording must still correspond to the declared canonical text.",
+      "starter": "def window_text(text: str, width: int, overlap: int = 0) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\ndef window_spans(length,width,overlap=0):\n    if any(type(x) is not int for x in (length,width,overlap)) or length<0 or width<1 or not 0<=overlap<width:\n        raise ValueError(\"invalid window parameters\")\n    out=[]\n    start=0\n    while start<length:\n        end=min(start+width,length)\n        out.append((start,end))\n        if end==length:\n            break\n        start+=width-overlap\n    return out\n\ndef window_text(text,width,overlap=0):\n    valid_text(text)\n    if len(text)>4000:\n        raise ValueError(\"oversized source\")\n    return [text[a:b] for a,b in window_spans(len(text),width,overlap) if text[a:b].strip()]\n",
+      "checks": [
+        {
+          "label": "Known overlapping fragments",
+          "code": "assert window_text('abcdefghij',6,2)==['abcdef','efghij']"
+        },
+        {
+          "label": "Retained spaces are evidence bytes",
+          "code": "assert window_text(' A  B ',3)==[' A ',' B ']\nassert window_text('a  b',2)==['a ',' b']"
+        },
+        {
+          "label": "Blank-only windows and empty input",
+          "code": "assert window_text('    ',2,1)==[] and window_text('',3)==[]\nassert raises(ValueError,window_text,'',3,3)"
+        },
+        {
+          "label": "Character rather than byte windows",
+          "code": "assert window_text('é猫AB',2)==['é猫','AB']\nassert len(window_text('x'*4000,4000))==1"
+        },
+        {
+          "label": "Reject encoding/types and no silent bound slicing",
+          "code": "for x in ['x'*4001,'\\ud800',True,None]:\n    assert raises(ValueError,window_text,x,10)\nassert raises(ValueError,window_text,'abc',True)"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q085",
+      "type": "code",
+      "topic": "Map windows back to blocks",
+      "difficulty": "foundation",
+      "prompt": "Implement span_locations(blocks,start,end). blocks must be list/tuple of nonblank UTF-8 strings; trim each block's edges and join conceptually with one newline. start/end are exact ints satisfying 0<=start<end<=canonical_length; raise ValueError otherwise. Return (zero_based_input_block_index,local_start,local_end) tuples in block order only where the window intersects actual trimmed block characters. All spans are half-open. Newline separators have no block location. Preserve inputs; parser resource caps are separate.",
+      "explanation": "Map only intersections, then subtract each block's canonical start to obtain local offsets. Separators and trimmed padding must not become false source citations.",
+      "starter": "def span_locations(blocks, start: int, end: int) -> list[tuple[int, int, int]]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\ndef span_locations(blocks,start,end):\n    if not isinstance(blocks,(list,tuple)):\n        raise ValueError(\"list or tuple required\")\n    clean=[valid_text(x).strip() for x in blocks]\n    if any(not x for x in clean):\n        raise ValueError(\"blank block\")\n    total=sum(len(x) for x in clean)+max(0,len(clean)-1)\n    if type(start) is not int or type(end) is not int or not 0<=start<end<=total:\n        raise ValueError(\"invalid window range\")\n    result=[]\n    cursor=0\n    for index,text in enumerate(clean):\n        lo,hi=max(start,cursor),min(end,cursor+len(text))\n        if lo<hi:\n            result.append((index,lo-cursor,hi-cursor))\n        cursor+=len(text)+1\n    return result\n",
+      "checks": [
+        {
+          "label": "Cross-block window",
+          "code": "assert span_locations([' ab ','cde'],1,5)==[(0,1,2),(1,0,2)]"
+        },
+        {
+          "label": "Separator alone is not a block",
+          "code": "assert span_locations(['ab','cde'],2,3)==[]\nassert span_locations(['ab','cde'],3,6)==[(1,0,3)]"
+        },
+        {
+          "label": "Trimmed character offsets with Unicode",
+          "code": "assert span_locations([' é ',' 猫 '],0,3)==[(0,0,1),(1,0,1)]"
+        },
+        {
+          "label": "No out-of-range or bool offsets",
+          "code": "for start,end in [(-1,2),(1,1),(0,7),(True,2),(0,2.0)]:\n    assert raises(ValueError,span_locations,['ab','cde'],start,end)\nassert raises(ValueError,span_locations,[],0,1)"
+        },
+        {
+          "label": "Reject blank/invalid blocks and preserve input",
+          "code": "for b in [[' '],['\\ud800'],[True],'ab']:\n    assert raises(ValueError,span_locations,b,0,1)\nb=[' ab ',' c '];assert span_locations(b,0,4)==[(0,0,2),(1,0,1)] and b==[' ab ',' c ']"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q086",
+      "type": "code",
+      "topic": "Whole-sentence grouping",
+      "difficulty": "applied",
+      "prompt": "Implement sentence_groups(text,target). Require UTF-8 str and exact-int target>=1, otherwise raise ValueError. Empty/blank text returns []. Split text.strip() with re.split(r'(?<=[.!?])\\s+', ...), then greedily append whole sentences joined by one space. If adding a sentence would exceed target and a group is already pending, flush the pending group first. Never split an individual sentence, even if it exceeds target. Return group strings. This is a paragraph-only controlled-prose helper, not a universal sentence/parser model.",
+      "explanation": "The target controls grouping, not sentence clipping. Regex punctuation boundaries can mis-handle abbreviations and are deliberately limited to this stated teaching contract.",
+      "starter": "def sentence_groups(text: str, target: int) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\nimport re\ndef sentence_groups(text,target):\n    valid_text(text)\n    if type(target) is not int or target<1:\n        raise ValueError(\"positive exact-int target required\")\n    if not text.strip():\n        return []\n    groups=[]\n    pending=[]\n    for sentence in re.split(r'(?<=[.!?])\\s+',text.strip()):\n        if pending and len(' '.join([*pending,sentence]))>target:\n            groups.append(' '.join(pending))\n            pending=[]\n        pending.append(sentence)\n    if pending:\n        groups.append(' '.join(pending))\n    return groups\n",
+      "checks": [
+        {
+          "label": "Greedy known groups",
+          "code": "assert sentence_groups('One. Two! Three?',9)==['One. Two!','Three?']"
+        },
+        {
+          "label": "Overlong indivisible sentence",
+          "code": "assert sentence_groups('A very long unbroken sentence.',3)==['A very long unbroken sentence.']"
+        },
+        {
+          "label": "Exact fit and normalized split whitespace",
+          "code": "assert sentence_groups('  A.\\n\\tB!  ',5)==['A. B!']\nassert sentence_groups('A. B!',4)==['A.','B!']"
+        },
+        {
+          "label": "Blank input and punctuation without whitespace",
+          "code": "assert sentence_groups('  ',2)==[]\nassert sentence_groups('A.B!',2)==['A.B!']"
+        },
+        {
+          "label": "Validate type/encoding/target even when blank",
+          "code": "for t in [0,-1,True,2.0]:\n    assert raises(ValueError,sentence_groups,'',t)\nassert raises(ValueError,sentence_groups,None,10)\nassert raises(ValueError,sentence_groups,'\\ud800',10)"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q087",
+      "type": "code",
+      "topic": "Heading and body lineage",
+      "difficulty": "applied",
+      "prompt": "Implement structure_units(blocks,include_heading=True). Assume blocks is a list of well-formed {'kind': heading/paragraph/table_row, 'text': already-trimmed nonblank str, 'location': unique str} records. Require include_heading to be exact bool or raise ValueError. Track the latest heading; for each paragraph/table row return (text,locations_tuple), with active heading + newline + body and both locations when enabled, or just body/location otherwise. Headings themselves emit no unit; isolated/consecutive headings may be omitted by this simple policy. Preserve inputs and body order. Empty input returns [].",
+      "explanation": "Heading text must travel with its citation, not just decorate a body. This local policy does not automatically emit isolated headings or resolve distant references.",
+      "starter": "def structure_units(blocks: list[dict], include_heading: bool = True) -> list[tuple[str, tuple[str, ...]]]:\n    raise NotImplementedError\n",
+      "reference": "def structure_units(blocks,include_heading=True):\n    if type(include_heading) is not bool:\n        raise ValueError(\"exact bool required\")\n    heading=None\n    result=[]\n    for block in blocks:\n        if block['kind']=='heading':\n            heading=block\n            continue\n        if include_heading and heading is not None:\n            result.append((heading['text']+'\\n'+block['text'],(heading['location'],block['location'])))\n        else:\n            result.append((block['text'],(block['location'],)))\n    return result\n",
+      "checks": [
+        {
+          "label": "Heading plus table body",
+          "code": "b=[{'kind':'heading','text':'Schedule A','location':'h'},{'kind':'table_row','text':'product=wire; quantity=1000 kg','location':'r'}];assert structure_units(b)==[('Schedule A\\nproduct=wire; quantity=1000 kg',('h','r'))]"
+        },
+        {
+          "label": "Body before first heading",
+          "code": "assert structure_units([{'kind':'paragraph','text':'Preamble','location':'p'}])==[('Preamble',('p',))]"
+        },
+        {
+          "label": "Consecutive and isolated headings",
+          "code": "b=[{'kind':'heading','text':'Old','location':'h1'},{'kind':'heading','text':'Current','location':'h2'},{'kind':'paragraph','text':'Body','location':'p'},{'kind':'heading','text':'Isolated','location':'h3'}];assert structure_units(b)==[('Current\\nBody',('h2','p'))]"
+        },
+        {
+          "label": "Disable prefix without losing body",
+          "code": "b=[{'kind':'heading','text':'H','location':'h'},{'kind':'paragraph','text':'P','location':'p'}];before=[dict(x) for x in b];assert structure_units(b,False)==[('P',('p',))] and b==before"
+        },
+        {
+          "label": "Empty and exact-bool flag",
+          "code": "assert structure_units([])==[]\nfor flag in [0,1,'yes',None]:\n    assert raises(ValueError,structure_units,[],flag)"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q088",
+      "type": "code",
+      "topic": "Shared-term Jaccard",
+      "difficulty": "foundation",
+      "prompt": "Implement shared_terms(left,right). Require UTF-8-encodable strings or raise ValueError. For each input, use the SET of re.findall(r'[a-z0-9]+', text.lower()) terms. Return intersection_size/union_size as float, or 0.0 for an empty union. Repeated terms do not count more than once. This ASCII shared-term heuristic does not establish learned semantic similarity or support for a contract question.",
+      "explanation": "Jaccard uses distinct set members and the union denominator. The explicitly ASCII tokenization has language limits and is not a trained boundary model.",
+      "starter": "def shared_terms(left: str, right: str) -> float:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\nimport re\ndef shared_terms(left,right):\n    a=set(re.findall(r'[a-z0-9]+',valid_text(left).lower()))\n    b=set(re.findall(r'[a-z0-9]+',valid_text(right).lower()))\n    union=a|b\n    return len(a&b)/len(union) if union else 0.0\n",
+      "checks": [
+        {
+          "label": "Known one-third overlap",
+          "code": "import math\nassert math.isclose(shared_terms('copper wire','copper payment'),1/3)"
+        },
+        {
+          "label": "Sets, not term frequency",
+          "code": "assert shared_terms('wire wire wire','WIRE')==1.0\nassert shared_terms('wire wire','wire steel')==.5"
+        },
+        {
+          "label": "Punctuation, case and ASCII digits",
+          "code": "assert shared_terms('P-105, Net 30!','p 105 net 30')==1.0"
+        },
+        {
+          "label": "Empty union and no common terms",
+          "code": "assert shared_terms('!!!','')==0.0\nassert shared_terms('wire','bolts')==0.0\nassert shared_terms('猫','猫')==0.0"
+        },
+        {
+          "label": "Reject invalid inputs without coercion",
+          "code": "assert raises(ValueError,shared_terms,True,'x')\nassert raises(ValueError,shared_terms,'x',None)\nassert raises(ValueError,shared_terms,'\\ud800','x')"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q089",
+      "type": "code",
+      "topic": "Adjacent paragraph boundaries",
+      "difficulty": "applied",
+      "prompt": "Implement paragraph_groups(paragraphs,scores,threshold). paragraphs is list/tuple of nonblank UTF-8 strings; strip each paragraph's edges. scores is list/tuple with exactly max(0,len(paragraphs)-1) adjacent-pair scores. Each score is exact int/float (no bool), finite after float conversion, in [-1,1]; threshold has the same numeric/type rule but range [0,1]. Raise ValueError for violations. Begin with the first paragraph and split before the next ONLY if its corresponding adjacent score < threshold; otherwise join with one space. Return strings; [] for empty valid input. Use each original adjacent pair, not a recomputed group mean. Do not mutate inputs. Heading/table flushing is outside this paragraph-only helper.",
+      "explanation": "The declared strict threshold and original adjacency order determine boundaries. This helper consumes scores but cannot establish that a heuristic or learned scorer is suitable.",
+      "starter": "def paragraph_groups(paragraphs, scores, threshold: float) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\nimport math\ndef checked_number(value,lo,hi):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact numeric value required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value) or not lo<=value<=hi:\n        raise ValueError(\"number outside domain\")\n    return value\n\ndef paragraph_groups(paragraphs,scores,threshold):\n    threshold=checked_number(threshold,0,1)\n    if not isinstance(paragraphs,(list,tuple)) or not isinstance(scores,(list,tuple)):\n        raise ValueError(\"lists or tuples required\")\n    clean=[valid_text(x).strip() for x in paragraphs]\n    if any(not x for x in clean) or len(scores)!=max(0,len(clean)-1):\n        raise ValueError(\"invalid paragraphs/adjacent count\")\n    values=[checked_number(s,-1,1) for s in scores]\n    if not clean:\n        return []\n    result=[]\n    pending=[clean[0]]\n    for score,text in zip(values,clean[1:]):\n        if score<threshold:\n            result.append(' '.join(pending))\n            pending=[]\n        pending.append(text)\n    result.append(' '.join(pending))\n    return result\n",
+      "checks": [
+        {
+          "label": "Strict comparison including equality",
+          "code": "assert paragraph_groups(['A','B','C'],[.5,.1],.5)==['A B','C']"
+        },
+        {
+          "label": "Each adjacent original pair",
+          "code": "assert paragraph_groups(['A','B','C','D'],[.9,.2,.9],.5)==['A B','C D']"
+        },
+        {
+          "label": "Negative similarity and empty input",
+          "code": "assert paragraph_groups(['A','B'],[-.1],0)==['A','B']\nassert paragraph_groups([],[],.5)==[]\nassert paragraph_groups([' A '],[],.5)==['A']"
+        },
+        {
+          "label": "Reject numeric/type/count violations",
+          "code": "for p,s,t in [(['A','B'],[],.5),(['A','B'],[True],.5),(['A','B'],[1.1],.5),(['A','B'],[float('nan')],.5),(['A'],[],True),(['A'],[],float('inf')),(['A'],[],-.1),(['A'],[],10**1000)]:\n    assert raises(ValueError,paragraph_groups,p,s,t)"
+        },
+        {
+          "label": "Text validation and preserved inputs",
+          "code": "for p in [[' '],['\\ud800'],[False],'A']:\n    assert raises(ValueError,paragraph_groups,p,[],.5)\np=[' A ',' B '];s=[.8];assert paragraph_groups(p,s,.5)==['A B'] and p==[' A ',' B '] and s==[.8]"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q090",
+      "type": "code",
+      "topic": "Versioned policy fingerprint",
+      "difficulty": "applied",
+      "prompt": "Implement policy_fingerprint(name,version,parameters). Assume name/version are valid UTF-8 strings without chr(31); parameters is an ordered list/tuple of (key,value) UTF-8 string pairs without chr(31). Build a sequence containing name, version, then key+'='+value for each pair IN GIVEN ORDER, join by chr(31), UTF-8 encode, then return SHA-256 hex. Do not sort parameters, omit versions or mutate inputs. This follows the ordered policy-identity recipe and is not a signature.",
+      "explanation": "The policy identity binds the declared version and ordered parameter recipe. A parameter-only or text-only hash misses compatibility changes.",
+      "starter": "def policy_fingerprint(name: str, version: str, parameters) -> str:\n    raise NotImplementedError\n",
+      "reference": "import hashlib\ndef policy_fingerprint(name,version,parameters):\n    values=[name,version,*[key+'='+value for key,value in parameters]]\n    return hashlib.sha256(chr(31).join(values).encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact explicit recipe",
+          "code": "import hashlib\nexpected=hashlib.sha256(('overlap'+chr(31)+'1.1.0'+chr(31)+'width=120'+chr(31)+'overlap=40').encode('utf-8')).hexdigest();assert policy_fingerprint('overlap','1.1.0',[('width','120'),('overlap','40')])==expected"
+        },
+        {
+          "label": "Parameters affect compatibility",
+          "code": "a=policy_fingerprint('overlap','1',[('width','120'),('overlap','40')]);assert a!=policy_fingerprint('overlap','1',[('width','120'),('overlap','20')])"
+        },
+        {
+          "label": "Name and version are not optional",
+          "code": "a=policy_fingerprint('fixed','1',[('width','120')]);assert a!=policy_fingerprint('fixed','2',[('width','120')]) and a!=policy_fingerprint('sentence','1',[('width','120')])"
+        },
+        {
+          "label": "Declared order stays significant",
+          "code": "p=[('width','120'),('overlap','40')];assert policy_fingerprint('x','1',p)!=policy_fingerprint('x','1',p[::-1]) and p==[('width','120'),('overlap','40')]"
+        },
+        {
+          "label": "Empty parameters and Unicode bytes",
+          "code": "import hashlib\nassert policy_fingerprint('结构','1',[])==hashlib.sha256(('结构'+chr(31)+'1').encode('utf-8')).hexdigest()"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q091",
+      "type": "code",
+      "topic": "Representation checksum recipe",
+      "difficulty": "foundation",
+      "prompt": "Implement representation_hash(record). Require a dict or raise ValueError. The caller supplies the complete representation record with source identity, parser, layout, metadata and status; this helper does not infer missing fields. Serialize using json.dumps(sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False), UTF-8 encode, and return SHA-256 hex. Raise ValueError if serialization/UTF-8 encoding fails, including non-finite JSON values. Preserve input. Dict insertion order must not affect the hash; changing parser/layout/metadata must affect it even with unchanged text. This is an explicit teaching serialization, not a signature or the full lab dataclass schema.",
+      "explanation": "A complete representation fingerprint binds more than canonical text. The caller must supply the right schema and trust the expected checksum before treating it as integrity evidence.",
+      "starter": "def representation_hash(record: dict) -> str:\n    raise NotImplementedError\n",
+      "reference": "import json,hashlib\ndef representation_hash(record):\n    if not isinstance(record,dict):\n        raise ValueError(\"representation object required\")\n    try:\n        encoded=json.dumps(record,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode('utf-8')\n    except (TypeError,ValueError,UnicodeEncodeError) as exc:\n        raise ValueError(\"invalid representation\") from exc\n    return hashlib.sha256(encoded).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact compact UTF-8 encoding",
+          "code": "import hashlib\nassert representation_hash({'text':'é','parser':'1'})==hashlib.sha256('{\"parser\":\"1\",\"text\":\"é\"}'.encode('utf-8')).hexdigest()"
+        },
+        {
+          "label": "Canonical object order and no mutation",
+          "code": "x={'text':'clause','parser':'1','layout':{'page':1,'block':2},'metadata':{},'status':'accepted'};before=repr(x);assert representation_hash(x)==representation_hash(dict(reversed(list(x.items())))) and repr(x)==before"
+        },
+        {
+          "label": "Same text with different parser/layout",
+          "code": "x={'text':'same','parser':'1','layout':[1,2]};a=representation_hash(x);assert representation_hash(dict(x,parser='2'))!=a and representation_hash(dict(x,layout=[2,2]))!=a"
+        },
+        {
+          "label": "Metadata and status belong in the recipe",
+          "code": "x={'text':'same','metadata':{'supplier':'Atlas'},'status':'accepted'};a=representation_hash(x);assert representation_hash(dict(x,metadata={'supplier':'Beacon'}))!=a and representation_hash(dict(x,status='needs_review'))!=a"
+        },
+        {
+          "label": "Reject invalid representation values",
+          "code": "for x in [[],{'x':float('nan')},{'x':float('inf')},{'x':'\\ud800'},{'x':{1,2}}]:\n    assert raises(ValueError,representation_hash,x)"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q092",
+      "type": "code",
+      "topic": "Children-only matching units",
+      "difficulty": "applied",
+      "prompt": "Implement child_ids(chunks). Assume chunks is a list/tuple of valid unique {'id': str, 'parent': None_or_nonblank_str, 'text': str} records from an already-validated parent-child collection. Return IDs in original order ONLY where parent is not None. Keep isolated-heading children just like other children; do not filter by text. Return [] if none and preserve all inputs. Root parents remain stored but are not indexed by this helper; lineage validation is separate.",
+      "explanation": "Use explicit lineage metadata rather than content keywords to distinguish matching children from stored parents. This function assumes collection validation has already happened.",
+      "starter": "def child_ids(chunks) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def child_ids(chunks):\n    return [chunk['id'] for chunk in chunks if chunk['parent'] is not None]\n",
+      "checks": [
+        {
+          "label": "Roots versus children",
+          "code": "x=[{'id':'P','parent':None,'text':'Section'},{'id':'C','parent':'P','text':'Clause'}];assert child_ids(x)==['C']"
+        },
+        {
+          "label": "Child order is preserved",
+          "code": "assert child_ids([{'id':'C2','parent':'P','text':'Two'},{'id':'P','parent':None,'text':'All'},{'id':'C1','parent':'P','text':'One'}])==['C2','C1']"
+        },
+        {
+          "label": "Isolated heading is still a child",
+          "code": "assert child_ids([{'id':'H','parent':'P','text':'Isolated heading'}])==['H']"
+        },
+        {
+          "label": "Empty and root-only collections",
+          "code": "assert child_ids([])==[]\nassert child_ids([{'id':'P','parent':None,'text':'Parent'}])==[]"
+        },
+        {
+          "label": "Text does not determine eligibility or mutate records",
+          "code": "x=[{'id':'P','parent':None,'text':'payment approval'},{'id':'C','parent':'P','text':'scope'}];before=[dict(v) for v in x];assert child_ids(x)==['C'] and x==before"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q093",
+      "type": "code",
+      "topic": "Full parent lineage",
+      "difficulty": "applied",
+      "prompt": "Implement same_lineage(child,parent), returning bool. Assume valid records with id,parent,source,policy fields; source is the full (tenant,document,version,content_digest) tuple and id values are unique across the collection. Return True only if child.parent is non-None and equals parent.id, parent.parent is None (root), source tuples match exactly and policy fingerprints match. Return False otherwise. Do not mutate records. This compatibility helper does not grant read permission.",
+      "explanation": "Matching only a document ID or parent ID is insufficient. Version, tenant, source bytes and policy all participate; read authorization must still be checked independently.",
+      "starter": "def same_lineage(child: dict, parent: dict) -> bool:\n    raise NotImplementedError\n",
+      "reference": "def same_lineage(child,parent):\n    return (child['parent'] is not None and child['parent']==parent['id']\n            and parent['parent'] is None and child['source']==parent['source']\n            and child['policy']==parent['policy'])\n",
+      "checks": [
+        {
+          "label": "Valid child and root",
+          "code": "assert same_lineage({'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'},{'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'}) is True"
+        },
+        {
+          "label": "Matching parent reference is required",
+          "code": "c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};assert same_lineage(dict(c,parent='other'),p) is False and same_lineage(dict(c,parent=None),p) is False"
+        },
+        {
+          "label": "Reject foreign source components",
+          "code": "c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'}\nfor source in [('S','D','v1','digest'),('N','E','v1','digest'),('N','D','v2','digest'),('N','D','v1','changed')]:\n    assert same_lineage(c,dict(p,source=source)) is False"
+        },
+        {
+          "label": "Policy and root constraints",
+          "code": "c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};assert same_lineage(c,dict(p,policy='p2')) is False and same_lineage(c,dict(p,parent='Grandparent')) is False"
+        },
+        {
+          "label": "No mutation or implicit permission claim",
+          "code": "c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};before=(dict(c),dict(p));assert same_lineage(c,p) is True and (c,p)==before"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q094",
+      "type": "code",
+      "topic": "Reauthorize and deduplicate expansion",
+      "difficulty": "foundation",
+      "prompt": "Implement expand_units(ranked_ids,records,can_read). records maps IDs to well-formed records with id,parent,source,policy,text; keys equal IDs. source is (tenant,document,version,content_digest). Visit ranked IDs in order; unknown hit IDs raise ValueError. If can_read(hit) is False, skip without expanding. A readable root is its own context unit. For a readable child, require an existing root parent with identical source tuple/policy and matching parent ID, otherwise raise ValueError; then separately require can_read(parent) or skip. Return original context record objects, first-admission order, deduplicated by context ID. Preserve records. This helper has no budget; a later helper admits whole units. The callback is trusted application input, not browser authentication.",
+      "explanation": "Check the child, validate lineage, then check the larger parent before exposing it. Duplicate matching hits must not cause repeated parent context or bypass the later budget.",
+      "starter": "def expand_units(ranked_ids, records: dict, can_read) -> list[dict]:\n    raise NotImplementedError\n",
+      "reference": "def same_lineage(child,parent):\n    return (child['parent'] is not None and child['parent']==parent['id']\n            and parent['parent'] is None and child['source']==parent['source']\n            and child['policy']==parent['policy'])\n\ndef expand_units(ranked_ids,records,can_read):\n    selected=[]\n    seen=set()\n    for hit_id in ranked_ids:\n        if hit_id not in records:\n            raise ValueError(\"unknown ranked hit\")\n        hit=records[hit_id]\n        if not can_read(hit):\n            continue\n        candidate=hit\n        if hit['parent'] is not None:\n            candidate=records.get(hit['parent'])\n            if candidate is None or not same_lineage(hit,candidate):\n                raise ValueError(\"invalid parent lineage\")\n            if not can_read(candidate):\n                continue\n        if candidate['id'] not in seen:\n            selected.append(candidate)\n            seen.add(candidate['id'])\n    return selected\n",
+      "checks": [
+        {
+          "label": "Repeated child hits yield one original parent",
+          "code": "p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};d=dict(c,id='C2');records={'P':p,'C':c,'C2':d};r=expand_units(['C2','C','C2'],records,lambda x:True);assert r==[p] and r[0] is p"
+        },
+        {
+          "label": "Parent permission is checked independently",
+          "code": "p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};seen=[]\ndef child_only(x):\n    seen.append(x['id']);return x['parent'] is not None\nassert expand_units(['C'],{'P':p,'C':c},child_only)==[] and seen==['C','P']"
+        },
+        {
+          "label": "Denied child never expands",
+          "code": "c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};seen=[]\ndef deny(x):\n    seen.append(x['id']);return False\nassert expand_units(['C'],{'C':c},deny)==[] and seen==['C']"
+        },
+        {
+          "label": "Reject unknown, missing and foreign lineage",
+          "code": "c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};assert raises(ValueError,expand_units,['unknown'],{'P':p},lambda x:True)\nassert raises(ValueError,expand_units,['C'],{'C':c},lambda x:True)\nfor bad in [dict(p,source=('N','D','v2','digest')),dict(p,policy='other'),dict(p,parent='G')]:\n    assert raises(ValueError,expand_units,['C'],{'C':c,'P':bad},lambda x:True)"
+        },
+        {
+          "label": "Root order and unchanged source map",
+          "code": "p={'id':'P','parent':None,'source':('N','D','v1','digest'),'policy':'p1','text':'Parent context'};c={'id':'C','parent':'P','source':('N','D','v1','digest'),'policy':'p1','text':'Child clause'};q=dict(p,id='Q',text='Second');records={'P':p,'C':c,'Q':q};before=repr(records);assert expand_units(['Q','C','P'],records,lambda x:True)==[q,p] and repr(records)==before"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q095",
+      "type": "code",
+      "topic": "Whole-unit context budget",
+      "difficulty": "applied",
+      "prompt": "Implement admit_context(units,budget). units is an ordered list of already-authorized, deduplicated, well-formed {'id':str,'text':nonblank_UTF8_str} context records. budget must be an exact int>=1 excluding bool; raise ValueError otherwise. Greedily visit in given order. Admit a WHOLE unit only when used+len(text)+(1 if any unit already admitted else 0)<=budget. Skip too-large units and continue with later units; never truncate or optimize another ordering. Return admitted IDs, preserving inputs. Character count, not bytes/tokens.",
+      "explanation": "The budget includes inter-unit separators and keeps each admitted evidence unit intact. It is a declared greedy policy, not a best-subset optimizer or token-budget claim.",
+      "starter": "def admit_context(units: list[dict], budget: int) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def admit_context(units,budget):\n    if type(budget) is not int or budget<1:\n        raise ValueError(\"positive exact-int budget required\")\n    selected=[]\n    used=0\n    for unit in units:\n        cost=len(unit['text'])+(1 if selected else 0)\n        if used+cost<=budget:\n            selected.append(unit['id'])\n            used+=cost\n    return selected\n",
+      "checks": [
+        {
+          "label": "Separator makes an exact fit",
+          "code": "x=[{'id':'A','text':'abc'},{'id':'B','text':'defg'}];assert admit_context(x,8)==['A','B'] and admit_context(x,7)==['A']"
+        },
+        {
+          "label": "Skip oversize but consider later whole unit",
+          "code": "x=[{'id':'large','text':'x'*20},{'id':'small','text':'ok'}];assert admit_context(x,2)==['small']"
+        },
+        {
+          "label": "No truncation and no reordering",
+          "code": "assert admit_context([{'id':'A','text':'abcde'},{'id':'B','text':'f'},{'id':'C','text':'g'}],5)==['A']\nassert admit_context([{'id':'big','text':'abcd'}],3)==[]"
+        },
+        {
+          "label": "Unicode characters and empty list",
+          "code": "assert admit_context([{'id':'u','text':'猫'}],1)==['u'] and admit_context([],1)==[]"
+        },
+        {
+          "label": "Exact budget type and no mutation",
+          "code": "for b in [0,-1,True,2.0]:\n    assert raises(ValueError,admit_context,[],b)\nx=[{'id':'A','text':'abc'}];before=[dict(v) for v in x];assert admit_context(x,3)==['A'] and x==before"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q096",
+      "type": "code",
+      "topic": "Stored UTF-8 text bytes",
+      "difficulty": "applied",
+      "prompt": "Implement text_storage(chunks). Require list/tuple; each record is assumed to be a dict with a text key. text must be a UTF-8-encodable str, including possibly empty str; raise ValueError otherwise. Return the sum of each text's encoded UTF-8 byte length, counting every stored record including repeated text and parents. Do not add join separators, deduplicate content, count metadata, or mutate inputs. Empty collection gives 0. This measures stored text only, not process memory.",
+      "explanation": "Storage counts each stored UTF-8 payload. Joined-context character cost, unique-content bytes and whole-process/index memory are different measurements.",
+      "starter": "def text_storage(chunks) -> int:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\ndef text_storage(chunks):\n    if not isinstance(chunks,(list,tuple)):\n        raise ValueError(\"list or tuple required\")\n    return sum(len(valid_text(chunk['text']).encode('utf-8')) for chunk in chunks)\n",
+      "checks": [
+        {
+          "label": "Sum records without join separators",
+          "code": "assert text_storage([{'text':'ab'},{'text':'c'}])==3"
+        },
+        {
+          "label": "Unicode bytes differ from characters",
+          "code": "assert text_storage([{'text':'é'},{'text':'猫'}])==5"
+        },
+        {
+          "label": "Parents and repeated text still cost storage",
+          "code": "assert text_storage([{'id':'P','text':'word'},{'id':'C','text':'word'}])==8"
+        },
+        {
+          "label": "Ignore metadata and allow empty text/collection",
+          "code": "assert text_storage([{'text':'x','metadata':'z'*1000},{'text':''}])==1 and text_storage([])==0"
+        },
+        {
+          "label": "Reject invalid text/container and preserve input",
+          "code": "for x in [[{'text':True}],[{'text':'\\ud800'}],None]:\n    assert raises(ValueError,text_storage,x)\nx=[{'text':'é'}];assert text_storage(x)==2 and x==[{'text':'é'}]"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q097",
+      "type": "code",
+      "topic": "Document recall at a chunk cutoff",
+      "difficulty": "foundation",
+      "prompt": "Implement document_recall(ranked_documents,gold,k). ranked_documents must be list/tuple of nonblank UTF-8 document-ID strings, one per ranked CHUNK; document IDs MAY repeat. gold must be set/frozenset of nonblank UTF-8 document IDs. k must be an exact int>=1, excluding bool; raise ValueError for violations even when gold is empty. Take the first k chunk entries BEFORE deduplicating their document IDs. Return distinct_gold_hits/len(gold), or None if gold is empty. Short/empty rankings are allowed; preserve inputs. Caller guarantees one tenant/version per document ID in this frozen practice snapshot.",
+      "explanation": "The cutoff is a chunk budget, while recall counts unique relevant documents reached. Deduplicating before slicing would silently change the candidate budget.",
+      "starter": "def document_recall(ranked_documents, gold, k: int) -> float | None:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\ndef document_recall(ranked_documents,gold,k):\n    if type(k) is not int or k<1 or not isinstance(ranked_documents,(list,tuple)) or not isinstance(gold,(set,frozenset)):\n        raise ValueError(\"invalid ranking or cutoff\")\n    if any(not valid_text(x).strip() for x in [*ranked_documents,*gold]):\n        raise ValueError(\"nonblank IDs required\")\n    if not gold:\n        return None\n    return len(set(ranked_documents[:k]) & gold)/len(gold)\n",
+      "checks": [
+        {
+          "label": "Distinct documents from top three chunks",
+          "code": "import math\nassert math.isclose(document_recall(['A','A','B'],{'A','B','C'},3),2/3)"
+        },
+        {
+          "label": "Deduplication must follow the cutoff",
+          "code": "assert document_recall(['A','A','B'],{'A','B'},2)==.5"
+        },
+        {
+          "label": "No-gold versus observed missing hit",
+          "code": "assert document_recall(['X'],set(),1) is None\nassert document_recall([],{'A'},5)==0.0\nassert document_recall(['A'],{'A'},5)==1.0"
+        },
+        {
+          "label": "Validate IDs, containers and exact k",
+          "code": "for r,g,k in [(['A'],{'A'},True),(['A'],{'A'},0),(['A'],{'A'},1.0),([''],{'A'},1),(['A'],{''},1),(['\\ud800'],set(),1),('A',{'A'},1)]:\n    assert raises(ValueError,document_recall,r,g,k)"
+        },
+        {
+          "label": "Repeated hits do not inflate recall or mutate",
+          "code": "r=['A','A','A'];g={'A','B'};assert document_recall(r,g,3)==.5 and r==['A','A','A'] and g=={'A','B'}"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q098",
+      "type": "code",
+      "topic": "Per-source support completeness",
+      "difficulty": "applied",
+      "prompt": "Implement support_fraction(context,support). Assume context is a list of valid {'document_id':str,'text':UTF8_str} records, and support is a dict mapping each labelled document ID to a non-empty list of nonblank UTF-8 evidence atoms. If support is empty return None. For each labelled document, join ONLY that document's context texts in input order with one newline, casefold it, and require every casefolded atom as a contiguous substring. Return the fraction of labelled documents passing all their atoms as float. Empty context with non-empty labels gives 0.0. Preserve inputs. Do not pool evidence across sources or average individual atom hits; this conservative substring proxy is not entailment.",
+      "explanation": "Count a labelled source only when all of its own atoms appear in its admitted context. Newlines and paraphrases can defeat substring matching even when a human would understand; report that limitation.",
+      "starter": "def support_fraction(context: list[dict], support: dict) -> float | None:\n    raise NotImplementedError\n",
+      "reference": "def support_fraction(context,support):\n    if not support:\n        return None\n    complete=0\n    for document,atoms in support.items():\n        text='\\n'.join(x['text'] for x in context if x['document_id']==document).casefold()\n        complete+=all(atom.casefold() in text for atom in atoms)\n    return complete/len(support)\n",
+      "checks": [
+        {
+          "label": "Completeness per source, not atom accuracy",
+          "code": "c=[{'document_id':'A','text':'one two'},{'document_id':'B','text':'missing'}];assert support_fraction(c,{'A':['one','two'],'B':['three']})==.5"
+        },
+        {
+          "label": "Cannot borrow another source atom",
+          "code": "c=[{'document_id':'A','text':'row'},{'document_id':'B','text':'clause'}];assert support_fraction(c,{'A':['row','clause'],'B':['row','clause']})==0.0"
+        },
+        {
+          "label": "Casefold and multiple same-source units",
+          "code": "c=[{'document_id':'A','text':'Straße'},{'document_id':'A','text':'Net 30 after approval'}];assert support_fraction(c,{'A':['STRASSE','net 30 after approval']})==1.0"
+        },
+        {
+          "label": "No-gold and no-context distinction",
+          "code": "assert support_fraction([], {}) is None\nassert support_fraction([],{'A':['row']})==0.0"
+        },
+        {
+          "label": "Split atom remains incomplete under this proxy",
+          "code": "c=[{'document_id':'A','text':'Net 30 after'},{'document_id':'A','text':'inspection approval'}];s={'A':['Net 30 after inspection approval']};before=repr((c,s));assert support_fraction(c,s)==0.0 and repr((c,s))==before"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q099",
+      "type": "code",
+      "topic": "Labelled-query mean with counts",
+      "difficulty": "applied",
+      "prompt": "Implement labelled_mean(values). Require list/tuple of None or exact int/float values finite after float conversion in [0,1], excluding bool; raise ValueError otherwise. None means undefined/no-gold for this declared aggregation. Return exactly mean (defined values' arithmetic mean, or None), labelled_count (defined count) and no_gold_count (None count). Keep defined zeros in the denominator and expose excluded counts. Empty input returns mean=None and zero counts. Preserve input. This aggregates per-query metric values, not per-chunk hits.",
+      "explanation": "A mean needs a visible evaluation population. Exclude undefined no-gold values under the declared policy, while counting both those exclusions and observed zero outcomes.",
+      "starter": "def labelled_mean(values) -> dict:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef checked_number(value,lo,hi):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact numeric value required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value) or not lo<=value<=hi:\n        raise ValueError(\"number outside domain\")\n    return value\n\ndef labelled_mean(values):\n    if not isinstance(values,(list,tuple)):\n        raise ValueError(\"list or tuple required\")\n    defined=[checked_number(v,0,1) for v in values if v is not None]\n    return {'mean':math.fsum(defined)/len(defined) if defined else None,\n            'labelled_count':len(defined),'no_gold_count':len(values)-len(defined)}\n",
+      "checks": [
+        {
+          "label": "Explicit denominator and no-gold count",
+          "code": "assert labelled_mean([1,.5,0,None])=={'mean':.5,'labelled_count':3,'no_gold_count':1}"
+        },
+        {
+          "label": "Observed zero is retained",
+          "code": "assert labelled_mean([0,1])['mean']==.5\nassert labelled_mean([0,0])['mean']==0.0"
+        },
+        {
+          "label": "No defined population is not success",
+          "code": "assert labelled_mean([None,None])=={'mean':None,'labelled_count':0,'no_gold_count':2}\nassert labelled_mean([])=={'mean':None,'labelled_count':0,'no_gold_count':0}"
+        },
+        {
+          "label": "Reject invalid numbers and container",
+          "code": "for x in [[True],['.5'],[float('nan')],[float('inf')],[-.1],[1.1],[10**1000],None]:\n    assert raises(ValueError,labelled_mean,x)"
+        },
+        {
+          "label": "Tuple and input preservation",
+          "code": "x=(.25,None,.75);assert labelled_mean(x)=={'mean':.5,'labelled_count':2,'no_gold_count':1} and x==(.25,None,.75)"
+        }
+      ]
+    },
+    {
+      "id": "W06-Q100",
+      "type": "code",
+      "topic": "Policy measurement summary",
+      "difficulty": "foundation",
+      "prompt": "Implement policy_summary(chunks,dimension,parent_child=False). chunks is list/tuple of already-validated unique records with id,parent,text (UTF-8 str); parent is None or a valid parent ID. Validate list/tuple, exact positive-int dimension and exact-bool parent_child, raising ValueError otherwise; also reject invalid text type/encoding. In parent_child mode only non-None-parent records are indexed; otherwise every record is indexed. Return exactly stored_chunk_count, indexed_chunk_count, average_stored_chunk_chars (mean len(text), or None if empty), stored_text_utf8_bytes (sum, no join separators), packed_float32_vector_bytes_estimate (indexed_count*dimension*4), average_tokens=None and generated_answer_quality=None. Count parents in storage/average, preserve inputs, and do not invent unmeasured token or answer-quality values.",
+      "explanation": "Text storage and vector-coordinate estimates have different populations in parent-child retrieval. Explicit nulls prevent character proxies or support checks from becoming fabricated token or answer-quality measurements.",
+      "starter": "def policy_summary(chunks, dimension: int, parent_child: bool = False) -> dict:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 text required\") from exc\n    return value\n\ndef text_storage(chunks):\n    if not isinstance(chunks,(list,tuple)):\n        raise ValueError(\"list or tuple required\")\n    return sum(len(valid_text(chunk['text']).encode('utf-8')) for chunk in chunks)\n\ndef policy_summary(chunks,dimension,parent_child=False):\n    if not isinstance(chunks,(list,tuple)) or type(dimension) is not int or dimension<1 or type(parent_child) is not bool:\n        raise ValueError(\"invalid summary parameters\")\n    stored_bytes=text_storage(chunks)\n    stored=len(chunks)\n    indexed=sum(x['parent'] is not None for x in chunks) if parent_child else stored\n    return {'stored_chunk_count':stored,'indexed_chunk_count':indexed,\n            'average_stored_chunk_chars':sum(len(x['text']) for x in chunks)/stored if stored else None,\n            'stored_text_utf8_bytes':stored_bytes,\n            'packed_float32_vector_bytes_estimate':indexed*dimension*4,\n            'average_tokens':None,'generated_answer_quality':None}\n",
+      "checks": [
+        {
+          "label": "Known seventeen-stored nine-indexed shape",
+          "code": "chunks=[{'id':'P'+str(i),'parent':None,'text':'x'} for i in range(8)]+[{'id':'C'+str(i),'parent':'P0','text':'x'} for i in range(9)];assert policy_summary(chunks,6,True)=={'stored_chunk_count':17,'indexed_chunk_count':9,'average_stored_chunk_chars':1.0,'stored_text_utf8_bytes':17,'packed_float32_vector_bytes_estimate':216,'average_tokens':None,'generated_answer_quality':None}"
+        },
+        {
+          "label": "Flat policy indexes every stored record",
+          "code": "chunks=[{'id':str(i),'parent':None,'text':'abc'} for i in range(8)];s=policy_summary(chunks,6);assert s['indexed_chunk_count']==8 and s['packed_float32_vector_bytes_estimate']==192 and s['stored_text_utf8_bytes']==24"
+        },
+        {
+          "label": "Characters, bytes and indexed counts differ",
+          "code": "x=[{'id':'P','parent':None,'text':'é'},{'id':'C','parent':'P','text':'猫'}];s=policy_summary(x,2,True);assert s['average_stored_chunk_chars']==1.0 and s['stored_text_utf8_bytes']==5 and s['packed_float32_vector_bytes_estimate']==8 and s['average_tokens'] is None and s['generated_answer_quality'] is None"
+        },
+        {
+          "label": "Empty collection keeps unavailable average",
+          "code": "assert policy_summary([],3)=={'stored_chunk_count':0,'indexed_chunk_count':0,'average_stored_chunk_chars':None,'stored_text_utf8_bytes':0,'packed_float32_vector_bytes_estimate':0,'average_tokens':None,'generated_answer_quality':None}"
+        },
+        {
+          "label": "Validate parameters/text and retain source",
+          "code": "for dim,flag in [(0,False),(True,False),(1.0,False),(2,1)]:\n    assert raises(ValueError,policy_summary,[],dim,flag)\nassert raises(ValueError,policy_summary,[{'id':'A','parent':None,'text':'\\ud800'}],2)\nx=[{'id':'P','parent':None,'text':'abc'}];before=repr(x);policy_summary(x,2);assert repr(x)==before"
+        }
+      ]
+    }
+  ]
+}

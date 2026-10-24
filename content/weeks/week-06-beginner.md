@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-06/
 ---
 
+Test your understanding with the [Week 6 assessment]({{ '/assessments/week-06/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on parsing, chunk boundaries, source spans, parent expansion and support completeness.
+
 ## Start here
 
 Week 5 showed how to rank short documents. This week asks what happens when a document is too long, or when a table and a condition live in different sections. Think of a chunk as the piece of evidence you put on a reviewer's desk. It must be small enough to find and large enough to make sense.

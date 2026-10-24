@@ -20,7 +20,7 @@ body:has(.assessment-app) .lesson-sidebar { display: none; }
 .assessment-jumps { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.6rem; }
 .assessment-jumps a { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; text-decoration: none; font-size: .85rem; }
 .assessment-jumps a.answered { background: var(--accent-soft); border-color: var(--accent-border); }
-.assessment-question { min-width: 0; margin: 1.5rem 0; padding: 1.3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); scroll-margin-top: 10rem; }
+.assessment-question { min-width: 0; overflow-wrap: anywhere; margin: 1.5rem 0; padding: 1.3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); scroll-margin-top: 10rem; }
 .assessment-app .assessment-question h3 { margin: .5rem 0 1rem; font-size: 1.15rem; line-height: 1.5; letter-spacing: 0; }
 .assessment-tag { color: var(--accent); font-size: .78rem; font-weight: 750; }
 .assessment-question fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
