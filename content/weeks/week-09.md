@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-09/beginner/
 ---
 
+Test your understanding with the [Week 9 assessment]({{ '/assessments/week-09/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on ranking metrics, source audits, context loss, answer checks and review provenance.
+
 ## A valid citation can still leave the question unanswered
 
 Ask the Week 8 assistant: “What is the delivery date for CW-1000?” Restrict it to the Atlas Metals catalogue. It finds the right code, the right supplier and a genuine source quote. Every citation resolves correctly. The problem is that this catalogue contains no delivery date.

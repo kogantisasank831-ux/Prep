@@ -1,0 +1,3062 @@
+{
+  "schema_version": 1,
+  "week": 9,
+  "version": "1.0.0",
+  "title": "RAG evaluation fundamentals",
+  "source_lesson": "/weeks/week-09/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W09-Q001",
+      "type": "single",
+      "topic": "Unavailable delivery date",
+      "difficulty": "foundation",
+      "prompt": "The catalogue has no delivery date. The assistant returns an authentic catalogue quote with valid citations. What has failed?",
+      "explanation": "A related authentic excerpt can be inadequate. The observed failure is returning evidence for an unavailable target fact, not fabrication of a date.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Expected response behavior: the annotated task required abstention"
+        },
+        {
+          "id": "o2",
+          "text": "Exact span validity necessarily failed"
+        },
+        {
+          "id": "o3",
+          "text": "The assistant necessarily invented a date"
+        },
+        {
+          "id": "o4",
+          "text": "Nothing failed because the source is real"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q002",
+      "type": "single",
+      "topic": "Upstream corruption",
+      "difficulty": "applied",
+      "prompt": "A parser changes USD 12.00 into USD 1200. Retrieval and quoting work perfectly on that text. Which check should expose the original defect?",
+      "explanation": "Downstream consistency can faithfully repeat an upstream extraction error. Audit the representation against independently declared source facts.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only final citation-offset equality"
+        },
+        {
+          "id": "o2",
+          "text": "Only reranker relevance scores"
+        },
+        {
+          "id": "o3",
+          "text": "Counting how many words the answer contains"
+        },
+        {
+          "id": "o4",
+          "text": "An independent source-to-parsed-representation fact check"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q003",
+      "type": "single",
+      "topic": "Independent labels",
+      "difficulty": "applied",
+      "prompt": "Why should expected facts be authored independently of returned chunks?",
+      "explanation": "Deriving labels from output can erase the same omission from the test. Fix the evidence contract before inspecting predictions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The answer should define its own passing threshold"
+        },
+        {
+          "id": "o2",
+          "text": "Gold labels should shrink whenever retrieval misses"
+        },
+        {
+          "id": "o3",
+          "text": "A dropped condition must remain in the gold labels so its loss can be detected"
+        },
+        {
+          "id": "o4",
+          "text": "Predictions are always more reliable than sources"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q004",
+      "type": "single",
+      "topic": "Offline audit authority",
+      "difficulty": "foundation",
+      "prompt": "The source auditor inspects a synthetic private distractor. Does that make it analyst retrieval evidence?",
+      "explanation": "The offline fixture auditor has a different purpose and scope. Question runs still enforce independent source-version grants.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only if its reranker score is high"
+        },
+        {
+          "id": "o2",
+          "text": "No; offline audit scope and analyst grants remain separate"
+        },
+        {
+          "id": "o3",
+          "text": "Yes, because every audited source is public"
+        },
+        {
+          "id": "o4",
+          "text": "Yes, if the source contains the query words"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q005",
+      "type": "single",
+      "topic": "Evidence granularity",
+      "difficulty": "applied",
+      "prompt": "Document recall is 1 because P-105 appears, but its controlling clause is absent. What explains the discrepancy?",
+      "explanation": "Declare granularity before comparing scores. A document-level success can hide missing rows, clauses or cross-references.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Document hits and required body-location evidence units are different evaluation units"
+        },
+        {
+          "id": "o2",
+          "text": "Recall guarantees every clause was returned"
+        },
+        {
+          "id": "o3",
+          "text": "The missing clause must be irrelevant"
+        },
+        {
+          "id": "o4",
+          "text": "The source version no longer matters"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q006",
+      "type": "single",
+      "topic": "Eligible gold",
+      "difficulty": "applied",
+      "prompt": "Which evidence belongs in an analyst request's gold set?",
+      "explanation": "Gold is relative to the defined source/access/filter snapshot. Denied or filtered-out material is not a valid target for that request.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Any private source that mentions the same product"
+        },
+        {
+          "id": "o2",
+          "text": "Every version of every supplier document"
+        },
+        {
+          "id": "o3",
+          "text": "Uncertain OCR text automatically treated as accepted"
+        },
+        {
+          "id": "o4",
+          "text": "Required accepted source units within that principal's grants and exact filters"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q007",
+      "type": "single",
+      "topic": "Requested precision",
+      "difficulty": "foundation",
+      "prompt": "A request asks for three results. Only one returns, and it is relevant. What is Precision@3 under this lab's requested-slot policy?",
+      "explanation": "The denominator is requested k, not returned-list length. A different denominator defines a different metric.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "0"
+        },
+        {
+          "id": "o2",
+          "text": "3"
+        },
+        {
+          "id": "o3",
+          "text": "1/3"
+        },
+        {
+          "id": "o4",
+          "text": "1"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q008",
+      "type": "single",
+      "topic": "Recall denominator",
+      "difficulty": "applied",
+      "prompt": "A question requires five evidence units. Two relevant units appear in the first three results. What is Recall@3?",
+      "explanation": "Recall divides relevant hits by the required gold-unit population. Precision and recall need not be equal.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1"
+        },
+        {
+          "id": "o2",
+          "text": "2/5"
+        },
+        {
+          "id": "o3",
+          "text": "2/3"
+        },
+        {
+          "id": "o4",
+          "text": "3/5"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q009",
+      "type": "single",
+      "topic": "Reciprocal rank",
+      "difficulty": "applied",
+      "prompt": "The first relevant result is second, inside the cutoff. What is that question's reciprocal rank?",
+      "explanation": "Reciprocal rank uses the first relevant position. MRR averages per-question reciprocal ranks over the declared population.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1/2"
+        },
+        {
+          "id": "o2",
+          "text": "2"
+        },
+        {
+          "id": "o3",
+          "text": "1/3"
+        },
+        {
+          "id": "o4",
+          "text": "The number of relevant results divided by k"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q010",
+      "type": "single",
+      "topic": "First hit versus completeness",
+      "difficulty": "foundation",
+      "prompt": "MRR rises, but the quantity and cross-reference are still missing. What is the best interpretation?",
+      "explanation": "A first-hit measure cannot establish that all facts needed for a multi-part answer arrived.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "MRR proves every required clause survived"
+        },
+        {
+          "id": "o2",
+          "text": "All missing units should be removed from gold"
+        },
+        {
+          "id": "o3",
+          "text": "The remaining problem must be model latency"
+        },
+        {
+          "id": "o4",
+          "text": "The first useful hit improved while multi-unit completeness remains unresolved"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q011",
+      "type": "single",
+      "topic": "Graded gain",
+      "difficulty": "applied",
+      "prompt": "Under the teaching gain rule 2**grade - 1, what gain does grade 3 contribute before discounting?",
+      "explanation": "The gain rule is an explicit contract. Do not assume a library using a different gain convention produces identical values.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "8"
+        },
+        {
+          "id": "o2",
+          "text": "1/3"
+        },
+        {
+          "id": "o3",
+          "text": "7"
+        },
+        {
+          "id": "o4",
+          "text": "3"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q012",
+      "type": "single",
+      "topic": "No ideal gain",
+      "difficulty": "applied",
+      "prompt": "Every labelled relevance grade is zero. What does the teaching nDCG helper return?",
+      "explanation": "There is no positive ideal gain for normalization. This undefined case is distinct from a ranking that misses known positive evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A negative discount"
+        },
+        {
+          "id": "o2",
+          "text": "None, because ideal DCG is zero"
+        },
+        {
+          "id": "o3",
+          "text": "1 because all items tie"
+        },
+        {
+          "id": "o4",
+          "text": "A perfect semantic score"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q013",
+      "type": "single",
+      "topic": "Binary versus graded labels",
+      "difficulty": "foundation",
+      "prompt": "The actual 30-case run labels required evidence only as relevant or irrelevant. Which nDCG should its result be called?",
+      "explanation": "The separate graded helper is a teaching example. The executed run does not manufacture relevance levels that were never annotated.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Binary nDCG"
+        },
+        {
+          "id": "o2",
+          "text": "A graded commercial-utility score"
+        },
+        {
+          "id": "o3",
+          "text": "An invented 1–5 human rating"
+        },
+        {
+          "id": "o4",
+          "text": "A model correctness probability"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q014",
+      "type": "single",
+      "topic": "No-gold population",
+      "difficulty": "applied",
+      "prompt": "Why are unanswerable cases excluded from answerable recall/MRR means?",
+      "explanation": "Undefined relevance metrics are not perfect or zero scores. The deliberate answerability annotation supplies a separate behavioral target.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They all receive perfect recall automatically"
+        },
+        {
+          "id": "o2",
+          "text": "They should silently count as ordinary successes"
+        },
+        {
+          "id": "o3",
+          "text": "Every retrieved passage is known to be a false positive"
+        },
+        {
+          "id": "o4",
+          "text": "Their nonempty relevant-set/rank target is absent; abstention is evaluated separately"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q015",
+      "type": "single",
+      "topic": "Candidate ceiling",
+      "difficulty": "applied",
+      "prompt": "All three required units are in the candidate pool, but only two reach top three. Which boundary is first implicated?",
+      "explanation": "Candidate recall of 1 establishes opportunity, not final selection. Inspect top-k and admitted-context membership separately.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The parser necessarily changed a number"
+        },
+        {
+          "id": "o2",
+          "text": "The labels must be deleted"
+        },
+        {
+          "id": "o3",
+          "text": "Ranking or later selection, rather than missing pool coverage"
+        },
+        {
+          "id": "o4",
+          "text": "The pool necessarily lacked the third unit"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q016",
+      "type": "single",
+      "topic": "Downstream loss",
+      "difficulty": "foundation",
+      "prompt": "Compression changes complete context support from 22/22 to 20/22 while retrieval metrics stay fixed. Where does this comparison locate the new loss?",
+      "explanation": "A paired downstream ablation can damage admitted evidence even when all upstream ranking numbers are identical.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Nowhere; unchanged recall proves no regression"
+        },
+        {
+          "id": "o2",
+          "text": "After retrieval, during context selection/construction"
+        },
+        {
+          "id": "o3",
+          "text": "In a newly changed retriever"
+        },
+        {
+          "id": "o4",
+          "text": "In a measured generative model that was never run"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q017",
+      "type": "single",
+      "topic": "Precision and completeness",
+      "difficulty": "applied",
+      "prompt": "Required context support is complete, yet selected-unit precision is below 1. Can both be true?",
+      "explanation": "Recall/completeness and focus are different questions. Incomplete background labels also limit how low precision should be interpreted.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; all required units can coexist with surplus unlabelled material"
+        },
+        {
+          "id": "o2",
+          "text": "No; complete support forces every selected unit to be gold"
+        },
+        {
+          "id": "o3",
+          "text": "No; precision and support completeness are the same formula"
+        },
+        {
+          "id": "o4",
+          "text": "Only if the context budget is unlimited"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q018",
+      "type": "single",
+      "topic": "Normalization policy",
+      "difficulty": "applied",
+      "prompt": "Which change would violate the lab's exact-match normalization policy?",
+      "explanation": "Identifiers, numbers, units, punctuation and negation survive normalization. Cosmetic cleanup must not erase decisive task differences.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Case-folding the answer"
+        },
+        {
+          "id": "o2",
+          "text": "Collapsing repeated whitespace"
+        },
+        {
+          "id": "o3",
+          "text": "Removing a display label [S1]"
+        },
+        {
+          "id": "o4",
+          "text": "Removing the hyphen so CW-1000 becomes CW1000"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q019",
+      "type": "single",
+      "topic": "Display labels",
+      "difficulty": "foundation",
+      "prompt": "Which display string is removed by the exact regex \\[S[1-9][0-9]*\\]?",
+      "explanation": "Only positive S labels without a leading zero match this declared display-label rule. Source IDs and other brackets are preserved.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "[S01]"
+        },
+        {
+          "id": "o2",
+          "text": "[P-105]"
+        },
+        {
+          "id": "o3",
+          "text": "[S12]"
+        },
+        {
+          "id": "o4",
+          "text": "[S0]"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q020",
+      "type": "single",
+      "topic": "Exact-match interpretation",
+      "difficulty": "applied",
+      "prompt": "Overall normalized exact match is 9/30. What can you conclude about semantic correctness?",
+      "explanation": "Whole excerpts and acceptable paraphrases can fail exact match. A mismatch is a diagnostic under a normalization/reference contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The assistant has a calibrated 0.3 confidence"
+        },
+        {
+          "id": "o2",
+          "text": "Reference-string agreement is 30%; semantic correctness still needs appropriate review"
+        },
+        {
+          "id": "o3",
+          "text": "Exactly 70% of answers are semantically wrong"
+        },
+        {
+          "id": "o4",
+          "text": "Exactly 30% of citations are valid"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q021",
+      "type": "single",
+      "topic": "Lexical counterexample",
+      "difficulty": "applied",
+      "prompt": "Answer-atom coverage for Net 30 does not apply against atom Net 30 is 1. What does that prove?",
+      "explanation": "Lexical coverage can remain perfect while negation reverses the claim. Never relabel it as semantic correctness.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The substring is present; its asserted relationship can still be wrong"
+        },
+        {
+          "id": "o2",
+          "text": "The answer is commercially correct"
+        },
+        {
+          "id": "o3",
+          "text": "The model passed a semantic entailment judge"
+        },
+        {
+          "id": "o4",
+          "text": "The answer is free of negation"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q022",
+      "type": "single",
+      "topic": "Contextual similarity",
+      "difficulty": "foundation",
+      "prompt": "What distinguishes BERTScore from exact token equality?",
+      "explanation": "Contextual matching can recognize wording similarity. Model identity, calibration and decisive-error checks still matter.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It independently validates contract authority"
+        },
+        {
+          "id": "o2",
+          "text": "It guarantees all quantities and codes agree"
+        },
+        {
+          "id": "o3",
+          "text": "It needs no metric model or input policy"
+        },
+        {
+          "id": "o4",
+          "text": "It compares candidate/reference tokens using contextual representations"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q023",
+      "type": "single",
+      "topic": "Faithful but inadequate",
+      "difficulty": "applied",
+      "prompt": "An answer accurately quotes an outdated source but misses the governing current condition. Which distinction matters?",
+      "explanation": "Support from a source and adequacy under the task's authority rules are separate evaluation questions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Correctness and faithfulness are identical"
+        },
+        {
+          "id": "o2",
+          "text": "Any matching source name makes the answer complete"
+        },
+        {
+          "id": "o3",
+          "text": "Faithfulness to supplied text does not establish task correctness or source authority"
+        },
+        {
+          "id": "o4",
+          "text": "Authentic quotations settle version authority"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q024",
+      "type": "single",
+      "topic": "Correct from memory",
+      "difficulty": "applied",
+      "prompt": "A model gives the correct fact from memory, but the provided context contains no support. What remains unproven?",
+      "explanation": "A correct final answer alone can hide retrieval failure. Judge support against the actual admitted evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether the user asked a question"
+        },
+        {
+          "id": "o2",
+          "text": "Grounded faithfulness and retrieval success"
+        },
+        {
+          "id": "o3",
+          "text": "Whether the answer string exists"
+        },
+        {
+          "id": "o4",
+          "text": "Whether the first character is uppercase"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q025",
+      "type": "single",
+      "topic": "Citation layers",
+      "difficulty": "foundation",
+      "prompt": "A citation resolves to an authorized exact span. What still needs a separate check?",
+      "explanation": "Deterministic validity is necessary traceability evidence; claim-level support and correctness are broader judgments.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether that span supports the attached claim and the answer adequately addresses the task"
+        },
+        {
+          "id": "o2",
+          "text": "Whether the checked quote equals the stored slice"
+        },
+        {
+          "id": "o3",
+          "text": "Whether its validated offset is an integer"
+        },
+        {
+          "id": "o4",
+          "text": "Whether the already checked label exists"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q026",
+      "type": "single",
+      "topic": "Abstention result",
+      "difficulty": "applied",
+      "prompt": "Five of eight unanswerable cases abstain. The other three return genuine related excerpts. What is observed?",
+      "explanation": "The missing date, discount and phone-number cases retain authentic text. The failure is returning evidence where the annotated task expects abstention.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The assistant necessarily fabricated three facts"
+        },
+        {
+          "id": "o2",
+          "text": "Citation validity must be 5/8"
+        },
+        {
+          "id": "o3",
+          "text": "Semantic correctness has been human-reviewed for all cases"
+        },
+        {
+          "id": "o4",
+          "text": "Abstention behavior is 5/8, with three unavailable-fact response failures"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q027",
+      "type": "single",
+      "topic": "Pending review",
+      "difficulty": "applied",
+      "prompt": "You import the untouched pending review template. What has happened?",
+      "explanation": "Preparing/importing a template is not executing a review. Null remains an explicit unreviewed state.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A hidden LLM judge has graded the answers"
+        },
+        {
+          "id": "o2",
+          "text": "Every question receives a zero-quality score"
+        },
+        {
+          "id": "o3",
+          "text": "Zero semantic reviews are completed and no judge call is made"
+        },
+        {
+          "id": "o4",
+          "text": "All null scores become perfect ratings"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q028",
+      "type": "single",
+      "topic": "Stale ratings",
+      "difficulty": "foundation",
+      "prompt": "A review has the same question ID but a different run ID or record digest. What should the importer do?",
+      "explanation": "The same question can produce another answer/context. Bind ratings to the exact observed record and rubric.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Average it with the new answer automatically"
+        },
+        {
+          "id": "o2",
+          "text": "Reject the stale association"
+        },
+        {
+          "id": "o3",
+          "text": "Attach the rating because the question ID matches"
+        },
+        {
+          "id": "o4",
+          "text": "Replace the recorded answer to match the rating"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q029",
+      "type": "single",
+      "topic": "Fingerprint limits",
+      "difficulty": "applied",
+      "prompt": "What does an ordinary record digest establish under trusted inputs?",
+      "explanation": "Hashing, authentication, privacy and truth are different concerns. Self-declared reviewer metadata is not a signature.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A reproducible binding to exact encoded observations, not reviewer authentication"
+        },
+        {
+          "id": "o2",
+          "text": "That an independent expert performed the review"
+        },
+        {
+          "id": "o3",
+          "text": "That the source is commercially true"
+        },
+        {
+          "id": "o4",
+          "text": "That no private data is present"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W09-Q030",
+      "type": "single",
+      "topic": "Held-out planning",
+      "difficulty": "applied",
+      "prompt": "Why group related paraphrases and source-version variants when planning dataset splits?",
+      "explanation": "A visible diagnostic set is useful for debugging. A separately reviewed held-out design must address related-case overlap.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To guarantee every future model will generalize"
+        },
+        {
+          "id": "o2",
+          "text": "To turn visible practice questions into an undisclosed hidden test"
+        },
+        {
+          "id": "o3",
+          "text": "To make all failed cases disappear"
+        },
+        {
+          "id": "o4",
+          "text": "To reduce misleading independence and leakage between tuning and evaluation"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q031",
+      "type": "multiple",
+      "topic": "Stage boundaries",
+      "difficulty": "foundation",
+      "prompt": "Which statements about RAG evaluation are correct?",
+      "explanation": "Retain observations at source, candidate, ranking, context and answer boundaries to diagnose different mechanisms.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Final exact match identifies the cause of every failure"
+        },
+        {
+          "id": "o2",
+          "text": "Valid offsets prove answer completeness"
+        },
+        {
+          "id": "o3",
+          "text": "A faithful final quote can repeat an upstream extraction error"
+        },
+        {
+          "id": "o4",
+          "text": "A correct final answer can coexist with failed retrieval"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q032",
+      "type": "multiple",
+      "topic": "Controlled comparison",
+      "difficulty": "applied",
+      "prompt": "Which should stay fixed to isolate a reranker's ordering effect?",
+      "explanation": "Changing several stages creates an end-to-end comparison, not an isolated reranking experiment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A different gold set for each ordering"
+        },
+        {
+          "id": "o2",
+          "text": "Candidate membership, source versions and eligible scope"
+        },
+        {
+          "id": "o3",
+          "text": "Labels and requested k"
+        },
+        {
+          "id": "o4",
+          "text": "A treatment-only increase in retrieval depth"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q033",
+      "type": "multiple",
+      "topic": "Ranking definitions",
+      "difficulty": "applied",
+      "prompt": "Which definitions match this curriculum?",
+      "explanation": "Explicit denominators and cutoffs are part of each metric contract. First-hit and completeness measures answer different questions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Precision@k uses relevant hits divided by requested k"
+        },
+        {
+          "id": "o2",
+          "text": "Recall@k uses relevant hits divided by gold-unit count"
+        },
+        {
+          "id": "o3",
+          "text": "Reciprocal rank uses the first relevant position within cutoff"
+        },
+        {
+          "id": "o4",
+          "text": "MRR measures whether all required clauses survived"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q034",
+      "type": "multiple",
+      "topic": "Safe normalization",
+      "difficulty": "foundation",
+      "prompt": "Which are permitted by the declared exact-match policy?",
+      "explanation": "Normalization should remove declared presentation differences while retaining semantic distinctions such as codes, values and conditions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Case-fold and collapse whitespace"
+        },
+        {
+          "id": "o2",
+          "text": "Remove all punctuation and code separators"
+        },
+        {
+          "id": "o3",
+          "text": "Drop not and unless to improve matching"
+        },
+        {
+          "id": "o4",
+          "text": "Remove positive display labels such as [S2]"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q035",
+      "type": "multiple",
+      "topic": "Gold checks",
+      "difficulty": "applied",
+      "prompt": "Which should invalidate a dataset label before scoring?",
+      "explanation": "Bad annotations fail validation. A prediction missing valid independent gold is an evaluated system failure, not a reason to delete the label.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A required unit missed by the actual retriever"
+        },
+        {
+          "id": "o2",
+          "text": "A long answer that differs from a concise reference"
+        },
+        {
+          "id": "o3",
+          "text": "A required atom absent from its declared raw source block"
+        },
+        {
+          "id": "o4",
+          "text": "Gold evidence outside the request's grants or filters"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q036",
+      "type": "multiple",
+      "topic": "Context diagnostics",
+      "difficulty": "applied",
+      "prompt": "Which should be inspected after reranking?",
+      "explanation": "Compression and packing can remove necessary evidence. Presence, focus and semantic support remain different quantities.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A claim that substring coverage proves entailment"
+        },
+        {
+          "id": "o2",
+          "text": "Valid selected-source membership and required-atom survival"
+        },
+        {
+          "id": "o3",
+          "text": "Context focus alongside support completeness"
+        },
+        {
+          "id": "o4",
+          "text": "Only the reranker's mean reciprocal rank"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q037",
+      "type": "multiple",
+      "topic": "Unanswerable population",
+      "difficulty": "foundation",
+      "prompt": "Which are appropriate for no-gold/unanswerable cases here?",
+      "explanation": "No-gold relevance metrics and deliberate response-behavior targets need separate handling and interpretation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Leave recall and rank-based relevance scores null"
+        },
+        {
+          "id": "o2",
+          "text": "Report expected abstention on its own case population"
+        },
+        {
+          "id": "o3",
+          "text": "Assign perfect recall automatically"
+        },
+        {
+          "id": "o4",
+          "text": "Call every returned excerpt a fabricated fact"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q038",
+      "type": "multiple",
+      "topic": "Semantic metric integration",
+      "difficulty": "applied",
+      "prompt": "What should be recorded if a semantic evaluator is added?",
+      "explanation": "Different evaluators and input policies are not automatically comparable. Numeric, identifier and negation failures need explicit checks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Calibration against independently labelled decisive errors"
+        },
+        {
+          "id": "o2",
+          "text": "Only a universal similarity threshold"
+        },
+        {
+          "id": "o3",
+          "text": "Lexical atom coverage renamed as semantic similarity"
+        },
+        {
+          "id": "o4",
+          "text": "Model/revision, preprocessing, truncation and aggregation policies"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q039",
+      "type": "multiple",
+      "topic": "Judge calibration",
+      "difficulty": "applied",
+      "prompt": "Which cases help evaluate an LLM judge?",
+      "explanation": "A judge can share system biases. Use an independent reviewed subset and inspect disagreement patterns.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Answer-order and verbosity variations"
+        },
+        {
+          "id": "o2",
+          "text": "Only fluent answers from the preferred system"
+        },
+        {
+          "id": "o3",
+          "text": "Wrong numbers, negation, unsupported claims and irrelevant citations"
+        },
+        {
+          "id": "o4",
+          "text": "Acceptable paraphrases, partial support and appropriate abstention"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q040",
+      "type": "multiple",
+      "topic": "Judge boundary",
+      "difficulty": "foundation",
+      "prompt": "Which controls belong at the model-judge boundary?",
+      "explanation": "Judge output is untrusted structured data. A fluent rationale does not justify missing axes or foreign evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Let the candidate answer rewrite the grading rubric"
+        },
+        {
+          "id": "o2",
+          "text": "Validate required axes, exact score types and ranges"
+        },
+        {
+          "id": "o3",
+          "text": "Treat candidate/source instructions as data rather than judge authority"
+        },
+        {
+          "id": "o4",
+          "text": "Retain the actual evidence, model and prompt identity"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q041",
+      "type": "multiple",
+      "topic": "Human rubric",
+      "difficulty": "applied",
+      "prompt": "Which describe the current review contract?",
+      "explanation": "Explicit anchors and rationales make disagreements inspectable. Pending is a state of evidence, not an arbitrary number.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All four axes need integer scores 1–5 after review"
+        },
+        {
+          "id": "o2",
+          "text": "A rationale should point to decisive evidence"
+        },
+        {
+          "id": "o3",
+          "text": "An unassessable axis keeps the review pending"
+        },
+        {
+          "id": "o4",
+          "text": "A guessed score is preferable to leaving a gap"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q042",
+      "type": "multiple",
+      "topic": "Review binding",
+      "difficulty": "applied",
+      "prompt": "Which identities must a completed review preserve?",
+      "explanation": "Question IDs alone do not identify an answer. Prompt/model versions and human/model groups must remain distinguishable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Rubric version plus actual reviewer/model identity"
+        },
+        {
+          "id": "o2",
+          "text": "Judge prompt version for an LLM review"
+        },
+        {
+          "id": "o3",
+          "text": "Only the supplier name"
+        },
+        {
+          "id": "o4",
+          "text": "Exact run ID, query ID and case-record digest"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q043",
+      "type": "multiple",
+      "topic": "Saved evidence",
+      "difficulty": "foundation",
+      "prompt": "Which should an evaluation retain?",
+      "explanation": "Fresh result directories and raw observations support reproduction and later review of changed outputs.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only the best headline mean"
+        },
+        {
+          "id": "o2",
+          "text": "Overwritten prior runs with no retained raw record"
+        },
+        {
+          "id": "o3",
+          "text": "Actual answers, cited spans and intermediate source keys"
+        },
+        {
+          "id": "o4",
+          "text": "Summary denominators, configuration and dataset/system identity"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q044",
+      "type": "multiple",
+      "topic": "Audit limits",
+      "difficulty": "applied",
+      "prompt": "Which are true of the source audit in this lab?",
+      "explanation": "The controlled audit is useful but narrower than extraction accuracy on representative files. Audit and request authority remain separate.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Its private fixture access grants that source to every analyst"
+        },
+        {
+          "id": "o2",
+          "text": "It checks controlled layout facts/statuses separately from emitted chunks"
+        },
+        {
+          "id": "o3",
+          "text": "It can expose a lost chunk unit while parsed-atom recall stays perfect"
+        },
+        {
+          "id": "o4",
+          "text": "It measures arbitrary PDF/OCR accuracy"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q045",
+      "type": "multiple",
+      "topic": "Paired ablation",
+      "difficulty": "applied",
+      "prompt": "A 300-character context improves exact match while losing support. Which conclusions are justified?",
+      "explanation": "Use several declared metrics and inspect changed cases. A single output score can reward harmful evidence removal.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A shorter excerpt can resemble the reference more closely"
+        },
+        {
+          "id": "o2",
+          "text": "The support result prevents calling the exact-match gain a complete quality improvement"
+        },
+        {
+          "id": "o3",
+          "text": "All changed answers are semantically better"
+        },
+        {
+          "id": "o4",
+          "text": "Unchanged retrieval recall proves the downstream change harmless"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W09-Q046",
+      "type": "multiple",
+      "topic": "Source scope",
+      "difficulty": "foundation",
+      "prompt": "Which components make an expected evidence unit fully scoped here?",
+      "explanation": "Stable source units must survive answer-local citation reorderings and distinguish tenants, versions and clauses.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Document version and body-location label"
+        },
+        {
+          "id": "o2",
+          "text": "Only answer-local S1"
+        },
+        {
+          "id": "o3",
+          "text": "Only a supplier display name"
+        },
+        {
+          "id": "o4",
+          "text": "Tenant and document identity"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q047",
+      "type": "multiple",
+      "topic": "Reviewer groups",
+      "difficulty": "applied",
+      "prompt": "Which aggregations should remain separate?",
+      "explanation": "Use collision-safe group identity. Coverage counts reviewed questions, while a group's rating count counts actual completed ratings.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All reviewers sharing the string model somewhere in their ID"
+        },
+        {
+          "id": "o2",
+          "text": "Pending rows counted as completed ratings"
+        },
+        {
+          "id": "o3",
+          "text": "Human reviewers and LLM models"
+        },
+        {
+          "id": "o4",
+          "text": "Different judge prompt versions for the same model"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q048",
+      "type": "multiple",
+      "topic": "Unmeasured properties",
+      "difficulty": "applied",
+      "prompt": "Which are still unmeasured by the default local run?",
+      "explanation": "Do not infer properties that require another model, independent review, representative files or timed workloads from deterministic proxies.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The executed synthetic candidate recall"
+        },
+        {
+          "id": "o2",
+          "text": "Learned-model quality and semantic claim correctness"
+        },
+        {
+          "id": "o3",
+          "text": "Serving latency, memory and general extraction quality"
+        },
+        {
+          "id": "o4",
+          "text": "The observed default exact-match fraction"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q049",
+      "type": "multiple",
+      "topic": "Held-out design",
+      "difficulty": "foundation",
+      "prompt": "Which make a later generalization claim more credible?",
+      "explanation": "A visible practice set diagnoses mechanisms. Held-out evidence requires a governed process and realistic independence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Freeze independently reviewed labels before model selection"
+        },
+        {
+          "id": "o2",
+          "text": "Group related questions/source variants across split decisions"
+        },
+        {
+          "id": "o3",
+          "text": "Retain unavailable-fact and decisive-error categories"
+        },
+        {
+          "id": "o4",
+          "text": "Tune on the test failures and still call the set untouched"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W09-Q050",
+      "type": "multiple",
+      "topic": "Failure labels",
+      "difficulty": "applied",
+      "prompt": "Which are valid uses of stage failure labels?",
+      "explanation": "These labels are practical observations under the declared pipeline, not a general causal theorem.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Context loss identifies missing support after a complete reranked top-k"
+        },
+        {
+          "id": "o2",
+          "text": "Several diagnostics can coexist on one case"
+        },
+        {
+          "id": "o3",
+          "text": "They prove a single universal causal explanation for every RAG architecture"
+        },
+        {
+          "id": "o4",
+          "text": "Candidate misses identify absent required pool units"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W09-Q051",
+      "type": "match",
+      "topic": "Evaluation layers",
+      "difficulty": "applied",
+      "prompt": "Match each layer to the question it asks.",
+      "explanation": "Related checks are not interchangeable; a final answer can hide earlier failures.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Parsing quality"
+        },
+        {
+          "id": "l2",
+          "text": "Retrieval quality"
+        },
+        {
+          "id": "l3",
+          "text": "Answer faithfulness"
+        },
+        {
+          "id": "l4",
+          "text": "Answer correctness"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Did the source representation preserve declared facts?"
+        },
+        {
+          "id": "r2",
+          "text": "Did required eligible units reach ranked results?"
+        },
+        {
+          "id": "r3",
+          "text": "Do claims follow from the admitted evidence?"
+        },
+        {
+          "id": "r4",
+          "text": "Does the response adequately satisfy the task?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q052",
+      "type": "match",
+      "topic": "Metric denominators",
+      "difficulty": "foundation",
+      "prompt": "Match each measure to its denominator or target.",
+      "explanation": "Declare the exact cutoff, gain, unit and inclusion population before comparing values.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Precision@k"
+        },
+        {
+          "id": "l2",
+          "text": "Recall@k"
+        },
+        {
+          "id": "l3",
+          "text": "Reciprocal rank"
+        },
+        {
+          "id": "l4",
+          "text": "nDCG@k"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Requested result slots k"
+        },
+        {
+          "id": "r2",
+          "text": "Number of required gold units"
+        },
+        {
+          "id": "r3",
+          "text": "Position of the first relevant hit"
+        },
+        {
+          "id": "r4",
+          "text": "Ideal discounted gain under the same labels"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q053",
+      "type": "match",
+      "topic": "Hand calculations",
+      "difficulty": "applied",
+      "prompt": "There are five gold units. The top three are noise, A and B, with A/B relevant. Match each diagnostic to its value.",
+      "explanation": "The metrics share observations but use different denominators and objectives.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Precision@3"
+        },
+        {
+          "id": "l2",
+          "text": "Recall@3"
+        },
+        {
+          "id": "l3",
+          "text": "Reciprocal rank@3"
+        },
+        {
+          "id": "l4",
+          "text": "Missing required units"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "2/3"
+        },
+        {
+          "id": "r2",
+          "text": "2/5"
+        },
+        {
+          "id": "r3",
+          "text": "1/2"
+        },
+        {
+          "id": "r4",
+          "text": "3"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q054",
+      "type": "match",
+      "topic": "Identity granularity",
+      "difficulty": "applied",
+      "prompt": "Match each key to its scope.",
+      "explanation": "Keep source units and observed records separate from display labels and case names.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Document key"
+        },
+        {
+          "id": "l2",
+          "text": "Fully scoped unit key"
+        },
+        {
+          "id": "l3",
+          "text": "Answer label S1"
+        },
+        {
+          "id": "l4",
+          "text": "Query ID"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Source-level identity that can hide clause loss"
+        },
+        {
+          "id": "r2",
+          "text": "Tenant/document/version/body location"
+        },
+        {
+          "id": "r3",
+          "text": "Local label assigned inside one response"
+        },
+        {
+          "id": "r4",
+          "text": "Case identity that does not alone bind an observed answer"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q055",
+      "type": "match",
+      "topic": "Normalization examples",
+      "difficulty": "foundation",
+      "prompt": "Match each transformation to the declared interpretation.",
+      "explanation": "A normalization policy removes presentation variation without hiding material differences.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Net 30 [S1] to net 30"
+        },
+        {
+          "id": "l2",
+          "text": "CW-1000 to CW1000"
+        },
+        {
+          "id": "l3",
+          "text": "not required to required"
+        },
+        {
+          "id": "l4",
+          "text": "Repeated spaces to one space"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Allowed display/case cleanup"
+        },
+        {
+          "id": "r2",
+          "text": "Forbidden identifier change"
+        },
+        {
+          "id": "r3",
+          "text": "Forbidden negation loss"
+        },
+        {
+          "id": "r4",
+          "text": "Allowed whitespace cleanup"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q056",
+      "type": "match",
+      "topic": "Review axes",
+      "difficulty": "applied",
+      "prompt": "Match each rubric axis to its main evidence.",
+      "explanation": "The four axes require different review questions rather than one impression of fluency.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Context relevance"
+        },
+        {
+          "id": "l2",
+          "text": "Answer faithfulness"
+        },
+        {
+          "id": "l3",
+          "text": "Answer correctness"
+        },
+        {
+          "id": "l4",
+          "text": "Citation support"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "The selected material and the question's needs"
+        },
+        {
+          "id": "r2",
+          "text": "Claims against the actual supplied context"
+        },
+        {
+          "id": "r3",
+          "text": "Question, references and task/source policy"
+        },
+        {
+          "id": "r4",
+          "text": "Claim-to-cited-span alignment and validity"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q057",
+      "type": "match",
+      "topic": "Review states",
+      "difficulty": "applied",
+      "prompt": "Match each state or score anchor to its meaning.",
+      "explanation": "Intermediate ratings require actual judgment. Unreviewed evidence is not a perfect or zero score.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Score 1"
+        },
+        {
+          "id": "l2",
+          "text": "Score 3"
+        },
+        {
+          "id": "l3",
+          "text": "Score 5"
+        },
+        {
+          "id": "l4",
+          "text": "Pending with null"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Material failure on the axis"
+        },
+        {
+          "id": "r2",
+          "text": "Partial or ambiguous success"
+        },
+        {
+          "id": "r3",
+          "text": "Fully satisfied under the task rubric"
+        },
+        {
+          "id": "r4",
+          "text": "The review has not been completed"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q058",
+      "type": "match",
+      "topic": "Failure localization",
+      "difficulty": "foundation",
+      "prompt": "Match each diagnostic to the observed loss.",
+      "explanation": "These are ordered boundary diagnostics; other flags may coexist and semantic review remains separate.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "candidate_miss"
+        },
+        {
+          "id": "l2",
+          "text": "ranking_loss"
+        },
+        {
+          "id": "l3",
+          "text": "context_loss"
+        },
+        {
+          "id": "l4",
+          "text": "answer_atom_loss"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A required unit never enters the pool"
+        },
+        {
+          "id": "r2",
+          "text": "A complete pool loses required units from top-k"
+        },
+        {
+          "id": "r3",
+          "text": "Complete top-k loses required selected support"
+        },
+        {
+          "id": "r4",
+          "text": "Complete context loses a required lexical answer atom"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q059",
+      "type": "match",
+      "topic": "Run files",
+      "difficulty": "applied",
+      "prompt": "Match each file to its role.",
+      "explanation": "Retain both raw observations and summary identity so later ratings and comparisons can be checked.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "summary.json"
+        },
+        {
+          "id": "l2",
+          "text": "results.jsonl"
+        },
+        {
+          "id": "l3",
+          "text": "review-template.jsonl"
+        },
+        {
+          "id": "l4",
+          "text": "dataset.json"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Means, denominators, failures and system identity"
+        },
+        {
+          "id": "r2",
+          "text": "Actual per-question answers, spans and metrics"
+        },
+        {
+          "id": "r3",
+          "text": "Pending rows bound to saved case records"
+        },
+        {
+          "id": "r4",
+          "text": "Version and digests of source and label inputs"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q060",
+      "type": "match",
+      "topic": "Source audit cases",
+      "difficulty": "applied",
+      "prompt": "Match each observation to its interpretation.",
+      "explanation": "Independent input labels distinguish bad annotations from parser/chunker regressions.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Raw oracle atom absent"
+        },
+        {
+          "id": "l2",
+          "text": "Parsed atom lost"
+        },
+        {
+          "id": "l3",
+          "text": "Parsed intact, chunk unit absent"
+        },
+        {
+          "id": "l4",
+          "text": "P-106 held for review"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Invalid annotation must fail"
+        },
+        {
+          "id": "r2",
+          "text": "Representation-preservation failure"
+        },
+        {
+          "id": "r3",
+          "text": "Chunk retention failure"
+        },
+        {
+          "id": "r4",
+          "text": "Uncertain input excluded from searchable acceptance"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q061",
+      "type": "match",
+      "topic": "Unavailable evidence",
+      "difficulty": "foundation",
+      "prompt": "Match each case to its scoped reason for abstention.",
+      "explanation": "Unanswerability is relative to the fixed sources and policy, not a claim about every business system.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Catalogue delivery date"
+        },
+        {
+          "id": "l2",
+          "text": "Stranger principal"
+        },
+        {
+          "id": "l3",
+          "text": "Uncertain OCR invoice"
+        },
+        {
+          "id": "l4",
+          "text": "CW1000 unmapped alias"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "The requested fact is absent from this catalogue"
+        },
+        {
+          "id": "r2",
+          "text": "No independent source grants"
+        },
+        {
+          "id": "r3",
+          "text": "Source acceptance remains under review"
+        },
+        {
+          "id": "r4",
+          "text": "Current identifier policy supplies no approved mapping"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q062",
+      "type": "match",
+      "topic": "Score limits",
+      "difficulty": "applied",
+      "prompt": "Match each observable to what it does NOT prove.",
+      "explanation": "These checks are useful precisely when their limits remain explicit.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Exact match passes"
+        },
+        {
+          "id": "l2",
+          "text": "Atom coverage is 1"
+        },
+        {
+          "id": "l3",
+          "text": "Citation offsets validate"
+        },
+        {
+          "id": "l4",
+          "text": "All required context atoms survive"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "General semantic correctness"
+        },
+        {
+          "id": "r2",
+          "text": "Correct negation or relationships"
+        },
+        {
+          "id": "r3",
+          "text": "The cited span supports every claim"
+        },
+        {
+          "id": "r4",
+          "text": "A generator will use them correctly"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q063",
+      "type": "match",
+      "topic": "Fingerprint layers",
+      "difficulty": "applied",
+      "prompt": "Match each fingerprint to what it binds.",
+      "explanation": "Ordinary digests support reproduction under trusted inputs. They are not reviewer authentication or source truth.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Dataset identity"
+        },
+        {
+          "id": "l2",
+          "text": "Run identity"
+        },
+        {
+          "id": "l3",
+          "text": "Case-record digest"
+        },
+        {
+          "id": "l4",
+          "text": "Request manifest"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Source snapshot and authored label inputs"
+        },
+        {
+          "id": "r2",
+          "text": "Dataset, system/runtime/configuration and normalization"
+        },
+        {
+          "id": "r3",
+          "text": "The exact observed answer, evidence and metrics"
+        },
+        {
+          "id": "r4",
+          "text": "The assistant's eligible corpus and pipeline policies"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q064",
+      "type": "match",
+      "topic": "Review metadata",
+      "difficulty": "foundation",
+      "prompt": "Match each rule to its reason.",
+      "explanation": "Validation keeps associations explicit; it does not prove a self-declared review actually occurred.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Human prompt is null"
+        },
+        {
+          "id": "l2",
+          "text": "LLM prompt is versioned"
+        },
+        {
+          "id": "l3",
+          "text": "Duplicate completed reviewer/case fails"
+        },
+        {
+          "id": "l4",
+          "text": "Changed record digest fails"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "No model-judge prompt is claimed"
+        },
+        {
+          "id": "r2",
+          "text": "Different judge instructions stay distinguishable"
+        },
+        {
+          "id": "r3",
+          "text": "A rating is not silently counted twice"
+        },
+        {
+          "id": "r4",
+          "text": "A prior answer's rating cannot grade a new observation"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q065",
+      "type": "match",
+      "topic": "Controlled experiments",
+      "difficulty": "applied",
+      "prompt": "Match each experiment to what should be held fixed.",
+      "explanation": "Changing multiple inputs can still be studied, but it cannot isolate one factor without further design.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Reranker ordering comparison"
+        },
+        {
+          "id": "l2",
+          "text": "Compression comparison"
+        },
+        {
+          "id": "l3",
+          "text": "Position comparison"
+        },
+        {
+          "id": "l4",
+          "text": "Judge answer-order comparison"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "The same candidate pool and labels"
+        },
+        {
+          "id": "r2",
+          "text": "The same upstream ranked evidence"
+        },
+        {
+          "id": "r3",
+          "text": "Evidence membership, wording and total length"
+        },
+        {
+          "id": "r4",
+          "text": "Answers, rubric and model while swapping position"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W09-Q066",
+      "type": "short",
+      "topic": "Unicode normalization",
+      "difficulty": "applied",
+      "prompt": "Complete the Unicode-aware caseless comparison method: answer.___(). Enter only the method name.",
+      "explanation": "casefold performs caseless normalization. It does not remove punctuation, digits or negation.",
+      "accepted": [
+        "casefold"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q067",
+      "type": "short",
+      "topic": "Regex substitution",
+      "difficulty": "foundation",
+      "prompt": "Complete the standard-library call used to remove declared display-label matches: re.___(pattern, \"\", answer). Enter the function name.",
+      "explanation": "re.sub replaces only matches of the specified pattern. A narrow display-label pattern avoids erasing unrelated source IDs.",
+      "accepted": [
+        "sub"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q068",
+      "type": "short",
+      "topic": "Whitespace policy",
+      "difficulty": "applied",
+      "prompt": "Complete \" \".___(text.split()) to collapse whitespace without deleting words. Enter the method name.",
+      "explanation": "split without an argument finds whitespace-separated pieces; joining them with one space retains their order and content.",
+      "accepted": [
+        "join"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q069",
+      "type": "short",
+      "topic": "Unmeasured state",
+      "difficulty": "applied",
+      "prompt": "Enter the Python singleton returned for an undefined no-gold recall or an unmeasured semantic field.",
+      "explanation": "None distinguishes undefined or unmeasured values from numeric zero, a failed result or a passing score.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q070",
+      "type": "short",
+      "topic": "Discount syntax",
+      "difficulty": "foundation",
+      "prompt": "Complete the import for the rank discount denominator: from math import ___. Enter the base-two logarithm function.",
+      "explanation": "The chosen DCG denominator is log2(rank+1), with ranks starting at one.",
+      "accepted": [
+        "log2"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q071",
+      "type": "short",
+      "topic": "Gain arithmetic",
+      "difficulty": "applied",
+      "prompt": "Under gain = 2**grade - 1, enter only the gain for grade=3.",
+      "explanation": "The gain is 8-1=7 before rank discounting. A different gain rule would define another numerical contract.",
+      "accepted": [
+        "7"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q072",
+      "type": "short",
+      "topic": "Exact integer ratings",
+      "difficulty": "applied",
+      "prompt": "Complete the strict rating type check: ___(score) is int. Enter the built-in function name.",
+      "explanation": "type(score) is int rejects booleans, even though isinstance(True, int) is true.",
+      "accepted": [
+        "type"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q073",
+      "type": "short",
+      "topic": "Immutable gold set",
+      "difficulty": "foundation",
+      "prompt": "Enter the built-in type for an immutable set of expected evidence IDs.",
+      "explanation": "A frozenset expresses immutable membership and supports intersections without changing the gold labels.",
+      "accepted": [
+        "frozenset"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q074",
+      "type": "short",
+      "topic": "One-based positions",
+      "difficulty": "applied",
+      "prompt": "Complete enumerate(ranked_ids, ___=1) to obtain one-based ranks. Enter the keyword.",
+      "explanation": "enumerate(..., start=1) makes reciprocal rank and log2(rank+1) use the declared ranking positions.",
+      "accepted": [
+        "start"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q075",
+      "type": "short",
+      "topic": "Relevant hits",
+      "difficulty": "applied",
+      "prompt": "Complete returned.___(gold) to obtain their shared set members. Enter the set method name.",
+      "explanation": "The intersection contains relevant returned units. Deduplicate under the declared evidence-unit identity first.",
+      "accepted": [
+        "intersection"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q076",
+      "type": "short",
+      "topic": "Null check",
+      "difficulty": "foundation",
+      "prompt": "Complete value ___ None to test the unmeasured singleton by identity. Enter the Python keyword.",
+      "explanation": "Use an explicit None check; testing truthiness would also discard measured zero and False indicators.",
+      "accepted": [
+        "is"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q077",
+      "type": "short",
+      "topic": "Canonical JSON",
+      "difficulty": "applied",
+      "prompt": "Complete json.dumps(record, ___=True) so dictionary insertion order does not affect canonical key ordering. Enter the keyword.",
+      "explanation": "sort_keys stabilizes object-key order. The full byte contract also needs separators, Unicode policy and finite JSON values.",
+      "accepted": [
+        "sort_keys"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q078",
+      "type": "short",
+      "topic": "Digest formatting",
+      "difficulty": "applied",
+      "prompt": "Complete hashlib.sha256(payload).___() to return a hexadecimal fingerprint string. Enter the method name.",
+      "explanation": "The digest binds exact encoded bytes under trusted inputs; it does not authenticate a reviewer.",
+      "accepted": [
+        "hexdigest"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q079",
+      "type": "short",
+      "topic": "Review association",
+      "difficulty": "foundation",
+      "prompt": "Besides run_id and query_id, enter the exact lab field that binds a review to one saved observed answer/evidence record.",
+      "explanation": "record_digest changes when the observed answer, context or metrics change. Question identity alone is insufficient.",
+      "accepted": [
+        "record_digest"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q080",
+      "type": "short",
+      "topic": "Downstream diagnostic",
+      "difficulty": "applied",
+      "prompt": "All required units survive reranked top-k, but admitted spans lose required support. Enter the exact failure token.",
+      "explanation": "context_loss separates downstream evidence selection from a missing pool or ranking failure under this pipeline.",
+      "accepted": [
+        "context_loss"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W09-Q081",
+      "type": "code",
+      "topic": "Declared answer normalization",
+      "difficulty": "applied",
+      "prompt": "Implement normalize_answer(text). Require a str of at most 8000 characters; otherwise raise ValueError. Remove ONLY regex matches of r\"\\[S[1-9][0-9]*\\]\", then str.casefold(), then collapse whitespace with \" \".join(...split()). Return the string, allowing an empty result. Preserve punctuation, codes, digits, units and negation; do not remove other bracketed text. This is a declared string policy, not semantic judgment.",
+      "explanation": "Use the exact declared display/case/whitespace policy. Broad punctuation removal or word deletion could hide wrong codes, quantities and conditions.",
+      "starter": "def normalize_answer(text):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef normalize_answer(text):\n    if not isinstance(text,str) or len(text)>8000:\n        raise ValueError('bounded answer text required')\n    return ' '.join(re.sub(r'\\[S[1-9][0-9]*\\]','',text).casefold().split())\n",
+      "checks": [
+        {
+          "label": "Display, case and whitespace",
+          "code": "assert normalize_answer('  Net 30  AFTER approval [S1]\\n')=='net 30 after approval'"
+        },
+        {
+          "label": "Decisive text survives",
+          "code": "assert normalize_answer('CW-1000: USD 12.00, NOT Net 15.')=='cw-1000: usd 12.00, not net 15.'"
+        },
+        {
+          "label": "Only declared labels",
+          "code": "assert normalize_answer('[S12] [S0] [S01] [P-105] [s1]')=='[s0] [s01] [p-105] [s1]'"
+        },
+        {
+          "label": "Unicode and empty output",
+          "code": "assert normalize_answer('Straße')=='strasse' and normalize_answer(' [S2] ')=='' and normalize_answer('')==''"
+        },
+        {
+          "label": "Bound and type",
+          "code": "assert len(normalize_answer('x'*8000))==8000 and raises(ValueError,normalize_answer,'x'*8001) and raises(ValueError,normalize_answer,None)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q082",
+      "type": "code",
+      "topic": "Reference alternatives",
+      "difficulty": "foundation",
+      "prompt": "Implement exact_answer(answer, references). Normalize strings by removing r\"\\[S[1-9][0-9]*\\]\", case-folding and collapsing whitespace; preserve all other characters. answer must be str <=8000 chars. references must be a list/tuple of 1..16 strings <=8000 chars each, with NONEMPTY normalized content (a label-only reference is invalid). Invalid inputs raise ValueError. Return True if the normalized answer equals ANY normalized reference, otherwise False. Do not mutate inputs. This checks string agreement, not general correctness.",
+      "explanation": "Accepted reference alternatives and a frozen normalization policy define exact match. Do not interpret every mismatch as a semantic error.",
+      "starter": "def exact_answer(answer, references):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef normalize_answer(text):\n    if not isinstance(text,str) or len(text)>8000:\n        raise ValueError('bounded answer text required')\n    return ' '.join(re.sub(r'\\[S[1-9][0-9]*\\]','',text).casefold().split())\n\ndef exact_answer(answer, references):\n    value = normalize_answer(answer)\n    if not isinstance(references,(list,tuple)) or not 1<=len(references)<=16:\n        raise ValueError('reference alternatives required')\n    normalized = [normalize_answer(r) for r in references]\n    if any(not r for r in normalized):\n        raise ValueError('reference content required')\n    return value in normalized\n",
+      "checks": [
+        {
+          "label": "One accepted alternative is enough",
+          "code": "assert exact_answer('Net 30 [S2]',['payment after approval','net 30']) is True and exact_answer('net 15',['net 30']) is False"
+        },
+        {
+          "label": "No code or negation erasure",
+          "code": "assert not exact_answer('CW1000',['CW-1000']) and not exact_answer('not Net 30',['Net 30']) and not exact_answer('USD 1200',['USD 12.00'])"
+        },
+        {
+          "label": "Extra authentic text can mismatch",
+          "code": "assert exact_answer('Invoice terms are Net 30 after approval.',['Net 30 after approval']) is False"
+        },
+        {
+          "label": "Valid reference population",
+          "code": "assert all(raises(ValueError,exact_answer,'x',r) for r in [[],[' '],['[S1]'],['x']*17,'x',[None]])"
+        },
+        {
+          "label": "Preservation and Unicode",
+          "code": "r=['STRASSE terms','other'];before=repr(r);assert exact_answer(' Straße\\t terms [S1]',r) is True and repr(r)==before and raises(ValueError,exact_answer,7,['x'])"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q083",
+      "type": "code",
+      "topic": "Lexical answer coverage",
+      "difficulty": "applied",
+      "prompt": "Implement atom_fraction(answer, atoms). Use this normalization on answer/atoms: remove r\"\\[S[1-9][0-9]*\\]\", case-fold, collapse whitespace, preserve other characters. answer is str <=8000 chars; atoms is a list/tuple of 0..16 strings <=8000 chars with nonempty normalized content. Raise ValueError on invalid inputs. Return None for no atoms; otherwise return the fraction of listed normalized atoms appearing as substrings of the normalized answer. Each list entry is one check; dataset duplicate-label validation is separate. This helper intentionally does NOT understand negation or entailment.",
+      "explanation": "Report a fraction of declared lexical checks and preserve undefined empty-label cases. Full substring coverage can coexist with a wrong relationship.",
+      "starter": "def atom_fraction(answer, atoms):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef normalize_answer(text):\n    if not isinstance(text,str) or len(text)>8000:\n        raise ValueError('bounded answer text required')\n    return ' '.join(re.sub(r'\\[S[1-9][0-9]*\\]','',text).casefold().split())\n\ndef atom_fraction(answer, atoms):\n    value = normalize_answer(answer)\n    if not isinstance(atoms,(list,tuple)) or len(atoms)>16:\n        raise ValueError('bounded atom list required')\n    normalized = [normalize_answer(a) for a in atoms]\n    if any(not atom for atom in normalized):\n        raise ValueError('nonempty atom required')\n    return sum(atom in value for atom in normalized)/len(normalized) if normalized else None\n",
+      "checks": [
+        {
+          "label": "Observed lexical fraction",
+          "code": "assert atom_fraction('CW-1000 Net 30',['CW-1000','Net 30','approval'])==2/3"
+        },
+        {
+          "label": "Negation is not understood",
+          "code": "assert atom_fraction('Net 30 does NOT apply',['Net 30'])==1 and atom_fraction('Net 15',['Net 30'])==0"
+        },
+        {
+          "label": "No labels is undefined",
+          "code": "assert atom_fraction('anything',[]) is None and atom_fraction('',['Net 30'])==0"
+        },
+        {
+          "label": "Normalization preserves codes",
+          "code": "assert atom_fraction(' Net\\n30 [S1] Straße',['net 30','STRASSE'])==1 and atom_fraction('CW1000',['CW-1000'])==0"
+        },
+        {
+          "label": "Bounds and unchanged atoms",
+          "code": "a=['row','clause'];before=repr(a);assert atom_fraction('row',a)==.5 and repr(a)==before and raises(ValueError,atom_fraction,'x',[' ']) and raises(ValueError,atom_fraction,'x','x') and raises(ValueError,atom_fraction,'x',['x']*17)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q084",
+      "type": "code",
+      "topic": "Precision, recall and first hit",
+      "difficulty": "applied",
+      "prompt": "Implement ranking_stats(ranked, gold, k). ranked is a list/tuple of at most 64 unique nonblank string IDs; gold is a set/frozenset of at most 64 nonblank string IDs. k must be an exact int in 1..64, not bool. Invalid inputs raise ValueError. Inspect only ranked[:k]. Return a dict with precision=hits/k, recall=hits/len(gold), reciprocal_rank=1/rank of the first gold hit (0.0 if none inside cutoff). With empty gold, precision is 0.0 and recall/reciprocal_rank are None. Short lists still use REQUESTED k. Inputs stay unchanged.",
+      "explanation": "Keep denominator, cutoff and empty-label policy explicit. First-hit ranking quality does not measure all required clauses.",
+      "starter": "def ranking_stats(ranked, gold, k):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def ranking_stats(ranked, gold, k):\n    if type(k) is not int or not 1<=k<=64:\n        raise ValueError('invalid cutoff')\n    if not isinstance(ranked,(list,tuple)) or not isinstance(gold,(set,frozenset)) or len(ranked)>64 or len(gold)>64:\n        raise ValueError('bounded ID collections required')\n    if any(not isinstance(v,str) or not v.strip() for v in (*ranked,*gold)) or len(set(ranked))!=len(ranked):\n        raise ValueError('unique nonblank ranking IDs required')\n    top=ranked[:k]\n    hits=len(set(top)&gold)\n    rr=next((1/r for r,key in enumerate(top,1) if key in gold),0.0)\n    return dict(precision=hits/k,recall=hits/len(gold) if gold else None,reciprocal_rank=rr if gold else None)\n",
+      "checks": [
+        {
+          "label": "Independent three-result calculation",
+          "code": "assert ranking_stats(['noise','a','b'],{'a','b','c'},3)=={'precision':2/3,'recall':2/3,'reciprocal_rank':.5}"
+        },
+        {
+          "label": "Requested denominator and cutoff",
+          "code": "assert ranking_stats(['a'],{'a'},3)['precision']==1/3 and ranking_stats(['noise','a'],{'a'},1)=={'precision':0,'recall':0,'reciprocal_rank':0}"
+        },
+        {
+          "label": "Empty labels versus missing known evidence",
+          "code": "assert ranking_stats([],set(),3)=={'precision':0,'recall':None,'reciprocal_rank':None} and ranking_stats([],{'a'},3)['recall']==0"
+        },
+        {
+          "label": "No duplicates or bool cutoff",
+          "code": "assert raises(ValueError,ranking_stats,['a','a'],{'a'},1) and raises(ValueError,ranking_stats,['a'],{'a'},True) and raises(ValueError,ranking_stats,[' '],{'a'},1) and raises(ValueError,ranking_stats,['a'],['a'],1)"
+        },
+        {
+          "label": "Bounds and preservation",
+          "code": "r=['b','a'];g=frozenset({'a'});before=repr((r,g));assert ranking_stats(r,g,2)['reciprocal_rank']==.5 and repr((r,g))==before and raises(ValueError,ranking_stats,[],set(),0) and raises(ValueError,ranking_stats,[],set(),65)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q085",
+      "type": "code",
+      "topic": "Discounted graded gain",
+      "difficulty": "foundation",
+      "prompt": "Implement dcg_at_k(grades, k). grades is a list/tuple of at most 64 relevance grades in ranking order. Every grade must be an exact int 0..3 (not bool); k is an exact int 1..64. Invalid inputs raise ValueError. Return a float sum over grades[:k] of (2**grade - 1) / log2(rank+1), with rank starting at 1. Empty grades returns 0.0. Validate every supplied grade, even beyond cutoff. Do not mutate input.",
+      "explanation": "The explicit exponential gain and logarithmic rank discount define this teaching metric. Binary datasets must not acquire invented grades.",
+      "starter": "def dcg_at_k(grades, k):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from math import log2\ndef dcg_at_k(grades, k):\n    if type(k) is not int or not 1<=k<=64 or not isinstance(grades,(list,tuple)) or len(grades)>64:\n        raise ValueError('invalid DCG input')\n    if any(type(g) is not int or not 0<=g<=3 for g in grades):\n        raise ValueError('reviewed integer grade required')\n    return sum(((2**g-1)/log2(r+1) for r,g in enumerate(grades[:k],1)),0.0)\n",
+      "checks": [
+        {
+          "label": "Known gain and discount",
+          "code": "from math import isclose,log2\nassert isclose(dcg_at_k([3,1],2),7+1/log2(3)) and isclose(dcg_at_k([1,3],2),1+7/log2(3))"
+        },
+        {
+          "label": "Cutoff and zero grades",
+          "code": "assert dcg_at_k([3,1],1)==7.0 and dcg_at_k([0,0],2)==0.0 and dcg_at_k([],1)==0.0"
+        },
+        {
+          "label": "Exact grade types/range",
+          "code": "assert all(raises(ValueError,dcg_at_k,[g],1) for g in [True,-1,4,1.5,'3'])"
+        },
+        {
+          "label": "Validate beyond cutoff",
+          "code": "assert raises(ValueError,dcg_at_k,[3,True],1) and raises(ValueError,dcg_at_k,[3],True) and raises(ValueError,dcg_at_k,[],0) and raises(ValueError,dcg_at_k,[],65)"
+        },
+        {
+          "label": "One-based ranks and no mutation",
+          "code": "from math import isclose,log2\ng=[0,3];before=g[:];assert isclose(dcg_at_k(g,2),7/log2(3)) and g==before and type(dcg_at_k([],2)) is float"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q086",
+      "type": "code",
+      "topic": "Ideal-universe nDCG",
+      "difficulty": "applied",
+      "prompt": "Implement graded_ndcg(ranked, grades, k). ranked is a list/tuple of <=64 unique nonblank string IDs; grades is a dict of <=64 nonblank string IDs to exact integer grades 0..3. k is exact int 1..64; invalid input raises ValueError. Unlabelled ranked IDs have grade zero. DCG uses (2**grade-1)/log2(rank+1), one-based ranks, at most k results. Ideal DCG sorts ALL supplied label grades descending and takes k, including labels absent from ranked. Return DCG/ideal, or None if ideal is zero. An empty ranking with positive ideal gets 0.0. Do not mutate inputs; include any helpers you need.",
+      "explanation": "Normalize against the same full labelled universe rather than only returned hits. Otherwise missing relevant items can disappear from the denominator.",
+      "starter": "def graded_ndcg(ranked, grades, k):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from math import log2\ndef dcg_at_k(grades, k):\n    if type(k) is not int or not 1<=k<=64 or not isinstance(grades,(list,tuple)) or len(grades)>64:\n        raise ValueError('invalid DCG input')\n    if any(type(g) is not int or not 0<=g<=3 for g in grades):\n        raise ValueError('reviewed integer grade required')\n    return sum(((2**g-1)/log2(r+1) for r,g in enumerate(grades[:k],1)),0.0)\n\ndef graded_ndcg(ranked, grades, k):\n    if not isinstance(ranked,(list,tuple)) or not isinstance(grades,dict) or len(ranked)>64 or len(grades)>64:\n        raise ValueError('invalid ranking or labels')\n    if any(not isinstance(x,str) or not x.strip() for x in (*ranked,*grades)) or len(set(ranked))!=len(ranked):\n        raise ValueError('invalid ranking identity')\n    if any(type(g) is not int or not 0<=g<=3 for g in grades.values()):\n        raise ValueError('reviewed integer grades required')\n    ideal=dcg_at_k(sorted(grades.values(),reverse=True),k)\n    actual=dcg_at_k([grades.get(x,0) for x in ranked],k)\n    return actual/ideal if ideal else None\n",
+      "checks": [
+        {
+          "label": "Hand-calculated reverse order",
+          "code": "from math import isclose,log2\ng={'a':3,'b':1};assert graded_ndcg(['a','b'],g,2)==1 and isclose(graded_ndcg(['b','a'],g,2),(1+7/log2(3))/(7+1/log2(3)))"
+        },
+        {
+          "label": "Ideal includes missed labels",
+          "code": "from math import isclose,log2\nassert isclose(graded_ndcg(['b'],{'a':3,'b':1},2),1/(7+1/log2(3)))"
+        },
+        {
+          "label": "Unknown IDs and empty cases",
+          "code": "assert graded_ndcg(['noise'],{'a':1},1)==0 and graded_ndcg([],{'a':1},2)==0 and graded_ndcg([],{},2) is None and graded_ndcg(['a'],{'a':0},1) is None"
+        },
+        {
+          "label": "Reject duplicate IDs and unreviewed grades",
+          "code": "assert raises(ValueError,graded_ndcg,['a','a'],{'a':1},2) and raises(ValueError,graded_ndcg,['a'],{'a':True},1) and raises(ValueError,graded_ndcg,['a'],{'a':4},1) and raises(ValueError,graded_ndcg,['a'],{'a':3,'b':'1'},1) and raises(ValueError,graded_ndcg,['a'],{'a':1},False)"
+        },
+        {
+          "label": "Full label validation and preservation",
+          "code": "r=['b','a'];g={'a':3,'b':1};before=repr((r,g));assert graded_ndcg(r,g,1)==1/7 and repr((r,g))==before and raises(ValueError,graded_ndcg,['a'],{'a':3,'b':-1},1)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q087",
+      "type": "code",
+      "topic": "Observed means and nulls",
+      "difficulty": "applied",
+      "prompt": "Implement mean_observed(values). values is a list/tuple of <=256 entries: None, exact bool indicators, or built-in int/float measurements. None is excluded; True/False intentionally participate as 1/0. All numeric values must convert to finite floats within [-1000000,1000000]; invalid values/types/bounds raise ValueError. Return their float arithmetic mean, or None if no observations remain. Preserve measured zero and False, and do not mutate input. This indicator policy does not apply to integer-only human rating validation.",
+      "explanation": "Keep unmeasured values out of means without discarding real failures represented by zero or False. State when indicators are deliberately numeric.",
+      "starter": "def mean_observed(values):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from math import fsum,isfinite\ndef mean_observed(values):\n    if not isinstance(values,(list,tuple)) or len(values)>256:\n        raise ValueError('bounded metric list required')\n    numbers=[]\n    for value in values:\n        if value is None:\n            continue\n        if type(value) not in (bool,int,float):\n            raise ValueError('numeric observation required')\n        try:\n            number=float(value)\n        except (ValueError,OverflowError) as exc:\n            raise ValueError('finite bounded metric required') from exc\n        if not isfinite(number) or abs(number)>1000000:\n            raise ValueError('finite bounded metric required')\n        numbers.append(number)\n    return fsum(numbers)/len(numbers) if numbers else None\n",
+      "checks": [
+        {
+          "label": "Exclude nulls, not observed zeros",
+          "code": "assert mean_observed([1,None,0])==.5 and mean_observed([0,0,None])==0.0"
+        },
+        {
+          "label": "Explicit indicator mean",
+          "code": "assert mean_observed([True,False,None])==.5 and mean_observed([False])==0.0"
+        },
+        {
+          "label": "No observations",
+          "code": "assert mean_observed([]) is None and mean_observed([None,None]) is None"
+        },
+        {
+          "label": "Reject nonfinite and malformed values",
+          "code": "assert all(raises(ValueError,mean_observed,[x]) for x in ['1',float('nan'),float('inf'),1000001,10**1000]) and raises(ValueError,mean_observed,[0]*257)"
+        },
+        {
+          "label": "Stable value domain and no mutation",
+          "code": "v=[1000000,-1000000,None,1];before=v[:];assert mean_observed(v)==1/3 and v==before"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q088",
+      "type": "code",
+      "topic": "Scoped abstention denominator",
+      "difficulty": "foundation",
+      "prompt": "Implement abstention_rate(cases). cases is a list/tuple of <=64 dictionaries containing answerable and has_evidence, both EXACT bool values; ignore extra fields. Invalid shape/type/count raises ValueError. Under this extractive-response policy, has_evidence=False means abstention. Return the fraction of UNANSWERABLE cases with no evidence, or None if there are no unanswerable cases. Answerable requests do not enter this denominator. Do not mutate input; this measures response behavior, not semantic correctness.",
+      "explanation": "Measure expected abstention on the annotated unanswerable population. Authentic but inadequate excerpts are behavior failures, not automatically fabricated claims.",
+      "starter": "def abstention_rate(cases):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def abstention_rate(cases):\n    if not isinstance(cases,(list,tuple)) or len(cases)>64:\n        raise ValueError('bounded cases required')\n    if any(not isinstance(c,dict) or not {'answerable','has_evidence'}<=set(c) or type(c['answerable']) is not bool or type(c['has_evidence']) is not bool for c in cases):\n        raise ValueError('boolean case observations required')\n    subset=[c for c in cases if not c['answerable']]\n    return sum(not c['has_evidence'] for c in subset)/len(subset) if subset else None\n",
+      "checks": [
+        {
+          "label": "Five of eight unanswerable cases",
+          "code": "c=[dict(answerable=False,has_evidence=False)]*5+[dict(answerable=False,has_evidence=True)]*3;assert abstention_rate(c)==5/8"
+        },
+        {
+          "label": "Answerable cases excluded",
+          "code": "c=[dict(answerable=False,has_evidence=False),dict(answerable=False,has_evidence=True)]+[dict(answerable=True,has_evidence=True)]*20;assert abstention_rate(c)==.5"
+        },
+        {
+          "label": "No unanswerable cases",
+          "code": "assert abstention_rate([]) is None and abstention_rate([dict(answerable=True,has_evidence=False)]) is None"
+        },
+        {
+          "label": "Strict bool observations",
+          "code": "assert raises(ValueError,abstention_rate,[dict(answerable=0,has_evidence=False)]) and raises(ValueError,abstention_rate,[dict(answerable=False,has_evidence=1)]) and raises(ValueError,abstention_rate,[{}])"
+        },
+        {
+          "label": "Bounds and no mutation",
+          "code": "c=[dict(answerable=False,has_evidence=True,other='x')];before=repr(c);assert abstention_rate(c)==0 and repr(c)==before and raises(ValueError,abstention_rate,c*65)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q089",
+      "type": "code",
+      "topic": "Citation validity counts",
+      "difficulty": "applied",
+      "prompt": "Implement citation_counts(validity). validity is a list/tuple of <=128 EXACT bool outputs from an upstream exact-span validator. Invalid types/count raise ValueError. Return {'count': n, 'invalid': number of False entries, 'valid_fraction': number of True entries/n}. For empty input return count=0, invalid=0 and valid_fraction=None. Do not manufacture perfect validity for an empty citation population or confuse span validity with claim support. Inputs stay unchanged.",
+      "explanation": "Separate emitted population size, invalid count and validity fraction. No citations is an undefined fraction, while semantic support remains another review.",
+      "starter": "def citation_counts(validity):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def citation_counts(validity):\n    if not isinstance(validity,(list,tuple)) or len(validity)>128 or any(type(x) is not bool for x in validity):\n        raise ValueError('bounded boolean validation results required')\n    n=len(validity)\n    valid=sum(validity)\n    return dict(count=n,invalid=n-valid,valid_fraction=valid/n if n else None)\n",
+      "checks": [
+        {
+          "label": "Count invalid spans",
+          "code": "assert citation_counts([True,False,True])=={'count':3,'invalid':1,'valid_fraction':2/3}"
+        },
+        {
+          "label": "Empty is undefined",
+          "code": "assert citation_counts([])=={'count':0,'invalid':0,'valid_fraction':None}"
+        },
+        {
+          "label": "All and no valid spans",
+          "code": "assert citation_counts([True,True])['valid_fraction']==1 and citation_counts([False,False])=={'count':2,'invalid':2,'valid_fraction':0}"
+        },
+        {
+          "label": "No coercion of integers or text",
+          "code": "assert raises(ValueError,citation_counts,[1]) and raises(ValueError,citation_counts,['true']) and raises(ValueError,citation_counts,None)"
+        },
+        {
+          "label": "Boundary and preservation",
+          "code": "v=[True,False];before=v[:];assert citation_counts(v)['invalid']==1 and v==before and citation_counts([True]*128)['count']==128 and raises(ValueError,citation_counts,[True]*129)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q090",
+      "type": "code",
+      "topic": "Context source-unit metrics",
+      "difficulty": "applied",
+      "prompt": "Implement context_metrics(selected, gold). Each evidence key is a tuple of four nonblank strings (tenant, document, version, body_location). selected is a list/tuple of <=128 such keys and may repeat a unit because it has several spans. gold is a set/frozenset of <=64 such keys. Inputs represent already-validated source identities; this helper does not authorize access. Reject invalid shapes with ValueError. Deduplicate selected units; return {'precision': hits/number_of_unique_selected, 'recall': hits/len(gold)}. If gold is nonempty but selected is empty, both are 0.0. If gold is empty, both are None. Do not collapse versions/locations or mutate input.",
+      "explanation": "Count fully scoped source units rather than spans or documents. Expected-source overlap is still narrower than claim-level citation support.",
+      "starter": "def context_metrics(selected, gold):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def context_metrics(selected, gold):\n    if not isinstance(selected,(list,tuple)) or len(selected)>128 or not isinstance(gold,(set,frozenset)) or len(gold)>64:\n        raise ValueError('bounded source units required')\n    if any(not isinstance(key,tuple) or len(key)!=4 or any(not isinstance(v,str) or not v.strip() for v in key) for key in (*selected,*gold)):\n        raise ValueError('fully scoped unit key required')\n    units=set(selected)\n    hits=len(units&gold)\n    return dict(precision=hits/len(units) if units and gold else (0.0 if gold else None),recall=hits/len(gold) if gold else None)\n",
+      "checks": [
+        {
+          "label": "Duplicate spans count one source unit",
+          "code": "a=('N','D','1','p1:b1');b=('N','D','1','p1:b2');assert context_metrics([a,a,b],{a})=={'precision':.5,'recall':1}"
+        },
+        {
+          "label": "Tenant/version/location all matter",
+          "code": "a=('N','D','1','b1');r=[('S','D','1','b1'),('N','D','2','b1'),('N','D','1','b2')];assert context_metrics(r,{a})=={'precision':0,'recall':0}"
+        },
+        {
+          "label": "Empty populations",
+          "code": "a=('N','D','1','b1');assert context_metrics([],{a})=={'precision':0,'recall':0} and context_metrics([a],set())=={'precision':None,'recall':None}"
+        },
+        {
+          "label": "No ambiguous key shapes",
+          "code": "assert raises(ValueError,context_metrics,['N/D/1/b1'],set()) and raises(ValueError,context_metrics,[('N','D','1')],set()) and raises(ValueError,context_metrics,[('N','D','1',' ')],set())"
+        },
+        {
+          "label": "Tuples avoid separator collisions",
+          "code": "a=('A/B','C','1','L');b=('A','B/C','1','L');r=[a,b];before=repr(r);assert context_metrics(r,{a})['precision']==.5 and repr(r)==before"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q091",
+      "type": "code",
+      "topic": "Required support by source",
+      "difficulty": "foundation",
+      "prompt": "Implement support_complete(spans, expected). Inputs are trusted: spans is a list of {'key': (tenant,document,version,location), 'quote': text}; expected maps those four-string keys to nonempty lists of nonblank required atoms. All texts are <=8000 chars. Normalize quote/atom by removing r\"\\[S[1-9][0-9]*\\]\", case-folding and collapsing whitespace; keep punctuation/codes/numbers/negation. Return None if expected is empty. Otherwise every atom must appear wholly within at least one selected quote with its OWN key; different atoms may occur in separate quotes of that key. Return False on any missing atom. Never borrow a foreign source or join separate quotes to manufacture a match. Do not mutate input. This is lexical support, not entailment.",
+      "explanation": "Attach lexical checks to the declared source and surviving quote. Their success can still miss negation, conditions or semantic relationships.",
+      "starter": "def support_complete(spans, expected):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef normalize_answer(text):\n    if not isinstance(text,str) or len(text)>8000:\n        raise ValueError('bounded answer text required')\n    return ' '.join(re.sub(r'\\[S[1-9][0-9]*\\]','',text).casefold().split())\n\ndef support_complete(spans, expected):\n    if not expected:\n        return None\n    return all(any(s['key']==key and normalize_answer(atom) in normalize_answer(s['quote']) for s in spans) for key,atoms in expected.items() for atom in atoms)\n",
+      "checks": [
+        {
+          "label": "Every required atom in its source",
+          "code": "k=('N','D','1','b8');s=[dict(key=k,quote='NET 30 after inspection approval')];assert support_complete(s,{k:['net 30','inspection approval']}) is True"
+        },
+        {
+          "label": "No foreign source/version credit",
+          "code": "a=('N','D','1','b8');b=('N','D','2','b8');assert support_complete([dict(key=b,quote='Net 30')],{a:['Net 30']}) is False"
+        },
+        {
+          "label": "No manufactured cross-span phrase",
+          "code": "k=('N','D','1','b');s=[dict(key=k,quote='Net'),dict(key=k,quote='30 approval')];assert support_complete(s,{k:['Net 30']}) is False and support_complete(s,{k:['Net','approval']}) is True"
+        },
+        {
+          "label": "Undefined no-gold and missing context",
+          "code": "k=('N','D','1','b');assert support_complete([], {}) is None and support_complete([],{k:['clause']}) is False"
+        },
+        {
+          "label": "Normalization and proxy limitation",
+          "code": "k=('N','D','1','b');s=[dict(key=k,quote='Net\\n30 does not apply [S1]')];before=repr(s);assert support_complete(s,{k:['NET 30']}) is True and repr(s)==before"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q092",
+      "type": "code",
+      "topic": "Independent source audit",
+      "difficulty": "applied",
+      "prompt": "Implement audit_units(expected, raw, parsed, chunks). All shapes are trusted and bounded to <=64 units: expected maps fully scoped four-string unit keys to nonempty atom lists; raw/parsed map unit keys to body text; chunks is a list of {'key': unit_key, 'text': text}. First require every expected atom to occur CASE-SENSITIVELY in raw at its declared key; absent key/atom raises ValueError (bad oracle). Return {'parsed_atom_recall': fraction of declared atoms in parsed at their own keys, 'chunk_unit_recall': fraction of expected units whose every atom survives in one or more chunks with that SAME key}. A unit's atoms may survive in different chunks; this is retention, not boundary coherence. Empty expected returns both None. Do not derive labels from output, broaden access or mutate inputs.",
+      "explanation": "Reject wrong annotations before evaluating preservation. Separate parsed facts from chunk retention at their own scoped locations; this is not general PDF/OCR accuracy.",
+      "starter": "def audit_units(expected, raw, parsed, chunks):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def audit_units(expected, raw, parsed, chunks):\n    for key,atoms in expected.items():\n        if key not in raw or any(atom not in raw[key] for atom in atoms):\n            raise ValueError('oracle atom absent from declared raw source')\n    total=sum(len(atoms) for atoms in expected.values())\n    parsed_hits=sum(atom in parsed.get(key,'') for key,atoms in expected.items() for atom in atoms)\n    complete=sum(all(any(c['key']==key and atom in c['text'] for c in chunks) for atom in atoms) for key,atoms in expected.items())\n    return dict(parsed_atom_recall=parsed_hits/total if total else None,chunk_unit_recall=complete/len(expected) if expected else None)\n",
+      "checks": [
+        {
+          "label": "Parser intact, chunk loss visible",
+          "code": "a=('N','D','1','b1');b=('N','D','1','b2');e={a:['row'],b:['clause']};r={a:'row',b:'clause'};assert audit_units(e,r,r,[dict(key=a,text='row')])=={'parsed_atom_recall':1,'chunk_unit_recall':.5}"
+        },
+        {
+          "label": "Separate parsed atom denominator",
+          "code": "k=('N','D','1','b');e={k:['Net 30','approval']};r={k:'Net 30 after approval'};assert audit_units(e,r,{k:'Net 30'},[])=={'parsed_atom_recall':.5,'chunk_unit_recall':0}"
+        },
+        {
+          "label": "Bad oracle fails instead of hiding omission",
+          "code": "k=('N','D','1','b');assert raises(ValueError,audit_units,{k:['invented']},{k:'row'},{k:'invented'},[dict(key=k,text='invented')]) and raises(ValueError,audit_units,{k:['row']},{},{},[])"
+        },
+        {
+          "label": "No borrowing across scoped units",
+          "code": "k=('N','D','1','b');other=('S','D','1','b');assert audit_units({k:['row']},{k:'row'},{other:'row'},[dict(key=other,text='row')])=={'parsed_atom_recall':0,'chunk_unit_recall':0}"
+        },
+        {
+          "label": "Retention can span chunks; inputs unchanged",
+          "code": "k=('N','D','1','b');e={k:['row','clause']};r={k:'row clause'};c=[dict(key=k,text='row'),dict(key=k,text='clause')];before=repr((e,r,c));assert audit_units(e,r,r,c)['chunk_unit_recall']==1 and repr((e,r,c))==before and audit_units({}, {}, {}, [])=={'parsed_atom_recall':None,'chunk_unit_recall':None}"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q093",
+      "type": "code",
+      "topic": "Stage failure flags",
+      "difficulty": "applied",
+      "prompt": "Implement failure_flags(state) for TRUSTED observed metrics. state has answerable (bool), candidate_recall/ranked_recall (0..1 or None for no gold), context_complete (bool/None), answer_coverage (0..1/None), citation_count, invalid_count (nonnegative consistent ints) and traceable (bool/None). Return a list in this order: for answerable cases, candidate_miss if candidate_recall!=1; ranking_loss if candidate_recall==1 and ranked_recall!=1; context_loss if ranked_recall==1 and not context_complete; answer_atom_loss if context_complete and answer_coverage!=1; unexpected_abstention if citation_count==0. For unanswerable cases instead add unanswerable_evidence_returned if citation_count>0. For either kind append invalid_citation if invalid_count>0, then extractive_format_mismatch if traceable is False. Multiple flags may coexist. Do not mutate state or call these diagnostics a universal causal proof.",
+      "explanation": "Localize observations at the declared stage boundaries and preserve coexisting flags. A valid excerpt can violate expected abstention without inventing a fact.",
+      "starter": "def failure_flags(state):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def failure_flags(state):\n    out=[]\n    if state['answerable']:\n        if state['candidate_recall']!=1:out.append('candidate_miss')\n        if state['candidate_recall']==1 and state['ranked_recall']!=1:out.append('ranking_loss')\n        if state['ranked_recall']==1 and not state['context_complete']:out.append('context_loss')\n        if state['context_complete'] and state['answer_coverage']!=1:out.append('answer_atom_loss')\n        if state['citation_count']==0:out.append('unexpected_abstention')\n    elif state['citation_count']>0:\n        out.append('unanswerable_evidence_returned')\n    if state['invalid_count']>0:out.append('invalid_citation')\n    if state['traceable'] is False:out.append('extractive_format_mismatch')\n    return out\n",
+      "checks": [
+        {
+          "label": "Complete answerable path",
+          "code": "s=dict(answerable=True,candidate_recall=1,ranked_recall=1,context_complete=True,answer_coverage=1,citation_count=3,invalid_count=0,traceable=True);assert failure_flags(s)==[]"
+        },
+        {
+          "label": "Candidate loss plus abstention",
+          "code": "s=dict(answerable=True,candidate_recall=0,ranked_recall=0,context_complete=False,answer_coverage=0,citation_count=0,invalid_count=0,traceable=None);assert failure_flags(s)==['candidate_miss','unexpected_abstention']"
+        },
+        {
+          "label": "Ranking versus context loss",
+          "code": "s=dict(answerable=True,candidate_recall=1,ranked_recall=.5,context_complete=False,answer_coverage=.5,citation_count=1,invalid_count=0,traceable=True);assert failure_flags(s)==['ranking_loss'] and failure_flags(dict(s,ranked_recall=1))==['context_loss']"
+        },
+        {
+          "label": "Lexical answer and independent citation flags",
+          "code": "s=dict(answerable=True,candidate_recall=1,ranked_recall=1,context_complete=True,answer_coverage=.5,citation_count=2,invalid_count=1,traceable=False);assert failure_flags(s)==['answer_atom_loss','invalid_citation','extractive_format_mismatch']"
+        },
+        {
+          "label": "Unavailable fact is not called fabrication",
+          "code": "s=dict(answerable=False,candidate_recall=None,ranked_recall=None,context_complete=None,answer_coverage=None,citation_count=1,invalid_count=0,traceable=True);before=repr(s);assert failure_flags(s)==['unanswerable_evidence_returned'] and repr(s)==before and failure_flags(dict(s,citation_count=0,traceable=None))==[]"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q094",
+      "type": "code",
+      "topic": "Pending review templates",
+      "difficulty": "foundation",
+      "prompt": "Implement make_pending(records). records is a list/tuple of <=64 trusted dictionaries with unique query_id plus opaque validated run_id and record_digest strings; ignore other record fields. Return one NEW dictionary per record with EXACTLY query_id, run_id, record_digest, rubric_version=\"procurement-review/1.0.0\", status=\"pending\", reviewer_kind=None, reviewer_id=None, judge_prompt_version=None, rationale=None, scores={context_relevance:None, answer_faithfulness:None, answer_correctness:None, citation_support:None}. Each scores dictionary must be independent. Return [] for empty input, reject invalid outer type/count with ValueError, and do not modify records or invent a completed rating.",
+      "explanation": "A template retains exact association and null semantic axes. Preparing an evaluation process is not performing human or model review.",
+      "starter": "def make_pending(records):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def make_pending(records):\n    if not isinstance(records,(list,tuple)) or len(records)>64:\n        raise ValueError('bounded record list required')\n    axes=('context_relevance','answer_faithfulness','answer_correctness','citation_support')\n    return [dict(query_id=r['query_id'],run_id=r['run_id'],record_digest=r['record_digest'],rubric_version='procurement-review/1.0.0',status='pending',reviewer_kind=None,reviewer_id=None,judge_prompt_version=None,rationale=None,scores={axis:None for axis in axes}) for r in records]\n",
+      "checks": [
+        {
+          "label": "Exact observed association",
+          "code": "r=dict(query_id='Q1',run_id='run',record_digest='digest',answer='private');o=make_pending([r])[0];assert (o['query_id'],o['run_id'],o['record_digest'])==('Q1','run','digest') and o['rubric_version']=='procurement-review/1.0.0' and o['status']=='pending' and 'answer' not in o"
+        },
+        {
+          "label": "All unreviewed fields stay null",
+          "code": "o=make_pending([dict(query_id='Q',run_id='r',record_digest='d')])[0];assert all(o[k] is None for k in ['reviewer_kind','reviewer_id','judge_prompt_version','rationale']) and o['scores']==dict(context_relevance=None,answer_faithfulness=None,answer_correctness=None,citation_support=None)"
+        },
+        {
+          "label": "No shared score dictionaries",
+          "code": "r=dict(query_id='Q1',run_id='r',record_digest='d');o=make_pending([r,dict(r,query_id='Q2')]);o[0]['scores']['answer_correctness']=5;assert o[1]['scores']['answer_correctness'] is None"
+        },
+        {
+          "label": "Only the declared review schema",
+          "code": "o=make_pending([dict(query_id='Q',run_id='r',record_digest='d')])[0];assert set(o)=={'query_id','run_id','record_digest','rubric_version','status','reviewer_kind','reviewer_id','judge_prompt_version','rationale','scores'}"
+        },
+        {
+          "label": "Empty, bounds and preservation",
+          "code": "r=[dict(query_id='Q',run_id='r',record_digest='d')];before=repr(r);assert make_pending([])==[] and len(make_pending(r))==1 and repr(r)==before and raises(ValueError,make_pending,None) and raises(ValueError,make_pending,r*65)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q095",
+      "type": "code",
+      "topic": "Validate an imported rating",
+      "difficulty": "applied",
+      "prompt": "Implement valid_review(review, expected). expected is a trusted dict with query_id, run_id, record_digest. review must have EXACTLY those three fields plus rubric_version, status, reviewer_kind, reviewer_id, judge_prompt_version, scores, rationale. Bind its three identities exactly to expected and require rubric_version=\"procurement-review/1.0.0\". scores must contain exactly context_relevance, answer_faithfulness, answer_correctness, citation_support. For status=\"pending\", every score and reviewer_kind/reviewer_id/judge_prompt_version/rationale is None. For status=\"reviewed\", kind must be human or llm, reviewer_id nonblank str <=200 chars, rationale nonblank str <=4000, and every score an exact int 1..5 (not bool). LLM prompt version is nonblank str <=200; human prompt is None. Any violation raises ValueError; otherwise return True without mutation. No identity authentication is implied.",
+      "explanation": "Validate untrusted rating structure and exact observation/rubric association. Keep human and model prompt semantics explicit; metadata does not authenticate a reviewer.",
+      "starter": "def valid_review(review, expected):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def valid_review(review, expected):\n    fields={'query_id','run_id','record_digest','rubric_version','status','reviewer_kind','reviewer_id','judge_prompt_version','scores','rationale'}\n    axes={'context_relevance','answer_faithfulness','answer_correctness','citation_support'}\n    if not isinstance(review,dict) or set(review)!=fields:\n        raise ValueError('unexpected review fields')\n    if any(review[k]!=expected[k] for k in ('query_id','run_id','record_digest')) or review['rubric_version']!='procurement-review/1.0.0':\n        raise ValueError('stale review association')\n    scores=review['scores']\n    if not isinstance(scores,dict) or set(scores)!=axes:\n        raise ValueError('all rubric axes required')\n    if review['status']=='pending':\n        if any(v is not None for v in scores.values()) or any(review[k] is not None for k in ('reviewer_kind','reviewer_id','judge_prompt_version','rationale')):\n            raise ValueError('pending cannot claim a rating')\n        return True\n    def bounded(value,limit):\n        return isinstance(value,str) and bool(value.strip()) and len(value)<=limit\n    if review['status']!='reviewed' or review['reviewer_kind'] not in ('human','llm') or not bounded(review['reviewer_id'],200) or not bounded(review['rationale'],4000):\n        raise ValueError('completed reviewer and rationale required')\n    if any(type(v) is not int or not 1<=v<=5 for v in scores.values()):\n        raise ValueError('integer ratings 1 to 5 required')\n    if (review['reviewer_kind']=='human' and review['judge_prompt_version'] is not None) or (review['reviewer_kind']=='llm' and not bounded(review['judge_prompt_version'],200)):\n        raise ValueError('invalid judge prompt identity')\n    return True\n",
+      "checks": [
+        {
+          "label": "Pending and actual human review schemas",
+          "code": "e=dict(query_id='Q',run_id='r',record_digest='d');p=dict(e,rubric_version='procurement-review/1.0.0',status='pending',reviewer_kind=None,reviewer_id=None,judge_prompt_version=None,rationale=None,scores=dict(context_relevance=None,answer_faithfulness=None,answer_correctness=None,citation_support=None));assert valid_review(p,e) is True;h=dict(p,status='reviewed',reviewer_kind='human',reviewer_id='actual',rationale='Observed clause.',scores={a:4 for a in p['scores']});assert valid_review(h,e) is True"
+        },
+        {
+          "label": "Exact record, run and rubric binding",
+          "code": "e=dict(query_id='Q',run_id='r',record_digest='d');v=dict(e,rubric_version='procurement-review/1.0.0',status='reviewed',reviewer_kind='human',reviewer_id='h',judge_prompt_version=None,rationale='Evidence.',scores=dict(context_relevance=4,answer_faithfulness=4,answer_correctness=4,citation_support=4));assert all(raises(ValueError,valid_review,dict(v,**{k:'stale'}),e) for k in ['query_id','run_id','record_digest','rubric_version'])"
+        },
+        {
+          "label": "Strict axes and ranges",
+          "code": "e=dict(query_id='Q',run_id='r',record_digest='d');s=dict(context_relevance=4,answer_faithfulness=4,answer_correctness=4,citation_support=4);v=dict(e,rubric_version='procurement-review/1.0.0',status='reviewed',reviewer_kind='human',reviewer_id='h',judge_prompt_version=None,rationale='Evidence.',scores=s);assert all(raises(ValueError,valid_review,dict(v,scores=dict(s,answer_correctness=x)),e) for x in [True,0,6,4.0,None]) and raises(ValueError,valid_review,dict(v,scores={'answer_correctness':4}),e)"
+        },
+        {
+          "label": "Model prompt versus human prompt",
+          "code": "e=dict(query_id='Q',run_id='r',record_digest='d');v=dict(e,rubric_version='procurement-review/1.0.0',status='reviewed',reviewer_kind='llm',reviewer_id='model@rev',judge_prompt_version='judge/v1',rationale='Evidence.',scores=dict(context_relevance=4,answer_faithfulness=4,answer_correctness=4,citation_support=4));assert valid_review(v,e) is True and raises(ValueError,valid_review,dict(v,judge_prompt_version=None),e) and raises(ValueError,valid_review,dict(v,reviewer_kind='human'),e) and raises(ValueError,valid_review,dict(v,rationale=' '),e)"
+        },
+        {
+          "label": "Pending cannot contain fabricated scores; no mutation",
+          "code": "e=dict(query_id='Q',run_id='r',record_digest='d');v=dict(e,rubric_version='procurement-review/1.0.0',status='pending',reviewer_kind=None,reviewer_id=None,judge_prompt_version=None,rationale=None,scores=dict(context_relevance=None,answer_faithfulness=None,answer_correctness=None,citation_support=None));before=repr(v);assert valid_review(v,e) and repr(v)==before and raises(ValueError,valid_review,dict(v,extra=1),e) and raises(ValueError,valid_review,dict(v,scores={a:5 for a in v['scores']}),e)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q096",
+      "type": "code",
+      "topic": "Review coverage and separate groups",
+      "difficulty": "applied",
+      "prompt": "Implement summarize_ratings(records, reviews). records is a trusted list of <=64 unique query-ID records. reviews is a trusted list of <=256 rows ALREADY validated for those records: status pending/reviewed, query_id, reviewer_kind human/llm, reviewer_id, judge_prompt_version (None for human), and scores with four exact 1..5 axes: context_relevance, answer_faithfulness, answer_correctness, citation_support. Ignore pending rows. Reject a duplicate COMPLETED (query_id,kind,reviewer_id,prompt) rating with ValueError. Return reviewed_count as the number of DISTINCT reviewed queries, pending_count=len(records)-reviewed_count, and groups keyed by the Python tuple (kind,reviewer_id,prompt). Each group has rating_count and mean_scores per axis. Do not concatenate identity strings, blend prompts or mutate input. Empty groups remain {}. Schema/record binding is upstream, not repeated here.",
+      "explanation": "Review coverage counts distinct questions; rating counts and means remain per actual reviewer/model/prompt group. Tuple identities avoid delimiter collisions.",
+      "starter": "def summarize_ratings(records, reviews):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def summarize_ratings(records, reviews):\n    seen=set()\n    queries=set()\n    groups={}\n    axes=('context_relevance','answer_faithfulness','answer_correctness','citation_support')\n    for row in reviews:\n        if row['status']=='pending':continue\n        group=(row['reviewer_kind'],row['reviewer_id'],row['judge_prompt_version'])\n        key=(row['query_id'],*group)\n        if key in seen:raise ValueError('duplicate completed rating')\n        seen.add(key)\n        queries.add(row['query_id'])\n        groups.setdefault(group,[]).append(row['scores'])\n    return dict(reviewed_count=len(queries),pending_count=len(records)-len(queries),groups={g:dict(rating_count=len(rows),mean_scores={a:sum(s[a] for s in rows)/len(rows) for a in axes}) for g,rows in groups.items()})\n",
+      "checks": [
+        {
+          "label": "Pending rows are not ratings",
+          "code": "r=[dict(query_id='Q1'),dict(query_id='Q2')];assert summarize_ratings(r,[dict(status='pending',query_id='Q1')])=={'reviewed_count':0,'pending_count':2,'groups':{}}"
+        },
+        {
+          "label": "Several reviewers still cover one query",
+          "code": "s=dict(context_relevance=4,answer_faithfulness=4,answer_correctness=4,citation_support=4);h=dict(status='reviewed',query_id='Q1',reviewer_kind='human',reviewer_id='h',judge_prompt_version=None,scores=s);m=dict(h,reviewer_kind='llm',reviewer_id='m',judge_prompt_version='v1');o=summarize_ratings([{'query_id':'Q1'},{'query_id':'Q2'}],[h,m]);assert o['reviewed_count']==1 and o['pending_count']==1 and len(o['groups'])==2"
+        },
+        {
+          "label": "Collision-safe prompt groups",
+          "code": "s=dict(context_relevance=3,answer_faithfulness=3,answer_correctness=3,citation_support=3);a=dict(status='reviewed',query_id='Q',reviewer_kind='llm',reviewer_id='org/model',judge_prompt_version='v1',scores=s);b=dict(a,reviewer_id='org',judge_prompt_version='model/v1');c=dict(a,judge_prompt_version='v2');assert len(summarize_ratings([{'query_id':'Q'}],[a,b,c])['groups'])==3"
+        },
+        {
+          "label": "Per-group means and no mutation",
+          "code": "s=dict(context_relevance=2,answer_faithfulness=2,answer_correctness=2,citation_support=2);a=dict(status='reviewed',query_id='Q1',reviewer_kind='human',reviewer_id='h',judge_prompt_version=None,scores=s);b=dict(a,query_id='Q2',scores={x:4 for x in s});rows=[a,b];before=repr(rows);o=summarize_ratings([{'query_id':'Q1'},{'query_id':'Q2'}],rows);g=o['groups'][('human','h',None)];assert g['rating_count']==2 and all(v==3 for v in g['mean_scores'].values()) and repr(rows)==before"
+        },
+        {
+          "label": "Duplicate completed rating fails",
+          "code": "s=dict(context_relevance=4,answer_faithfulness=4,answer_correctness=4,citation_support=4);a=dict(status='reviewed',query_id='Q',reviewer_kind='human',reviewer_id='h',judge_prompt_version=None,scores=s);assert raises(ValueError,summarize_ratings,[{'query_id':'Q'}],[a,dict(a)]) and summarize_ratings([],[])['pending_count']==0"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q097",
+      "type": "code",
+      "topic": "Paired regressions",
+      "difficulty": "foundation",
+      "prompt": "Implement paired_changes(baseline, treatment). Each is a list/tuple of <=64 dictionaries with EXACTLY query_id (nonblank str <=64), support_complete (exact bool or None), exact_match (exact bool). Require unique IDs and exactly the same ID set in both runs. Also require support_complete to be None in both rows or neither for each ID (the answerability population stays fixed). Invalid input raises ValueError. Return {'lost_support': IDs changing True->False, 'gained_support': IDs changing False->True, 'exact_match_gains': IDs changing False->True exact_match}, each in BASELINE order regardless of treatment order. Do not mutate input. Other paired-experiment fields must already be frozen by the caller; this helper checks the stated IDs/metric population.",
+      "explanation": "Compare matched cases, preserve population and expose conflicting metric movements. A higher output score need not mean better retained evidence.",
+      "starter": "def paired_changes(baseline, treatment):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def paired_changes(baseline, treatment):\n    for rows in (baseline,treatment):\n        if not isinstance(rows,(list,tuple)) or len(rows)>64:raise ValueError('bounded paired rows required')\n        for row in rows:\n            if not isinstance(row,dict) or set(row)!={'query_id','support_complete','exact_match'}:raise ValueError('unexpected paired fields')\n            if not isinstance(row['query_id'],str) or not row['query_id'].strip() or len(row['query_id'])>64 or (row['support_complete'] is not None and type(row['support_complete']) is not bool) or type(row['exact_match']) is not bool:raise ValueError('invalid paired observations')\n        if len({r['query_id'] for r in rows})!=len(rows):raise ValueError('duplicate query')\n    by_id={r['query_id']:r for r in treatment}\n    if set(by_id)!={r['query_id'] for r in baseline}:raise ValueError('changed case population')\n    out=dict(lost_support=[],gained_support=[],exact_match_gains=[])\n    for before in baseline:\n        key=before['query_id'];after=by_id[key]\n        if (before['support_complete'] is None)!=(after['support_complete'] is None):raise ValueError('changed label population')\n        if before['support_complete'] is True and after['support_complete'] is False:out['lost_support'].append(key)\n        if before['support_complete'] is False and after['support_complete'] is True:out['gained_support'].append(key)\n        if before['exact_match'] is False and after['exact_match'] is True:out['exact_match_gains'].append(key)\n    return out\n",
+      "checks": [
+        {
+          "label": "Exact match can improve while support worsens",
+          "code": "a=[dict(query_id='Q1',support_complete=True,exact_match=False)];b=[dict(query_id='Q1',support_complete=False,exact_match=True)];assert paired_changes(a,b)=={'lost_support':['Q1'],'gained_support':[],'exact_match_gains':['Q1']}"
+        },
+        {
+          "label": "Join by ID, retain baseline order",
+          "code": "a=[dict(query_id='B',support_complete=True,exact_match=False),dict(query_id='A',support_complete=True,exact_match=False)];b=[dict(a[1],support_complete=False),dict(a[0],support_complete=False)];assert paired_changes(a,b)['lost_support']==['B','A']"
+        },
+        {
+          "label": "Gained support and no-gold rows",
+          "code": "a=[dict(query_id='Q',support_complete=False,exact_match=False),dict(query_id='U',support_complete=None,exact_match=False)];b=[dict(a[0],support_complete=True),dict(a[1],exact_match=True)];assert paired_changes(a,b)=={'lost_support':[],'gained_support':['Q'],'exact_match_gains':['U']}"
+        },
+        {
+          "label": "Changed or duplicate populations fail",
+          "code": "a=[dict(query_id='Q',support_complete=True,exact_match=False)];assert raises(ValueError,paired_changes,a,[dict(a[0],query_id='X')]) and raises(ValueError,paired_changes,a,a*2) and raises(ValueError,paired_changes,a,[dict(a[0],support_complete=None)]) and raises(ValueError,paired_changes,a,[dict(a[0],exact_match=1)])"
+        },
+        {
+          "label": "Empty and unchanged inputs",
+          "code": "a=[dict(query_id='Q',support_complete=True,exact_match=True)];before=repr(a);assert paired_changes(a,a)=={'lost_support':[],'gained_support':[],'exact_match_gains':[]} and repr(a)==before and paired_changes([],[])['lost_support']==[]"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q098",
+      "type": "code",
+      "topic": "Grouped split planning",
+      "difficulty": "applied",
+      "prompt": "Implement grouped_splits(rows) for a PROPOSED held-out dataset, separate from the lab's practice-only loader. rows is a list/tuple of <=256 dictionaries with exactly group and split. group is a nonblank str <=200 chars; split is exactly train, validation or test. One declared related-case group must belong to only one split; a cross-split conflict raises ValueError, as do invalid shapes/types/counts. Return a dict mapping group to split, preserving exact group strings and first-seen key order. Repeated same-group/same-split rows are allowed; empty input returns {}. Do not mutate rows or claim that declared grouping detects every possible leakage source.",
+      "explanation": "A planned grouped split prevents declared related families from crossing partitions. This helper does not turn visible practice into a hidden evaluation or prove full independence.",
+      "starter": "def grouped_splits(rows):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def grouped_splits(rows):\n    if not isinstance(rows,(list,tuple)) or len(rows)>256:raise ValueError('bounded planned rows required')\n    result={}\n    for row in rows:\n        if not isinstance(row,dict) or set(row)!={'group','split'}:raise ValueError('unexpected split fields')\n        group,split=row['group'],row['split']\n        if not isinstance(group,str) or not group.strip() or len(group)>200 or split not in ('train','validation','test'):raise ValueError('invalid split label')\n        if group in result and result[group]!=split:raise ValueError('related group leaked across splits')\n        result[group]=split\n    return result\n",
+      "checks": [
+        {
+          "label": "Related paraphrases stay together",
+          "code": "r=[dict(group='supplier-A-family',split='train'),dict(group='supplier-A-family',split='train')];assert grouped_splits(r)=={'supplier-A-family':'train'}"
+        },
+        {
+          "label": "Cross-split source family rejected",
+          "code": "assert raises(ValueError,grouped_splits,[dict(group='D/version-family',split='train'),dict(group='D/version-family',split='test')])"
+        },
+        {
+          "label": "Independent groups and order",
+          "code": "r=[dict(group='B',split='test'),dict(group='A',split='validation')];o=grouped_splits(r);assert list(o)==['B','A'] and o=={'B':'test','A':'validation'}"
+        },
+        {
+          "label": "Schema and labels",
+          "code": "assert all(raises(ValueError,grouped_splits,[r]) for r in [{'group':' ','split':'train'},{'group':'g','split':'practice'},{'group':1,'split':'test'},{'group':'g','split':'test','other':1}])"
+        },
+        {
+          "label": "Empty, bounds and preservation",
+          "code": "r=[dict(group=' g ',split='train')];before=repr(r);assert grouped_splits(r)=={' g ':'train'} and repr(r)==before and grouped_splits([])=={} and raises(ValueError,grouped_splits,r*257)"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q099",
+      "type": "code",
+      "topic": "Observed-record fingerprint",
+      "difficulty": "applied",
+      "prompt": "Implement case_digest(record). record must be a JSON-serializable dict (string keys, finite JSON-domain values). Copy it, excluding ONLY an existing record_digest key. Serialize the complete remaining object with sort_keys=True, ensure_ascii=False, separators=(\",\",\":\"), allow_nan=False, UTF-8 encode, and return lowercase SHA-256 hexdigest. Reject a non-dict or nonfinite JSON number with ValueError. Other JSON-serializable fields, list order and changed answer/context/metric values must affect the digest; dictionary insertion order must not. Do not mutate input. This is an observation fingerprint, not authentication.",
+      "explanation": "Bind reviews to the exact observed answer, evidence and metrics. Excluding the digest itself avoids recursive identity; ordinary hashes do not prove reviewer authenticity.",
+      "starter": "def case_digest(record):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import hashlib\nimport json\ndef case_digest(record):\n    if not isinstance(record,dict):raise ValueError('record object required')\n    value={k:v for k,v in record.items() if k!='record_digest'}\n    payload=json.dumps(value,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode('utf-8')\n    return hashlib.sha256(payload).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact independent encoded bytes",
+          "code": "import hashlib\nassert case_digest({'query_id':'Q','answer':'é'})==hashlib.sha256('{\"answer\":\"é\",\"query_id\":\"Q\"}'.encode('utf-8')).hexdigest()"
+        },
+        {
+          "label": "Exclude only own digest and preserve input",
+          "code": "r=dict(query_id='Q',answer='row',record_digest='old');before=repr(r);assert case_digest(r)==case_digest({'answer':'row','query_id':'Q'}) and repr(r)==before"
+        },
+        {
+          "label": "Every observed field matters",
+          "code": "r=dict(query_id='Q',answer='row',context='ctx',metrics={'recall':1});d=case_digest(r);assert all(case_digest(dict(r,**{k:'changed'}))!=d for k in r)"
+        },
+        {
+          "label": "List order and nested object order",
+          "code": "a={'spans':['row','clause'],'metrics':{'x':1,'y':2}};b={'metrics':{'y':2,'x':1},'spans':['row','clause']};assert case_digest(a)==case_digest(b) and case_digest(a)!=case_digest(dict(a,spans=['clause','row']))"
+        },
+        {
+          "label": "Shape and nonfinite values",
+          "code": "assert len(case_digest({}))==64 and raises(ValueError,case_digest,[]) and raises(ValueError,case_digest,{'metrics':{'score':float('nan')}}) and raises(ValueError,case_digest,{'score':float('inf')})"
+        }
+      ]
+    },
+    {
+      "id": "W09-Q100",
+      "type": "code",
+      "topic": "Reproducible run identity",
+      "difficulty": "foundation",
+      "prompt": "Implement run_identity(dataset, system, normalization). dataset must be a dict with EXACTLY id, version, corpus_digest, cases_digest, source_checks_digest. system must be a dict with EXACTLY config, dense, reranker, python, implementation_digest. Their nested JSON-domain values are trusted, but nonfinite numbers are forbidden. normalization must be a nonblank str <=200 chars. Invalid outer shape/normalization/nonfinite number raises ValueError. Hash {'dataset':dataset,'system':system,'normalization':normalization} using json.dumps(sort_keys=True, ensure_ascii=False, separators=(\",\",\":\"), allow_nan=False), UTF-8 and SHA-256 hexdigest. Preserve all inputs; object insertion order is irrelevant while values and list order matter. Do not omit runtime, normalization, labels or implementation identity.",
+      "explanation": "Dataset labels, source oracle, system/runtime/implementation and normalization jointly define a run. A configuration change cannot silently reuse the same evaluation identity.",
+      "starter": "def run_identity(dataset, system, normalization):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import json\nimport hashlib\ndef run_identity(dataset, system, normalization):\n    if not isinstance(dataset,dict) or set(dataset)!={'id','version','corpus_digest','cases_digest','source_checks_digest'} or not isinstance(system,dict) or set(system)!={'config','dense','reranker','python','implementation_digest'}:\n        raise ValueError('complete dataset/system identity required')\n    if not isinstance(normalization,str) or not normalization.strip() or len(normalization)>200:raise ValueError('normalization identity required')\n    value=dict(dataset=dataset,system=system,normalization=normalization)\n    payload=json.dumps(value,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode('utf-8')\n    return hashlib.sha256(payload).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Deterministic identity and dictionary order",
+          "code": "d=dict(id='D',version='1',corpus_digest='c',cases_digest='q',source_checks_digest='o');s=dict(config={'chars':1400},dense='rules',reranker='pairs',python='3.13',implementation_digest='i');assert run_identity(d,s,'n/v1')==run_identity(dict(reversed(list(d.items()))),dict(reversed(list(s.items()))),'n/v1') and len(run_identity(d,s,'n/v1'))==64"
+        },
+        {
+          "label": "Every dataset field is significant",
+          "code": "d=dict(id='D',version='1',corpus_digest='c',cases_digest='q',source_checks_digest='o');s=dict(config={},dense='rules',reranker='pairs',python='3.13',implementation_digest='i');h=run_identity(d,s,'n');assert all(run_identity(dict(d,**{k:'changed'}),s,'n')!=h for k in d)"
+        },
+        {
+          "label": "Every system field and normalization matters",
+          "code": "d=dict(id='D',version='1',corpus_digest='c',cases_digest='q',source_checks_digest='o');s=dict(config={},dense='rules',reranker='pairs',python='3.13',implementation_digest='i');h=run_identity(d,s,'n');assert all(run_identity(d,dict(s,**{k:'changed'}),'n')!=h for k in s) and run_identity(d,s,'n/v2')!=h"
+        },
+        {
+          "label": "Complete schemas and finite JSON",
+          "code": "d=dict(id='D',version='1',corpus_digest='c',cases_digest='q',source_checks_digest='o');s=dict(config={},dense='rules',reranker='pairs',python='3.13',implementation_digest='i');assert raises(ValueError,run_identity,{},s,'n') and raises(ValueError,run_identity,d,dict(s,extra=1),'n') and raises(ValueError,run_identity,d,s,' ') and raises(ValueError,run_identity,d,dict(s,config={'k':float('nan')}),'n')"
+        },
+        {
+          "label": "Exact bytes and unchanged input",
+          "code": "import hashlib\nd=dict(id='D',version='1',corpus_digest='c',cases_digest='q',source_checks_digest='o');s=dict(config={},dense='rules',reranker='pairs',python='3.13',implementation_digest='i');before=repr((d,s));raw=b'{\"dataset\":{\"cases_digest\":\"q\",\"corpus_digest\":\"c\",\"id\":\"D\",\"source_checks_digest\":\"o\",\"version\":\"1\"},\"normalization\":\"n\",\"system\":{\"config\":{},\"dense\":\"rules\",\"implementation_digest\":\"i\",\"python\":\"3.13\",\"reranker\":\"pairs\"}}';assert run_identity(d,s,'n')==hashlib.sha256(raw).hexdigest() and repr((d,s))==before"
+        }
+      ]
+    }
+  ]
+}

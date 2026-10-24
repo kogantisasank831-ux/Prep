@@ -186,6 +186,16 @@ statuses, idempotent records, unambiguous bounded JSON, joint token-ID checks,
 safe events, request identity and paired metrics. Inputs are synthetic; no model
 weights, inference server or generator is loaded by these browser tasks.
 
+[Week 9 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-09/)
+adds 100 questions with the same mixed formats and balanced paper policy. Twenty
+Python tasks cover normalization/reference alternatives, lexical coverage,
+precision/recall/first hit, graded DCG/nDCG, null-aware means, scoped abstention,
+citation populations, context-source metrics, independent source audits,
+stage failure labels, pending/validated reviews, separate reviewer groups,
+paired regressions, grouped split planning and observation/run fingerprints.
+Tasks use synthetic standard-library inputs; no evaluator model, LLM judge or
+paid service is loaded. The 30-case assistant evaluation remains separate.
+
 The site stays static. A Python coding run downloads pinned Pyodide 0.29.3 from its
 documented jsDelivr distribution into a separate browser worker. This version
 uses Python 3.13, matching the lesson's language family. The app terminates each
@@ -217,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1, 2, 3, 4, 5, 6, 7 and 8 use the shared engine. Future weeks need their own
+Weeks 1, 2, 3, 4, 5, 6, 7, 8 and 9 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -259,11 +269,15 @@ Run `python -m pytest tests/test_week08_assessment.py tests/test_week08_assistan
 for the Week 8 bank, twenty coding references/starters/incorrect solutions,
 composed evidence-preservation/citation/budget checks and the existing assistant.
 
+Run `python -m pytest tests/test_week09_assessment.py tests/test_week09_evaluation.py`
+for the Week 9 bank, twenty coding references/starters/incorrect solutions,
+composed metric/source/review regressions and the existing 30-case evaluation.
+
 The `Weekly assessment checks` workflow runs on assessment-branch/main pushes
 and pull requests. It installs the declared Python 3.13.12 environment, requires
-Node 20+, checks the Week 7/8 assessment tests' Ruff/typing gates and runs every
-published assessment suite, Week 7 hybrid/Week 8 assistant lab tests and Week 1
-service regressions. The
+Node 20+, checks the Week 7–9 assessment tests' Ruff/typing gates and runs every
+published assessment suite, Week 7 hybrid/Week 8 assistant/Week 9 evaluation
+lab tests and Week 1 service regressions. The
 candidate commit must pass before its assessment branch is promoted to main;
 GitHub Pages build and live browser scoring are checked after promotion. The
 selected suite avoids the unrelated Windows-only comparison module and does

@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-09/
 ---
 
+Test your understanding with the [Week 9 assessment]({{ '/assessments/week-09/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on ranking metrics, source audits, context loss, answer checks and review provenance.
+
 ## Start with an answer that looks reassuring
 
 You ask: “What is the delivery date for CW-1000?” The assistant returns an Atlas Metals catalogue excerpt. It shows the correct product code, quantity and unit price, plus a genuine citation. You open the source and every quoted word is there.
