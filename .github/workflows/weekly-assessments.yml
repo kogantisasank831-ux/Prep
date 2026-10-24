@@ -1,8 +1,8 @@
-name: Weekly assessment checks
+name: Weekly learning checks
 
 on:
   push:
-    branches: [main, 'week*-assessment']
+    branches: [main, 'week*-assessment', 'week*-content']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -35,11 +35,11 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: Lint, format and type checks
         run: |
-          python -m ruff check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py
-          python -m ruff format --check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py
-          python -m mypy --strict tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py
-      - name: Assessment, retrieval/assistant/evaluation lab and service regressions
+          python -m ruff check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py labs/week_10 tests/test_week10_tracing.py
+          python -m ruff format --check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py labs/week_10 tests/test_week10_tracing.py
+          python -m mypy --strict --explicit-package-bases tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py labs/week_10 tests/test_week10_tracing.py
+      - name: Assessment, retrieval/assistant/evaluation/tracing lab and service regressions
         run: >-
           python -m pytest tests/test_week*_assessment.py
-          tests/test_week07_hybrid.py tests/test_week08_assistant.py tests/test_week09_evaluation.py tests/test_api.py tests/test_models.py
+          tests/test_week07_hybrid.py tests/test_week08_assistant.py tests/test_week09_evaluation.py tests/test_week10_tracing.py tests/test_api.py tests/test_models.py
           tests/test_readers.py tests/test_service.py -q

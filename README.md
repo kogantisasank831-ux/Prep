@@ -273,12 +273,32 @@ Run `python -m pytest tests/test_week09_assessment.py tests/test_week09_evaluati
 for the Week 9 bank, twenty coding references/starters/incorrect solutions,
 composed metric/source/review regressions and the existing 30-case evaluation.
 
-The `Weekly assessment checks` workflow runs on assessment-branch/main pushes
-and pull requests. It installs the declared Python 3.13.12 environment, requires
-Node 20+, checks the Week 7–9 assessment tests' Ruff/typing gates and runs every
-published assessment suite, Week 7 hybrid/Week 8 assistant/Week 9 evaluation
-lab tests and Week 1 service regressions. The
-candidate commit must pass before its assessment branch is promoted to main;
-GitHub Pages build and live browser scoring are checked after promotion. The
+The `Weekly learning checks` workflow runs on assessment/content-branch and main
+pushes and pull requests. It installs the declared Python 3.13.12 environment,
+requires Node 20+, checks the Week 7–9 assessment tests and Week 10 tracing lab's
+Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
+Week 8 assistant/Week 9 evaluation/Week 10 tracing tests and Week 1 service
+regressions. The candidate commit must pass before its branch is promoted to
+main; GitHub Pages build and relevant live browser checks follow promotion. The
 selected suite avoids the unrelated Windows-only comparison module and does
 not claim an unrestricted whole-repository test pass.
+
+## Week 10 content and tracing lab
+
+[Week 10 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-10/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-10/beginner/)
+follow one request through query planning, authorized hybrid search, reranking,
+context and citations. The [local lab](labs/week_10/README.md) adds request/span
+identities, monotonic stage timing, version fingerprints, bounded failure records,
+explicit synthetic payload capture and labelled token/cost examples.
+
+```shell
+python -m labs.week_10.demo --scenario payment --output-dir .runtime/week10-payment
+python -m labs.week_10.demo --scenario model-fixture --output-dir .runtime/week10-model --capture-synthetic-content
+python -m pytest tests/test_week10_tracing.py -q
+```
+
+Choose fresh output directories. The optional model is a scripted fixture with
+synthetic usage and invented rates; it makes no provider call and does not
+replace the extractive answer. JSON is a custom local trace format, not OTLP.
+The Week 10 question bank and assessment page are deferred.
