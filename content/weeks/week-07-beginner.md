@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-07/
 ---
 
+Test your understanding with the [Week 7 assessment]({{ '/assessments/week-07/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on exact codes, BM25, authorized corpus scope and reciprocal rank fusion.
+
 ## Start here
 
 Week 6 taught you to choose the pieces of text a search system can return. This week asks how to find those pieces when the query might be an exact product code or a sentence with different wording. Picture two colleagues: one checks the words and identifiers, while the other looks for related meaning. Hybrid retrieval gives both lists a chance to contribute.

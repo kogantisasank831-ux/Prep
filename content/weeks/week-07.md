@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-07/beginner/
 ---
 
+Test your understanding with the [Week 7 assessment]({{ '/assessments/week-07/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on exact codes, BM25, authorized corpus scope and reciprocal rank fusion.
+
 ## Your route through Week 7
 
 By the end of this week, you should be able to explain a BM25 score, preserve an exact product code through tokenization, combine two ranked lists with RRF, and diagnose a hybrid result from its contributors. You will compare sparse, dense, and hybrid retrieval on one frozen collection, including code, supplier, commercial-term, and paraphrase queries.

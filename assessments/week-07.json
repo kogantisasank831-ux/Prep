@@ -1,0 +1,3167 @@
+{
+  "schema_version": 1,
+  "week": 7,
+  "version": "1.0.0",
+  "title": "Sparse and hybrid retrieval",
+  "source_lesson": "/weeks/week-07/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W07-Q001",
+      "type": "single",
+      "topic": "Exact identifiers",
+      "difficulty": "foundation",
+      "prompt": "Which token does the reference tokenizer produce for CW-1000?",
+      "explanation": "The declared ASCII tokenizer lowercases while preserving internal hyphens, underscores and slashes. Removing punctuation would change identifier behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "cw-1000"
+        },
+        {
+          "id": "o2",
+          "text": "cw1000"
+        },
+        {
+          "id": "o3",
+          "text": "cw and 1000 as two separate tokens"
+        },
+        {
+          "id": "o4",
+          "text": "A guessed canonical supplier code"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q002",
+      "type": "single",
+      "topic": "OCR-like variants",
+      "difficulty": "applied",
+      "prompt": "How does the baseline treat CW-100O, with letter O, versus CW-1000, with zero?",
+      "explanation": "No OCR correction or alias resolution is implemented. Similar-looking identifiers must not be silently merged.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It silently replaces O with zero"
+        },
+        {
+          "id": "o2",
+          "text": "It treats every copper-wire code as identical"
+        },
+        {
+          "id": "o3",
+          "text": "It asks the teaching dense scorer to verify the original invoice"
+        },
+        {
+          "id": "o4",
+          "text": "They remain different tokens"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q003",
+      "type": "single",
+      "topic": "Aliases",
+      "difficulty": "applied",
+      "prompt": "CW1000 has no governed alias mapping to CW-1000. What should the baseline do?",
+      "explanation": "An alias is a separately owned, versioned policy requiring evidence and evaluation; tokenization alone does not establish it.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Invent a mapping because the names look close"
+        },
+        {
+          "id": "o2",
+          "text": "Count the query as a labelled successful match"
+        },
+        {
+          "id": "o3",
+          "text": "Keep the distinction and report the unsupported alias case"
+        },
+        {
+          "id": "o4",
+          "text": "Remove all punctuation from stored sources"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q004",
+      "type": "single",
+      "topic": "BM25 document frequency",
+      "difficulty": "foundation",
+      "prompt": "A chunk repeats wire ten times. How much does it add to df(wire)?",
+      "explanation": "Document frequency counts chunks containing a term, once per chunk. Within-chunk repetitions affect term frequency instead.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The chunk's byte length"
+        },
+        {
+          "id": "o2",
+          "text": "One"
+        },
+        {
+          "id": "o3",
+          "text": "Ten"
+        },
+        {
+          "id": "o4",
+          "text": "Zero because repetition is forbidden"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q005",
+      "type": "single",
+      "topic": "Rare-term weighting",
+      "difficulty": "applied",
+      "prompt": "With N fixed, what happens to the positive IDF when document frequency increases?",
+      "explanation": "The displayed log(1+(N-df+0.5)/(df+0.5)) gives less discriminative weight to more common terms.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It decreases"
+        },
+        {
+          "id": "o2",
+          "text": "It always becomes negative"
+        },
+        {
+          "id": "o3",
+          "text": "It increases linearly with df"
+        },
+        {
+          "id": "o4",
+          "text": "It becomes an authorization grant"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q006",
+      "type": "single",
+      "topic": "TF saturation",
+      "difficulty": "applied",
+      "prompt": "What does BM25 term-frequency saturation prevent?",
+      "explanation": "Repeated matches can increase a term contribution, but the saturation factor limits the increase. This is ranking arithmetic, not a truth check.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Any repeated term from contributing"
+        },
+        {
+          "id": "o2",
+          "text": "All long documents from being searchable"
+        },
+        {
+          "id": "o3",
+          "text": "Every false positive caused by negation"
+        },
+        {
+          "id": "o4",
+          "text": "Unlimited linear score growth from repeatedly inserting the same term"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q007",
+      "type": "single",
+      "topic": "Length parameter",
+      "difficulty": "foundation",
+      "prompt": "What does b=0 do in this BM25 variant?",
+      "explanation": "The normalization term becomes one when b=0. Term frequency and IDF still contribute.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Make IDF equal to zero"
+        },
+        {
+          "id": "o2",
+          "text": "Use the dense score instead"
+        },
+        {
+          "id": "o3",
+          "text": "Disable document-length normalization"
+        },
+        {
+          "id": "o4",
+          "text": "Disable all term matching"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q008",
+      "type": "single",
+      "topic": "Query repetitions",
+      "difficulty": "applied",
+      "prompt": "The query CW-1000 is repeated twice. How does the lab's unique-query-term variant handle that?",
+      "explanation": "The algorithm version explicitly deduplicates query terms. Other engines or query policies can behave differently.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It turns the query into an alias table"
+        },
+        {
+          "id": "o2",
+          "text": "It scores the code term once"
+        },
+        {
+          "id": "o3",
+          "text": "It automatically doubles the code score"
+        },
+        {
+          "id": "o4",
+          "text": "It rejects all repeated query words"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q009",
+      "type": "single",
+      "topic": "Hand calculation",
+      "difficulty": "applied",
+      "prompt": "For N=2, df=1, tf=1, dl=1, avgdl=2, k1=1.2 and b=0.75, which BM25 score is approximately correct?",
+      "explanation": "IDF is ln(2), and the TF factor is 2.2/(1+1.2*0.625). Their product is about 0.8714, not a probability.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "0.8714"
+        },
+        {
+          "id": "o2",
+          "text": "0.0000"
+        },
+        {
+          "id": "o3",
+          "text": "8.7140"
+        },
+        {
+          "id": "o4",
+          "text": "Exactly 1.0000"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q010",
+      "type": "single",
+      "topic": "Eligible statistics",
+      "difficulty": "foundation",
+      "prompt": "When should this reference build its private BM25 corpus statistics?",
+      "explanation": "N, df and average length can influence scores. This reference keeps those private statistics inside the same eligible partition used by dense scoring.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "On every tenant's private data before hiding results"
+        },
+        {
+          "id": "o2",
+          "text": "After global top-k has already been selected"
+        },
+        {
+          "id": "o3",
+          "text": "From a different snapshot for each retriever"
+        },
+        {
+          "id": "o4",
+          "text": "After object grants and allowed metadata predicates form the eligible partition"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q011",
+      "type": "single",
+      "topic": "Filter versus permission",
+      "difficulty": "applied",
+      "prompt": "A query filters supplier='Atlas Metals'. Does that grant access to every Atlas document?",
+      "explanation": "Authorization comes from trusted principal/object policy. Metadata predicates cannot create a grant.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; a strong exact-code match grants read access"
+        },
+        {
+          "id": "o2",
+          "text": "Only when the query asks politely"
+        },
+        {
+          "id": "o3",
+          "text": "No; a filter only narrows already-authorized records"
+        },
+        {
+          "id": "o4",
+          "text": "Yes; supplier equality overrides object grants"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q012",
+      "type": "single",
+      "topic": "Allowed filters",
+      "difficulty": "applied",
+      "prompt": "Which field is a permitted exact metadata predicate in the reference?",
+      "explanation": "The allowlist contains supplier and document_type. Reject unknown or repeated predicates instead of broadening access.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "disable_authorization"
+        },
+        {
+          "id": "o2",
+          "text": "document_type"
+        },
+        {
+          "id": "o3",
+          "text": "tenant_id as a caller-controlled grant"
+        },
+        {
+          "id": "o4",
+          "text": "arbitrary_sql"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q013",
+      "type": "single",
+      "topic": "Partition reuse",
+      "difficulty": "foundation",
+      "prompt": "A cached authorized corpus belongs to another principal. Can its BM25 index be reused for this request?",
+      "explanation": "Corpus reuse binds principal and canonical filters, not just query text or cardinality. A matching dimension or count does not establish scope.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject it as incompatible"
+        },
+        {
+          "id": "o2",
+          "text": "Reuse it if the query strings match"
+        },
+        {
+          "id": "o3",
+          "text": "Reuse it if the chunk count is equal"
+        },
+        {
+          "id": "o4",
+          "text": "Replace its principal label after scoring"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q014",
+      "type": "single",
+      "topic": "Zero padding",
+      "difficulty": "applied",
+      "prompt": "No chunk has a strictly positive sparse score. What should sparse retrieval return?",
+      "explanation": "Padding creates meaningless ranked candidates that could receive RRF votes. Empty outcomes must remain visible.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Arbitrary zero-score chunks to fill k"
+        },
+        {
+          "id": "o2",
+          "text": "A denied exact-code distractor"
+        },
+        {
+          "id": "o3",
+          "text": "The first document with an invented score"
+        },
+        {
+          "id": "o4",
+          "text": "An empty result, without zero-score padding"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q015",
+      "type": "single",
+      "topic": "Dense floor",
+      "difficulty": "applied",
+      "prompt": "A cosine score is -0.2 and the configured floor is -0.5. Is the score eligible under strict score>floor selection?",
+      "explanation": "Negative cosine values can be valid. The selection floor is recorded experimental policy, not a universal relevance boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only if it is called a probability"
+        },
+        {
+          "id": "o2",
+          "text": "No; negative scores prove a vector is invalid"
+        },
+        {
+          "id": "o3",
+          "text": "Yes, subject to the other candidate checks"
+        },
+        {
+          "id": "o4",
+          "text": "No; every cosine score must be nonnegative"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q016",
+      "type": "single",
+      "topic": "Strict comparison",
+      "difficulty": "foundation",
+      "prompt": "A candidate's score equals its configured floor. What does the selector do?",
+      "explanation": "Selection is strictly above the floor. Equality is deliberately excluded; do not silently change the comparison.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Increase its score by epsilon without recording that"
+        },
+        {
+          "id": "o2",
+          "text": "Exclude it"
+        },
+        {
+          "id": "o3",
+          "text": "Include it because equality is enough"
+        },
+        {
+          "id": "o4",
+          "text": "Duplicate it into both lists"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q017",
+      "type": "single",
+      "topic": "Teaching dense scorer",
+      "difficulty": "applied",
+      "prompt": "What is DemoDenseAdapter in the default Week 7 lab?",
+      "explanation": "Its missing identifier features are an intentional teaching limitation. Results do not measure real embedding-model quality.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A hand-written procurement feature/Jaccard scorer that ignores codes"
+        },
+        {
+          "id": "o2",
+          "text": "A trained embedding model benchmark"
+        },
+        {
+          "id": "o3",
+          "text": "A production vector database"
+        },
+        {
+          "id": "o4",
+          "text": "An OCR engine with verified code recognition"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q018",
+      "type": "single",
+      "topic": "Raw score fusion",
+      "difficulty": "applied",
+      "prompt": "Why should BM25=8.4 and cosine=0.81 not be added without a declared normalization/calibration policy?",
+      "explanation": "Raw scales depend on different models, statistics and settings. Their sum can grant arbitrary dominance to one path.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Both scores are already probabilities"
+        },
+        {
+          "id": "o2",
+          "text": "Raw addition guarantees higher recall"
+        },
+        {
+          "id": "o3",
+          "text": "The smaller number must be more trustworthy"
+        },
+        {
+          "id": "o4",
+          "text": "The scores have different scales and meanings"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q019",
+      "type": "single",
+      "topic": "Flat min-max list",
+      "difficulty": "foundation",
+      "prompt": "All scores in a list are equal. What does the supplied min-max helper return?",
+      "explanation": "The reference explicitly handles a flat range with zeros. This is a convention, not a calibrated quality judgment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A division-by-zero result"
+        },
+        {
+          "id": "o2",
+          "text": "The original scores relabelled probabilities"
+        },
+        {
+          "id": "o3",
+          "text": "Zero for every item"
+        },
+        {
+          "id": "o4",
+          "text": "One for every item as proven relevance"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q020",
+      "type": "single",
+      "topic": "RRF signal",
+      "difficulty": "applied",
+      "prompt": "What determines an equal-weight RRF vote from a contributor?",
+      "explanation": "RRF combines ranks. Raw scores are retained for diagnostics but do not enter the reciprocal-rank contribution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether its text sounds confident"
+        },
+        {
+          "id": "o2",
+          "text": "Its rank and the rank constant"
+        },
+        {
+          "id": "o3",
+          "text": "Its raw BM25/cosine magnitude"
+        },
+        {
+          "id": "o4",
+          "text": "The supplier's perceived importance"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q021",
+      "type": "single",
+      "topic": "RRF arithmetic",
+      "difficulty": "applied",
+      "prompt": "A chunk is rank 1 in sparse and rank 2 in dense; weights are one and constant is 60. What is its fused score?",
+      "explanation": "Ranks are one-based. Each path contributes 1/(60+rank), with no vote from a path that did not retrieve the chunk.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1/61 + 1/62"
+        },
+        {
+          "id": "o2",
+          "text": "1/60 + 1/60"
+        },
+        {
+          "id": "o3",
+          "text": "Its two raw scores added together"
+        },
+        {
+          "id": "o4",
+          "text": "2/3"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q022",
+      "type": "single",
+      "topic": "Candidate depth",
+      "difficulty": "foundation",
+      "prompt": "Hybrid output k is 3 and depth is 5 per retriever. What does depth control?",
+      "explanation": "Depth controls candidate exposure and extra work; output k controls final truncation. The union can be larger than either list.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The RRF rank constant"
+        },
+        {
+          "id": "o2",
+          "text": "The number of generated answer tokens"
+        },
+        {
+          "id": "o3",
+          "text": "A guarantee of five distinct relevant documents"
+        },
+        {
+          "id": "o4",
+          "text": "How many accepted candidates each path can supply before fusion"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q023",
+      "type": "single",
+      "topic": "Truncation limit",
+      "difficulty": "applied",
+      "prompt": "A relevant chunk is outside both supplied candidate lists. Can RRF recover it?",
+      "explanation": "Fusion reranks the supplied union. Candidate-generation recall bounds what any rank fusion can recover.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; raw scores reconstruct its missing source"
+        },
+        {
+          "id": "o2",
+          "text": "Only by treating zero padding as relevant"
+        },
+        {
+          "id": "o3",
+          "text": "No; fusion cannot invent an unseen candidate"
+        },
+        {
+          "id": "o4",
+          "text": "Yes; the constant 60 searches the entire corpus"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q024",
+      "type": "single",
+      "topic": "Fusion deduplication",
+      "difficulty": "applied",
+      "prompt": "Which duplicate does this RRF implementation merge?",
+      "explanation": "Chunk-ID deduplication does not perform semantic duplicate control. Distinct chunks from one source may provide complementary evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All catalogues from one supplier"
+        },
+        {
+          "id": "o2",
+          "text": "The same chunk ID appearing across retrievers"
+        },
+        {
+          "id": "o3",
+          "text": "Every semantically related clause"
+        },
+        {
+          "id": "o4",
+          "text": "Every chunk from the same source document"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q025",
+      "type": "single",
+      "topic": "Contribution validity",
+      "difficulty": "foundation",
+      "prompt": "One retriever supplies ranks 1 and 3, with no rank 2. What should the RRF boundary do?",
+      "explanation": "Ranks for each retriever must be unique and contiguous from one. Preserve declared ranks or reject malformed provenance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject the non-contiguous ranks"
+        },
+        {
+          "id": "o2",
+          "text": "Silently relabel rank 3 as rank 2"
+        },
+        {
+          "id": "o3",
+          "text": "Count the gap as evidence of relevance"
+        },
+        {
+          "id": "o4",
+          "text": "Accept it only if its raw score is large"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q026",
+      "type": "single",
+      "topic": "Conflicting snapshots",
+      "difficulty": "applied",
+      "prompt": "Two paths use the same chunk ID but attach different text/source records. What should fusion do?",
+      "explanation": "One immutable chunk ID must identify the same source record across contributors. Agreement in ID alone cannot conceal record drift.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep whichever has the higher raw score"
+        },
+        {
+          "id": "o2",
+          "text": "Combine their texts under the old ID"
+        },
+        {
+          "id": "o3",
+          "text": "Discard provenance and call it consensus"
+        },
+        {
+          "id": "o4",
+          "text": "Reject the conflicting records"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q027",
+      "type": "single",
+      "topic": "Metric denominator",
+      "difficulty": "applied",
+      "prompt": "One relevant result is returned for requested k=3. What is P@3 under the report's policy?",
+      "explanation": "Precision divides hits by requested k even for short lists. Returned_count is reported separately.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "3"
+        },
+        {
+          "id": "o2",
+          "text": "Undefined solely because fewer than three returned"
+        },
+        {
+          "id": "o3",
+          "text": "1/3"
+        },
+        {
+          "id": "o4",
+          "text": "1 because the returned list has one entry"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q028",
+      "type": "single",
+      "topic": "Evidence labels",
+      "difficulty": "foundation",
+      "prompt": "A support atom appears in another chunk but not in its declared evidence-key chunk. What happens during label validation?",
+      "explanation": "Labels resolve to unique eligible source/version/body-block chunks. Support must occur in the specified chunk, not somewhere in the corpus.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Count it as generated-answer correctness"
+        },
+        {
+          "id": "o2",
+          "text": "Reject the label/source mismatch"
+        },
+        {
+          "id": "o3",
+          "text": "Borrow the atom from the other chunk silently"
+        },
+        {
+          "id": "o4",
+          "text": "Mark every chunk in that document relevant"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W07-Q029",
+      "type": "single",
+      "topic": "Same-source repeats",
+      "difficulty": "applied",
+      "prompt": "Two returned chunks share a document/version but contain complementary clauses. How should same_source_repeat_fraction be interpreted?",
+      "explanation": "Source identity repetition and semantic redundancy differ. Preserve complementary evidence while measuring repeats honestly.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A source-repeat measure, not proof of wasted semantic duplication"
+        },
+        {
+          "id": "o2",
+          "text": "Proof that one chunk should always be deleted"
+        },
+        {
+          "id": "o3",
+          "text": "A generated answer's error rate"
+        },
+        {
+          "id": "o4",
+          "text": "A calibrated confidence score"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W07-Q030",
+      "type": "single",
+      "topic": "Quality evidence",
+      "difficulty": "applied",
+      "prompt": "What can the tiny visible comparison with a fake dense scorer establish?",
+      "explanation": "Practice labels and a hand-written scorer support debugging and teaching. Held-out quality, real-model behavior and operational measurements remain separate.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A universal production winner"
+        },
+        {
+          "id": "o2",
+          "text": "Real model accuracy on unseen procurement files"
+        },
+        {
+          "id": "o3",
+          "text": "Measured serving latency and index memory"
+        },
+        {
+          "id": "o4",
+          "text": "Reproducible fixture arithmetic and pipeline behavior"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q031",
+      "type": "multiple",
+      "topic": "Token contract",
+      "difficulty": "foundation",
+      "prompt": "Which details belong to the versioned lexical contract?",
+      "explanation": "Token identity affects matching, statistics and compatibility. Version document/query preparation together and do not invent ungoverned aliases.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Lowercasing behavior"
+        },
+        {
+          "id": "o2",
+          "text": "Which internal punctuation survives"
+        },
+        {
+          "id": "o3",
+          "text": "Alias/normalization policy when implemented"
+        },
+        {
+          "id": "o4",
+          "text": "Assuming similar-looking codes are always identical"
+        },
+        {
+          "id": "o5",
+          "text": "Using a different undocumented tokenizer at query time"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q032",
+      "type": "multiple",
+      "topic": "Distinct codes",
+      "difficulty": "applied",
+      "prompt": "Which pairs remain distinct under the supplied tokenizer?",
+      "explanation": "Internal punctuation and alphanumeric differences survive, while case is lowercased. This is token equality, not literal Unicode identity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "CW-1000 versus CW-100O"
+        },
+        {
+          "id": "o2",
+          "text": "CW-1000 versus CW-1000-ALT"
+        },
+        {
+          "id": "o3",
+          "text": "CW-1000 versus cw-1000"
+        },
+        {
+          "id": "o4",
+          "text": "PP-20 versus pp-20"
+        },
+        {
+          "id": "o5",
+          "text": "CW-1000 versus CW1000"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q033",
+      "type": "multiple",
+      "topic": "BM25 ingredients",
+      "difficulty": "applied",
+      "prompt": "Which values participate in the displayed BM25 calculation?",
+      "explanation": "BM25 combines lexical counts and declared corpus/parameter choices. A ranking number does not authorize business actions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Chunk length and average chunk length"
+        },
+        {
+          "id": "o2",
+          "text": "k1 and b"
+        },
+        {
+          "id": "o3",
+          "text": "A supplier payment-approval flag inferred from a high score"
+        },
+        {
+          "id": "o4",
+          "text": "Within-chunk term frequency"
+        },
+        {
+          "id": "o5",
+          "text": "Eligible chunk count and document frequency"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q034",
+      "type": "multiple",
+      "topic": "BM25 parameters",
+      "difficulty": "foundation",
+      "prompt": "Which statements follow the lab's BM25 variant?",
+      "explanation": "These are explicit reference contracts. They do not promise bit-for-bit equivalence with another analyzer, field or search-engine implementation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Query terms are deduplicated"
+        },
+        {
+          "id": "o2",
+          "text": "Repeating a query token is an undocumented boost"
+        },
+        {
+          "id": "o3",
+          "text": "k1 must be finite and strictly positive"
+        },
+        {
+          "id": "o4",
+          "text": "b must be finite in [0,1]"
+        },
+        {
+          "id": "o5",
+          "text": "bool is rejected for numeric parameters"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q035",
+      "type": "multiple",
+      "topic": "Authorization order",
+      "difficulty": "applied",
+      "prompt": "Which actions protect the partition-local retrieval boundary?",
+      "explanation": "Private statistics and both scoring paths must use the declared eligible partition. These controls do not prove constant-time behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Let a filter expand a principal's permissions"
+        },
+        {
+          "id": "o2",
+          "text": "Apply trusted object grants before private statistics"
+        },
+        {
+          "id": "o3",
+          "text": "Apply allowed metadata predicates after grants"
+        },
+        {
+          "id": "o4",
+          "text": "Use the same eligible records for sparse and dense scoring"
+        },
+        {
+          "id": "o5",
+          "text": "Choose global top-k before removing denied records"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q036",
+      "type": "multiple",
+      "topic": "Denied distractor",
+      "difficulty": "applied",
+      "prompt": "Under this lab's contract, adding an unreadable exact-code chunk must leave which outputs unchanged?",
+      "explanation": "A denied object cannot influence eligible statistics or candidate output under the partition-local design. Test this invariance explicitly.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Eligible corpus content"
+        },
+        {
+          "id": "o2",
+          "text": "Private BM25 document frequencies and average length"
+        },
+        {
+          "id": "o3",
+          "text": "Sparse/dense results and fused output"
+        },
+        {
+          "id": "o4",
+          "text": "The caller's access grants must become broader"
+        },
+        {
+          "id": "o5",
+          "text": "The denied chunk must get a fusion vote"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q037",
+      "type": "multiple",
+      "topic": "Metadata filters",
+      "difficulty": "foundation",
+      "prompt": "Which filter behaviors are valid?",
+      "explanation": "Allowlisted filters narrow already-authorized data. Canonical order supports compatibility; it does not change exact value semantics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject duplicate filter fields"
+        },
+        {
+          "id": "o2",
+          "text": "Compare values exactly without guessing aliases"
+        },
+        {
+          "id": "o3",
+          "text": "Canonicalize filter field order for partition identity"
+        },
+        {
+          "id": "o4",
+          "text": "Treat tenant_id supplied by a caller as a read grant"
+        },
+        {
+          "id": "o5",
+          "text": "Only supplier/document_type equality predicates"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q038",
+      "type": "multiple",
+      "topic": "Candidate gates",
+      "difficulty": "applied",
+      "prompt": "Which statements match candidate selection?",
+      "explanation": "Validate the complete scored input before sorting/truncating. Selection floors are policy, not calibrated relevance probabilities.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep only scores strictly above the configured floor"
+        },
+        {
+          "id": "o2",
+          "text": "Return fewer than k when fewer candidates qualify"
+        },
+        {
+          "id": "o3",
+          "text": "Pad zero-score candidates so they can vote in fusion"
+        },
+        {
+          "id": "o4",
+          "text": "Reject NaN/Infinity/bool scores"
+        },
+        {
+          "id": "o5",
+          "text": "Require unique chunk IDs"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q039",
+      "type": "multiple",
+      "topic": "Dense identity",
+      "difficulty": "applied",
+      "prompt": "Which changes can invalidate a dense retrieval manifest?",
+      "explanation": "Representation and candidate selection settings affect reproducibility. Presentation-only edits do not change the retrieval contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Minimum-score floor change"
+        },
+        {
+          "id": "o2",
+          "text": "Changing only a dashboard link's display color"
+        },
+        {
+          "id": "o3",
+          "text": "Model/artifact change"
+        },
+        {
+          "id": "o4",
+          "text": "Runtime or preprocessing change"
+        },
+        {
+          "id": "o5",
+          "text": "Metric/dimension change"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q040",
+      "type": "multiple",
+      "topic": "Min-max limits",
+      "difficulty": "foundation",
+      "prompt": "Which statements about min-max normalization are correct?",
+      "explanation": "Normalization rescales a particular list; it does not establish comparability, calibration or relevance across workloads.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It makes every sparse/dense score pair interchangeable"
+        },
+        {
+          "id": "o2",
+          "text": "All-equal inputs need an explicit convention"
+        },
+        {
+          "id": "o3",
+          "text": "Outliers can compress the remaining values"
+        },
+        {
+          "id": "o4",
+          "text": "A normalized score is not automatically a probability"
+        },
+        {
+          "id": "o5",
+          "text": "It guarantees stable calibration across tenant corpora"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q041",
+      "type": "multiple",
+      "topic": "RRF controls",
+      "difficulty": "applied",
+      "prompt": "Which settings must be recorded for reproducible fusion?",
+      "explanation": "Configuration determines which votes are available and how ranks are weighted. Improvements require evaluation rather than a universal guarantee.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Per-retriever candidate depth"
+        },
+        {
+          "id": "o2",
+          "text": "Output k"
+        },
+        {
+          "id": "o3",
+          "text": "Rank constant"
+        },
+        {
+          "id": "o4",
+          "text": "Retriever weights and contributor identities"
+        },
+        {
+          "id": "o5",
+          "text": "A claim that the default always improves every query"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W07-Q042",
+      "type": "multiple",
+      "topic": "RRF validation",
+      "difficulty": "applied",
+      "prompt": "Which contributions must be rejected?",
+      "explanation": "Cross-list agreement is valid; duplicate votes within one retriever or inconsistent identity/provenance are not.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Two ranks with the same number in one retriever"
+        },
+        {
+          "id": "o2",
+          "text": "An unconfigured retriever"
+        },
+        {
+          "id": "o3",
+          "text": "The same chunk ID with conflicting source snapshots"
+        },
+        {
+          "id": "o4",
+          "text": "The same unchanged chunk appearing once in each of two retrievers"
+        },
+        {
+          "id": "o5",
+          "text": "A repeated (retriever,chunk) vote"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q043",
+      "type": "multiple",
+      "topic": "Contributor provenance",
+      "difficulty": "foundation",
+      "prompt": "Which details should a fused result preserve?",
+      "explanation": "Ranks drive RRF, while raw scores and source identity let a reviewer diagnose where the fused ranking came from.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Original raw score"
+        },
+        {
+          "id": "o2",
+          "text": "Immutable chunk/source identity"
+        },
+        {
+          "id": "o3",
+          "text": "Only the fused number with all source information removed"
+        },
+        {
+          "id": "o4",
+          "text": "Retriever name"
+        },
+        {
+          "id": "o5",
+          "text": "Original one-based rank"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q044",
+      "type": "multiple",
+      "topic": "Candidate-depth cost",
+      "difficulty": "applied",
+      "prompt": "Which claims about deeper hybrid candidate lists are justified?",
+      "explanation": "Candidate depth, rank smoothing and final result count are distinct. Compare quality and cost under declared settings.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They guarantee all relevant evidence reaches final top-k"
+        },
+        {
+          "id": "o2",
+          "text": "They are the same parameter as rank_constant"
+        },
+        {
+          "id": "o3",
+          "text": "They may expose useful chunks otherwise truncated"
+        },
+        {
+          "id": "o4",
+          "text": "Their union can exceed one list's depth"
+        },
+        {
+          "id": "o5",
+          "text": "They increase configured work that should be reported"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q045",
+      "type": "multiple",
+      "topic": "Manifest integrity",
+      "difficulty": "applied",
+      "prompt": "Which information belongs in the retrieval manifest or bound corpus identity?",
+      "explanation": "Bind actual records and configuration. Hashes still require a trusted expected manifest and are not signatures or permission grants.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only a supplied source hash even if the attached text changes"
+        },
+        {
+          "id": "o2",
+          "text": "Actual chunk text and metadata"
+        },
+        {
+          "id": "o3",
+          "text": "Principal/filter partition"
+        },
+        {
+          "id": "o4",
+          "text": "Tokenizer/BM25/dense/fusion identities"
+        },
+        {
+          "id": "o5",
+          "text": "Candidate depth and output k"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q046",
+      "type": "multiple",
+      "topic": "Evaluation labels",
+      "difficulty": "foundation",
+      "prompt": "Which checks make the practice labels valid for a query?",
+      "explanation": "Labels must be visible, unambiguous and faithful to the declared source. Production multi-tenant labels need governed fully scoped keys.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Evidence keys resolve uniquely in its eligible snapshot"
+        },
+        {
+          "id": "o2",
+          "text": "Required atoms occur in their declared source chunks"
+        },
+        {
+          "id": "o3",
+          "text": "Rankings and gold labels use the same chunk granularity"
+        },
+        {
+          "id": "o4",
+          "text": "Resolve denied labels by widening permissions"
+        },
+        {
+          "id": "o5",
+          "text": "Borrow an atom from any supplier's chunk"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W07-Q047",
+      "type": "multiple",
+      "topic": "No-gold reporting",
+      "difficulty": "applied",
+      "prompt": "Which statements match the report's no-gold policy?",
+      "explanation": "No-gold cases remain visible. Empty results in these narrow fixtures do not establish a calibrated no-answer detector.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No-gold candidate counts are reported separately"
+        },
+        {
+          "id": "o2",
+          "text": "Quality means use the labelled-query population"
+        },
+        {
+          "id": "o3",
+          "text": "Every empty result is a certified general abstention success"
+        },
+        {
+          "id": "o4",
+          "text": "Undefined recall is silently converted to one"
+        },
+        {
+          "id": "o5",
+          "text": "Recall/RR/nDCG remain null"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q048",
+      "type": "multiple",
+      "topic": "Fair comparison",
+      "difficulty": "applied",
+      "prompt": "Which controls matter when comparing sparse, dense and hybrid?",
+      "explanation": "Control scope, leakage and configured work. A single aggregate score can conceal identifier or cross-reference failures.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Report hybrid's larger candidate union"
+        },
+        {
+          "id": "o2",
+          "text": "Inspect code, supplier, term and paraphrase subgroups"
+        },
+        {
+          "id": "o3",
+          "text": "Give each method labels chosen after seeing its results"
+        },
+        {
+          "id": "o4",
+          "text": "Use the same authorized source snapshot per query"
+        },
+        {
+          "id": "o5",
+          "text": "Freeze labels and record query/configuration fingerprints"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q049",
+      "type": "multiple",
+      "topic": "Continuity",
+      "difficulty": "foundation",
+      "prompt": "Which statements describe the actual cumulative fixture?",
+      "explanation": "The cumulative lab preserves immutable earlier evidence. Its teaching features and curated labels are explicit rather than claimed automatic model accuracy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Supplier/type metadata is explicitly curated synthetic labeling"
+        },
+        {
+          "id": "o2",
+          "text": "The default dense path is a trained semantic encoder"
+        },
+        {
+          "id": "o3",
+          "text": "P-101 through P-105 keep Week 6 text/versions/chunk lineage"
+        },
+        {
+          "id": "o4",
+          "text": "P-106 stays review-required"
+        },
+        {
+          "id": "o5",
+          "text": "P-107 and P-108 are separate code notes"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q050",
+      "type": "multiple",
+      "topic": "Operational limits",
+      "difficulty": "applied",
+      "prompt": "Which conclusions remain outside the default teaching run?",
+      "explanation": "The default run measures fixture retrieval behavior. Actual model, workload, memory and answer evaluations need their own evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The arithmetic of the declared RRF formula"
+        },
+        {
+          "id": "o2",
+          "text": "Real embedding-model quality"
+        },
+        {
+          "id": "o3",
+          "text": "Production serving latency"
+        },
+        {
+          "id": "o4",
+          "text": "Actual sparse/vector index memory"
+        },
+        {
+          "id": "o5",
+          "text": "Generated-answer correctness"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W07-Q051",
+      "type": "match",
+      "topic": "BM25 symbols",
+      "difficulty": "applied",
+      "prompt": "Match each symbol to its meaning.",
+      "explanation": "Term frequency and document frequency use different counting units. Compute all of them within the declared eligible partition.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "N"
+        },
+        {
+          "id": "l2",
+          "text": "df(t)"
+        },
+        {
+          "id": "l3",
+          "text": "f(t,d)"
+        },
+        {
+          "id": "l4",
+          "text": "avgdl"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Number of eligible chunks"
+        },
+        {
+          "id": "r2",
+          "text": "Eligible chunks containing t"
+        },
+        {
+          "id": "r3",
+          "text": "Occurrences of t within chunk d"
+        },
+        {
+          "id": "r4",
+          "text": "Mean token count per eligible chunk"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q052",
+      "type": "match",
+      "topic": "BM25 parameters",
+      "difficulty": "foundation",
+      "prompt": "Match each item to its role.",
+      "explanation": "These roles describe the chosen variant. They neither calibrate relevance probabilities nor certify source truth.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "k1"
+        },
+        {
+          "id": "l2",
+          "text": "b"
+        },
+        {
+          "id": "l3",
+          "text": "IDF"
+        },
+        {
+          "id": "l4",
+          "text": "Unique query terms"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Controls term-frequency saturation"
+        },
+        {
+          "id": "r2",
+          "text": "Controls length normalization"
+        },
+        {
+          "id": "r3",
+          "text": "Weights terms using corpus rarity"
+        },
+        {
+          "id": "r4",
+          "text": "Prevent repetition from becoming an implicit query boost"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q053",
+      "type": "match",
+      "topic": "Query categories",
+      "difficulty": "applied",
+      "prompt": "Match each query to the teaching failure class.",
+      "explanation": "Different query classes expose different sparse/dense failure modes. Keep category-level evaluation beside overall means.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "CW-1000"
+        },
+        {
+          "id": "l2",
+          "text": "Atlas Metals quote"
+        },
+        {
+          "id": "l3",
+          "text": "Net 30 after inspection approval"
+        },
+        {
+          "id": "l4",
+          "text": "Receiving-team sign-off before payment"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Exact identifier"
+        },
+        {
+          "id": "r2",
+          "text": "Supplier/entity wording"
+        },
+        {
+          "id": "r3",
+          "text": "Commercial term"
+        },
+        {
+          "id": "r4",
+          "text": "Paraphrased intent"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q054",
+      "type": "match",
+      "topic": "Tokenizer behavior",
+      "difficulty": "applied",
+      "prompt": "Match each source string to its complete tokenization.",
+      "explanation": "The exact ASCII pattern preserves internal code separators. It supplies no automatic aliases or OCR correction.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "CW-1000"
+        },
+        {
+          "id": "l2",
+          "text": "PO_2026/18"
+        },
+        {
+          "id": "l3",
+          "text": "Net 30"
+        },
+        {
+          "id": "l4",
+          "text": "CW1000"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "One token: cw-1000"
+        },
+        {
+          "id": "r2",
+          "text": "One token: po_2026/18"
+        },
+        {
+          "id": "r3",
+          "text": "Two tokens: net and 30"
+        },
+        {
+          "id": "r4",
+          "text": "One distinct token: cw1000"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q055",
+      "type": "match",
+      "topic": "Request boundaries",
+      "difficulty": "foundation",
+      "prompt": "Match each stage to its responsibility.",
+      "explanation": "A filter is not a grant, and private global statistics would be a different declared design.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Object grants"
+        },
+        {
+          "id": "l2",
+          "text": "Metadata predicates"
+        },
+        {
+          "id": "l3",
+          "text": "Partition-local BM25 build"
+        },
+        {
+          "id": "l4",
+          "text": "Shared eligible set"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Decide which source objects the principal may read"
+        },
+        {
+          "id": "r2",
+          "text": "Narrow the readable corpus"
+        },
+        {
+          "id": "r3",
+          "text": "Calculate statistics on eligible chunks"
+        },
+        {
+          "id": "r4",
+          "text": "Give sparse and dense the same evidence universe"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q056",
+      "type": "match",
+      "topic": "Score handling",
+      "difficulty": "applied",
+      "prompt": "Match each condition to the reference behavior.",
+      "explanation": "Deterministic ordering and explicit floors keep candidate admission inspectable without inventing zero-score support.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Score equals floor"
+        },
+        {
+          "id": "l2",
+          "text": "Score is NaN"
+        },
+        {
+          "id": "l3",
+          "text": "Fewer than k accepted items"
+        },
+        {
+          "id": "l4",
+          "text": "Equal valid scores"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Exclude under strict comparison"
+        },
+        {
+          "id": "r2",
+          "text": "Reject invalid numerical input"
+        },
+        {
+          "id": "r3",
+          "text": "Return a short list"
+        },
+        {
+          "id": "r4",
+          "text": "Break ties by ascending chunk ID"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q057",
+      "type": "match",
+      "topic": "Fusion vocabulary",
+      "difficulty": "applied",
+      "prompt": "Match each setting to its effect.",
+      "explanation": "The three count/rank settings are distinct. Record governed weight changes rather than silently retuning them.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Candidate depth"
+        },
+        {
+          "id": "l2",
+          "text": "Output k"
+        },
+        {
+          "id": "l3",
+          "text": "Rank constant"
+        },
+        {
+          "id": "l4",
+          "text": "Retriever weight"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Limits each supplied ranked list"
+        },
+        {
+          "id": "r2",
+          "text": "Limits final fused results"
+        },
+        {
+          "id": "r3",
+          "text": "Smooths differences between rank positions"
+        },
+        {
+          "id": "r4",
+          "text": "Scales that retriever's reciprocal-rank votes"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q058",
+      "type": "match",
+      "topic": "Known RRF votes",
+      "difficulty": "foundation",
+      "prompt": "With constant 60, match each contributor to its vote.",
+      "explanation": "RRF uses supplied ranks and weights. Missing candidates do not receive synthetic votes from zero padding.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Weight 1 at rank 1"
+        },
+        {
+          "id": "l2",
+          "text": "Weight 1 at rank 2"
+        },
+        {
+          "id": "l3",
+          "text": "Weight 2 at rank 1"
+        },
+        {
+          "id": "l4",
+          "text": "Not retrieved by a path"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "1/61"
+        },
+        {
+          "id": "r2",
+          "text": "1/62"
+        },
+        {
+          "id": "r3",
+          "text": "2/61"
+        },
+        {
+          "id": "r4",
+          "text": "No vote from that path"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q059",
+      "type": "match",
+      "topic": "Identity layers",
+      "difficulty": "applied",
+      "prompt": "Match each identity to the evidence it binds.",
+      "explanation": "Separate identity layers explain what changed and prevent inappropriate artifact reuse.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Corpus fingerprint"
+        },
+        {
+          "id": "l2",
+          "text": "Partition fingerprint"
+        },
+        {
+          "id": "l3",
+          "text": "Dense fingerprint"
+        },
+        {
+          "id": "l4",
+          "text": "Fusion fingerprint"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Actual text, metadata and source records"
+        },
+        {
+          "id": "r2",
+          "text": "Principal, canonical filters and eligible corpus"
+        },
+        {
+          "id": "r3",
+          "text": "Adapter/model/runtime/preparation/floor settings"
+        },
+        {
+          "id": "r4",
+          "text": "Rank constant and weights"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q060",
+      "type": "match",
+      "topic": "Fusion defects",
+      "difficulty": "applied",
+      "prompt": "Match each malformed input to the violated rule.",
+      "explanation": "Reject inconsistent inputs rather than silently renumbering ranks or choosing a conflicting source.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Same retriever/chunk repeated"
+        },
+        {
+          "id": "l2",
+          "text": "Ranks 1 and 3 only"
+        },
+        {
+          "id": "l3",
+          "text": "Unknown retriever name"
+        },
+        {
+          "id": "l4",
+          "text": "Same ID, different source text"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Duplicate vote"
+        },
+        {
+          "id": "r2",
+          "text": "Non-contiguous rank sequence"
+        },
+        {
+          "id": "r3",
+          "text": "Unconfigured contributor"
+        },
+        {
+          "id": "r4",
+          "text": "Conflicting immutable record"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q061",
+      "type": "match",
+      "topic": "Fixture sources",
+      "difficulty": "foundation",
+      "prompt": "Match each document to its role.",
+      "explanation": "The code notes are separate additions. Earlier source versions are not rewritten to accommodate the new examples.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "P-105"
+        },
+        {
+          "id": "l2",
+          "text": "P-106"
+        },
+        {
+          "id": "l3",
+          "text": "P-107"
+        },
+        {
+          "id": "l4",
+          "text": "P-108"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Framework agreement with cross-section evidence"
+        },
+        {
+          "id": "r2",
+          "text": "Uncertain OCR-like source excluded from acceptance"
+        },
+        {
+          "id": "r3",
+          "text": "Atlas CW-1000 catalogue note"
+        },
+        {
+          "id": "r4",
+          "text": "Beacon PP-20 code note"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q062",
+      "type": "match",
+      "topic": "Evaluation quantities",
+      "difficulty": "applied",
+      "prompt": "Match each quantity to its interpretation.",
+      "explanation": "These quantities answer different questions. Source repeats can be complementary; no single metric establishes answer correctness.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "P@k"
+        },
+        {
+          "id": "l2",
+          "text": "Recall@k"
+        },
+        {
+          "id": "l3",
+          "text": "Reciprocal rank@k"
+        },
+        {
+          "id": "l4",
+          "text": "Same-source repeat fraction"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Hits per requested result slot"
+        },
+        {
+          "id": "r2",
+          "text": "Fraction of gold chunks retrieved"
+        },
+        {
+          "id": "r3",
+          "text": "Reciprocal of the first relevant rank within cutoff"
+        },
+        {
+          "id": "r4",
+          "text": "Fraction of hits beyond distinct source identities"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q063",
+      "type": "match",
+      "topic": "Evidence labels",
+      "difficulty": "applied",
+      "prompt": "Match each label component to its intended role.",
+      "explanation": "The practice key assumes one tenant per document/version. A production label store needs explicit full scope and active-version governance.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Document ID"
+        },
+        {
+          "id": "l2",
+          "text": "Document version"
+        },
+        {
+          "id": "l3",
+          "text": "Body-block index"
+        },
+        {
+          "id": "l4",
+          "text": "Support atoms"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Identifies the source document in this frozen fixture"
+        },
+        {
+          "id": "r2",
+          "text": "Pins the source generation"
+        },
+        {
+          "id": "r3",
+          "text": "Resolves the specific evidence chunk"
+        },
+        {
+          "id": "r4",
+          "text": "Check required substrings inside that declared chunk"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q064",
+      "type": "match",
+      "topic": "Empty and weak outcomes",
+      "difficulty": "foundation",
+      "prompt": "Match each case to the correct interpretation.",
+      "explanation": "Empty results and agreement have limited meanings. They are not general abstention or truth guarantees.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "No readable corpus"
+        },
+        {
+          "id": "l2",
+          "text": "No score above floor"
+        },
+        {
+          "id": "l3",
+          "text": "No gold labels"
+        },
+        {
+          "id": "l4",
+          "text": "Both retrievers agree"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Return empty without broadening permissions"
+        },
+        {
+          "id": "r2",
+          "text": "Return no accepted candidate"
+        },
+        {
+          "id": "r3",
+          "text": "Report undefined relevance metrics separately"
+        },
+        {
+          "id": "r4",
+          "text": "Shared ranking support that still needs source validation"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q065",
+      "type": "match",
+      "topic": "Measured versus missing",
+      "difficulty": "applied",
+      "prompt": "Match each item to the evidence it needs.",
+      "explanation": "The default practice run supplies the first type of evidence. The other outcomes are not inferred from toy retrieval scores.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Fixture score arithmetic"
+        },
+        {
+          "id": "l2",
+          "text": "Model effectiveness"
+        },
+        {
+          "id": "l3",
+          "text": "Serving latency"
+        },
+        {
+          "id": "l4",
+          "text": "Answer correctness"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Deterministic inputs and independently checked formulas"
+        },
+        {
+          "id": "r2",
+          "text": "Task-aligned held-out judgments and real inference"
+        },
+        {
+          "id": "r3",
+          "text": "Timed workload at a declared boundary"
+        },
+        {
+          "id": "r4",
+          "text": "Generated answers and a grounded grading procedure"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W07-Q066",
+      "type": "short",
+      "topic": "Lowercase code",
+      "difficulty": "applied",
+      "prompt": "Type the exact token produced for CW-1000 by the supplied tokenizer.",
+      "explanation": "Lowercasing is declared; the internal hyphen remains part of the token.",
+      "accepted": [
+        "cw-1000"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W07-Q067",
+      "type": "short",
+      "topic": "BM25 default",
+      "difficulty": "foundation",
+      "prompt": "What is the lab's default k1? Type the decimal only.",
+      "explanation": "The reference starts with k1=1.2; it is a parameter to evaluate, not a universal optimum.",
+      "accepted": [
+        "1.2"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q068",
+      "type": "short",
+      "topic": "Length default",
+      "difficulty": "applied",
+      "prompt": "What is the lab's default b? Type the decimal only.",
+      "explanation": "b=0.75 controls the chosen amount of length normalization; the setting is recorded in configuration.",
+      "accepted": [
+        "0.75"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q069",
+      "type": "short",
+      "topic": "Length disabled",
+      "difficulty": "applied",
+      "prompt": "What b value disables length normalization? Type the integer only.",
+      "explanation": "With b=0, the length-normalization expression is one. TF and IDF still contribute.",
+      "accepted": [
+        "0"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q070",
+      "type": "short",
+      "topic": "RRF constant",
+      "difficulty": "foundation",
+      "prompt": "What rank constant does the default equal-weight fusion use? Type the integer only.",
+      "explanation": "The constant smooths rank contributions. It is separate from candidate depth and output k.",
+      "accepted": [
+        "60"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q071",
+      "type": "short",
+      "topic": "Rank origin",
+      "difficulty": "applied",
+      "prompt": "At what integer does each retriever's contiguous rank sequence start?",
+      "explanation": "Ranks are positive and one-based. Gaps and duplicate ranks are rejected.",
+      "accepted": [
+        "1"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q072",
+      "type": "short",
+      "topic": "Strict floor",
+      "difficulty": "applied",
+      "prompt": "Complete score ____ minimum_score for accepted candidates. Type the operator only.",
+      "explanation": "A score equal to the floor does not qualify. This prevents zero-score padding under a zero floor.",
+      "accepted": [
+        ">"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W07-Q073",
+      "type": "short",
+      "topic": "Natural logarithm",
+      "difficulty": "foundation",
+      "prompt": "Complete the Python math function name for the natural logarithm: math.____(x).",
+      "explanation": "The displayed IDF uses a natural logarithm. Different formula variants need explicit versioning.",
+      "accepted": [
+        "log"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W07-Q074",
+      "type": "short",
+      "topic": "Term counting",
+      "difficulty": "applied",
+      "prompt": "Which collections class counts term frequencies? Type its exact case-sensitive name.",
+      "explanation": "Counter records within-chunk frequencies; document frequency should update once per distinct term in each chunk.",
+      "accepted": [
+        "Counter"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W07-Q075",
+      "type": "short",
+      "topic": "Undefined gold metric",
+      "difficulty": "applied",
+      "prompt": "What exact Python literal represents no-gold recall in the report?",
+      "explanation": "None distinguishes undefined relevance targets from an observed zero-hit result.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W07-Q076",
+      "type": "short",
+      "topic": "Canonical encoding",
+      "difficulty": "foundation",
+      "prompt": "Type the exact encoding, with its hyphen, used before source/configuration hashing.",
+      "explanation": "Digests bind UTF-8 bytes under the declared serialization, not a grant or source-authenticity signature.",
+      "accepted": [
+        "utf-8"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q077",
+      "type": "short",
+      "topic": "Fingerprint algorithm",
+      "difficulty": "applied",
+      "prompt": "Complete hashlib.____(payload).hexdigest() for the reference's hashing function.",
+      "explanation": "SHA-256 is used for compatibility fingerprints. A trusted expected manifest is still required.",
+      "accepted": [
+        "sha256"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W07-Q078",
+      "type": "short",
+      "topic": "Default path depth",
+      "difficulty": "applied",
+      "prompt": "What accepted candidate depth does each path supply by default before hybrid fusion? Type the integer.",
+      "explanation": "Hybrid takes at most five accepted chunks per path, then truncates fused output to three.",
+      "accepted": [
+        "5"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q079",
+      "type": "short",
+      "topic": "Default output count",
+      "difficulty": "foundation",
+      "prompt": "What is the default final output k? Type the integer only.",
+      "explanation": "The final budget is three chunks. The hybrid candidate union may involve more work than a standalone top-three baseline.",
+      "accepted": [
+        "3"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q080",
+      "type": "short",
+      "topic": "Two-list RRF arithmetic",
+      "difficulty": "applied",
+      "prompt": "For ranks 1 and 2 with constant 60 and unit weights, the denominators are 61 and ____. Type the integer.",
+      "explanation": "Each contribution is weight/(constant+one-based rank). The second denominator is 60+2=62.",
+      "accepted": [
+        "62"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W07-Q081",
+      "type": "code",
+      "topic": "Identifier-preserving tokens",
+      "difficulty": "applied",
+      "prompt": "Implement tokenize_text(text). Require UTF-8-encodable str of at most 4000 Python characters or raise ValueError. Return a tuple of re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*', text.lower()) matches in occurrence order, including repetitions. Empty/tokenless input returns (). Preserve internal hyphens, underscores and slashes only as allowed by that pattern; do not alias codes or correct O/0. This ASCII token contract does not guarantee literal Unicode identity.",
+      "explanation": "Changing code punctuation changes retrieval identity. Token order/frequency are retained here; query-term deduplication is a separate BM25 policy.",
+      "starter": "def tokenize_text(text: str) -> tuple[str, ...]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport re\ndef tokenize_text(text):\n    valid_text(text)\n    if len(text)>4000:\n        raise ValueError(\"text exceeds 4000 characters\")\n    return tuple(re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*',text.lower()))\n",
+      "checks": [
+        {
+          "label": "Code separators survive",
+          "code": "assert tokenize_text('CW-1000 PO_2026/18 PP-20')==('cw-1000','po_2026/18','pp-20')"
+        },
+        {
+          "label": "Variants stay distinct",
+          "code": "assert tokenize_text('CW1000 CW-100O CW-1000-ALT')==('cw1000','cw-100o','cw-1000-alt')"
+        },
+        {
+          "label": "Occurrence order and punctuation",
+          "code": "assert tokenize_text('Wire, WIRE! Net 30.')==('wire','wire','net','30')"
+        },
+        {
+          "label": "Empty, ASCII limits and character boundary",
+          "code": "assert tokenize_text('')==() and tokenize_text('猫 ---')==()\nassert tokenize_text('x'*4000)==('x'*4000,)"
+        },
+        {
+          "label": "Reject boundary coercion and truncation",
+          "code": "for x in [True,None,'x'*4001,'\\ud800']:\n    assert raises(ValueError,tokenize_text,x)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q082",
+      "type": "code",
+      "topic": "Term frequency versus unique query terms",
+      "difficulty": "foundation",
+      "prompt": "Implement term_views(text). Apply tokenize_text's exact bounded UTF-8/ASCII contract. Return (counts, unique_terms), where counts is a plain dict of token occurrence counts and unique_terms is a tuple of distinct tokens in first-occurrence order. Empty text gives ({},()). Do not sort away occurrence order or drop counts. This separates within-document TF from the unique-query-term policy.",
+      "explanation": "A count map and an ordered unique sequence serve different purposes. Repeated query words must not accidentally become an undocumented query boost.",
+      "starter": "def term_views(text: str) -> tuple[dict[str, int], tuple[str, ...]]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport re\ndef tokenize_text(text):\n    valid_text(text)\n    if len(text)>4000:\n        raise ValueError(\"text exceeds 4000 characters\")\n    return tuple(re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*',text.lower()))\n\nfrom collections import Counter\ndef term_views(text):\n    terms=tokenize_text(text)\n    return dict(Counter(terms)),tuple(dict.fromkeys(terms))\n",
+      "checks": [
+        {
+          "label": "Both count and first occurrence",
+          "code": "assert term_views('wire wire bolts wire')==({'wire':3,'bolts':1},('wire','bolts'))"
+        },
+        {
+          "label": "Code identity with counts",
+          "code": "assert term_views('CW-1000 cw-1000 CW1000')==({'cw-1000':2,'cw1000':1},('cw-1000','cw1000'))"
+        },
+        {
+          "label": "Do not alphabetically reorder",
+          "code": "assert term_views('z a z b')[1]==('z','a','b')"
+        },
+        {
+          "label": "Empty lexical result",
+          "code": "assert term_views('---')==({},())"
+        },
+        {
+          "label": "Use the same tokenizer boundary",
+          "code": "assert raises(ValueError,term_views,True)\nassert raises(ValueError,term_views,'\\ud800')\nassert raises(ValueError,term_views,'x'*4001)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q083",
+      "type": "code",
+      "topic": "Eligible corpus statistics",
+      "difficulty": "applied",
+      "prompt": "Implement corpus_stats(documents). Require list/tuple of 1..256 text chunks, each satisfying tokenize_text and yielding at least one token; raise ValueError otherwise. Return exactly tf (list of plain token-count dicts), df (plain dict counting CHUNKS containing each term once), lengths (token counts) and avgdl (mean token count as float). Preserve inputs. The caller must supply an already-authorized/filtered snapshot; this statistics helper does not grant access.",
+      "explanation": "Compute TF, DF and lengths from the eligible corpus. Updating DF with term counts instead of distinct keys incorrectly lets repetitions change rarity.",
+      "starter": "def corpus_stats(documents) -> dict:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport re\ndef tokenize_text(text):\n    valid_text(text)\n    if len(text)>4000:\n        raise ValueError(\"text exceeds 4000 characters\")\n    return tuple(re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*',text.lower()))\n\nfrom collections import Counter\ndef corpus_stats(documents):\n    if not isinstance(documents,(list,tuple)) or not 1<=len(documents)<=256:\n        raise ValueError(\"non-empty bounded corpus required\")\n    frequencies=[]\n    df=Counter()\n    lengths=[]\n    for text in documents:\n        terms=tokenize_text(text)\n        if not terms:\n            raise ValueError(\"each chunk needs tokens\")\n        counts=Counter(terms)\n        frequencies.append(dict(counts))\n        df.update(counts.keys())\n        lengths.append(len(terms))\n    return {'tf':frequencies,'df':dict(df),'lengths':lengths,'avgdl':sum(lengths)/len(lengths)}\n",
+      "checks": [
+        {
+          "label": "Document frequency counts once per chunk",
+          "code": "assert corpus_stats(['wire wire','wire bolts'])=={'tf':[{'wire':2},{'wire':1,'bolts':1}],'df':{'wire':2,'bolts':1},'lengths':[2,2],'avgdl':2.0}"
+        },
+        {
+          "label": "Hand-calculation corpus",
+          "code": "s=corpus_stats(['CW-1000','invoice invoice invoice']);assert s['lengths']==[1,3] and s['avgdl']==2.0 and s['df']=={'cw-1000':1,'invoice':1}"
+        },
+        {
+          "label": "Reject empty and tokenless corpora",
+          "code": "for d in [[],['---'],['猫'],None,['x']*257]:\n    assert raises(ValueError,corpus_stats,d)"
+        },
+        {
+          "label": "Shared text still represents separate chunks",
+          "code": "assert corpus_stats(['wire','wire'])['df']=={'wire':2}"
+        },
+        {
+          "label": "Encoding, length and source preservation",
+          "code": "for d in [['\\ud800'],['x'*4001],[True]]:\n    assert raises(ValueError,corpus_stats,d)\nx=['Wire wire','Bolts'];corpus_stats(x);assert x==['Wire wire','Bolts']"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q084",
+      "type": "code",
+      "topic": "Positive BM25 IDF",
+      "difficulty": "applied",
+      "prompt": "Implement positive_idf(total,df). Require exact ints excluding bool, with 1<=total<=256 and 0<=df<=total; raise ValueError otherwise. Return log(1+(total-df+0.5)/(df+0.5)) as float using the natural logarithm. df=0 is allowed for this arithmetic helper even though full BM25 skips absent terms. This is the displayed positive-IDF variant, not a probability.",
+      "explanation": "The positive log1p variant stays positive even for a term in every chunk. Other formula variants and engine analyzers need separate contracts.",
+      "starter": "def positive_idf(total: int, df: int) -> float:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef positive_idf(total,df):\n    if type(total) is not int or type(df) is not int or not 1<=total<=256 or not 0<=df<=total:\n        raise ValueError(\"invalid corpus counts\")\n    return math.log1p((total-df+.5)/(df+.5))\n",
+      "checks": [
+        {
+          "label": "Known log-two value",
+          "code": "import math\nassert math.isclose(positive_idf(2,1),0.6931471805599453)"
+        },
+        {
+          "label": "Rare terms outweigh common terms",
+          "code": "assert positive_idf(10,1)>positive_idf(10,9)>0"
+        },
+        {
+          "label": "Full and absent document frequency",
+          "code": "import math\nassert math.isclose(positive_idf(1,1),0.2876820724517809)\nassert math.isclose(positive_idf(2,0),math.log(6))"
+        },
+        {
+          "label": "Reject impossible counts",
+          "code": "for n,d in [(0,0),(257,1),(2,-1),(2,3)]:\n    assert raises(ValueError,positive_idf,n,d)"
+        },
+        {
+          "label": "Exact integer types",
+          "code": "for n,d in [(True,1),(2,False),(2.0,1),(2,'1')]:\n    assert raises(ValueError,positive_idf,n,d)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q085",
+      "type": "code",
+      "topic": "Stable BM25 TF weight",
+      "difficulty": "foundation",
+      "prompt": "Implement tf_weight(tf,dl,avgdl,k1=1.2,b=0.75). tf/dl are exact ints with 1<=dl<=4000 and 0<=tf<=dl. avgdl/k1/b are exact int/float, excluding bool, finite after float conversion; require avgdl in [1,4000], k1>0 and b in [0,1]. Raise ValueError otherwise, including invalid config with tf=0. Return tf*(k1+1)/(tf+k1*(1-b+b*dl/avgdl)), or 0.0 for valid tf=0. Use an equivalent stable ratio for huge finite k1 such as 1e308. These length bounds are a teaching token-count domain.",
+      "explanation": "TF saturation and length normalization are separate effects. Algebraic rearrangement avoids unnecessary overflow in k1*normalization while preserving the formula.",
+      "starter": "def tf_weight(tf: int, dl: int, avgdl: float, k1: float = 1.2, b: float = .75) -> float:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef tf_weight(tf,dl,avgdl,k1=1.2,b=.75):\n    if type(tf) is not int or type(dl) is not int or not 1<=dl<=4000 or not 0<=tf<=dl:\n        raise ValueError(\"invalid term/chunk lengths\")\n    avgdl,k1,b=finite_number(avgdl),finite_number(k1),finite_number(b)\n    if not 1<=avgdl<=4000 or k1<=0 or not 0<=b<=1:\n        raise ValueError(\"invalid BM25 configuration\")\n    if tf==0:\n        return 0.0\n    norm=1-b+b*dl/avgdl\n    if k1>=1:\n        return tf*(1+1/k1)/(tf/k1+norm)\n    return tf*(1+k1)/(tf+k1*norm)\n",
+      "checks": [
+        {
+          "label": "Known length-normalized factor",
+          "code": "import math\nassert math.isclose(tf_weight(1,1,2),1.2571428571428571)"
+        },
+        {
+          "label": "Saturation rather than linear repetition",
+          "code": "one=tf_weight(1,1,5,b=0);ten=tf_weight(10,10,5,b=0);assert one<ten<10*one"
+        },
+        {
+          "label": "Huge k1 remains finite",
+          "code": "import math\nassert math.isclose(tf_weight(1,1,2,k1=1e308),1.6)"
+        },
+        {
+          "label": "Zero TF and b=0 behavior",
+          "code": "assert tf_weight(0,10,5)==0.0\nassert tf_weight(1,1,5,b=0)==tf_weight(1,10,5,b=0)"
+        },
+        {
+          "label": "Reject invalid domains without coercion",
+          "code": "for args in [(True,2,2,1.2,.75),(3,2,2,1.2,.75),(1,0,2,1.2,.75),(1,2,0,1.2,.75),(0,2,2,0,.75),(1,2,2,True,.75),(1,2,2,1.2,float('nan')),(1,2,2,1.2,1.1)]:\n    assert raises(ValueError,tf_weight,*args)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q086",
+      "type": "code",
+      "topic": "BM25 over a frozen text snapshot",
+      "difficulty": "applied",
+      "prompt": "Implement bm25_score(query,documents,index,k1=1.2,b=0.75). query is nonblank UTF-8 str of <=1000 characters. documents/index use corpus_stats's corpus contract and an exact-int zero-based index in that corpus. Apply tf_weight's parameter rules even when no terms match. Raise ValueError on violations. Sum positive_idf(N,df)*tf_weight(tf,dl,avgdl,k1,b) once per DISTINCT query token with tf>0 in the selected chunk. Return float; punctuation-only nonblank queries and absent terms score 0.0. Preserve inputs. The supplied snapshot is already authorized; no model or index service is called.",
+      "explanation": "This score implements the declared positive-IDF/unique-query variant. It does not enforce every term in a longer query, establish direct support or certify equivalence with Lucene.",
+      "starter": "def bm25_score(query: str, documents, index: int, k1: float = 1.2, b: float = .75) -> float:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport re\ndef tokenize_text(text):\n    valid_text(text)\n    if len(text)>4000:\n        raise ValueError(\"text exceeds 4000 characters\")\n    return tuple(re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*',text.lower()))\n\nfrom collections import Counter\ndef corpus_stats(documents):\n    if not isinstance(documents,(list,tuple)) or not 1<=len(documents)<=256:\n        raise ValueError(\"non-empty bounded corpus required\")\n    frequencies=[]\n    df=Counter()\n    lengths=[]\n    for text in documents:\n        terms=tokenize_text(text)\n        if not terms:\n            raise ValueError(\"each chunk needs tokens\")\n        counts=Counter(terms)\n        frequencies.append(dict(counts))\n        df.update(counts.keys())\n        lengths.append(len(terms))\n    return {'tf':frequencies,'df':dict(df),'lengths':lengths,'avgdl':sum(lengths)/len(lengths)}\n\nimport math\ndef positive_idf(total,df):\n    if type(total) is not int or type(df) is not int or not 1<=total<=256 or not 0<=df<=total:\n        raise ValueError(\"invalid corpus counts\")\n    return math.log1p((total-df+.5)/(df+.5))\n\nimport math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef tf_weight(tf,dl,avgdl,k1=1.2,b=.75):\n    if type(tf) is not int or type(dl) is not int or not 1<=dl<=4000 or not 0<=tf<=dl:\n        raise ValueError(\"invalid term/chunk lengths\")\n    avgdl,k1,b=finite_number(avgdl),finite_number(k1),finite_number(b)\n    if not 1<=avgdl<=4000 or k1<=0 or not 0<=b<=1:\n        raise ValueError(\"invalid BM25 configuration\")\n    if tf==0:\n        return 0.0\n    norm=1-b+b*dl/avgdl\n    if k1>=1:\n        return tf*(1+1/k1)/(tf/k1+norm)\n    return tf*(1+k1)/(tf+k1*norm)\n\ndef bm25_score(query,documents,index,k1=1.2,b=.75):\n    valid_text(query)\n    if not query.strip() or len(query)>1000:\n        raise ValueError(\"bounded nonblank query required\")\n    stats=corpus_stats(documents)\n    if type(index) is not int or not 0<=index<len(documents):\n        raise ValueError(\"invalid snapshot index\")\n    dl=stats['lengths'][index]\n    tf_weight(0,dl,stats['avgdl'],k1,b)\n    terms=dict.fromkeys(tokenize_text(query))\n    votes=[]\n    for term in terms:\n        count=stats['tf'][index].get(term,0)\n        if count:\n            votes.append(positive_idf(len(documents),stats['df'][term])*tf_weight(count,dl,stats['avgdl'],k1,b))\n    return math.fsum(votes)\n",
+      "checks": [
+        {
+          "label": "Independent known score",
+          "code": "import math\nassert math.isclose(bm25_score('CW-1000',['CW-1000','invoice invoice invoice'],0),0.8713850269896456)"
+        },
+        {
+          "label": "Unique query terms",
+          "code": "d=['CW-1000','invoice invoice invoice'];assert bm25_score('CW-1000 CW-1000',d,0)==bm25_score('CW-1000',d,0)"
+        },
+        {
+          "label": "No code alias or padded match",
+          "code": "d=['CW-1000','invoice'];assert bm25_score('CW1000',d,0)==0 and bm25_score('CW-100O',d,0)==0 and bm25_score('---',d,0)==0"
+        },
+        {
+          "label": "Positive matched terms and unchanged source",
+          "code": "d=['wire wire','wire bolts'];before=d[:];assert bm25_score('wire bolts',d,1)>bm25_score('wire',d,1)>0 and d==before"
+        },
+        {
+          "label": "Reject invalid query/index/config even without hits",
+          "code": "for q,d,i,k,b in [('', ['x'],0,1.2,.75),('x'*1001,['x'],0,1.2,.75),('x',['x'],True,1.2,.75),('x',['x'],1,1.2,.75),('absent',['x'],0,0,.75),('\\ud800',['x'],0,1.2,.75)]:\n    assert raises(ValueError,bm25_score,q,d,i,k,b)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q087",
+      "type": "code",
+      "topic": "Canonical allowlisted filters",
+      "difficulty": "applied",
+      "prompt": "Implement canonical_filters(filters). Require list/tuple with at most two (field,value) list/tuple pairs. Fields must be supplier or document_type, each used once. Values must be nonblank UTF-8 strings of <=200 characters. Raise ValueError otherwise, including duplicate fields even with equal values. Return a tuple of pairs sorted by field name. Preserve value case/spacing exactly and do not mutate inputs. Empty filters yield (). This is exact metadata equality, not aliases or permission grants.",
+      "explanation": "A stable predicate order supports partition compatibility. Exact values remain exact, and even valid filters cannot create object access.",
+      "starter": "def canonical_filters(filters) -> tuple[tuple[str, str], ...]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\ndef canonical_filters(filters):\n    if not isinstance(filters,(list,tuple)) or len(filters)>2:\n        raise ValueError(\"bounded filter sequence required\")\n    output=[]\n    seen=set()\n    for pair in filters:\n        if not isinstance(pair,(list,tuple)) or len(pair)!=2:\n            raise ValueError(\"filter pair required\")\n        field,value=pair\n        if not isinstance(field,str) or field not in {'supplier','document_type'}:\n            raise ValueError(\"unknown filter field\")\n        valid_text(value)\n        if not value.strip() or len(value)>200 or field in seen:\n            raise ValueError(\"invalid or repeated filter\")\n        seen.add(field)\n        output.append((field,value))\n    return tuple(sorted(output))\n",
+      "checks": [
+        {
+          "label": "Canonical field order",
+          "code": "assert canonical_filters([('supplier','Atlas'),('document_type','catalogue')])==(('document_type','catalogue'),('supplier','Atlas'))"
+        },
+        {
+          "label": "No implicit value normalization",
+          "code": "assert canonical_filters([('supplier',' Atlas ')])==(('supplier',' Atlas '),)"
+        },
+        {
+          "label": "Reject unknown and repeated predicates",
+          "code": "for x in [[('tenant_id','N')],[('supplier','A'),('supplier','A')],[('supplier','A')]*3]:\n    assert raises(ValueError,canonical_filters,x)"
+        },
+        {
+          "label": "Bounded nonblank UTF-8 values and shape",
+          "code": "for x in [[('supplier','')],[('supplier','x'*201)],[('supplier',True)],[('supplier','\\ud800')],[('supplier',)],None]:\n    assert raises(ValueError,canonical_filters,x)"
+        },
+        {
+          "label": "Empty/boundary and source preservation",
+          "code": "assert canonical_filters([])==()\nx=[['supplier','x'*200]];before=repr(x);assert canonical_filters(x)==(('supplier','x'*200),) and repr(x)==before"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q088",
+      "type": "code",
+      "topic": "Grants before metadata predicates",
+      "difficulty": "foundation",
+      "prompt": "Implement eligible_rows(rows,principal,grants,filters). Assume rows is a list of <=256 unique records with id,tenant_id,document_id,document_version and metadata. principal must be nonblank UTF-8 str <=128 characters; filters follow canonical_filters; raise ValueError on those violations or excess corpus count. grants is a trusted set of (principal,tenant,document,version). FIRST exclude non-granted rows without inspecting their metadata (which may be an unreadable sentinel). For granted rows, metadata is a valid dict; require every allowed filter's exact equality. Return original eligible objects in input order; preserve all inputs. The callback-free helper consumes trusted grants and does not authenticate a browser user.",
+      "explanation": "Build both paths and private corpus statistics from this eligible set. Metadata equality cannot bypass a missing principal/tenant/document/version grant.",
+      "starter": "def eligible_rows(rows, principal: str, grants: set, filters) -> list[dict]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\ndef canonical_filters(filters):\n    if not isinstance(filters,(list,tuple)) or len(filters)>2:\n        raise ValueError(\"bounded filter sequence required\")\n    output=[]\n    seen=set()\n    for pair in filters:\n        if not isinstance(pair,(list,tuple)) or len(pair)!=2:\n            raise ValueError(\"filter pair required\")\n        field,value=pair\n        if not isinstance(field,str) or field not in {'supplier','document_type'}:\n            raise ValueError(\"unknown filter field\")\n        valid_text(value)\n        if not value.strip() or len(value)>200 or field in seen:\n            raise ValueError(\"invalid or repeated filter\")\n        seen.add(field)\n        output.append((field,value))\n    return tuple(sorted(output))\n\ndef eligible_rows(rows,principal,grants,filters):\n    valid_text(principal)\n    if not principal.strip() or len(principal)>128 or len(rows)>256:\n        raise ValueError(\"invalid principal/corpus bound\")\n    filters=canonical_filters(filters)\n    output=[]\n    for row in rows:\n        key=(principal,row['tenant_id'],row['document_id'],row['document_version'])\n        if key not in grants:\n            continue\n        if all(row['metadata'].get(k)==v for k,v in filters):\n            output.append(row)\n    return output\n",
+      "checks": [
+        {
+          "label": "Grant plus exact filter",
+          "code": "r={'id':'A','tenant_id':'N','document_id':'D','document_version':'1','metadata':{'supplier':'Atlas'}};out=eligible_rows([r],'alice',{('alice','N','D','1')},[('supplier','Atlas')]);assert out==[r] and out[0] is r"
+        },
+        {
+          "label": "Denied metadata is never inspected",
+          "code": "r={'id':'X','tenant_id':'S','document_id':'D','document_version':'1','metadata':None};assert eligible_rows([r],'alice',set(),[('supplier','Atlas')])==[]"
+        },
+        {
+          "label": "Full scope, not matching document ID",
+          "code": "r={'id':'A','tenant_id':'N','document_id':'D','document_version':'1','metadata':{}}\nfor grant in [('bob','N','D','1'),('alice','S','D','1'),('alice','N','E','1'),('alice','N','D','2')]:\n    assert eligible_rows([r],'alice',{grant},[])==[]"
+        },
+        {
+          "label": "Filters cannot broaden or guess",
+          "code": "r={'id':'A','tenant_id':'N','document_id':'D','document_version':'1','metadata':{'supplier':'Atlas'}};g={('alice','N','D','1')};assert eligible_rows([r],'alice',g,[('supplier','atlas')])==[] and eligible_rows([r],'alice',g,[('document_type','catalogue')])==[]"
+        },
+        {
+          "label": "Bounds, canonical filters and preservation",
+          "code": "assert raises(ValueError,eligible_rows,[],'',set(),[])\nassert raises(ValueError,eligible_rows,[],'alice',set(),[('tenant_id','N')])\nassert raises(ValueError,eligible_rows,[{}]*257,'alice',set(),[])\nr={'id':'A','tenant_id':'N','document_id':'D','document_version':'1','metadata':{}};before=repr(r);assert eligible_rows([r],'alice',{('alice','N','D','1')},[])==[r] and repr(r)==before"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q089",
+      "type": "code",
+      "topic": "Corpus partition compatibility",
+      "difficulty": "applied",
+      "prompt": "Implement require_partition(request_principal,request_filters,stored_principal,stored_filters). Principal values must be nonblank UTF-8 strings <=128 characters; both filter sequences follow canonical_filters. Raise ValueError for invalid input or if principals or canonical filter tuples differ. Return True on an exact compatible partition. Filter input order is immaterial, but value case/spacing and absence of a predicate are significant. Do not mutate inputs or silently broaden the stored partition.",
+      "explanation": "A matching query or record count does not establish artifact scope. Bind the trusted principal and all canonical predicates before reusing private statistics or candidate data.",
+      "starter": "def require_partition(request_principal: str, request_filters, stored_principal: str, stored_filters) -> bool:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\ndef canonical_filters(filters):\n    if not isinstance(filters,(list,tuple)) or len(filters)>2:\n        raise ValueError(\"bounded filter sequence required\")\n    output=[]\n    seen=set()\n    for pair in filters:\n        if not isinstance(pair,(list,tuple)) or len(pair)!=2:\n            raise ValueError(\"filter pair required\")\n        field,value=pair\n        if not isinstance(field,str) or field not in {'supplier','document_type'}:\n            raise ValueError(\"unknown filter field\")\n        valid_text(value)\n        if not value.strip() or len(value)>200 or field in seen:\n            raise ValueError(\"invalid or repeated filter\")\n        seen.add(field)\n        output.append((field,value))\n    return tuple(sorted(output))\n\ndef require_partition(request_principal,request_filters,stored_principal,stored_filters):\n    for p in (request_principal,stored_principal):\n        valid_text(p)\n        if not p.strip() or len(p)>128:\n            raise ValueError(\"invalid principal\")\n    a,b=canonical_filters(request_filters),canonical_filters(stored_filters)\n    if request_principal!=stored_principal or a!=b:\n        raise ValueError(\"partition mismatch\")\n    return True\n",
+      "checks": [
+        {
+          "label": "Same canonical partition",
+          "code": "a=[('supplier','Atlas'),('document_type','catalogue')];assert require_partition('alice',a,'alice',a[::-1]) is True"
+        },
+        {
+          "label": "Reject another principal",
+          "code": "assert raises(ValueError,require_partition,'bob',[],'alice',[])"
+        },
+        {
+          "label": "Missing or changed predicates matter",
+          "code": "assert raises(ValueError,require_partition,'alice',[],'alice',[('supplier','Atlas')])\nassert raises(ValueError,require_partition,'alice',[('supplier','atlas')],'alice',[('supplier','Atlas')])"
+        },
+        {
+          "label": "Validate both sides",
+          "code": "assert raises(ValueError,require_partition,'',[],'alice',[])\nassert raises(ValueError,require_partition,'alice',[],'alice',[('supplier','A'),('supplier','A')])"
+        },
+        {
+          "label": "No mutation",
+          "code": "a=[('supplier',' Atlas ')];before=a[:];assert require_partition('alice',a,'alice',a) is True and a==before"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q090",
+      "type": "code",
+      "topic": "Strict accepted-candidate ranking",
+      "difficulty": "applied",
+      "prompt": "Implement rank_scores(rows,k,minimum_score=0). rows is list/tuple of at most 256 (id,score) pairs; assume pair shape. IDs must be nonblank UTF-8 strings, unique across ALL rows. Scores/floor are exact int/float excluding bool, finite after float conversion. k is exact int in [1,256]. Raise ValueError on violations, including invalid rows beyond top-k or below the floor. Keep ONLY score>floor, sort score descending then ID ascending and take at most k. Return [{'id':str,'score':float,'rank':one_based_int},...]. Short/empty results are allowed; no padding or mutation.",
+      "explanation": "Validate before selection, then retain only accepted candidates. Strict floors and deterministic ties prevent arbitrary padded chunks from gaining later fusion support.",
+      "starter": "def rank_scores(rows, k: int, minimum_score: float = 0) -> list[dict]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef rank_scores(rows,k,minimum_score=0):\n    floor=finite_number(minimum_score)\n    if not isinstance(rows,(list,tuple)) or len(rows)>256 or type(k) is not int or not 1<=k<=256:\n        raise ValueError(\"invalid ranking size\")\n    seen=set()\n    accepted=[]\n    for identity,raw in rows:\n        valid_text(identity)\n        if not identity.strip() or identity in seen:\n            raise ValueError(\"invalid or duplicate ID\")\n        seen.add(identity)\n        score=finite_number(raw)\n        if score>floor:\n            accepted.append((identity,score))\n    ordered=sorted(accepted,key=lambda x:(-x[1],x[0]))[:k]\n    return [{'id':identity,'score':score,'rank':rank} for rank,(identity,score) in enumerate(ordered,1)]\n",
+      "checks": [
+        {
+          "label": "Floor removes zero padding",
+          "code": "assert rank_scores([('A',0),('B',.5)],3)==[{'id':'B','score':.5,'rank':1}]"
+        },
+        {
+          "label": "Ties use ascending ID",
+          "code": "assert [x['id'] for x in rank_scores([('B',1),('A',1),('C',.2)],2)]==['A','B']"
+        },
+        {
+          "label": "Negative cosine with explicit floor",
+          "code": "assert rank_scores([('A',-.2),('B',-.5)],3,-.5)==[{'id':'A','score':-.2,'rank':1}]"
+        },
+        {
+          "label": "Validate full input and exact types",
+          "code": "for rows,k,f in [([('A',2),('B',float('nan'))],1,0),([('A',2),('A',0)],1,0),([('A',True)],1,0),([],True,0),([],1,float('inf')),([('',1)],1,0)]:\n    assert raises(ValueError,rank_scores,rows,k,f)"
+        },
+        {
+          "label": "Empty and unchanged source",
+          "code": "assert rank_scores([],1)==[]\nx=[('B',1),('A',1)];rank_scores(x,2);assert x==[('B',1),('A',1)]"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q091",
+      "type": "code",
+      "topic": "Stable min-max rescaling",
+      "difficulty": "foundation",
+      "prompt": "Implement minmax(scores). scores must be a dict with well-formed string keys; each value must be exact int/float (no bool), finite after float conversion. Raise ValueError otherwise. Return a new dict mapping each key to (score-min)/(max-min). Empty input gives {}; all-equal values give 0.0 for each key. Handle the finite signed range -1e308..1e308 without subtraction overflow, preserving order/inputs. Rescaled values are not calibrated probabilities.",
+      "explanation": "Flat ranges need a convention and extreme subtraction needs stable scaling. Min-max changes a list's scale, not the meaning or calibration of its relevance scores.",
+      "starter": "def minmax(scores: dict) -> dict[str, float]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef minmax(scores):\n    if not isinstance(scores,dict):\n        raise ValueError(\"score mapping required\")\n    values={k:finite_number(v) for k,v in scores.items()}\n    if not values:\n        return {}\n    lo,hi=min(values.values()),max(values.values())\n    if lo==hi:\n        return {k:0.0 for k in values}\n    span=hi-lo\n    if math.isfinite(span):\n        return {k:(v-lo)/span for k,v in values.items()}\n    scale=max(abs(lo),abs(hi))\n    a,b=lo/scale,hi/scale\n    return {k:(v/scale-a)/(b-a) for k,v in values.items()}\n",
+      "checks": [
+        {
+          "label": "Ordinary signed range",
+          "code": "assert minmax({'a':-2,'b':0,'c':2})=={'a':0.0,'b':.5,'c':1.0}"
+        },
+        {
+          "label": "Flat and empty convention",
+          "code": "assert minmax({})=={} and minmax({'a':5,'b':5})=={'a':0.0,'b':0.0}"
+        },
+        {
+          "label": "Extreme finite signed scores",
+          "code": "assert minmax({'a':-1e308,'b':0,'c':1e308})=={'a':0.0,'b':.5,'c':1.0}"
+        },
+        {
+          "label": "Reject non-finite/coerced values",
+          "code": "for x in [{'a':True},{'a':'1'},{'a':float('nan')},{'a':float('inf')},{'a':10**1000},[]]:\n    assert raises(ValueError,minmax,x)"
+        },
+        {
+          "label": "Order and original scores stay intact",
+          "code": "x={'z':3,'a':1};out=minmax(x);assert list(out)==['z','a'] and x=={'z':3,'a':1} and out=={'z':1.0,'a':0.0}"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q092",
+      "type": "code",
+      "topic": "Explicit fusion weights",
+      "difficulty": "applied",
+      "prompt": "Implement fusion_weights(pairs). Require non-empty list/tuple of well-formed (retriever_name,weight) pairs. Names must be nonblank UTF-8 str and unique, even if repeated weights agree. Weights must be exact int/float excluding bool, finite after float conversion, and strictly positive. Raise ValueError otherwise. Return a plain name->float dict in input order, without normalizing the weights or mutating inputs.",
+      "explanation": "A weight is a recorded configuration choice. Duplicate names must not silently overwrite a retriever's contribution or turn equal defaults into hidden tuning.",
+      "starter": "def fusion_weights(pairs) -> dict[str, float]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef fusion_weights(pairs):\n    if not isinstance(pairs,(list,tuple)) or not pairs:\n        raise ValueError(\"non-empty weight pairs required\")\n    result={}\n    for name,weight in pairs:\n        valid_text(name)\n        weight=finite_number(weight)\n        if not name.strip() or name in result or weight<=0:\n            raise ValueError(\"invalid/duplicate weight\")\n        result[name]=weight\n    return result\n",
+      "checks": [
+        {
+          "label": "Equal default weights",
+          "code": "assert fusion_weights([('bm25',1),('dense',1)])=={'bm25':1.0,'dense':1.0}"
+        },
+        {
+          "label": "Keep a declared non-unit weight",
+          "code": "assert fusion_weights([('dense',2),('bm25',.5)])=={'dense':2.0,'bm25':.5}"
+        },
+        {
+          "label": "Reject duplicates rather than overwrite",
+          "code": "assert raises(ValueError,fusion_weights,[('bm25',1),('bm25',1)])"
+        },
+        {
+          "label": "Reject invalid names and numeric values",
+          "code": "for x in [[],None,[('',1)],[('x',0)],[('x',-1)],[('x',True)],[('x',float('inf'))],[('x','1')],[('\\ud800',1)]]:\n    assert raises(ValueError,fusion_weights,x)"
+        },
+        {
+          "label": "Preserve pair order/source",
+          "code": "x=[('z',3),('a',2)];assert list(fusion_weights(x))==['z','a'] and x==[('z',3),('a',2)]"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q093",
+      "type": "code",
+      "topic": "One weighted RRF vote",
+      "difficulty": "applied",
+      "prompt": "Implement rrf_vote(rank,constant=60,weight=1). rank/constant must be exact positive ints excluding bool. weight is exact int/float, finite after float conversion and >0. Return weight/(constant+rank) as float. Raise ValueError for invalid input or a Python floating operation that overflows/cannot represent its denominator. Do not use a raw retrieval score in the formula. The function calculates one contributor's vote, not a complete ranking.",
+      "explanation": "RRF uses one-based positions and declared weights. The rank constant smooths positional differences and is separate from candidate depth and final k.",
+      "starter": "def rrf_vote(rank: int, constant: int = 60, weight: float = 1) -> float:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef rrf_vote(rank,constant=60,weight=1):\n    if type(rank) is not int or rank<1 or type(constant) is not int or constant<1:\n        raise ValueError(\"positive integer rank/constant required\")\n    weight=finite_number(weight)\n    if weight<=0:\n        raise ValueError(\"positive weight required\")\n    try:\n        value=weight/(constant+rank)\n    except OverflowError as exc:\n        raise ValueError(\"denominator outside float range\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"non-finite vote\")\n    return value\n",
+      "checks": [
+        {
+          "label": "Rank one and two",
+          "code": "import math\nassert math.isclose(rrf_vote(1),1/61) and math.isclose(rrf_vote(2),1/62)"
+        },
+        {
+          "label": "Explicit weight and constant",
+          "code": "import math\nassert math.isclose(rrf_vote(1,60,2),2/61) and math.isclose(rrf_vote(2,3,.5),.1)"
+        },
+        {
+          "label": "Earlier ranks contribute more",
+          "code": "assert rrf_vote(1)>rrf_vote(2)>rrf_vote(100)"
+        },
+        {
+          "label": "Reject bool, nonpositive and non-finite inputs",
+          "code": "for r,c,w in [(True,60,1),(0,60,1),(1,0,1),(1,True,1),(1,60,True),(1,60,0),(1,60,float('nan')),(1,60,'1')]:\n    assert raises(ValueError,rrf_vote,r,c,w)"
+        },
+        {
+          "label": "Finite extremes and explicit representation failure",
+          "code": "import math\nassert math.isfinite(rrf_vote(1,60,1e308))\nassert raises(ValueError,rrf_vote,1,10**1000,1)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q094",
+      "type": "code",
+      "topic": "Validate RRF contributions",
+      "difficulty": "foundation",
+      "prompt": "Implement validate_votes(rows,weights). rows is list/tuple of well-formed dicts with id,snapshot,retriever,rank,raw_score. id/snapshot must be nonblank UTF-8 strings; snapshot is a TRUSTED fingerprint binding the full immutable source record. weights is a dict following fusion_weights's name/positive-weight rules. Every retriever must be configured, rank an exact positive int and raw_score an exact finite int/float excluding bool. Reject repeated (retriever,id), repeated ranks within one retriever, non-contiguous per-retriever rank sets starting at 1, and different snapshots for the same ID. Return True or raise ValueError, preserving input. Empty rows are valid with valid weights. Score-floor admission already happened upstream; this helper does not authenticate snapshots.",
+      "explanation": "Cross-path agreement is valid only for the same immutable record. Validate complete rank/provenance input before arithmetic; this fingerprint comparison still relies on trusted upstream identity.",
+      "starter": "def validate_votes(rows, weights: dict) -> bool:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef fusion_weights(pairs):\n    if not isinstance(pairs,(list,tuple)) or not pairs:\n        raise ValueError(\"non-empty weight pairs required\")\n    result={}\n    for name,weight in pairs:\n        valid_text(name)\n        weight=finite_number(weight)\n        if not name.strip() or name in result or weight<=0:\n            raise ValueError(\"invalid/duplicate weight\")\n        result[name]=weight\n    return result\n\ndef validate_votes(rows,weights):\n    if not isinstance(rows,(list,tuple)) or not isinstance(weights,dict):\n        raise ValueError(\"vote sequence/weight dict required\")\n    known=fusion_weights(list(weights.items()))\n    votes=set()\n    ranks={}\n    snapshots={}\n    for row in rows:\n        identity,snapshot,name=row['id'],row['snapshot'],row['retriever']\n        valid_text(identity);valid_text(snapshot);valid_text(name)\n        if not identity.strip() or not snapshot.strip() or name not in known:\n            raise ValueError(\"invalid identity or retriever\")\n        rank=row['rank']\n        if type(rank) is not int or rank<1:\n            raise ValueError(\"positive rank required\")\n        finite_number(row['raw_score'])\n        key=(name,identity)\n        if key in votes or rank in ranks.setdefault(name,set()):\n            raise ValueError(\"duplicate vote or rank\")\n        votes.add(key);ranks[name].add(rank)\n        if identity in snapshots and snapshots[identity]!=snapshot:\n            raise ValueError(\"conflicting source snapshot\")\n        snapshots[identity]=snapshot\n    if any(r!=set(range(1,len(r)+1)) for r in ranks.values()):\n        raise ValueError(\"ranks must be contiguous from one\")\n    return True\n",
+      "checks": [
+        {
+          "label": "Same chunk can contribute once per path",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};b=dict(a,retriever='dense',raw_score=.8);assert validate_votes([a,b],{'bm25':1,'dense':1}) is True"
+        },
+        {
+          "label": "No duplicate contribution or rank",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};assert raises(ValueError,validate_votes,[a,dict(a)],{'bm25':1})\nassert raises(ValueError,validate_votes,[a,dict(a,id='B',snapshot='source-B')],{'bm25':1})"
+        },
+        {
+          "label": "No gaps or unknown retrievers",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};assert raises(ValueError,validate_votes,[dict(a,rank=2)],{'bm25':1})\nassert raises(ValueError,validate_votes,[dict(a,retriever='unknown')],{'bm25':1})"
+        },
+        {
+          "label": "Reject conflicting records and invalid scores/ranks",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};assert raises(ValueError,validate_votes,[a,dict(a,retriever='dense',snapshot='different')],{'bm25':1,'dense':1})\nassert raises(ValueError,validate_votes,[dict(a,rank=True)],{'bm25':1})\nassert raises(ValueError,validate_votes,[dict(a,raw_score=float('nan'))],{'bm25':1})"
+        },
+        {
+          "label": "Empty paths and preserved provenance",
+          "code": "assert validate_votes([],{'bm25':1}) is True\na={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};before=dict(a);assert validate_votes([a],{'bm25':1}) is True and a==before"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q095",
+      "type": "code",
+      "topic": "Weighted fusion with provenance",
+      "difficulty": "applied",
+      "prompt": "Implement fuse_votes(rows,weights,constant=60,k=3). Use validate_votes's full contribution/snapshot/contiguous-rank contract and fusion_weights's valid non-empty dict configuration. constant follows rrf_vote; k is exact int in [1,256]. Raise ValueError on violations or non-finite/overflowing fused totals. Sum weight[retriever]/(constant+rank) per chunk ID using finite float arithmetic, sort score descending then ID ascending, and return at most k dicts with exactly id,score,rank and contributors. Output ranks start at 1. Contributors are {retriever,rank,raw_score} dicts sorted by retriever name; preserve original raw scores. Empty rows give [], without padding. Do not mutate input; these inputs already passed candidate floors.",
+      "explanation": "The fused score depends on ranks/weights, while raw scores remain diagnostic evidence. Same-ID contributors merge only after identity validation; no unseen chunk is invented.",
+      "starter": "def fuse_votes(rows, weights: dict, constant: int = 60, k: int = 3) -> list[dict]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef fusion_weights(pairs):\n    if not isinstance(pairs,(list,tuple)) or not pairs:\n        raise ValueError(\"non-empty weight pairs required\")\n    result={}\n    for name,weight in pairs:\n        valid_text(name)\n        weight=finite_number(weight)\n        if not name.strip() or name in result or weight<=0:\n            raise ValueError(\"invalid/duplicate weight\")\n        result[name]=weight\n    return result\n\ndef validate_votes(rows,weights):\n    if not isinstance(rows,(list,tuple)) or not isinstance(weights,dict):\n        raise ValueError(\"vote sequence/weight dict required\")\n    known=fusion_weights(list(weights.items()))\n    votes=set()\n    ranks={}\n    snapshots={}\n    for row in rows:\n        identity,snapshot,name=row['id'],row['snapshot'],row['retriever']\n        valid_text(identity);valid_text(snapshot);valid_text(name)\n        if not identity.strip() or not snapshot.strip() or name not in known:\n            raise ValueError(\"invalid identity or retriever\")\n        rank=row['rank']\n        if type(rank) is not int or rank<1:\n            raise ValueError(\"positive rank required\")\n        finite_number(row['raw_score'])\n        key=(name,identity)\n        if key in votes or rank in ranks.setdefault(name,set()):\n            raise ValueError(\"duplicate vote or rank\")\n        votes.add(key);ranks[name].add(rank)\n        if identity in snapshots and snapshots[identity]!=snapshot:\n            raise ValueError(\"conflicting source snapshot\")\n        snapshots[identity]=snapshot\n    if any(r!=set(range(1,len(r)+1)) for r in ranks.values()):\n        raise ValueError(\"ranks must be contiguous from one\")\n    return True\n\nimport math\ndef finite_number(value):\n    if type(value) not in (int,float):\n        raise ValueError(\"exact int/float required\")\n    try:\n        value=float(value)\n    except OverflowError as exc:\n        raise ValueError(\"finite number required\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"finite number required\")\n    return value\n\ndef rrf_vote(rank,constant=60,weight=1):\n    if type(rank) is not int or rank<1 or type(constant) is not int or constant<1:\n        raise ValueError(\"positive integer rank/constant required\")\n    weight=finite_number(weight)\n    if weight<=0:\n        raise ValueError(\"positive weight required\")\n    try:\n        value=weight/(constant+rank)\n    except OverflowError as exc:\n        raise ValueError(\"denominator outside float range\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"non-finite vote\")\n    return value\n\ndef fuse_votes(rows,weights,constant=60,k=3):\n    if type(k) is not int or not 1<=k<=256:\n        raise ValueError(\"k in [1,256] required\")\n    weights=fusion_weights(list(weights.items())) if isinstance(weights,dict) else {}\n    validate_votes(rows,weights)\n    rrf_vote(1,constant,1)\n    scores={}\n    contributors={}\n    for row in rows:\n        identity=row['id']\n        scores.setdefault(identity,[]).append(rrf_vote(row['rank'],constant,weights[row['retriever']]))\n        contributors.setdefault(identity,[]).append({'retriever':row['retriever'],'rank':row['rank'],'raw_score':row['raw_score']})\n    try:\n        totals={key:math.fsum(values) for key,values in scores.items()}\n    except (OverflowError,ValueError) as exc:\n        raise ValueError(\"fusion overflow\") from exc\n    if any(not math.isfinite(x) for x in totals.values()):\n        raise ValueError(\"non-finite fused score\")\n    ordered=sorted(totals,key=lambda key:(-totals[key],key))[:k]\n    return [{'id':key,'score':totals[key],'rank':rank,'contributors':sorted(contributors[key],key=lambda c:c['retriever'])} for rank,key in enumerate(ordered,1)]\n",
+      "checks": [
+        {
+          "label": "Known winner and contributor arithmetic",
+          "code": "import math\na={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};b={'id':'B','snapshot':'source-B','retriever':'bm25','rank':2,'raw_score':1};d=dict(b,retriever='dense',rank=1,raw_score=.8);r=fuse_votes([a,b,d],{'bm25':1,'dense':1});assert [x['id'] for x in r]==['B','A'] and math.isclose(r[0]['score'],1/62+1/61) and r[0]['contributors']==[{'retriever':'bm25','rank':2,'raw_score':1},{'retriever':'dense','rank':1,'raw_score':.8}]"
+        },
+        {
+          "label": "Equal votes tie by ID and ranks restart",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};b=dict(a,id='B',snapshot='source-B',retriever='dense');r=fuse_votes([b,a],{'bm25':1,'dense':1},k=1);assert [x['id'] for x in r]==['A'] and r[0]['rank']==1"
+        },
+        {
+          "label": "Raw scales do not drive RRF, weights do",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};d=dict(a,id='B',snapshot='source-B',retriever='dense',raw_score=.01);r=fuse_votes([a,d],{'bm25':1,'dense':2});assert r[0]['id']=='B'\na2=dict(a,raw_score=1000000);assert [x['score'] for x in fuse_votes([a,d],{'bm25':1,'dense':1})]==[x['score'] for x in fuse_votes([a2,d],{'bm25':1,'dense':1})]"
+        },
+        {
+          "label": "Empty paths and validation before fusion",
+          "code": "assert fuse_votes([],{'bm25':1})==[]\na={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};assert raises(ValueError,fuse_votes,[a,a],{'bm25':1})\nassert raises(ValueError,fuse_votes,[],{'bm25':1},60,True)\nassert raises(ValueError,fuse_votes,[],{},60,3)"
+        },
+        {
+          "label": "No mutation and explicit overflow failure",
+          "code": "a={'id':'A','snapshot':'source-A','retriever':'bm25','rank':1,'raw_score':100};before=dict(a);fuse_votes([a],{'bm25':1});assert a==before\nrows=[dict(a,retriever=str(i)) for i in range(5)];assert raises(ValueError,fuse_votes,rows,{str(i):1e308 for i in range(5)},1,3)"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q096",
+      "type": "code",
+      "topic": "Candidate-depth union",
+      "difficulty": "applied",
+      "prompt": "Implement candidate_union(sparse_ids,dense_ids,depth). Each input is list/tuple of <=256 unique nonblank UTF-8 ID strings; duplicates anywhere in an input are invalid even beyond depth. depth is exact int in [1,256]. Raise ValueError otherwise. Take each path's first depth IDs, then return their union in first-seen order (sparse prefix then dense prefix), deduplicating only the same ID across lists. Preserve inputs; this is the pre-fusion candidate union, not final top-k or semantic duplicate control.",
+      "explanation": "The candidate budget applies per path before fusion. Deduplicating the union does not collapse different chunks from one document or recover truncated evidence.",
+      "starter": "def candidate_union(sparse_ids, dense_ids, depth: int) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\ndef candidate_union(sparse_ids,dense_ids,depth):\n    if type(depth) is not int or not 1<=depth<=256:\n        raise ValueError(\"invalid depth\")\n    for ids in (sparse_ids,dense_ids):\n        if not isinstance(ids,(list,tuple)) or len(ids)>256:\n            raise ValueError(\"bounded ID sequence required\")\n        if any(not valid_text(x).strip() for x in ids) or len(set(ids))!=len(ids):\n            raise ValueError(\"unique nonblank IDs required\")\n    return list(dict.fromkeys([*sparse_ids[:depth],*dense_ids[:depth]]))\n",
+      "checks": [
+        {
+          "label": "Union can exceed either path depth",
+          "code": "assert candidate_union(['A','B','C'],['C','B','D'],2)==['A','B','C']"
+        },
+        {
+          "label": "Truncate each path before merging",
+          "code": "assert candidate_union(['A','B'],['A','C'],1)==['A']"
+        },
+        {
+          "label": "Cross-path overlap is one chunk, related IDs stay distinct",
+          "code": "assert candidate_union(['D:1','D:2'],['D:2','E:1'],2)==['D:1','D:2','E:1']"
+        },
+        {
+          "label": "Reject malformed complete sequences and depth",
+          "code": "for a,b,d in [(['A','B','B'],[],1),([''],[],1),(['A'],[],True),([],[],0),(['\\ud800'],[],1)]:\n    assert raises(ValueError,candidate_union,a,b,d)"
+        },
+        {
+          "label": "Empty/short lists and no mutation",
+          "code": "assert candidate_union([],[],5)==[]\na=['B','A'];b=['A'];assert candidate_union(a,b,3)==['B','A'] and a==['B','A'] and b==['A']"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q097",
+      "type": "code",
+      "topic": "Complete retrieval manifest",
+      "difficulty": "foundation",
+      "prompt": "Implement manifest_digest(config). Require a dict with exactly schema_version,corpus_fingerprint,partition_fingerprint,token_fingerprint,bm25_fingerprint,dense_fingerprint,fusion_fingerprint,candidate_depth,top_k. First seven values are nonblank UTF-8 strings without chr(31); schema_version must be procurement-hybrid-retrieval/1.1.0. Counts are exact ints with 1<=top_k<=candidate_depth<=256. Raise ValueError otherwise. Join str(values) in the listed field order using chr(31), UTF-8 encode and return SHA-256 hex. Dict insertion order must not matter; do not mutate. Opaque fingerprint values are assumed trusted, not authenticated by this helper.",
+      "explanation": "Compatibility binds actual corpus, access partition, algorithms and both budgets. Checking only supplied source digests or a model name misses meaningful retrieval changes.",
+      "starter": "def manifest_digest(config: dict) -> str:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\nimport hashlib\nFP_FIELDS=('schema_version', 'corpus_fingerprint', 'partition_fingerprint', 'token_fingerprint', 'bm25_fingerprint', 'dense_fingerprint', 'fusion_fingerprint', 'candidate_depth', 'top_k')\ndef manifest_digest(config):\n    if not isinstance(config,dict) or set(config)!=set(FP_FIELDS):\n        raise ValueError(\"exact manifest fields required\")\n    for field in FP_FIELDS[:7]:\n        value=valid_text(config[field])\n        if not value.strip() or chr(31) in value:\n            raise ValueError(\"invalid fingerprint field\")\n    if config['schema_version']!='procurement-hybrid-retrieval/1.1.0':\n        raise ValueError(\"unsupported schema\")\n    k,depth=config['top_k'],config['candidate_depth']\n    if type(k) is not int or type(depth) is not int or not 1<=k<=depth<=256:\n        raise ValueError(\"invalid depth/output budget\")\n    return hashlib.sha256(chr(31).join(str(config[key]) for key in FP_FIELDS).encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact full recipe",
+          "code": "import hashlib\nc={'schema_version':'procurement-hybrid-retrieval/1.1.0','corpus_fingerprint':'c','partition_fingerprint':'p','token_fingerprint':'t','bm25_fingerprint':'b','dense_fingerprint':'d','fusion_fingerprint':'f','candidate_depth':5,'top_k':3};expected=hashlib.sha256(chr(31).join(['procurement-hybrid-retrieval/1.1.0','c','p','t','b','d','f','5','3']).encode('utf-8')).hexdigest();assert manifest_digest(c)==expected"
+        },
+        {
+          "label": "Every identity and budget can change compatibility",
+          "code": "c={'schema_version':'procurement-hybrid-retrieval/1.1.0','corpus_fingerprint':'c','partition_fingerprint':'p','token_fingerprint':'t','bm25_fingerprint':'b','dense_fingerprint':'d','fusion_fingerprint':'f','candidate_depth':5,'top_k':3};a=manifest_digest(c)\nfor field in ['corpus_fingerprint','partition_fingerprint','token_fingerprint','bm25_fingerprint','dense_fingerprint','fusion_fingerprint']:\n    assert manifest_digest(dict(c,**{field:'changed'}))!=a\nassert manifest_digest(dict(c,candidate_depth=6))!=a and manifest_digest(dict(c,top_k=2))!=a"
+        },
+        {
+          "label": "Insertion order and no mutation",
+          "code": "c={'schema_version':'procurement-hybrid-retrieval/1.1.0','corpus_fingerprint':'c','partition_fingerprint':'p','token_fingerprint':'t','bm25_fingerprint':'b','dense_fingerprint':'d','fusion_fingerprint':'f','candidate_depth':5,'top_k':3};before=repr(c);assert manifest_digest(c)==manifest_digest(dict(reversed(list(c.items())))) and repr(c)==before"
+        },
+        {
+          "label": "Reject invalid schema/counts/fields",
+          "code": "c={'schema_version':'procurement-hybrid-retrieval/1.1.0','corpus_fingerprint':'c','partition_fingerprint':'p','token_fingerprint':'t','bm25_fingerprint':'b','dense_fingerprint':'d','fusion_fingerprint':'f','candidate_depth':5,'top_k':3}\nfor change in [{'schema_version':'other'},{'top_k':True},{'candidate_depth':2},{'candidate_depth':257},{'top_k':0},{'extra':'x'}]:\n    assert raises(ValueError,manifest_digest,dict(c,**change))"
+        },
+        {
+          "label": "No missing, blank or ambiguous fingerprint serialization",
+          "code": "c={'schema_version':'procurement-hybrid-retrieval/1.1.0','corpus_fingerprint':'c','partition_fingerprint':'p','token_fingerprint':'t','bm25_fingerprint':'b','dense_fingerprint':'d','fusion_fingerprint':'f','candidate_depth':5,'top_k':3};del c['dense_fingerprint'];assert raises(ValueError,manifest_digest,c)\nc={'schema_version':'procurement-hybrid-retrieval/1.1.0','corpus_fingerprint':'c','partition_fingerprint':'p','token_fingerprint':'t','bm25_fingerprint':'b','dense_fingerprint':'d','fusion_fingerprint':'f','candidate_depth':5,'top_k':3};assert raises(ValueError,manifest_digest,dict(c,partition_fingerprint=chr(31)))\nassert raises(ValueError,manifest_digest,dict(c,token_fingerprint=''))"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q098",
+      "type": "code",
+      "topic": "Source-faithful evidence-key resolution",
+      "difficulty": "applied",
+      "prompt": "Implement resolve_evidence(eligible,support). Assume eligible is an already-authorized list of well-formed {id,evidence_key,text} records with nonblank UTF-8 strings and unique IDs. support is a dict mapping evidence keys to lists of atoms. Every eligible evidence_key must be unique, even when unlabelled. Every support key must resolve; each atom list must be non-empty and contain only nonblank UTF-8 strings that occur case-insensitively using casefold in THAT key's text. Raise ValueError for duplicates, missing keys, invalid atoms or absent substrings. Return frozenset of labelled chunk IDs; empty support gives frozenset(). Preserve inputs. This fixture resolver assumes one tenant/version per key; it does not widen access or prove entailment.",
+      "explanation": "Labels must resolve within the same eligible frozen snapshot and be supported by their own declared chunk. Case-insensitive substring presence is still only a support proxy.",
+      "starter": "def resolve_evidence(eligible: list[dict], support: dict) -> frozenset[str]:\n    raise NotImplementedError\n",
+      "reference": "def valid_text(value):\n    if not isinstance(value,str):\n        raise ValueError(\"string required\")\n    try:\n        value.encode('utf-8')\n    except UnicodeEncodeError as exc:\n        raise ValueError(\"UTF-8 required\") from exc\n    return value\n\ndef resolve_evidence(eligible,support):\n    by_key={row['evidence_key']:row for row in eligible}\n    if len(by_key)!=len(eligible):\n        raise ValueError(\"ambiguous evidence keys\")\n    gold=set()\n    for key,atoms in support.items():\n        if key not in by_key or not isinstance(atoms,list) or not atoms:\n            raise ValueError(\"invalid evidence label\")\n        text=by_key[key]['text'].casefold()\n        for atom in atoms:\n            if not valid_text(atom).strip() or atom.casefold() not in text:\n                raise ValueError(\"atom absent from its declared source\")\n        gold.add(by_key[key]['id'])\n    return frozenset(gold)\n",
+      "checks": [
+        {
+          "label": "Resolve the exact source unit",
+          "code": "rows=[{'id':'A','evidence_key':'P-107/1/1','text':'Product CW-1000 from Atlas'}];assert resolve_evidence(rows,{'P-107/1/1':['cw-1000','ATLAS']})==frozenset({'A'})"
+        },
+        {
+          "label": "No borrowing from another chunk",
+          "code": "rows=[{'id':'A','evidence_key':'D/1/1','text':'row'},{'id':'B','evidence_key':'D/1/2','text':'clause'}];assert raises(ValueError,resolve_evidence,rows,{'D/1/1':['clause']})"
+        },
+        {
+          "label": "Duplicate keys are ambiguous even without labels",
+          "code": "rows=[{'id':'A','evidence_key':'D/1/1','text':'x'},{'id':'B','evidence_key':'D/1/1','text':'x'}];assert raises(ValueError,resolve_evidence,rows,{})"
+        },
+        {
+          "label": "Reject missing, empty or invalid labels",
+          "code": "r=[{'id':'A','evidence_key':'D/1/1','text':'x'}]\nfor support in [{'missing':['x']},{'D/1/1':[]},{'D/1/1':['']},{'D/1/1':[True]}]:\n    assert raises(ValueError,resolve_evidence,r,support)"
+        },
+        {
+          "label": "No-gold population and preserved rows",
+          "code": "r=[{'id':'A','evidence_key':'D/1/1','text':'Straße'}];before=repr(r);assert resolve_evidence(r,{})==frozenset() and resolve_evidence(r,{'D/1/1':['STRASSE']})==frozenset({'A'}) and repr(r)==before"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q099",
+      "type": "code",
+      "topic": "Same-source repeat fraction",
+      "difficulty": "applied",
+      "prompt": "Implement source_repeat_fraction(rows). Assume rows is a list/tuple of distinct returned chunks, each with well-formed tenant_id,document_id,document_version fields. Return (len(rows)-number_of_distinct_full_source_tuples)/len(rows), or 0.0 for empty input. Use all three scope components and preserve inputs. Different source versions/tenants are distinct; repeated source identity can be complementary evidence, not necessarily redundant text.",
+      "explanation": "Count full source identities and retain the interpretation limit: two clauses from the same agreement can both be necessary evidence.",
+      "starter": "def source_repeat_fraction(rows) -> float:\n    raise NotImplementedError\n",
+      "reference": "def source_repeat_fraction(rows):\n    sources={(x['tenant_id'],x['document_id'],x['document_version']) for x in rows}\n    return (len(rows)-len(sources))/len(rows) if rows else 0.0\n",
+      "checks": [
+        {
+          "label": "Two hits from one source",
+          "code": "r={'tenant_id':'N','document_id':'D','document_version':'1'};assert source_repeat_fraction([r,dict(r)])==.5"
+        },
+        {
+          "label": "Three hits with two sources",
+          "code": "import math\nr={'tenant_id':'N','document_id':'D','document_version':'1'};assert math.isclose(source_repeat_fraction([r,dict(r),dict(r,document_id='E')]),1/3)"
+        },
+        {
+          "label": "Do not merge versions",
+          "code": "r={'tenant_id':'N','document_id':'D','document_version':'1'};assert source_repeat_fraction([r,dict(r,document_version='2')])==0.0"
+        },
+        {
+          "label": "Do not merge tenants",
+          "code": "r={'tenant_id':'N','document_id':'D','document_version':'1'};assert source_repeat_fraction([r,dict(r,tenant_id='S')])==0.0"
+        },
+        {
+          "label": "Empty and unchanged input",
+          "code": "assert source_repeat_fraction([])==0.0\nr=[{'tenant_id':'N','document_id':'D','document_version':'1'}];before=repr(r);assert source_repeat_fraction(r)==0.0 and repr(r)==before"
+        }
+      ]
+    },
+    {
+      "id": "W07-Q100",
+      "type": "code",
+      "topic": "Corpus fingerprint binds actual records",
+      "difficulty": "foundation",
+      "prompt": "Implement corpus_digest(rows). Assume rows is a list of records with exactly chunk_id,tenant_id,document_id,document_version,source_digest,text,metadata; string fields are valid nonblank UTF-8 and metadata is a list/tuple of string pairs. Reject repeated chunk IDs or repeated metadata keys with ValueError, even if values agree. Sort records by chunk_id, copy each with metadata sorted by pair, serialize the list using json.dumps(sort_keys=True,ensure_ascii=False,separators=(',',':')), UTF-8 encode and return SHA-256 hex. Empty list hashes JSON []. Preserve all inputs. Actual text/metadata must affect the digest even if a supplied source_digest is unchanged; this does not authenticate that supplied digest.",
+      "explanation": "A supplied source hash alone cannot detect altered attached text or metadata. Canonical record serialization binds actual inputs, while authenticity still depends on trusted manifests and source controls.",
+      "starter": "def corpus_digest(rows: list[dict]) -> str:\n    raise NotImplementedError\n",
+      "reference": "import json,hashlib\ndef corpus_digest(rows):\n    if len({r['chunk_id'] for r in rows})!=len(rows):\n        raise ValueError(\"duplicate chunk IDs\")\n    records=[]\n    for row in sorted(rows,key=lambda r:r['chunk_id']):\n        metadata=row['metadata']\n        if len({k for k,v in metadata})!=len(metadata):\n            raise ValueError(\"duplicate metadata keys\")\n        records.append({**row,'metadata':sorted(metadata)})\n    payload=json.dumps(records,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode('utf-8')\n    return hashlib.sha256(payload).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Explicit canonical bytes and empty corpus",
+          "code": "import hashlib\nr={'chunk_id':'A','tenant_id':'T','document_id':'D','document_version':'1','source_digest':'same','text':'wire','metadata':[('supplier','Atlas')]};raw='[{\"chunk_id\":\"A\",\"document_id\":\"D\",\"document_version\":\"1\",\"metadata\":[[\"supplier\",\"Atlas\"]],\"source_digest\":\"same\",\"tenant_id\":\"T\",\"text\":\"wire\"}]';assert corpus_digest([r])==hashlib.sha256(raw.encode('utf-8')).hexdigest() and corpus_digest([])==hashlib.sha256(b'[]').hexdigest()"
+        },
+        {
+          "label": "Record/metadata order is canonical",
+          "code": "a={'chunk_id':'A','tenant_id':'T','document_id':'D','document_version':'1','source_digest':'same','text':'wire','metadata':[('supplier','Atlas')]};b=dict(a,chunk_id='B',metadata=[('supplier','Beacon'),('document_type','catalogue')]);c=dict(b,metadata=list(reversed(b['metadata'])));assert corpus_digest([b,a])==corpus_digest([a,c])"
+        },
+        {
+          "label": "Bind text and metadata despite unchanged supplied hash",
+          "code": "r={'chunk_id':'A','tenant_id':'T','document_id':'D','document_version':'1','source_digest':'same','text':'wire','metadata':[('supplier','Atlas')]};a=corpus_digest([r]);assert corpus_digest([dict(r,text='changed')])!=a and corpus_digest([dict(r,metadata=[('supplier','Other')])])!=a"
+        },
+        {
+          "label": "Bind full source identity and reject duplicates",
+          "code": "r={'chunk_id':'A','tenant_id':'T','document_id':'D','document_version':'1','source_digest':'same','text':'wire','metadata':[('supplier','Atlas')]};a=corpus_digest([r]);assert corpus_digest([dict(r,tenant_id='S')])!=a and corpus_digest([dict(r,document_version='2')])!=a\nassert raises(ValueError,corpus_digest,[r,dict(r)])\nassert raises(ValueError,corpus_digest,[dict(r,metadata=[('supplier','A'),('supplier','A')])])"
+        },
+        {
+          "label": "UTF-8 and input preservation",
+          "code": "r={'chunk_id':'A','tenant_id':'T','document_id':'D','document_version':'1','source_digest':'same','text':'wire','metadata':[('supplier','Atlas')]};r['text']='é猫';before=repr(r);assert len(corpus_digest([r]))==64 and repr(r)==before"
+        }
+      ]
+    }
+  ]
+}

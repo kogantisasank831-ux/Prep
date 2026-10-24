@@ -1,0 +1,50 @@
+---
+layout: week
+permalink: /assessments/week-07/
+title: "Week 7 assessment: Sparse and hybrid retrieval"
+description: "A 100-question bank with balanced random papers, Python coding checks, scoring and printable questions."
+summary: "Test exact codes, BM25, authorized corpus scope, candidate selection and reciprocal rank fusion. Each paper draws 10 questions from a bank of 100."
+kicker_primary: Week 7 assessment
+kicker_secondary: 10 questions · 100 marks
+current_label: Assessment
+alternate_label: Back to lesson
+alternate_url: /weeks/week-07/
+---
+<link rel="stylesheet" href="{{ '/assessment.css' | relative_url }}">
+<section class="assessment-app" id="assessment-app" data-bank="{{ '/assessments/week-07.json' | relative_url }}" aria-label="Week 7 assessment">
+  <h2 id="paper-guide">Your paper</h2>
+  <p>Each paper contains two single-choice, two multiple-correct, two matching, two short syntax and two Python coding questions. All ten questions are worth 10 marks each.</p>
+  <p>Coding tasks use Python’s standard library for tokenization, BM25 math, metadata filters, authorized statistics, score normalization and rank fusion with provenance. They use synthetic text and records; no model weights, API key, server or GPU is needed. The complete retrieval lab and real-model evaluation remain separate lesson exercises.</p>
+  <details class="assessment-guide">
+    <summary>Scoring, coding and saved progress</summary>
+    <ul>
+      <li>Single-choice and short answers: 10 or 0. Multiple-correct: select the complete correct set for 10; no partial credit or negative marks.</li>
+      <li>Matching: 2.5 per correct pair; use each option once. Coding: 2 per passed check, with five checks per solution.</li>
+      <li>Python runs on your device in a separate browser worker using <a href="https://pyodide.org/en/0.29.3/" target="_blank" rel="noopener noreferrer">Pyodide</a>. The runtime downloads when you run a solution. A run has a 5-second execution limit after loading; Stop ends its worker.</li>
+      <li>Keep solutions to the stated standard-library task. If the runtime cannot load, coding marks remain pending. You can retry or use <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Google Colab</a> (Google sign-in required), then paste your solution back here. Opening the link does not send your answers. External tool results do not sync automatically.</li>
+      <li>Progress and results stay in this browser. Download a result for review. The question bank and answer keys are public: this is a practice assessment, and downloaded scores are not authenticated exam records.</li>
+    </ul>
+  </details>
+  <p id="assessment-status" role="status" aria-live="polite">Loading the question bank…</p>
+  <div class="assessment-toolbar" id="assessment-toolbar" hidden>
+    <div><strong id="paper-id"></strong><span id="paper-progress"></span></div>
+    <div class="assessment-actions">
+      <button type="button" id="new-paper">New random paper</button>
+      <button type="button" id="copy-paper">Copy paper link</button>
+      <button type="button" id="print-paper">Print questions</button>
+    </div>
+  </div>
+  <nav class="assessment-jumps" id="question-jumps" aria-label="Question navigation"></nav>
+  <form id="assessment-form" hidden>
+    <div id="assessment-questions"></div>
+    <div class="assessment-submit">
+      <button type="submit" class="assessment-primary" id="submit-paper">Submit and score paper</button>
+      <button type="button" id="stop-code" hidden>Stop coding run</button>
+      <p>Submission locks your answers and shows the explanations. Unanswered questions receive zero.</p>
+    </div>
+  </form>
+  <section class="assessment-result" id="assessment-result" aria-live="polite" hidden></section>
+  <noscript>This assessment needs JavaScript for paper generation and scoring. The lessons remain readable without it.</noscript>
+</section>
+<div id="assessment-print"></div>
+<script type="module" src="{{ '/assessment.mjs' | relative_url }}"></script>
