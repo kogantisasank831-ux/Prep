@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-08/beginner/
 ---
 
+Test your understanding with the [Week 8 assessment]({{ '/assessments/week-08/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on reranking, protected rewrites, exact source spans, context budgets and citations.
+
 ## The right document can still leave you without an answer
 
 Last week, hybrid retrieval found P-105, the Atlas Metals framework agreement. That sounds like success until someone asks: “What payment condition controls Schedule A for the 1,000 kg copper-wire line?” The first three chunks contain the supplier, the line item and a cross-reference. The clause that actually says **Net 30 after inspection approval** sits farther down the candidate list.

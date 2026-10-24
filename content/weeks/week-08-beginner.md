@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-08/
 ---
 
+Test your understanding with the [Week 8 assessment]({{ '/assessments/week-08/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on reranking, protected rewrites, exact source spans, context budgets and citations.
+
 ## Start with the sentence the answer needs
 
 You have found the right agreement. It mentions Atlas Metals, copper wire and Schedule A. Someone asks what payment condition applies to the 1,000 kg line. You read the first three search results, but none states the actual payment terms. The useful sentence is lower down:

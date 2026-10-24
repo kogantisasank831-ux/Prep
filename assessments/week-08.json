@@ -1,0 +1,3061 @@
+{
+  "schema_version": 1,
+  "week": 8,
+  "version": "1.0.0",
+  "code_language": "python",
+  "title": "Reranking and context construction",
+  "source_lesson": "/weeks/week-08/",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W08-Q001",
+      "type": "single",
+      "topic": "Missing candidates",
+      "difficulty": "foundation",
+      "prompt": "The payment clause is absent from every candidate. What should you investigate first?",
+      "explanation": "A reranker only scores the candidates it receives. Diagnose the earlier boundary before tuning the order of that pool.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Ingestion, chunking, eligibility and first-stage retrieval"
+        },
+        {
+          "id": "o2",
+          "text": "Increase the score of a paragraph already in the pool"
+        },
+        {
+          "id": "o3",
+          "text": "Ask the reranker to recover an unseen paragraph"
+        },
+        {
+          "id": "o4",
+          "text": "Treat a fluent answer as replacement evidence"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q002",
+      "type": "single",
+      "topic": "Candidate ceiling",
+      "difficulty": "applied",
+      "prompt": "Three chunks are required, but only two are in the pool. What is the highest attainable Recall@3 from that pool?",
+      "explanation": "At most the two present relevant chunks can reach the top three. More final slots cannot recover an absent source.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1"
+        },
+        {
+          "id": "o2",
+          "text": "1/3"
+        },
+        {
+          "id": "o3",
+          "text": "3/2"
+        },
+        {
+          "id": "o4",
+          "text": "2/3"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q003",
+      "type": "single",
+      "topic": "Bi-encoder",
+      "difficulty": "applied",
+      "prompt": "Why can a bi-encoder prepare passage vectors before a question arrives?",
+      "explanation": "Separate representations support reuse. Changes to model, preprocessing or source content can invalidate that reuse.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It proves that passage claims are true"
+        },
+        {
+          "id": "o2",
+          "text": "It jointly attends to each future query and passage"
+        },
+        {
+          "id": "o3",
+          "text": "It encodes passages separately from the query under a fixed representation contract"
+        },
+        {
+          "id": "o4",
+          "text": "It has already computed every possible query–passage score"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q004",
+      "type": "single",
+      "topic": "Cross-encoder",
+      "difficulty": "foundation",
+      "prompt": "What does a cross-encoder reranker compute for a question and passage?",
+      "explanation": "Joint input permits token interactions across the pair. Relevance remains distinct from truth, access and answer correctness.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A guaranteed probability that the passage is commercially correct"
+        },
+        {
+          "id": "o2",
+          "text": "A query-dependent score from their joint input"
+        },
+        {
+          "id": "o3",
+          "text": "One permanent passage score for all questions"
+        },
+        {
+          "id": "o4",
+          "text": "An authorization grant"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q005",
+      "type": "single",
+      "topic": "Score meaning",
+      "difficulty": "applied",
+      "prompt": "A reranker returns 0.92 for a passage. What can you conclude without a calibration study?",
+      "explanation": "A scalar may be a logit or a transformed score. Its range does not establish calibrated claim correctness.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It is a relevance output under that model and activation contract"
+        },
+        {
+          "id": "o2",
+          "text": "There is a 92% chance the contract is legally valid"
+        },
+        {
+          "id": "o3",
+          "text": "The final answer is 92% complete"
+        },
+        {
+          "id": "o4",
+          "text": "Every model uses the same safe acceptance threshold"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q006",
+      "type": "single",
+      "topic": "Same-pool experiment",
+      "difficulty": "applied",
+      "prompt": "Which comparison best isolates reranking?",
+      "explanation": "Freeze candidate membership, request scope, source versions, labels and requested k so an ordering effect can be interpreted.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Give only the treatment twenty extra candidates"
+        },
+        {
+          "id": "o2",
+          "text": "Change filters and labels with the model"
+        },
+        {
+          "id": "o3",
+          "text": "Use a different source version for the baseline"
+        },
+        {
+          "id": "o4",
+          "text": "Compare top three before and after reordering the exact same eligible pool"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q007",
+      "type": "single",
+      "topic": "Pair output contract",
+      "difficulty": "foundation",
+      "prompt": "Six query–passage pairs enter the scorer. Which output is valid under the lab contract?",
+      "explanation": "The caller must align one finite scalar to each pair and reject booleans, nonfinite outputs and wrong counts.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Six booleans"
+        },
+        {
+          "id": "o2",
+          "text": "Six values containing positive infinity"
+        },
+        {
+          "id": "o3",
+          "text": "Six finite numeric scalars in input order"
+        },
+        {
+          "id": "o4",
+          "text": "Five scores with the last one copied"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q008",
+      "type": "single",
+      "topic": "Stable ties",
+      "difficulty": "applied",
+      "prompt": "Two candidates have equal reranker scores. How does the lab break the tie?",
+      "explanation": "Explicit secondary keys make ties reproducible and preserve the first-stage ordering when pair scores are equal.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whichever dictionary happened to be rebuilt last"
+        },
+        {
+          "id": "o2",
+          "text": "Earlier retrieval rank, then stable chunk ID"
+        },
+        {
+          "id": "o3",
+          "text": "Random order on each request"
+        },
+        {
+          "id": "o4",
+          "text": "Largest raw source file"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q009",
+      "type": "single",
+      "topic": "Identity drift",
+      "difficulty": "applied",
+      "prompt": "The scorer reports a different artifact identity after scoring. What should happen?",
+      "explanation": "Scores must remain bound to the declared model/preprocessing/runtime contract throughout the request.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Fail the request explicitly"
+        },
+        {
+          "id": "o2",
+          "text": "Keep the scores and pretend the earlier manifest still applies"
+        },
+        {
+          "id": "o3",
+          "text": "Change the source version to match the model"
+        },
+        {
+          "id": "o4",
+          "text": "Call the result an unchanged experiment"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q010",
+      "type": "single",
+      "topic": "Protected rewrite",
+      "difficulty": "foundation",
+      "prompt": "The original is CW-1000 Net 30 after approval. Which proposed rewrite must the lexical guard reject?",
+      "explanation": "The original digit-bearing token 30 is missing in the Net 15 variant. Preserving protected tokens is necessary but does not prove semantic equivalence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "CW-1000 payment terms Net 30 after approval"
+        },
+        {
+          "id": "o2",
+          "text": "CW-1000 Net 30 after approval"
+        },
+        {
+          "id": "o3",
+          "text": "Approval after Net 30 CW-1000"
+        },
+        {
+          "id": "o4",
+          "text": "CW-1000 payment terms Net 15 after approval"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q011",
+      "type": "single",
+      "topic": "Lexical limits",
+      "difficulty": "applied",
+      "prompt": "Why can approval after Net 30 CW-1000 still pass the token guard?",
+      "explanation": "A token subset cannot establish word relationships, scope or meaning. Caller review remains part of this teaching contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It no longer contains the number 30"
+        },
+        {
+          "id": "o2",
+          "text": "The guard delegates access control to the rewrite"
+        },
+        {
+          "id": "o3",
+          "text": "It preserves protected tokens even though their relationship can change"
+        },
+        {
+          "id": "o4",
+          "text": "The guard has proved semantic equivalence"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q012",
+      "type": "single",
+      "topic": "Original query",
+      "difficulty": "applied",
+      "prompt": "After reviewed query variants are fused, which question does the lab use for pair scoring?",
+      "explanation": "Variants help discover candidates; the original request remains the target of the final relevance decision.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A question selected by the private document"
+        },
+        {
+          "id": "o2",
+          "text": "The original question"
+        },
+        {
+          "id": "o3",
+          "text": "Only the last variant"
+        },
+        {
+          "id": "o4",
+          "text": "The concatenation of all supplier metadata"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q013",
+      "type": "single",
+      "topic": "Multi-query votes",
+      "difficulty": "foundation",
+      "prompt": "A chunk is rank 1 in two query lists. With equal weights and RRF constant 60, what is its combined vote?",
+      "explanation": "Each rank-one occurrence contributes 1/(60+1). Rank fusion avoids pretending different raw score scales are comparable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "2/61"
+        },
+        {
+          "id": "o2",
+          "text": "1/60"
+        },
+        {
+          "id": "o3",
+          "text": "2/60"
+        },
+        {
+          "id": "o4",
+          "text": "The sum of its two raw model scores"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q014",
+      "type": "single",
+      "topic": "Variant cap",
+      "difficulty": "applied",
+      "prompt": "Adding a reviewed variant can introduce a useful passage. What else can happen under a fixed final candidate cap?",
+      "explanation": "Candidate membership can change under the fixed cap, and each additional query adds first-stage work. Measure this as a separate experiment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The final pool becomes unlimited"
+        },
+        {
+          "id": "o2",
+          "text": "Access permissions automatically broaden"
+        },
+        {
+          "id": "o3",
+          "text": "Latency and quality are guaranteed to improve"
+        },
+        {
+          "id": "o4",
+          "text": "It can displace an earlier candidate and add retrieval work"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q015",
+      "type": "single",
+      "topic": "Complementary evidence",
+      "difficulty": "applied",
+      "prompt": "Why would one-chunk-per-document deduplication break the Schedule A example?",
+      "explanation": "Source diversity is not an excuse to discard the related clauses needed for a complete answer.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A source can never have multiple clauses"
+        },
+        {
+          "id": "o2",
+          "text": "Reranking removes the need for quantities"
+        },
+        {
+          "id": "o3",
+          "text": "The quantity row, payment clause and linking clause are distinct evidence in one agreement"
+        },
+        {
+          "id": "o4",
+          "text": "All chunks in one document are byte-identical"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q016",
+      "type": "single",
+      "topic": "Exact deduplication",
+      "difficulty": "foundation",
+      "prompt": "Two chunks have equal text but different document versions. What does the default deduplicator do?",
+      "explanation": "The exact duplicate key includes tenant, document, version, digest and text. Equality of wording alone does not resolve authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Silently rewrite both to the newer version"
+        },
+        {
+          "id": "o2",
+          "text": "Keep both; version authority is a separate policy"
+        },
+        {
+          "id": "o3",
+          "text": "Delete both as untrustworthy"
+        },
+        {
+          "id": "o4",
+          "text": "Collapse them using text equality alone"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q017",
+      "type": "single",
+      "topic": "Extractive loss",
+      "difficulty": "applied",
+      "prompt": "A compressor keeps Payment is due. but drops Except disputed invoices require approval. What happened?",
+      "explanation": "Extractive compression can mislead by omission. Citation validity checks surviving text, not missing conditions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An authentic quote survived while a necessary qualifier was lost"
+        },
+        {
+          "id": "o2",
+          "text": "Exact offsets prove the answer is complete"
+        },
+        {
+          "id": "o3",
+          "text": "The compressor necessarily invented new words"
+        },
+        {
+          "id": "o4",
+          "text": "All payment conditions became irrelevant"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q018",
+      "type": "single",
+      "topic": "Atomic rows",
+      "difficulty": "applied",
+      "prompt": "Why does sentence compression keep table-row chunks whole?",
+      "explanation": "A row can encode a relationship that fragments would destroy. Whole-row admission still requires access and budget checks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Because table text consumes no budget"
+        },
+        {
+          "id": "o2",
+          "text": "Because every table row is an answer"
+        },
+        {
+          "id": "o3",
+          "text": "Because punctuation never occurs in table cells"
+        },
+        {
+          "id": "o4",
+          "text": "To preserve relationships among identifiers, quantities, units and prices"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q019",
+      "type": "single",
+      "topic": "Serialized budget",
+      "difficulty": "foundation",
+      "prompt": "What does the 1,400-character lab context budget count?",
+      "explanation": "Budget the actual representation you send. A character cap is inspectable but does not enforce a model token window.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exactly 1,400 model tokens"
+        },
+        {
+          "id": "o2",
+          "text": "Only text after removing source labels"
+        },
+        {
+          "id": "o3",
+          "text": "The entire serialized JSON, including repeated headers, escaping and quotes"
+        },
+        {
+          "id": "o4",
+          "text": "Only passage characters"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q020",
+      "type": "single",
+      "topic": "Admission order",
+      "difficulty": "applied",
+      "prompt": "The next ranked source does not fit, but a later smaller source would. What does the packer do?",
+      "explanation": "A source unit is admitted as a whole, with all selected spans together. Later smaller units may still fit.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Drop citation metadata from the budget"
+        },
+        {
+          "id": "o2",
+          "text": "Skip the oversized unit and try the later one without slicing it"
+        },
+        {
+          "id": "o3",
+          "text": "Stop at the first oversized unit unconditionally"
+        },
+        {
+          "id": "o4",
+          "text": "Cut the source mid-sentence to make it fit"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q021",
+      "type": "single",
+      "topic": "Source units versus spans",
+      "difficulty": "applied",
+      "prompt": "Two sentence spans from one chunk are admitted. How many evidence-unit slots do they consume?",
+      "explanation": "Each span gets its own citation label, but the evidence-count cap counts admitted source chunks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One"
+        },
+        {
+          "id": "o2",
+          "text": "Two"
+        },
+        {
+          "id": "o3",
+          "text": "Zero"
+        },
+        {
+          "id": "o4",
+          "text": "One for every character"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q022",
+      "type": "single",
+      "topic": "Budget outcome",
+      "difficulty": "foundation",
+      "prompt": "Candidates exist, but no source fits the valid two-character context budget. Which status applies?",
+      "explanation": "The empty JSON list fits in two characters. An admission failure is distinct from an empty eligible candidate pool.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "no_evidence"
+        },
+        {
+          "id": "o2",
+          "text": "evidence_available"
+        },
+        {
+          "id": "o3",
+          "text": "model_correct"
+        },
+        {
+          "id": "o4",
+          "text": "context_budget_exhausted"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q023",
+      "type": "single",
+      "topic": "Joint pair length",
+      "difficulty": "applied",
+      "prompt": "A query has 200 tokens, a passage has 450, and pair overhead adds 3. Is this valid under a 512-token joint limit?",
+      "explanation": "The reranker consumes the joint encoded pair, including special tokens. Reject overlength inputs rather than silently truncating evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; special tokens are free"
+        },
+        {
+          "id": "o2",
+          "text": "Only the passage tokens count"
+        },
+        {
+          "id": "o3",
+          "text": "No; 653 exceeds the joint limit"
+        },
+        {
+          "id": "o4",
+          "text": "Yes; both pieces fit separately"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q024",
+      "type": "single",
+      "topic": "Position experiment",
+      "difficulty": "applied",
+      "prompt": "How should you isolate the effect of evidence position?",
+      "explanation": "A controlled positional comparison separates location from selection and length effects. The context-only lab has not measured a generator.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat support presence alone as generated-answer accuracy"
+        },
+        {
+          "id": "o2",
+          "text": "Keep membership, wording and total length fixed while moving the decisive clause"
+        },
+        {
+          "id": "o3",
+          "text": "Change source versions with every position"
+        },
+        {
+          "id": "o4",
+          "text": "Add more evidence only for the end position"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q025",
+      "type": "single",
+      "topic": "Citation validity",
+      "difficulty": "foundation",
+      "prompt": "What does exact citation validation establish in this lab?",
+      "explanation": "Identity, access and offsets establish traceability. Support, authority and adequacy require further evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The quote equals an authorized stored span under the stored source identity"
+        },
+        {
+          "id": "o2",
+          "text": "The quote entails every possible claim"
+        },
+        {
+          "id": "o3",
+          "text": "The full answer is complete"
+        },
+        {
+          "id": "o4",
+          "text": "The source automatically has current business authority"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q026",
+      "type": "single",
+      "topic": "Offset meaning",
+      "difficulty": "applied",
+      "prompt": "The citation start and end refer to which coordinates?",
+      "explanation": "Parsed locations and chunk-relative offsets are separate. A chunk may also contain a repeated heading.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "PDF byte offsets"
+        },
+        {
+          "id": "o2",
+          "text": "OCR image pixel coordinates"
+        },
+        {
+          "id": "o3",
+          "text": "Positions in the question string"
+        },
+        {
+          "id": "o4",
+          "text": "Python character offsets in the stored chunk text"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q027",
+      "type": "single",
+      "topic": "Ingestion conflicts",
+      "difficulty": "applied",
+      "prompt": "Two records share tenant/document/version but have different asserted supplier labels. What should ingestion do?",
+      "explanation": "Idempotency applies to identical records. Conflicting content or labels under one immutable identity must be explicit.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Create a new grant from the supplier label"
+        },
+        {
+          "id": "o2",
+          "text": "Index both under one immutable identity"
+        },
+        {
+          "id": "o3",
+          "text": "Fail the conflicting batch"
+        },
+        {
+          "id": "o4",
+          "text": "Silently keep whichever record arrives last"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q028",
+      "type": "single",
+      "topic": "Review outcome",
+      "difficulty": "foundation",
+      "prompt": "P-106 contains uncertain USD 12.O0. How does the fixture loader handle it?",
+      "explanation": "Uncertain parsed evidence stays outside the accepted index with a retained reason. Ranking is not a substitute for input acceptance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Discard the review outcome entirely"
+        },
+        {
+          "id": "o2",
+          "text": "Retain a needs_review issue and add no searchable chunks"
+        },
+        {
+          "id": "o3",
+          "text": "Correct it to USD 12.00 without review"
+        },
+        {
+          "id": "o4",
+          "text": "Index it because retrieval can fix OCR"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q029",
+      "type": "single",
+      "topic": "Teaching result",
+      "difficulty": "applied",
+      "prompt": "The default reranker improves the visible synthetic practice scores. What is established?",
+      "explanation": "Handwritten visible-fixture rules are useful for tracing boundaries. They do not supply learned-model, latency or generation evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The declared teaching pipeline behaves as measured on those examples"
+        },
+        {
+          "id": "o2",
+          "text": "A learned model generalizes to unseen procurement documents"
+        },
+        {
+          "id": "o3",
+          "text": "Serving latency and memory are production-ready"
+        },
+        {
+          "id": "o4",
+          "text": "Generated answers passed a held-out faithfulness study"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W08-Q030",
+      "type": "single",
+      "topic": "Safe request event",
+      "difficulty": "applied",
+      "prompt": "Which completed-request log is appropriate for the lab?",
+      "explanation": "Allowlisted request metadata supports diagnosis without copying question or document payloads into routine logs.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Raw private document paragraphs and prompts"
+        },
+        {
+          "id": "o2",
+          "text": "Full supplier contracts for debugging every request"
+        },
+        {
+          "id": "o3",
+          "text": "Authentication secrets plus the question"
+        },
+        {
+          "id": "o4",
+          "text": "A bounded request ID, counts, status and manifest fingerprint"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q031",
+      "type": "multiple",
+      "topic": "Frozen comparison",
+      "difficulty": "foundation",
+      "prompt": "Select everything to keep fixed when isolating reranking on a candidate pool.",
+      "explanation": "A paired same-pool comparison holds these inputs fixed and changes the ordering stage. Broader system changes need a different experiment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A larger treatment-only retrieval depth"
+        },
+        {
+          "id": "o2",
+          "text": "A different gold set for each model"
+        },
+        {
+          "id": "o3",
+          "text": "Candidate membership and source versions"
+        },
+        {
+          "id": "o4",
+          "text": "Principal, filters, relevance labels and requested k"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q032",
+      "type": "multiple",
+      "topic": "Scorer rejection",
+      "difficulty": "applied",
+      "prompt": "Which scorer outputs must be rejected?",
+      "explanation": "Finite negative values can be legitimate model outputs. Shape, exact numeric types, finiteness and identity are separate checks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A finite negative scalar under a contract that permits it"
+        },
+        {
+          "id": "o2",
+          "text": "Wrong number of scores"
+        },
+        {
+          "id": "o3",
+          "text": "NaN, infinity or boolean values"
+        },
+        {
+          "id": "o4",
+          "text": "An observable model identity change"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q033",
+      "type": "multiple",
+      "topic": "Encoder trade-offs",
+      "difficulty": "applied",
+      "prompt": "Which statements about the two encoder styles are correct?",
+      "explanation": "The architecture changes reuse and pair interaction. Effectiveness and latency still depend on the actual model and workload.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Bi-encoders compute separate representations"
+        },
+        {
+          "id": "o2",
+          "text": "Cross-encoders perform query-dependent work for candidate pairs"
+        },
+        {
+          "id": "o3",
+          "text": "Every cross-encoder is always faster"
+        },
+        {
+          "id": "o4",
+          "text": "Either architecture proves source authority"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q034",
+      "type": "multiple",
+      "topic": "Rewrite guard",
+      "difficulty": "foundation",
+      "prompt": "Which original tokens does this lab protect lexically?",
+      "explanation": "The lexical guard is narrow and inspectable. It does not resolve aliases or prove semantic equivalence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Allowlisted condition words such as after, unless and except"
+        },
+        {
+          "id": "o2",
+          "text": "Every supplier synonym automatically"
+        },
+        {
+          "id": "o3",
+          "text": "Every relationship implied by word order"
+        },
+        {
+          "id": "o4",
+          "text": "Tokens containing digits, such as cw-1000 and 30"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q035",
+      "type": "multiple",
+      "topic": "Reviewed plan",
+      "difficulty": "applied",
+      "prompt": "Which statements describe the lab query plan?",
+      "explanation": "The raw rewrite-count cap applies before exact deduplication. Similar meanings are not treated as identical strings.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exact repeated query strings are removed"
+        },
+        {
+          "id": "o2",
+          "text": "Three identical raw rewrites are allowed because deduplication happens first"
+        },
+        {
+          "id": "o3",
+          "text": "The original query remains first"
+        },
+        {
+          "id": "o4",
+          "text": "At most two raw reviewed rewrites are accepted"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q036",
+      "type": "multiple",
+      "topic": "Variant scope",
+      "difficulty": "applied",
+      "prompt": "When executing query variants, which boundaries remain fixed?",
+      "explanation": "Variants alter search wording, not access policy. Authorization and structured filters remain independent fields.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Grants inferred from a supplier keyword"
+        },
+        {
+          "id": "o2",
+          "text": "Authorized corpus and metadata predicates"
+        },
+        {
+          "id": "o3",
+          "text": "The original question used by the reranker"
+        },
+        {
+          "id": "o4",
+          "text": "A tenant chosen by the rewrite text"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q037",
+      "type": "multiple",
+      "topic": "Multi-query cost",
+      "difficulty": "foundation",
+      "prompt": "What should you record for a multi-query experiment?",
+      "explanation": "More retrieval paths can help or hurt. Reproduction and measured work are needed to interpret a quality change.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Ordered query identities and retrieval configuration"
+        },
+        {
+          "id": "o2",
+          "text": "Candidate additions/displacements and extra retrieval work"
+        },
+        {
+          "id": "o3",
+          "text": "Only the best final answer while hiding extra calls"
+        },
+        {
+          "id": "o4",
+          "text": "A latency improvement inferred from RRF arithmetic"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q038",
+      "type": "multiple",
+      "topic": "Scoped duplicate key",
+      "difficulty": "applied",
+      "prompt": "Which differences mean equal text is retained by the default exact deduplicator?",
+      "explanation": "Chunk IDs and ranks do not enter the exact duplicate key; source scope and text do.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A different document version or source digest"
+        },
+        {
+          "id": "o2",
+          "text": "Only a different chunk ID under the same source/version/digest"
+        },
+        {
+          "id": "o3",
+          "text": "Only a later rank under the same exact source and text"
+        },
+        {
+          "id": "o4",
+          "text": "A different tenant or document"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q039",
+      "type": "multiple",
+      "topic": "Compression hazards",
+      "difficulty": "applied",
+      "prompt": "What can extractive sentence selection lose?",
+      "explanation": "Exact selection preserves surviving characters and offsets, but it can drop relationships and qualifiers.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All exact source offsets by definition"
+        },
+        {
+          "id": "o2",
+          "text": "The need for an admission budget"
+        },
+        {
+          "id": "o3",
+          "text": "An exception in a neighboring sentence"
+        },
+        {
+          "id": "o4",
+          "text": "A heading or cross-reference needed to interpret the quote"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q040",
+      "type": "multiple",
+      "topic": "Abstractive compression",
+      "difficulty": "foundation",
+      "prompt": "Before adopting a generated summary, which checks are needed?",
+      "explanation": "Generated compression adds a text-creation boundary. Traceability and task-specific support evaluation still matter.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assume shorter text is automatically more faithful"
+        },
+        {
+          "id": "o2",
+          "text": "Preserve source alignment and evaluate numbers, conditions and omissions"
+        },
+        {
+          "id": "o3",
+          "text": "Compare with an extractive baseline and validate structured output"
+        },
+        {
+          "id": "o4",
+          "text": "Display generated paraphrases as exact source quotes"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q041",
+      "type": "multiple",
+      "topic": "Context overhead",
+      "difficulty": "applied",
+      "prompt": "Which belong in a real generator token-budget calculation?",
+      "explanation": "Tokenize the final input under the actual model/template contract and reserve the required output and margin.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Instructions, question and retained conversation"
+        },
+        {
+          "id": "o2",
+          "text": "Source wrappers, tool/schema overhead and reserved output"
+        },
+        {
+          "id": "o3",
+          "text": "The exact chat template and serving constraints"
+        },
+        {
+          "id": "o4",
+          "text": "Only the source paragraphs divided by four"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q042",
+      "type": "multiple",
+      "topic": "Whole-unit packing",
+      "difficulty": "applied",
+      "prompt": "Which packer behaviors are correct?",
+      "explanation": "The budget is a maximum, not a requirement to fill every byte. Whole-unit admission preserves the selected evidence structure.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Count full proposed serialized context"
+        },
+        {
+          "id": "o2",
+          "text": "Admit all selected spans of a chunk together"
+        },
+        {
+          "id": "o3",
+          "text": "Truncate arbitrary text to fill every last character"
+        },
+        {
+          "id": "o4",
+          "text": "Check access again before admission"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q043",
+      "type": "multiple",
+      "topic": "Citation checks",
+      "difficulty": "foundation",
+      "prompt": "Which must citation validation inspect?",
+      "explanation": "A matching source name or high score cannot replace identity, access and span checks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only whether a document name looks familiar"
+        },
+        {
+          "id": "o2",
+          "text": "Whether the relevance score exceeds a universal truth threshold"
+        },
+        {
+          "id": "o3",
+          "text": "Unique valid label and authorized stored chunk equality"
+        },
+        {
+          "id": "o4",
+          "text": "Exact integer bounds and quote equality to the stored slice"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q044",
+      "type": "multiple",
+      "topic": "Citation limitations",
+      "difficulty": "applied",
+      "prompt": "Which can remain false even after exact-span citations pass?",
+      "explanation": "The validator establishes the last property and current access. It does not establish completeness, entailment or active authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The displayed quote equals the checked stored slice"
+        },
+        {
+          "id": "o2",
+          "text": "The answer is complete"
+        },
+        {
+          "id": "o3",
+          "text": "The evidence entails a generated claim"
+        },
+        {
+          "id": "o4",
+          "text": "The cited version is the governing business authority"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q045",
+      "type": "multiple",
+      "topic": "Controlled ingestion",
+      "difficulty": "applied",
+      "prompt": "Which statements describe the existing loader?",
+      "explanation": "Input acceptance, source identity and authorization are separate boundaries. Asserted labels cannot create grants.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Identical repeated source-version records are idempotent"
+        },
+        {
+          "id": "o2",
+          "text": "Malformed or conflicting records fail the batch"
+        },
+        {
+          "id": "o3",
+          "text": "Review/rejected parser outcomes are retained without indexing"
+        },
+        {
+          "id": "o4",
+          "text": "Supplier metadata grants access to its documents"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q046",
+      "type": "multiple",
+      "topic": "Local model contract",
+      "difficulty": "foundation",
+      "prompt": "What must be reviewed for an optional real reranker?",
+      "explanation": "Instruction-based and multiclass models may need another adapter. A local path alone is not a compatibility or trust review.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A compatible joint token limit and scalar-output interface"
+        },
+        {
+          "id": "o2",
+          "text": "Only whether the directory name contains a model brand"
+        },
+        {
+          "id": "o3",
+          "text": "The assumption that all rerankers take identical raw pairs"
+        },
+        {
+          "id": "o4",
+          "text": "Artifact revision, license, input format and activation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q047",
+      "type": "multiple",
+      "topic": "No-gold cases",
+      "difficulty": "applied",
+      "prompt": "How should the practice comparison handle queries with no gold evidence?",
+      "explanation": "Missing gold does not establish relevance or irrelevance. The probe population needs its own interpretation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assign perfect recall because no labels were supplied"
+        },
+        {
+          "id": "o2",
+          "text": "Treat every nonempty result as a proven false positive"
+        },
+        {
+          "id": "o3",
+          "text": "Keep recall and rank/nDCG metrics undefined"
+        },
+        {
+          "id": "o4",
+          "text": "Report those probes separately from labelled means"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q048",
+      "type": "multiple",
+      "topic": "Multiple required clauses",
+      "difficulty": "applied",
+      "prompt": "Which diagnostics help when MRR improves but the final evidence is incomplete?",
+      "explanation": "The first relevant result can move up while another required clause is absent or compressed away.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Document diversity alone as proof of sufficiency"
+        },
+        {
+          "id": "o2",
+          "text": "Per-source required-atom survival"
+        },
+        {
+          "id": "o3",
+          "text": "Candidate recall and final evidence membership"
+        },
+        {
+          "id": "o4",
+          "text": "MRR alone as proof of completeness"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W08-Q049",
+      "type": "multiple",
+      "topic": "Manifests",
+      "difficulty": "foundation",
+      "prompt": "What belongs in the request fingerprint?",
+      "explanation": "A trusted manifest binds the inputs and policies needed for reproduction. An ordinary hash is not a signature or truth guarantee.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Eligible corpus/partition and ordered query digests"
+        },
+        {
+          "id": "o2",
+          "text": "Retrieval/model identities, budgets and versioned selection/answer policies"
+        },
+        {
+          "id": "o3",
+          "text": "Only the supplier name"
+        },
+        {
+          "id": "o4",
+          "text": "A statement that the hash authenticates the source"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W08-Q050",
+      "type": "multiple",
+      "topic": "Next evaluation",
+      "difficulty": "applied",
+      "prompt": "What evidence is needed before claiming a real-model improvement?",
+      "explanation": "Integration success and constructed examples do not establish effectiveness or serving characteristics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Measured inference/end-to-end cost and latency on declared hardware"
+        },
+        {
+          "id": "o2",
+          "text": "The default handwritten scorer beating its visible fixture"
+        },
+        {
+          "id": "o3",
+          "text": "A successful model load alone"
+        },
+        {
+          "id": "o4",
+          "text": "Held-out representative questions with fixed candidate pools and category outcomes"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W08-Q051",
+      "type": "match",
+      "topic": "Pipeline jobs",
+      "difficulty": "applied",
+      "prompt": "Match each stage to its responsibility.",
+      "explanation": "These are different boundaries; succeeding at one does not establish the others.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Retrieval"
+        },
+        {
+          "id": "l2",
+          "text": "Reranking"
+        },
+        {
+          "id": "l3",
+          "text": "Context packing"
+        },
+        {
+          "id": "l4",
+          "text": "Citation validation"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Discover candidates inside the eligible corpus"
+        },
+        {
+          "id": "r2",
+          "text": "Order the received candidates against the question"
+        },
+        {
+          "id": "r3",
+          "text": "Admit selected source units under the serialized budget"
+        },
+        {
+          "id": "r4",
+          "text": "Check stored identity, access and exact spans"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q052",
+      "type": "match",
+      "topic": "Independent limits",
+      "difficulty": "foundation",
+      "prompt": "Match each limit to the resource it controls.",
+      "explanation": "Separate limits let you diagnose discovery, scoring and admission failures without conflating them.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Depth 8"
+        },
+        {
+          "id": "l2",
+          "text": "Candidate cap 6"
+        },
+        {
+          "id": "l3",
+          "text": "Evidence cap 3"
+        },
+        {
+          "id": "l4",
+          "text": "Context cap 1,400"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Candidates available from each first-stage path"
+        },
+        {
+          "id": "r2",
+          "text": "The bounded fused pool sent to pair scoring"
+        },
+        {
+          "id": "r3",
+          "text": "Admitted source chunks"
+        },
+        {
+          "id": "r4",
+          "text": "Characters in the full serialized JSON"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q053",
+      "type": "match",
+      "topic": "Encoder behavior",
+      "difficulty": "applied",
+      "prompt": "Match each property to the correct interpretation.",
+      "explanation": "Architecture, score meaning and pool coverage each answer a different question.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Separate passage embedding"
+        },
+        {
+          "id": "l2",
+          "text": "Joint query–passage input"
+        },
+        {
+          "id": "l3",
+          "text": "Relevance scalar"
+        },
+        {
+          "id": "l4",
+          "text": "Candidate recall ceiling"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Reusable under a fixed representation contract"
+        },
+        {
+          "id": "r2",
+          "text": "Query-dependent cross-encoder work"
+        },
+        {
+          "id": "r3",
+          "text": "Model/activation-dependent ranking output"
+        },
+        {
+          "id": "r4",
+          "text": "Limit imposed by evidence absent from the pool"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q054",
+      "type": "match",
+      "topic": "Query policies",
+      "difficulty": "applied",
+      "prompt": "Match each query policy to its purpose.",
+      "explanation": "Lexical protection is useful but cannot settle relationships, aliases or scope.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Original retained"
+        },
+        {
+          "id": "l2",
+          "text": "Digit-token guard"
+        },
+        {
+          "id": "l3",
+          "text": "Condition-word guard"
+        },
+        {
+          "id": "l4",
+          "text": "Semantic review"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Preserve an independent exact-wording retrieval path"
+        },
+        {
+          "id": "r2",
+          "text": "Catch loss of explicit numbers and identifiers"
+        },
+        {
+          "id": "r3",
+          "text": "Catch loss of a narrow allowlist of qualifiers"
+        },
+        {
+          "id": "r4",
+          "text": "Inspect meaning beyond a token subset"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q055",
+      "type": "match",
+      "topic": "Second fusion",
+      "difficulty": "foundation",
+      "prompt": "With RRF constant 60 and equal query weights, match each appearance to its vote.",
+      "explanation": "Query-list fusion uses rank support, not addition of raw model scores.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Rank 1 once"
+        },
+        {
+          "id": "l2",
+          "text": "Rank 2 once"
+        },
+        {
+          "id": "l3",
+          "text": "Rank 1 in two lists"
+        },
+        {
+          "id": "l4",
+          "text": "Absent from a list"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "1/61"
+        },
+        {
+          "id": "r2",
+          "text": "1/62"
+        },
+        {
+          "id": "r3",
+          "text": "2/61"
+        },
+        {
+          "id": "r4",
+          "text": "No vote from that list"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q056",
+      "type": "match",
+      "topic": "Duplicate decisions",
+      "difficulty": "applied",
+      "prompt": "Match each pair to the default deduplication decision.",
+      "explanation": "A conservative exact key avoids silently collapsing facts, versions and cross-section support.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Same scope/digest/text, new chunk ID"
+        },
+        {
+          "id": "l2",
+          "text": "Same agreement, different clause"
+        },
+        {
+          "id": "l3",
+          "text": "Equal text, different version"
+        },
+        {
+          "id": "l4",
+          "text": "Similar text, changed quantity"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Drop the later exact copy"
+        },
+        {
+          "id": "r2",
+          "text": "Keep complementary evidence"
+        },
+        {
+          "id": "r3",
+          "text": "Keep distinct version evidence"
+        },
+        {
+          "id": "r4",
+          "text": "Keep the material textual difference"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q057",
+      "type": "match",
+      "topic": "Compression controls",
+      "difficulty": "applied",
+      "prompt": "Match each mechanism to what it actually protects.",
+      "explanation": "None of these alone establishes general semantic completeness or generated-answer faithfulness.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Exact source offsets"
+        },
+        {
+          "id": "l2",
+          "text": "Whole table row"
+        },
+        {
+          "id": "l3",
+          "text": "Required-atom check"
+        },
+        {
+          "id": "l4",
+          "text": "Whole-chunk baseline"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Alignment of surviving characters"
+        },
+        {
+          "id": "r2",
+          "text": "The selected row relationship"
+        },
+        {
+          "id": "r3",
+          "text": "Declared source-bound fixture details"
+        },
+        {
+          "id": "r4",
+          "text": "A comparison before sentence removal"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q058",
+      "type": "match",
+      "topic": "Admission outcomes",
+      "difficulty": "foundation",
+      "prompt": "Match each situation to its interpretation.",
+      "explanation": "Status reports availability; a separate support check is needed to discuss completeness.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "No eligible candidates"
+        },
+        {
+          "id": "l2",
+          "text": "Candidates but no admitted spans"
+        },
+        {
+          "id": "l3",
+          "text": "At least one admitted span"
+        },
+        {
+          "id": "l4",
+          "text": "Some required atom missing"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "no_evidence"
+        },
+        {
+          "id": "r2",
+          "text": "context_budget_exhausted"
+        },
+        {
+          "id": "r3",
+          "text": "evidence_available"
+        },
+        {
+          "id": "r4",
+          "text": "Incomplete declared support despite possible evidence_available"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q059",
+      "type": "match",
+      "topic": "Budget categories",
+      "difficulty": "applied",
+      "prompt": "Match each count to the representation it measures.",
+      "explanation": "Do not substitute characters for tokens or sentence counts for admitted source chunks.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Serialized character count"
+        },
+        {
+          "id": "l2",
+          "text": "Joint pair token count"
+        },
+        {
+          "id": "l3",
+          "text": "Generator input/output plan"
+        },
+        {
+          "id": "l4",
+          "text": "Source-unit count"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "The lab JSON string length"
+        },
+        {
+          "id": "r2",
+          "text": "Query plus passage plus special tokens"
+        },
+        {
+          "id": "r3",
+          "text": "Instructions, context, history, output and margin"
+        },
+        {
+          "id": "r4",
+          "text": "Admitted chunks rather than sentence labels"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q060",
+      "type": "match",
+      "topic": "Citation layers",
+      "difficulty": "applied",
+      "prompt": "Match each question to its evaluation layer.",
+      "explanation": "Source resolution is necessary evidence, but it does not collapse these other judgments into one.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Does the quote equal a stored slice?"
+        },
+        {
+          "id": "l2",
+          "text": "Does the evidence justify this claim?"
+        },
+        {
+          "id": "l3",
+          "text": "Does the response adequately answer the task?"
+        },
+        {
+          "id": "l4",
+          "text": "Which version governs the decision?"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Exact-span validity"
+        },
+        {
+          "id": "r2",
+          "text": "Claim support"
+        },
+        {
+          "id": "r3",
+          "text": "Answer correctness"
+        },
+        {
+          "id": "r4",
+          "text": "Source authority policy"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q061",
+      "type": "match",
+      "topic": "Coordinate systems",
+      "difficulty": "foundation",
+      "prompt": "Match each field to its intended meaning.",
+      "explanation": "Parsed labels are not PDF bytes or OCR coordinates, and answer-local labels are not global source IDs.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Page/block/row label"
+        },
+        {
+          "id": "l2",
+          "text": "Chunk start/end"
+        },
+        {
+          "id": "l3",
+          "text": "Source digest"
+        },
+        {
+          "id": "l4",
+          "text": "Citation S1"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Location in the controlled parsed layout"
+        },
+        {
+          "id": "r2",
+          "text": "Character coordinates in stored chunk text"
+        },
+        {
+          "id": "r3",
+          "text": "Identity of the declared source content"
+        },
+        {
+          "id": "r4",
+          "text": "A label local to this answer context"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q062",
+      "type": "match",
+      "topic": "Ingestion cases",
+      "difficulty": "applied",
+      "prompt": "Match each case to the loader response.",
+      "explanation": "Reject ambiguity at the input boundary instead of hiding it behind dictionary overwrites or later ranking.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Identical source-version repeat"
+        },
+        {
+          "id": "l2",
+          "text": "Changed label under same identity"
+        },
+        {
+          "id": "l3",
+          "text": "Uncertain OCR parse"
+        },
+        {
+          "id": "l4",
+          "text": "Repeated JSON object key"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Idempotent duplicate"
+        },
+        {
+          "id": "r2",
+          "text": "Conflicting batch failure"
+        },
+        {
+          "id": "r3",
+          "text": "Retained needs_review issue without chunks"
+        },
+        {
+          "id": "r4",
+          "text": "Malformed-input rejection"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q063",
+      "type": "match",
+      "topic": "Evidence metrics",
+      "difficulty": "applied",
+      "prompt": "Match each diagnostic to its question.",
+      "explanation": "A strong early hit, complete retrieval and complete selected support are different outcomes.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Candidate Recall@6"
+        },
+        {
+          "id": "l2",
+          "text": "MRR@3"
+        },
+        {
+          "id": "l3",
+          "text": "Recall@3"
+        },
+        {
+          "id": "l4",
+          "text": "Context support complete"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Did labelled evidence reach the pool?"
+        },
+        {
+          "id": "r2",
+          "text": "How early was the first relevant result?"
+        },
+        {
+          "id": "r3",
+          "text": "How much labelled evidence reached the top three?"
+        },
+        {
+          "id": "r4",
+          "text": "Did all declared source-bound atoms survive?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q064",
+      "type": "match",
+      "topic": "Safe operations",
+      "difficulty": "foundation",
+      "prompt": "Match each practice to its operational purpose.",
+      "explanation": "These are bounded operational controls, not an assertion of production authentication, retention or overall readiness.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Module logger"
+        },
+        {
+          "id": "l2",
+          "text": "CLI formatter allowlist"
+        },
+        {
+          "id": "l3",
+          "text": "Request fingerprint"
+        },
+        {
+          "id": "l4",
+          "text": "Joint token guard"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Emit events without configuring global handlers"
+        },
+        {
+          "id": "r2",
+          "text": "Keep raw question/source payloads out of routine events"
+        },
+        {
+          "id": "r3",
+          "text": "Bind declared inputs and policies for reproduction"
+        },
+        {
+          "id": "r4",
+          "text": "Reject oversized pairs before model inference"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q065",
+      "type": "match",
+      "topic": "Claims and evidence",
+      "difficulty": "applied",
+      "prompt": "Match each claim to the evidence it needs.",
+      "explanation": "Do not infer unmeasured learned quality, generation behavior or serving performance from a context-only teaching run.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Default teaching behavior"
+        },
+        {
+          "id": "l2",
+          "text": "Learned reranker quality"
+        },
+        {
+          "id": "l3",
+          "text": "Position robustness"
+        },
+        {
+          "id": "l4",
+          "text": "Serving efficiency"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Executed deterministic fixture checks"
+        },
+        {
+          "id": "r2",
+          "text": "Actual model and held-out paired judgments"
+        },
+        {
+          "id": "r3",
+          "text": "Controlled generator position experiments"
+        },
+        {
+          "id": "r4",
+          "text": "Timed declared workloads on target hardware"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W08-Q066",
+      "type": "short",
+      "topic": "Strict integer syntax",
+      "difficulty": "applied",
+      "prompt": "Fill the missing built-in name to reject True as an integer: ___(value) is int. Enter only the name.",
+      "explanation": "type(value) is int rejects bool, while isinstance(True, int) is true.",
+      "accepted": [
+        "type"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q067",
+      "type": "short",
+      "topic": "Finite scores",
+      "difficulty": "foundation",
+      "prompt": "Complete the standard-library import: from math import ___. Enter the function that tests whether a number is finite.",
+      "explanation": "math.isfinite rejects NaN and infinities. Check the exact numeric type separately to exclude booleans.",
+      "accepted": [
+        "isfinite"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q068",
+      "type": "short",
+      "topic": "Aligned outputs",
+      "difficulty": "applied",
+      "prompt": "Complete the Python call that rejects differing iterable lengths: zip(candidates, scores, ___=True). Enter only the keyword.",
+      "explanation": "zip(..., strict=True) fails a length mismatch instead of silently truncating aligned pairs.",
+      "accepted": [
+        "strict"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q069",
+      "type": "short",
+      "topic": "Tie keys",
+      "difficulty": "applied",
+      "prompt": "A descending score and ascending retrieval-rank sort uses key=lambda x: (-x[\"score\"], x[\"___\"], x[\"id\"]). Enter the retrieval-rank field name used in this exercise.",
+      "explanation": "The complete key is descending score, then retrieval_rank, then stable ID. Equal relevance scores therefore remain reproducible.",
+      "accepted": [
+        "retrieval_rank"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q070",
+      "type": "short",
+      "topic": "Set guard",
+      "difficulty": "foundation",
+      "prompt": "Complete the subset expression: protected.___(rewrite_terms). Enter the set method name.",
+      "explanation": "protected.issubset(rewrite_terms) checks that no protected token was lost. It does not compare meaning.",
+      "accepted": [
+        "issubset"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q071",
+      "type": "short",
+      "topic": "Stored slice",
+      "difficulty": "applied",
+      "prompt": "Given start=3 and end=9, enter the exact Python expression selecting that half-open span from text, with no spaces.",
+      "explanation": "Python slicing includes position 3 and excludes position 9. Validate integer bounds before accepting a citation.",
+      "accepted": [
+        "text[3:9]"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q072",
+      "type": "short",
+      "topic": "JSON text policy",
+      "difficulty": "applied",
+      "prompt": "Complete the json.dumps keyword that retains non-ASCII characters rather than escaping all of them: ___=False.",
+      "explanation": "ensure_ascii=False affects the actual serialized characters. JSON syntax still escapes quotes, backslashes and control characters.",
+      "accepted": [
+        "ensure_ascii"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q073",
+      "type": "short",
+      "topic": "Compact JSON",
+      "difficulty": "foundation",
+      "prompt": "For json.dumps(..., separators=(\",\", \":\")), enter the exact two-character JSON representation of an empty list.",
+      "explanation": "The empty list occupies two serialized characters. A valid budget of two cannot fit a nonempty source envelope.",
+      "accepted": [
+        "[]"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q074",
+      "type": "short",
+      "topic": "Source-span status",
+      "difficulty": "applied",
+      "prompt": "Candidates exist but no selected source fits. Enter the exact lab status token.",
+      "explanation": "This separates context admission failure from an empty eligible candidate pool.",
+      "accepted": [
+        "context_budget_exhausted"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q075",
+      "type": "short",
+      "topic": "Answer mode",
+      "difficulty": "applied",
+      "prompt": "Enter the exact answer_mode token used by the local assistant for labelled source excerpts.",
+      "explanation": "cited_extractive describes selected quotes with validated labels. The default milestone does not generate a free-form synthesis.",
+      "accepted": [
+        "cited_extractive"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q076",
+      "type": "short",
+      "topic": "Logging import",
+      "difficulty": "foundation",
+      "prompt": "Complete the library logger declaration: logger = logging.getLogger(___). Enter the Python module-name variable.",
+      "explanation": "A module logger lets library code emit events while the application decides how to configure handlers.",
+      "accepted": [
+        "__name__"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q077",
+      "type": "short",
+      "topic": "Duplicate JSON keys",
+      "difficulty": "applied",
+      "prompt": "Which json.loads keyword accepts a hook that sees every object as its original ordered key/value pairs?",
+      "explanation": "object_pairs_hook can detect repeated keys before a normal dictionary overwrites them, including in nested objects.",
+      "accepted": [
+        "object_pairs_hook"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q078",
+      "type": "short",
+      "topic": "Case-insensitive support",
+      "difficulty": "applied",
+      "prompt": "Enter the string method used for Unicode-aware caseless support comparisons: quote.___().",
+      "explanation": "casefold supports caseless comparison. Matching substrings in declared sources is still a limited support check, not entailment.",
+      "accepted": [
+        "casefold"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q079",
+      "type": "short",
+      "topic": "Digest output",
+      "difficulty": "foundation",
+      "prompt": "Complete hashlib.sha256(payload).___() to obtain a lowercase hexadecimal digest string.",
+      "explanation": "hexdigest returns a printable fingerprint of exact encoded bytes. It does not authenticate who supplied those bytes.",
+      "accepted": [
+        "hexdigest"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q080",
+      "type": "short",
+      "topic": "Joint length guard",
+      "difficulty": "applied",
+      "prompt": "A joint pair has 200 query tokens, 450 passage tokens and 3 special tokens. Enter only the total token count.",
+      "explanation": "The joint count is 200+450+3. Separate query and passage lengths do not determine whether their pair fits a 512-token contract.",
+      "accepted": [
+        "653"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W08-Q081",
+      "type": "code",
+      "topic": "Finite pair scores",
+      "difficulty": "applied",
+      "prompt": "Implement checked_scores(values, count). values is a list/tuple; count must be an exact int from 0 to 32 (True is invalid). Require exactly count built-in int/float values, convert them to floats, and return a tuple. Reject booleans, non-numbers, NaN/infinity and numbers that cannot become finite floats with ValueError. Empty input with count=0 is valid. Do not mutate input.",
+      "explanation": "Align one finite scalar to each pair before sorting. A finite negative relevance score is allowed; boolean and malformed outputs are not.",
+      "starter": "def checked_scores(values, count):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from math import isfinite\ndef checked_scores(values, count):\n    if type(count) is not int or not 0 <= count <= 32 or not isinstance(values, (list, tuple)) or len(values) != count:\n        raise ValueError('wrong score count')\n    result = []\n    for value in values:\n        if type(value) not in (int, float):\n            raise ValueError('numeric scalar required')\n        try:\n            number = float(value)\n        except (ValueError, OverflowError) as exc:\n            raise ValueError('finite float required') from exc\n        if not isfinite(number):\n            raise ValueError('finite float required')\n        result.append(number)\n    return tuple(result)\n",
+      "checks": [
+        {
+          "label": "Aligned finite outputs",
+          "code": "assert checked_scores([.7,-2,0],3)==(.7,-2.0,0.0) and all(type(x) is float for x in checked_scores([1],1))"
+        },
+        {
+          "label": "Empty and count mismatch",
+          "code": "assert checked_scores([],0)==()\nassert raises(ValueError,checked_scores,[.7],2) and raises(ValueError,checked_scores,[1],True)"
+        },
+        {
+          "label": "No boolean or textual scores",
+          "code": "assert raises(ValueError,checked_scores,[True],1) and raises(ValueError,checked_scores,['.7'],1) and raises(ValueError,checked_scores,None,1)"
+        },
+        {
+          "label": "Finiteness and representability",
+          "code": "assert all(raises(ValueError,checked_scores,[x],1) for x in [float('nan'),float('inf'),-float('inf'),10**1000])"
+        },
+        {
+          "label": "Bound and preservation",
+          "code": "a=[1,2];assert checked_scores(a,2)==(1.,2.) and a==[1,2]\nassert raises(ValueError,checked_scores,[0]*33,33) and raises(ValueError,checked_scores,[], -1)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q082",
+      "type": "code",
+      "topic": "Stable same-pool ordering",
+      "difficulty": "foundation",
+      "prompt": "Implement rerank_rows(rows, scores). rows is a list/tuple of at most 32 trusted dictionaries with nonblank id/text and exact positive-int retrieval_rank; IDs must be unique. scores must be a list/tuple aligned to rows, containing only built-in int/float values convertible to finite floats; reject booleans, NaN/infinity and unrepresentable values. Return a new list of row dictionaries with score added, sorted by descending score, ascending retrieval_rank, then id. Preserve every candidate and input dictionary; reject duplicate IDs or invalid scores with ValueError. Empty rows/scores returns [].",
+      "explanation": "Reranking changes order within the same pool. Strict output alignment and deterministic secondary keys make the result interpretable.",
+      "starter": "def rerank_rows(rows, scores):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from math import isfinite\ndef checked_scores(values, count):\n    if type(count) is not int or not 0 <= count <= 32 or not isinstance(values, (list, tuple)) or len(values) != count:\n        raise ValueError('wrong score count')\n    result = []\n    for value in values:\n        if type(value) not in (int, float):\n            raise ValueError('numeric scalar required')\n        try:\n            number = float(value)\n        except (ValueError, OverflowError) as exc:\n            raise ValueError('finite float required') from exc\n        if not isfinite(number):\n            raise ValueError('finite float required')\n        result.append(number)\n    return tuple(result)\n\ndef rerank_rows(rows, scores):\n    if len({row['id'] for row in rows}) != len(rows):\n        raise ValueError('duplicate candidate')\n    checked = checked_scores(scores, len(rows))\n    result = [dict(row, score=score) for row, score in zip(rows, checked, strict=True)]\n    return sorted(result, key=lambda row: (-row['score'], row['retrieval_rank'], row['id']))\n",
+      "checks": [
+        {
+          "label": "Score order without candidate loss",
+          "code": "r=[{'id':'a','text':'A','retrieval_rank':1},{'id':'b','text':'B','retrieval_rank':2}];out=rerank_rows(r,[.1,.9]);assert [x['id'] for x in out]==['b','a'] and out[0]['score']==.9"
+        },
+        {
+          "label": "Retrieval rank then stable ID ties",
+          "code": "r=[{'id':'z','text':'Z','retrieval_rank':2},{'id':'b','text':'B','retrieval_rank':1},{'id':'a','text':'A','retrieval_rank':1}];assert [x['id'] for x in rerank_rows(r,[1,1,1])]==['a','b','z']"
+        },
+        {
+          "label": "Strict alignment",
+          "code": "r=[{'id':'a','text':'A','retrieval_rank':1}];assert raises(ValueError,rerank_rows,r,[]) and raises(ValueError,rerank_rows,r,[True]) and raises(ValueError,rerank_rows,r,[float('nan')])"
+        },
+        {
+          "label": "Duplicates and empty pool",
+          "code": "r={'id':'a','text':'A','retrieval_rank':1};assert raises(ValueError,rerank_rows,[r,r],[1,2]) and rerank_rows([],[])==[]"
+        },
+        {
+          "label": "No mutation, no positive floor",
+          "code": "r=[{'id':'a','text':'A','retrieval_rank':1}];out=rerank_rows(r,[-3]);assert out[0]['score']==-3 and 'score' not in r[0] and out[0] is not r[0]"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q083",
+      "type": "code",
+      "topic": "Original-question pairs",
+      "difficulty": "applied",
+      "prompt": "Implement query_pairs(original, passages). Validate original as a str with 1–1000 characters and nonblank content. passages must be a list/tuple of at most 32 nonblank strings of at most 4000 characters. Return a tuple of (original, passage) tuples in passage order, preserving the exact strings and their whitespace. Empty passages returns (). Raise ValueError for invalid inputs; do not strip or mutate them.",
+      "explanation": "Retrieval variants do not replace the original question at the pair-scoring boundary. Validate bounded pairs before inference.",
+      "starter": "def query_pairs(original, passages):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def query_pairs(original, passages):\n    if not isinstance(original, str) or not original.strip() or len(original) > 1000:\n        raise ValueError('invalid question')\n    if not isinstance(passages, (list, tuple)) or len(passages) > 32:\n        raise ValueError('invalid batch')\n    if any(not isinstance(p, str) or not p.strip() or len(p) > 4000 for p in passages):\n        raise ValueError('invalid passage')\n    return tuple((original, p) for p in passages)\n",
+      "checks": [
+        {
+          "label": "Same original for every passage",
+          "code": "assert query_pairs('CW-1000?',['row','clause'])==(('CW-1000?','row'),('CW-1000?','clause'))"
+        },
+        {
+          "label": "Preserve exact strings",
+          "code": "p=['  clause. '];assert query_pairs(' Q ',p)==((' Q ','  clause. '),) and p==['  clause. ']"
+        },
+        {
+          "label": "Question bounds",
+          "code": "assert raises(ValueError,query_pairs,' ',[]) and raises(ValueError,query_pairs,7,[]) and raises(ValueError,query_pairs,'x'*1001,[])"
+        },
+        {
+          "label": "Batch and passage bounds",
+          "code": "assert raises(ValueError,query_pairs,'q',['p']*33) and raises(ValueError,query_pairs,'q','p') and raises(ValueError,query_pairs,'q',['x'*4001]) and raises(ValueError,query_pairs,'q',[None])"
+        },
+        {
+          "label": "Empty and inclusive edges",
+          "code": "assert query_pairs('q',[])==() and len(query_pairs('q'*1000,['p'*4000]*32))==32 and raises(ValueError,query_pairs,'q',[' '])"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q084",
+      "type": "code",
+      "topic": "Protected query terms",
+      "difficulty": "applied",
+      "prompt": "Implement protected_terms(text). Require nonblank str text of at most 1000 characters; otherwise raise ValueError. Tokenize with the ASCII regex [a-z0-9]+(?:[-_/][a-z0-9]+)* after lowercasing. Return a frozenset of tokens containing a digit OR belonging to {not,no,without,never,except,unless,after,before}. Preserve internal code separators through tokenization. This is a lexical guard, not a semantic-equivalence check.",
+      "explanation": "Protect the declared identifier/number/condition tokens without pretending that an unordered set captures meaning or authority.",
+      "starter": "def protected_terms(text):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef protected_terms(text):\n    if not isinstance(text, str) or not text.strip() or len(text) > 1000:\n        raise ValueError('invalid query')\n    tokens = re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*', text.lower())\n    conditions = {'not','no','without','never','except','unless','after','before'}\n    return frozenset(t for t in tokens if any(c.isdigit() for c in t) or t in conditions)\n",
+      "checks": [
+        {
+          "label": "Code, number and condition",
+          "code": "assert protected_terms('CW-1000 Net 30 after approval')==frozenset({'cw-1000','30','after'})"
+        },
+        {
+          "label": "All declared qualifiers",
+          "code": "assert protected_terms('NOT no without never except unless AFTER before')==frozenset({'not','no','without','never','except','unless','after','before'})"
+        },
+        {
+          "label": "Internal separators",
+          "code": "assert protected_terms('A_1/B-2, CW1000')==frozenset({'a_1/b-2','cw1000'})"
+        },
+        {
+          "label": "Ordinary terms and repetitions",
+          "code": "assert protected_terms('supplier payment')==frozenset() and protected_terms('30 30')==frozenset({'30'})"
+        },
+        {
+          "label": "Invalid query",
+          "code": "assert raises(ValueError,protected_terms,' ') and raises(ValueError,protected_terms,None) and raises(ValueError,protected_terms,'x'*1001)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q085",
+      "type": "code",
+      "topic": "Reviewed query plan",
+      "difficulty": "foundation",
+      "prompt": "Implement make_query_plan(original, rewrites=()). original and each rewrite must be nonblank strings of at most 1000 characters. Lowercase and tokenize each with ASCII regex [a-z0-9]+(?:[-_/][a-z0-9]+)*. The original protected tokens are all digit-bearing tokens plus any of {not,no,without,never,except,unless,after,before}. Include any helpers you need. rewrites must be a list/tuple with at most two entries BEFORE deduplication. Reject any rewrite missing an original protected token with ValueError. Return a tuple starting with the exact original, then distinct exact rewrite strings in first-seen order. Do not strip or mutate strings. Token preservation does not prove semantic equivalence.",
+      "explanation": "Check the raw variant cap and protected tokens, preserve the original and deduplicate exact strings. Review meaning separately.",
+      "starter": "def make_query_plan(original, rewrites=()):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef protected_terms(text):\n    if not isinstance(text, str) or not text.strip() or len(text) > 1000:\n        raise ValueError('invalid query')\n    tokens = re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*', text.lower())\n    conditions = {'not','no','without','never','except','unless','after','before'}\n    return frozenset(t for t in tokens if any(c.isdigit() for c in t) or t in conditions)\n\ndef make_query_plan(original, rewrites=()):\n    required = protected_terms(original)\n    if not isinstance(rewrites, (list, tuple)) or len(rewrites) > 2:\n        raise ValueError('at most two raw rewrites')\n    planned = [original]\n    for rewrite in rewrites:\n        terms = protected_terms(rewrite)\n        if not required <= terms:\n            raise ValueError('protected term lost')\n        if rewrite not in planned:\n            planned.append(rewrite)\n    return tuple(planned)\n",
+      "checks": [
+        {
+          "label": "Original and useful variant",
+          "code": "o='CW-1000 Net 30 after approval';r='CW-1000 payment Net 30 after approval';assert make_query_plan(o,[r])==(o,r)"
+        },
+        {
+          "label": "Reject lost code, number or condition",
+          "code": "o='CW-1000 Net 30 after approval';assert all(raises(ValueError,make_query_plan,o,[r]) for r in ['CW1000 Net 30 after approval','CW-1000 Net 15 after approval','CW-1000 Net 30 approval'])"
+        },
+        {
+          "label": "Exact stable deduplication",
+          "code": "r=[' q ',' q '];assert make_query_plan('q',r)==('q',' q ') and r==[' q ',' q '] and make_query_plan('q',['q'])==('q',)"
+        },
+        {
+          "label": "Raw cap and input rejection",
+          "code": "assert raises(ValueError,make_query_plan,'q',['q']*3) and raises(ValueError,make_query_plan,'q','variant') and raises(ValueError,make_query_plan,'q',[' ']) and raises(ValueError,make_query_plan,'',[])"
+        },
+        {
+          "label": "Lexical guard is not semantic review",
+          "code": "o='CW-1000 Net 30 after approval';r='approval after Net 30 CW-1000';assert make_query_plan(o,[r])==(o,r)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q086",
+      "type": "code",
+      "topic": "Independent pipeline limits",
+      "difficulty": "applied",
+      "prompt": "Implement validate_budgets(evidence, candidates, depth, chars, sentences=2, compression=\"none\"). All five numeric values must be exact ints (not bool). Require 1 <= evidence <= candidates <= depth <= 32, 2 <= chars <= 16000, 1 <= sentences <= 4, and compression exactly \"none\" or \"sentences\". Raise ValueError on invalid input. Otherwise return a dict with keys evidence_count, candidate_count, retrieval_depth, context_chars, max_sentences, compression and their unchanged values.",
+      "explanation": "Evidence capacity, candidate coverage, pair work and serialized length are different governed limits. Validate their relationships before running the pipeline.",
+      "starter": "def validate_budgets(evidence, candidates, depth, chars, sentences=2, compression=\"none\"):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def validate_budgets(evidence, candidates, depth, chars, sentences=2, compression='none'):\n    if any(type(x) is not int for x in (evidence,candidates,depth,chars,sentences)):\n        raise ValueError('exact integer required')\n    if not (1 <= evidence <= candidates <= depth <= 32 and 2 <= chars <= 16000 and 1 <= sentences <= 4):\n        raise ValueError('invalid count or budget')\n    if type(compression) is not str or compression not in {'none','sentences'}:\n        raise ValueError('unsupported compression')\n    return dict(evidence_count=evidence,candidate_count=candidates,retrieval_depth=depth,context_chars=chars,max_sentences=sentences,compression=compression)\n",
+      "checks": [
+        {
+          "label": "Default contract",
+          "code": "assert validate_budgets(3,6,8,1400)=={'evidence_count':3,'candidate_count':6,'retrieval_depth':8,'context_chars':1400,'max_sentences':2,'compression':'none'}"
+        },
+        {
+          "label": "Inclusive boundaries",
+          "code": "assert validate_budgets(1,1,1,2,1,'sentences')['context_chars']==2 and validate_budgets(32,32,32,16000,4)['evidence_count']==32"
+        },
+        {
+          "label": "Reject bools and noninteger values",
+          "code": "assert all(raises(ValueError,validate_budgets,*a) for a in [(True,6,8,1400),(3,6.,8,1400),(3,6,8,1400,True)])"
+        },
+        {
+          "label": "Reject invalid ordering and ranges",
+          "code": "assert all(raises(ValueError,validate_budgets,*a) for a in [(4,3,8,1400),(3,6,5,1400),(0,6,8,1400),(3,6,33,1400),(3,6,8,1),(3,6,8,16001),(3,6,8,1400,5)])"
+        },
+        {
+          "label": "Compression allowlist",
+          "code": "assert raises(ValueError,validate_budgets,3,6,8,1400,2,'summary') and raises(ValueError,validate_budgets,3,6,8,1400,2,[])"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q087",
+      "type": "code",
+      "topic": "Source-scoped exact duplicates",
+      "difficulty": "applied",
+      "prompt": "Implement dedupe_evidence(rows). Input is an already ranked list/tuple of at most 32 trusted dictionaries, each with id, tenant_id, document_id, version, digest and text strings. Return (kept_rows, dropped_ids), both lists. Keep the first row for each exact (tenant_id, document_id, version, digest, text) tuple; record later copies' IDs in encounter order. A changed chunk ID alone does not make new evidence. Preserve other versions, sources, digests and different clauses. Do not mutate rows or dictionaries; kept rows may share their original objects.",
+      "explanation": "The duplicate key is source-scoped exact content. It does not decide active-version authority or erase complementary clauses from one agreement.",
+      "starter": "def dedupe_evidence(rows):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def dedupe_evidence(rows):\n    seen = set()\n    kept, dropped = [], []\n    for row in rows:\n        key = tuple(row[k] for k in ('tenant_id','document_id','version','digest','text'))\n        if key in seen:\n            dropped.append(row['id'])\n        else:\n            seen.add(key)\n            kept.append(row)\n    return kept, dropped\n",
+      "checks": [
+        {
+          "label": "First exact copy survives",
+          "code": "a=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='Net 30');b=dict(a,id='b');assert dedupe_evidence([a,b,dict(a,id='c')])==([a],['b','c'])"
+        },
+        {
+          "label": "Complementary clauses survive",
+          "code": "a=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='row');b=dict(a,id='b',text='payment clause');assert dedupe_evidence([a,b])==([a,b],[])"
+        },
+        {
+          "label": "Version and digest scope",
+          "code": "a=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='same');r=[a,dict(a,id='b',version='2'),dict(a,id='c',digest='other')];assert dedupe_evidence(r)==(r,[])"
+        },
+        {
+          "label": "Tenant/document and exact wording",
+          "code": "a=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='Net 30');r=[a,dict(a,id='b',tenant_id='S'),dict(a,id='c',document_id='E'),dict(a,id='d',text='Net 15'),dict(a,id='e',text='Net 30 ')];assert dedupe_evidence(r)==(r,[])"
+        },
+        {
+          "label": "Empty and unchanged inputs",
+          "code": "a=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='same');r=[a,dict(a,id='b')];before=repr(r);assert dedupe_evidence(r)[1]==['b'] and repr(r)==before and dedupe_evidence([])==([],[])"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q088",
+      "type": "code",
+      "topic": "Exact sentence coordinates",
+      "difficulty": "foundation",
+      "prompt": "Implement sentence_spans(text). Require a str of at most 4000 characters; otherwise raise ValueError. Empty text returns (). Use re.finditer(r\"(?<=[.!?])\\s+\", text); each match.end() is a boundary, with 0 and len(text) also boundaries. Return a tuple of nonempty (start,end) spans in source order. Keep every character, including trailing whitespace; do not strip, rewrite or invent linguistic sentence boundaries. Offsets count Python characters, not UTF-8 bytes.",
+      "explanation": "Exact coordinates make selection traceable. This punctuation rule is deliberately narrow; it does not guarantee semantic sentence independence.",
+      "starter": "def sentence_spans(text):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef sentence_spans(text):\n    if not isinstance(text, str) or len(text) > 4000:\n        raise ValueError('bounded text required')\n    boundaries = [0, *(m.end() for m in re.finditer(r'(?<=[.!?])\\s+', text)), len(text)]\n    return tuple((a,b) for a,b in zip(boundaries,boundaries[1:]) if a < b)\n",
+      "checks": [
+        {
+          "label": "Half-open source spans",
+          "code": "assert sentence_spans('A. B! C?')==((0,3),(3,6),(6,8))"
+        },
+        {
+          "label": "Whitespace retained",
+          "code": "t='Payment.\\n  Except approval. ';s=sentence_spans(t);assert ''.join(t[a:b] for a,b in s)==t and s==((0,11),(11,len(t)))"
+        },
+        {
+          "label": "Narrow splitting rule",
+          "code": "assert sentence_spans('A.B no split')==((0,12),) and sentence_spans('clause without punctuation')==((0,26),)"
+        },
+        {
+          "label": "Characters and empty input",
+          "code": "assert sentence_spans('é. B')==((0,3),(3,4)) and sentence_spans('')==() and sentence_spans(' ')==((0,1),)"
+        },
+        {
+          "label": "Bounded type contract",
+          "code": "assert raises(ValueError,sentence_spans,None) and raises(ValueError,sentence_spans,'x'*4001) and sentence_spans('x'*4000)==((0,4000),)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q089",
+      "type": "code",
+      "topic": "Select spans without rewriting",
+      "difficulty": "applied",
+      "prompt": "Implement select_spans(query, text, limit=2, table_row=False). Require nonblank str query (<=1000 chars), nonblank str text (<=4000), exact-int limit 1–4 and exact-bool table_row; invalid inputs raise ValueError. For sentence boundaries, use 0, every match.end() from re.finditer(r\"(?<=[.!?])\\s+\", text), and len(text); keep only nonempty half-open spans without stripping characters. Use the ASCII lowercase tokenizer [a-z0-9]+(?:[-_/][a-z0-9]+)*. Score each span by the size of its unique-token intersection with the query; choose the highest scores, breaking ties by earlier start. Return chosen (start,end) tuples in source order. If table_row is True, return the whole text span. Do not change source text.",
+      "explanation": "Choose by unique overlap, then restore source order and exact offsets. Surviving quotes can still omit a condition; table rows stay atomic.",
+      "starter": "def select_spans(query, text, limit=2, table_row=False):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef sentence_spans(text):\n    if not isinstance(text, str) or len(text) > 4000:\n        raise ValueError('bounded text required')\n    boundaries = [0, *(m.end() for m in re.finditer(r'(?<=[.!?])\\s+', text)), len(text)]\n    return tuple((a,b) for a,b in zip(boundaries,boundaries[1:]) if a < b)\n\ndef select_spans(query, text, limit=2, table_row=False):\n    if not isinstance(query,str) or not query.strip() or len(query)>1000 or not isinstance(text,str) or not text.strip() or len(text)>4000:\n        raise ValueError('invalid pair')\n    if type(limit) is not int or not 1<=limit<=4 or type(table_row) is not bool:\n        raise ValueError('invalid selection policy')\n    if table_row:\n        return ((0,len(text)),)\n    def terms(value):\n        return set(re.findall(r'[a-z0-9]+(?:[-_/][a-z0-9]+)*',value.lower()))\n    wanted = terms(query)\n    spans = sorted(sentence_spans(text),key=lambda s:(-len(wanted & terms(text[s[0]:s[1]])),s[0]))[:limit]\n    return tuple(sorted(spans))\n",
+      "checks": [
+        {
+          "label": "Best spans in original order",
+          "code": "t='Alpha. Payment due. Other.';s=select_spans('other payment',t,2);assert s==((7,20),(20,26)) and [t[a:b] for a,b in s]==['Payment due. ','Other.']"
+        },
+        {
+          "label": "Earlier tie and unique tokens",
+          "code": "t='wire wire. wire price.';assert select_spans('wire price',t,1)==((11,22),) and select_spans('absent',t,1)==((0,11),)"
+        },
+        {
+          "label": "Atomic table row",
+          "code": "t='CW-1000. 1000 kg. USD 12.00.';assert select_spans('kg',t,1,True)==((0,len(t)),)"
+        },
+        {
+          "label": "Condition can be lost",
+          "code": "t='Payment is due. Except disputed invoices require approval.';s=select_spans('payment due',t,1);assert s==((0,16),) and 'Except' not in t[s[0][0]:s[0][1]]"
+        },
+        {
+          "label": "Strict policy and input validation",
+          "code": "assert raises(ValueError,select_spans,'q','t',True) and raises(ValueError,select_spans,'q','t',5) and raises(ValueError,select_spans,'q','t',1,1) and raises(ValueError,select_spans,' ','t') and raises(ValueError,select_spans,'q',' ')"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q090",
+      "type": "code",
+      "topic": "Exact context serialization",
+      "difficulty": "applied",
+      "prompt": "Implement render_context(spans). Input is a list/tuple of trusted span dictionaries with citation_id, tenant_id, document_id, version, locations (list of strings) and quote. Return compact JSON for a list of objects with keys, in this order: citation_id, tenant_id, document_id, version, locations, text. Map quote to text; ignore any extra internal fields. Use ensure_ascii=False and separators=(\",\",\":\"). Preserve order and values, do not mutate input, and return \"[]\" for empty input. This serialized string is what the character budget measures.",
+      "explanation": "Serialize the exact envelope, not just quote lengths. Unicode, escaping, labels and repeated source headers all affect the measured representation.",
+      "starter": "def render_context(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import json\ndef render_context(spans):\n    return json.dumps([dict(citation_id=s['citation_id'],tenant_id=s['tenant_id'],document_id=s['document_id'],version=s['version'],locations=s['locations'],text=s['quote']) for s in spans],ensure_ascii=False,separators=(',',':'))\n",
+      "checks": [
+        {
+          "label": "Exact compact empty JSON",
+          "code": "assert render_context([])=='[]' and len(render_context([]))==2"
+        },
+        {
+          "label": "Headers and mapping",
+          "code": "s=dict(citation_id='S1',tenant_id='N',document_id='D',version='1',locations=[],quote='row');assert render_context([s])=='[{\"citation_id\":\"S1\",\"tenant_id\":\"N\",\"document_id\":\"D\",\"version\":\"1\",\"locations\":[],\"text\":\"row\"}]'"
+        },
+        {
+          "label": "Unicode and escaping",
+          "code": "import json\ns=dict(citation_id='S1',tenant_id='N',document_id='D',version='1',locations=['p1'],quote='é \\\"Net 30\\\"\\n');out=render_context([s]);assert 'é' in out and json.loads(out)[0]['text']==s['quote'] and len(out)>len(s['quote'])"
+        },
+        {
+          "label": "Internal fields excluded",
+          "code": "import json\ns=dict(citation_id='S1',tenant_id='N',document_id='D',version='1',locations=[],quote='q',score=.7,start=0);assert set(json.loads(render_context([s]))[0])=={'citation_id','tenant_id','document_id','version','locations','text'}"
+        },
+        {
+          "label": "Order and no mutation",
+          "code": "import json\na=dict(citation_id='S1',tenant_id='N',document_id='A',version='1',locations=[],quote='a');b=dict(a,citation_id='S2',document_id='B');r=[a,b];before=repr(r);assert [x['document_id'] for x in json.loads(render_context(r))]==['A','B'] and repr(r)==before"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q091",
+      "type": "code",
+      "topic": "Whole-unit context admission",
+      "difficulty": "foundation",
+      "prompt": "Implement pack_units(units, chars, evidence_count). units is an ordered list/tuple of nonempty lists of already-authorized span dictionaries: tenant_id, document_id, version, locations and quote. Each unit represents a different chunk; its selected spans must be admitted together. Require exact-int chars in 2..16000 and evidence_count in 1..32; invalid budgets raise ValueError. Assign citation_id S1, S2, ... to proposed spans using new dictionaries. For each span serialize ONLY these keys in this order: citation_id, tenant_id, document_id, version, locations, text (map quote to text). Serialize their list with json.dumps(..., ensure_ascii=False, separators=(\",\",\":\")). Include any helper you need. Admit the whole unit only if the FULL proposed context length is <= chars, otherwise skip it and try later units. Stop after evidence_count admitted UNITS, not spans. Return the selected span list; labels have no gaps and inputs stay unchanged. Empty units returns [].",
+      "explanation": "Count the exact proposed JSON, admit each selected source unit atomically, and let later smaller units fit. A source cap counts admitted chunks.",
+      "starter": "def pack_units(units, chars, evidence_count):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import json\ndef render_context(spans):\n    return json.dumps([dict(citation_id=s['citation_id'],tenant_id=s['tenant_id'],document_id=s['document_id'],version=s['version'],locations=s['locations'],text=s['quote']) for s in spans],ensure_ascii=False,separators=(',',':'))\n\ndef pack_units(units, chars, evidence_count):\n    if type(chars) is not int or not 2<=chars<=16000 or type(evidence_count) is not int or not 1<=evidence_count<=32:\n        raise ValueError('invalid admission budget')\n    selected = []\n    admitted = 0\n    for unit in units:\n        if admitted >= evidence_count:\n            break\n        proposed = [*selected]\n        for span in unit:\n            proposed.append(dict(span,citation_id=f'S{len(proposed)+1}'))\n        if len(render_context(proposed)) <= chars:\n            selected = proposed\n            admitted += 1\n    return selected\n",
+      "checks": [
+        {
+          "label": "Boundary counts the entire JSON",
+          "code": "s=dict(tenant_id='N',document_id='D',version='1',locations=[],quote='row');assert pack_units([[s]],98,1)==[dict(s,citation_id='S1')] and pack_units([[s]],97,1)==[]"
+        },
+        {
+          "label": "Skip big unit then reuse the first label",
+          "code": "s=dict(tenant_id='N',document_id='D',version='1',locations=[],quote='row');large=dict(s,quote='x'*1000);assert pack_units([[large],[s]],150,1)==[dict(s,citation_id='S1')]"
+        },
+        {
+          "label": "All spans from a chunk together",
+          "code": "s=dict(tenant_id='N',document_id='D',version='1',locations=[],quote='row');assert len(pack_units([[s,s]],150,1))==0;out=pack_units([[s,s],[dict(s,document_id='E')]],1000,1);assert len(out)==2 and [x['citation_id'] for x in out]==['S1','S2']"
+        },
+        {
+          "label": "Admitted-unit count and input preservation",
+          "code": "s=dict(tenant_id='N',document_id='D',version='1',locations=[],quote='é');u=[[s,s],[dict(s,document_id='E')],[dict(s,document_id='F')]];before=repr(u);out=pack_units(u,1000,2);assert len(out)==3 and [x['citation_id'] for x in out]==['S1','S2','S3'] and repr(u)==before and 'citation_id' not in s"
+        },
+        {
+          "label": "Empty context and invalid caps",
+          "code": "assert pack_units([],2,1)==[] and raises(ValueError,pack_units,[],1,1) and raises(ValueError,pack_units,[],True,1) and raises(ValueError,pack_units,[],100,0) and raises(ValueError,pack_units,[],100,33) and raises(ValueError,pack_units,[],16001,1)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q092",
+      "type": "code",
+      "topic": "Stored exact citations",
+      "difficulty": "applied",
+      "prompt": "Implement validate_citations(spans, stored, principal, grants). stored is a trusted list of unique dictionaries with id, tenant_id, document_id, version, digest, text and metadata; grants is a trusted set of (principal,tenant_id,document_id,version) tuples. Each proposed span has citation_id, chunk (a dictionary of that same shape), start, end and quote. Require a unique string label matching S[1-9][0-9]*, ENTIRE chunk dictionary equality with the stored record under id, a matching grant, exact-int offsets satisfying 0 <= start < end <= len(text), and quote == text[start:end]. Any violation raises ValueError; valid/empty spans returns True. Do not mutate inputs. These checks establish span validity, not claim entailment.",
+      "explanation": "Check full stored equality, current grants, unique labels and exact integer offsets. Surviving source alignment does not prove support or completeness.",
+      "starter": "def validate_citations(spans, stored, principal, grants):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef validate_citations(spans, stored, principal, grants):\n    by_id = {row['id']:row for row in stored}\n    seen = set()\n    for span in spans:\n        label, row = span['citation_id'], span['chunk']\n        a,b = span['start'],span['end']\n        if (not isinstance(label,str) or re.fullmatch(r'S[1-9][0-9]*',label) is None or label in seen\n            or by_id.get(row['id']) != row\n            or (principal,row['tenant_id'],row['document_id'],row['version']) not in grants\n            or type(a) is not int or type(b) is not int or not 0<=a<b<=len(row['text'])\n            or span['quote'] != row['text'][a:b]):\n            raise ValueError('invalid authorized stored span')\n        seen.add(label)\n    return True\n",
+      "checks": [
+        {
+          "label": "Exact authorized characters",
+          "code": "r=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='é Net 30',metadata={});s=dict(citation_id='S1',chunk=r,start=2,end=8,quote='Net 30');g={('alice','N','D','1')};assert validate_citations([s],[r],'alice',g) is True and validate_citations([],[],'alice',set()) is True"
+        },
+        {
+          "label": "No forged quote or invalid bounds",
+          "code": "r=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='Net 30',metadata={});s=dict(citation_id='S1',chunk=r,start=0,end=6,quote='Net 30');g={('a','N','D','1')};assert all(raises(ValueError,validate_citations,[dict(s,**change)],[r],'a',g) for change in [{'quote':'Net 15'},{'start':True},{'end':7},{'start':-1},{'end':0}])"
+        },
+        {
+          "label": "Whole stored record equality",
+          "code": "r=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='Net 30',metadata={'page':1});s=dict(citation_id='S1',chunk=r,start=0,end=6,quote='Net 30');g={('a','N','D','1')};assert all(raises(ValueError,validate_citations,[dict(s,chunk=dict(r,**change))],[r],'a',g) for change in [{'version':'2'},{'digest':'forged'},{'metadata':{'page':2}},{'id':'missing'}])"
+        },
+        {
+          "label": "Current independent access",
+          "code": "r=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='row',metadata={});s=dict(citation_id='S1',chunk=r,start=0,end=3,quote='row');assert raises(ValueError,validate_citations,[s],[r],'a',set()) and raises(ValueError,validate_citations,[s],[r],'other',{('a','N','D','1')})"
+        },
+        {
+          "label": "Unique well-formed labels",
+          "code": "r=dict(id='a',tenant_id='N',document_id='D',version='1',digest='h',text='row',metadata={});s=dict(citation_id='S1',chunk=r,start=0,end=3,quote='row');g={('a','N','D','1')};assert raises(ValueError,validate_citations,[s,s],[r],'a',g) and all(raises(ValueError,validate_citations,[dict(s,citation_id=x)],[r],'a',g) for x in ['S0','S01','../x',1]);assert validate_citations([dict(s,citation_id='S12')],[r],'a',g)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q093",
+      "type": "code",
+      "topic": "Source-bound support atoms",
+      "difficulty": "applied",
+      "prompt": "Implement support_complete(spans, required). spans is a list/tuple of trusted dictionaries with evidence_key and quote strings. required maps evidence keys to nonempty lists of nonblank required text atoms. Return None when required is empty. Otherwise return True only if EACH atom occurs case-insensitively (str.casefold) wholly within at least one quote with its OWN evidence key; return False if any is missing. Different atoms may occur in different quotes of that same source key. Never borrow text from another key or join separate quotes to manufacture a match. Inputs stay unchanged. This bounded substring exercise is not a semantic entailment judge.",
+      "explanation": "Keep each atom attached to its declared source and a surviving quote. Missing labels remain undefined; substring presence still does not establish semantic support.",
+      "starter": "def support_complete(spans, required):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def support_complete(spans, required):\n    if not required:\n        return None\n    return all(any(s['evidence_key']==key and atom.casefold() in s['quote'].casefold() for s in spans) for key,atoms in required.items() for atom in atoms)\n",
+      "checks": [
+        {
+          "label": "Own-source complete support",
+          "code": "s=[{'evidence_key':'D/1/8','quote':'Net 30 AFTER inspection approval'}];assert support_complete(s,{'D/1/8':['net 30','after inspection approval']}) is True"
+        },
+        {
+          "label": "Do not borrow a foreign clause",
+          "code": "s=[{'evidence_key':'D/1/6','quote':'1000 kg'},{'evidence_key':'D/1/8','quote':'Net 30'}];assert support_complete(s,{'D/1/6':['Net 30']}) is False and support_complete(s,{'missing':['Net 30']}) is False"
+        },
+        {
+          "label": "Several spans, no invented bridge",
+          "code": "s=[{'evidence_key':'D','quote':'Net '},{'evidence_key':'D','quote':'30 after approval'}];assert support_complete(s,{'D':['Net','approval']}) is True and support_complete(s,{'D':['Net 30']}) is False"
+        },
+        {
+          "label": "No-gold is undefined",
+          "code": "assert support_complete([], {}) is None and support_complete([],{'D':['condition']}) is False"
+        },
+        {
+          "label": "Unicode and no mutation",
+          "code": "s=[{'evidence_key':'D','quote':'Straße terms'}];r={'D':['STRASSE']};before=repr((s,r));assert support_complete(s,r) is True and repr((s,r))==before"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q094",
+      "type": "code",
+      "topic": "Distinct availability outcomes",
+      "difficulty": "foundation",
+      "prompt": "Implement result_status(candidate_count, span_count). Require exact-int candidate_count in 0..32 and span_count in 0..128. Also require span_count <= 4*candidate_count (at most four spans per candidate). Invalid counts raise ValueError. Return evidence_available when span_count>0; otherwise return no_evidence if candidate_count==0, or context_budget_exhausted if candidates exist. Availability does not mean all required evidence survived.",
+      "explanation": "Keep empty retrieval distinct from failed context admission. A nonempty context is availability evidence, not a completeness certificate.",
+      "starter": "def result_status(candidate_count, span_count):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def result_status(candidate_count, span_count):\n    if type(candidate_count) is not int or type(span_count) is not int or not (0<=candidate_count<=32 and 0<=span_count<=128 and span_count<=4*candidate_count):\n        raise ValueError('invalid availability counts')\n    if span_count:\n        return 'evidence_available'\n    return 'no_evidence' if candidate_count==0 else 'context_budget_exhausted'\n",
+      "checks": [
+        {
+          "label": "Empty retrieval",
+          "code": "assert result_status(0,0)=='no_evidence'"
+        },
+        {
+          "label": "Admission failure",
+          "code": "assert result_status(6,0)=='context_budget_exhausted' and result_status(1,0)=='context_budget_exhausted'"
+        },
+        {
+          "label": "Available is not complete",
+          "code": "assert result_status(6,1)=='evidence_available' and result_status(1,4)=='evidence_available' and result_status(32,128)=='evidence_available'"
+        },
+        {
+          "label": "Strict counts",
+          "code": "assert all(raises(ValueError,result_status,*x) for x in [(True,0),(1,False),(1.,0),(-1,0),(33,0),(1,-1)])"
+        },
+        {
+          "label": "Impossible span populations",
+          "code": "assert raises(ValueError,result_status,0,1) and raises(ValueError,result_status,1,5) and raises(ValueError,result_status,32,129)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q095",
+      "type": "code",
+      "topic": "Idempotent source versions",
+      "difficulty": "applied",
+      "prompt": "Implement unique_records(records) for a SMALL IN-MEMORY ingestion exercise. records must be a list/tuple of 1..32 dictionaries with exactly tenant_id, document_id, version, supplier, text. Every value must be a nonblank UTF-8-encodable str; text has at most 1000 characters, other fields at most 200. Invalid input raises ValueError. Under the key (tenant_id,document_id,version), identical records are idempotent (dictionary key order is irrelevant), while changed text OR supplier raises ValueError. Return first-seen distinct records as new dictionaries in input order, preserving exact values. Do not mutate input or infer grants from supplier labels. This is not the full lab's parsed-block schema.",
+      "explanation": "Idempotency retains identical source versions, while content and asserted-label conflicts fail explicitly. Input metadata is not authorization.",
+      "starter": "def unique_records(records):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def unique_records(records):\n    fields = {'tenant_id','document_id','version','supplier','text'}\n    if not isinstance(records,(list,tuple)) or not 1<=len(records)<=32:\n        raise ValueError('invalid record batch')\n    seen = {}\n    result = []\n    for row in records:\n        if not isinstance(row,dict) or set(row)!=fields:\n            raise ValueError('unexpected fields')\n        for key,value in row.items():\n            if not isinstance(value,str) or not value.strip() or len(value)>(1000 if key=='text' else 200):\n                raise ValueError('invalid field')\n            value.encode('utf-8')\n        identity = tuple(row[k] for k in ('tenant_id','document_id','version'))\n        if identity in seen:\n            if seen[identity] != row:\n                raise ValueError('conflicting source version')\n        else:\n            copy = dict(row)\n            seen[identity] = copy\n            result.append(copy)\n    return result\n",
+      "checks": [
+        {
+          "label": "Exact repeat is idempotent",
+          "code": "r=dict(tenant_id='N',document_id='D',version='1',supplier='Atlas',text='row');assert unique_records([r,dict(reversed(list(r.items())))])==[r]"
+        },
+        {
+          "label": "Content and label conflict",
+          "code": "r=dict(tenant_id='N',document_id='D',version='1',supplier='Atlas',text='row');assert raises(ValueError,unique_records,[r,dict(r,text='changed')]) and raises(ValueError,unique_records,[r,dict(r,supplier='Other')])"
+        },
+        {
+          "label": "Independent identities and first-seen order",
+          "code": "r=dict(tenant_id='N',document_id='D',version='1',supplier='Atlas',text='row');rows=[r,dict(r,version='2'),dict(r,tenant_id='S'),dict(r,document_id='E')];before=repr(rows);out=unique_records(rows);assert out==rows and out[0] is not r and repr(rows)==before"
+        },
+        {
+          "label": "Strict schema and bounded strings",
+          "code": "r=dict(tenant_id='N',document_id='D',version='1',supplier='Atlas',text='row');assert all(raises(ValueError,unique_records,[x]) for x in [dict(r,grant=True),dict(r,supplier=' '),dict(r,text='x'*1001),dict(r,version=1),{'document_id':'D'}])"
+        },
+        {
+          "label": "Batch bounds and preserved whitespace",
+          "code": "r=dict(tenant_id='N',document_id='D',version='1',supplier='Atlas',text=' row ');assert unique_records([r])[0]['text']==' row ' and raises(ValueError,unique_records,[]) and raises(ValueError,unique_records,[r]*33) and len(unique_records([r]*32))==1"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q096",
+      "type": "code",
+      "topic": "Reject ambiguous JSON",
+      "difficulty": "applied",
+      "prompt": "Implement decode_unique_json(text). Require a nonblank str whose UTF-8 encoding is at most 131072 bytes. Parse a JSON OBJECT, rejecting duplicate keys at ANY nesting depth, NaN/Infinity/-Infinity and floating-point overflow (for example 1e999). Return the decoded dictionary. Invalid text, a non-object root, excess bytes or ambiguity raises ValueError. Use only the standard library; do not evaluate code. This validates JSON syntax/ambiguity, not the lab's complete document schema.",
+      "explanation": "Detect duplicate keys before dictionary overwrites hide them. Bound encoded bytes and reject nonfinite numbers before applying a document schema.",
+      "starter": "def decode_unique_json(text):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import json\nimport math\ndef decode_unique_json(text):\n    if not isinstance(text,str) or not text.strip() or len(text.encode('utf-8'))>131072:\n        raise ValueError('bounded UTF-8 JSON required')\n    def object_hook(pairs):\n        out = {}\n        for key,value in pairs:\n            if key in out:\n                raise ValueError('duplicate JSON key')\n            out[key] = value\n        return out\n    def constant(value):\n        raise ValueError('nonfinite JSON number')\n    def finite_float(value):\n        out = float(value)\n        if not math.isfinite(out):\n            raise ValueError('nonfinite JSON float')\n        return out\n    result = json.loads(text,object_pairs_hook=object_hook,parse_constant=constant,parse_float=finite_float)\n    if not isinstance(result,dict):\n        raise ValueError('object root required')\n    return result\n",
+      "checks": [
+        {
+          "label": "Valid nested object",
+          "code": "assert decode_unique_json('{\"a\":1,\"b\":{\"x\":2},\"c\":[true,null,1.5]}')=={'a':1,'b':{'x':2},'c':[True,None,1.5]}"
+        },
+        {
+          "label": "Duplicate at every object level",
+          "code": "assert raises(ValueError,decode_unique_json,'{\"a\":1,\"a\":2}') and raises(ValueError,decode_unique_json,'{\"items\":[{\"x\":1,\"x\":2}]}')"
+        },
+        {
+          "label": "Reject nonfinite numeric syntax and overflow",
+          "code": "assert all(raises(ValueError,decode_unique_json,'{\"a\":'+v+'}') for v in ['NaN','Infinity','-Infinity','1e999'])"
+        },
+        {
+          "label": "Root and syntax contract",
+          "code": "assert all(raises(ValueError,decode_unique_json,v) for v in ['[]','null',' ','{',7]) and decode_unique_json('{}')=={}"
+        },
+        {
+          "label": "UTF-8 byte budget",
+          "code": "import json\nsmall=json.dumps({'s':'é'*65000},ensure_ascii=False);large=json.dumps({'s':'é'*65536},ensure_ascii=False);assert len(decode_unique_json(small)['s'])==65000 and raises(ValueError,decode_unique_json,large)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q097",
+      "type": "code",
+      "topic": "Joint pair token IDs",
+      "difficulty": "foundation",
+      "prompt": "Implement joint_pair_ids(rows, limit, expected_count). rows is the tokenizer's list of token-ID lists for ALREADY JOINT query+passage+special-token inputs. Require exact-int limit in 1..8192 and expected_count in 0..32. Require exactly that many rows, each a nonempty list with <=limit entries, and every ID an exact nonnegative int (not bool). Invalid input raises ValueError. Return a tuple of token-ID tuples without truncation or mutation; rows=[] with expected_count=0 returns (). Never treat separate query/passage lengths as a joint limit check.",
+      "explanation": "Inspect the complete joint tokenization with truncation disabled. A passage fitting alone does not imply its query–passage pair fits.",
+      "starter": "def joint_pair_ids(rows, limit, expected_count):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def joint_pair_ids(rows, limit, expected_count):\n    if type(limit) is not int or not 1<=limit<=8192 or type(expected_count) is not int or not 0<=expected_count<=32:\n        raise ValueError('invalid joint contract')\n    if not isinstance(rows,list) or len(rows)!=expected_count:\n        raise ValueError('wrong pair count')\n    if any(not isinstance(r,list) or not 1<=len(r)<=limit or any(type(x) is not int or x<0 for x in r) for r in rows):\n        raise ValueError('invalid or overlength joint pair')\n    return tuple(tuple(r) for r in rows)\n",
+      "checks": [
+        {
+          "label": "Aligned joint rows",
+          "code": "r=[[101,4,102],[101,5,6,102]];assert joint_pair_ids(r,4,2)==((101,4,102),(101,5,6,102)) and r==[[101,4,102],[101,5,6,102]]"
+        },
+        {
+          "label": "Reject rather than truncate",
+          "code": "assert raises(ValueError,joint_pair_ids,[[1]*513],512,1) and len(joint_pair_ids([[1]*512],512,1)[0])==512"
+        },
+        {
+          "label": "Strict IDs and nonempty rows",
+          "code": "assert all(raises(ValueError,joint_pair_ids,r,4,1) for r in [[[True]], [[-1]],[[1.0]],[[]]])"
+        },
+        {
+          "label": "Count and contract validation",
+          "code": "assert raises(ValueError,joint_pair_ids,[[1]],4,2) and raises(ValueError,joint_pair_ids,[[1]],True,1) and raises(ValueError,joint_pair_ids,[],4,True) and raises(ValueError,joint_pair_ids,[],8193,0)"
+        },
+        {
+          "label": "Empty and maximum batch",
+          "code": "assert joint_pair_ids([],1,0)==() and len(joint_pair_ids([[0]]*32,1,32))==32 and raises(ValueError,joint_pair_ids,[[0]]*33,1,33) and raises(ValueError,joint_pair_ids,((1,),),4,1)"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q098",
+      "type": "code",
+      "topic": "Allowlisted request metadata",
+      "difficulty": "applied",
+      "prompt": "Implement safe_event(fields). fields must be a dictionary containing request_id, candidate_count, selected_span_count, status and manifest_fingerprint. Require request_id to be a str matching [A-Za-z0-9_-]{1,64}; missing required fields or invalid ID raises ValueError. The other four metadata values are opaque to this helper and must be copied unchanged; their format validation belongs upstream. Return a NEW dict with ONLY those five fields, preserving values; ignore raw_query, document_text, prompt, tokens and every other extra field. Do not mutate input or configure/emit logs. This is the formatter's allowlist exercise, not the full event schema validator.",
+      "explanation": "Project only already-validated request metadata and a bounded safe request ID. Event formatting must not copy raw question/source/prompt fields into routine logs.",
+      "starter": "def safe_event(fields):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef safe_event(fields):\n    keys = ('request_id','candidate_count','selected_span_count','status','manifest_fingerprint')\n    if not isinstance(fields,dict) or not set(keys)<=set(fields):\n        raise ValueError('required event metadata missing')\n    request_id = fields['request_id']\n    if not isinstance(request_id,str) or re.fullmatch(r'[A-Za-z0-9_-]{1,64}',request_id) is None:\n        raise ValueError('invalid request ID')\n    return {key:fields[key] for key in keys}\n",
+      "checks": [
+        {
+          "label": "Metadata retained",
+          "code": "f=dict(request_id='req-1',candidate_count=6,selected_span_count=3,status='evidence_available',manifest_fingerprint='h');assert safe_event(f)==f and safe_event(f) is not f"
+        },
+        {
+          "label": "Payload excluded",
+          "code": "f=dict(request_id='r',candidate_count=1,selected_span_count=1,status='evidence_available',manifest_fingerprint='h',raw_query='private question',document_text='secret',prompt='payload',tokens='credential');o=safe_event(f);assert set(o)=={'request_id','candidate_count','selected_span_count','status','manifest_fingerprint'} and 'secret' not in repr(o)"
+        },
+        {
+          "label": "Bounded safe request ID",
+          "code": "f=dict(request_id='r',candidate_count=0,selected_span_count=0,status='no_evidence',manifest_fingerprint='h');assert all(raises(ValueError,safe_event,dict(f,request_id=x)) for x in ['', 'r\\nforged', 'x'*65,1,'a b']) and safe_event(dict(f,request_id='x'*64))['request_id']=='x'*64"
+        },
+        {
+          "label": "Required fields and shape",
+          "code": "assert raises(ValueError,safe_event,{'request_id':'r'}) and raises(ValueError,safe_event,[])"
+        },
+        {
+          "label": "Input unchanged and arbitrary extra key ignored",
+          "code": "f=dict(request_id='r_2',candidate_count=0,selected_span_count=0,status='no_evidence',manifest_fingerprint='h',other={'secret':1});before=repr(f);out=safe_event(f);assert 'other' not in out and repr(f)==before"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q099",
+      "type": "code",
+      "topic": "Request identity",
+      "difficulty": "applied",
+      "prompt": "Implement request_digest(manifest). manifest is a JSON-serializable dictionary with EXACTLY these keys: corpus, partition, query_digests, retrieval_manifests, reranker, config, dedup, context, answer. Their domain values are trusted upstream. Add schema=\"procurement-assistant/1.0.0\" to a new object. Serialize with sort_keys=True, ensure_ascii=False, separators=(\",\",\":\"), allow_nan=False; UTF-8 encode and return the lowercase SHA-256 hexdigest. Reject a non-dict, missing/extra keys or nonfinite JSON numbers with ValueError. Dictionary insertion order must not matter; list order, budgets, identities and policy versions must. Do not mutate input. A hash is not a signature.",
+      "explanation": "Bind the full declared experiment identity with deterministic encoded bytes. Configuration/list changes must be visible; ordinary hashes do not authenticate suppliers or answers.",
+      "starter": "def request_digest(manifest):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import hashlib\nimport json\ndef request_digest(manifest):\n    keys = {'corpus','partition','query_digests','retrieval_manifests','reranker','config','dedup','context','answer'}\n    if not isinstance(manifest,dict) or set(manifest)!=keys:\n        raise ValueError('incomplete request identity')\n    value = dict(manifest,schema='procurement-assistant/1.0.0')\n    payload = json.dumps(value,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode('utf-8')\n    return hashlib.sha256(payload).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact canonical bytes",
+          "code": "import hashlib\nm=dict(corpus='c',partition='p',query_digests=[],retrieval_manifests=[],reranker={},config={},dedup='d',context='x',answer='a');raw=b'{\"answer\":\"a\",\"config\":{},\"context\":\"x\",\"corpus\":\"c\",\"dedup\":\"d\",\"partition\":\"p\",\"query_digests\":[],\"reranker\":{},\"retrieval_manifests\":[],\"schema\":\"procurement-assistant/1.0.0\"}';assert request_digest(m)==hashlib.sha256(raw).hexdigest()"
+        },
+        {
+          "label": "Dictionary order and no mutation",
+          "code": "m=dict(corpus='c',partition='p',query_digests=['q'],retrieval_manifests=['r'],reranker={'b':2,'a':1},config={'chars':1400},dedup='d',context='x',answer='a');before=repr(m);assert request_digest(m)==request_digest(dict(reversed(list(m.items())))) and repr(m)==before and len(request_digest(m))==64"
+        },
+        {
+          "label": "Every identity and policy field matters",
+          "code": "m=dict(corpus='c',partition='p',query_digests=['q'],retrieval_manifests=['r'],reranker={},config={},dedup='d',context='x',answer='a');base=request_digest(m);assert all(request_digest(dict(m,**{k:'changed'}))!=base for k in m)"
+        },
+        {
+          "label": "Query order is significant",
+          "code": "m=dict(corpus='c',partition='p',query_digests=['original','variant'],retrieval_manifests=['r'],reranker={},config={},dedup='d',context='x',answer='a');assert request_digest(m)!=request_digest(dict(m,query_digests=['variant','original']))"
+        },
+        {
+          "label": "Complete shape and finite JSON",
+          "code": "m=dict(corpus='c',partition='p',query_digests=[],retrieval_manifests=[],reranker={},config={},dedup='d',context='x',answer='a');assert raises(ValueError,request_digest,{}) and raises(ValueError,request_digest,dict(m,extra=1)) and raises(ValueError,request_digest,dict(m,config={'chars':float('nan')}))"
+        }
+      ]
+    },
+    {
+      "id": "W08-Q100",
+      "type": "code",
+      "topic": "Paired ranking diagnostics",
+      "difficulty": "foundation",
+      "prompt": "Implement paired_metrics(pool, reranked, gold, k). pool and reranked must be list/tuple collections of at most 32 unique nonblank string IDs; reranked must be an EXACT permutation of pool. gold is a set/frozenset of nonblank string IDs, possibly including evidence absent from the pool. k must be an exact int in 1..32. Invalid inputs raise ValueError; do not mutate any input. Return keys candidate_recall, before_recall, after_recall, before_precision, after_precision. Recalls are fractions of gold found in pool, pool[:k], reranked[:k], respectively; all three are None if gold is empty. Precisions use hits in the first k divided by REQUESTED k, even for a short list (zero with no gold). Empty lists are allowed. No-gold precision here is arithmetic over absent labels, not proof of false positives.",
+      "explanation": "Freeze the candidate pool, expose its recall ceiling and keep the requested precision denominator. Reordering cannot recover absent evidence or create missing labels.",
+      "starter": "def paired_metrics(pool, reranked, gold, k):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def paired_metrics(pool, reranked, gold, k):\n    if type(k) is not int or not 1<=k<=32:\n        raise ValueError('invalid cutoff')\n    for values in (pool,reranked):\n        if not isinstance(values,(list,tuple)) or len(values)>32 or any(not isinstance(v,str) or not v.strip() for v in values) or len(set(values))!=len(values):\n            raise ValueError('unique bounded ID list required')\n    if not isinstance(gold,(set,frozenset)) or any(not isinstance(v,str) or not v.strip() for v in gold) or len(pool)!=len(reranked) or set(pool)!=set(reranked):\n        raise ValueError('same-pool labels required')\n    in_pool = len(set(pool)&gold)\n    before = len(set(pool[:k])&gold)\n    after = len(set(reranked[:k])&gold)\n    return dict(candidate_recall=in_pool/len(gold) if gold else None,before_recall=before/len(gold) if gold else None,after_recall=after/len(gold) if gold else None,before_precision=before/k,after_precision=after/k)\n",
+      "checks": [
+        {
+          "label": "Reordering repairs a present clause",
+          "code": "m=paired_metrics(['noise','row','clause'],['clause','row','noise'],{'row','clause'},2);assert m=={'candidate_recall':1,'before_recall':.5,'after_recall':1,'before_precision':.5,'after_precision':1}"
+        },
+        {
+          "label": "Absent evidence caps recall",
+          "code": "m=paired_metrics(['noise','row','clause'],['clause','row','noise'],{'row','clause','link'},3);assert m['candidate_recall']==2/3 and m['after_recall']==2/3 and m['after_precision']==2/3"
+        },
+        {
+          "label": "Requested denominator on a short list",
+          "code": "m=paired_metrics(['clause'],['clause'],{'clause'},3);assert m['before_precision']==1/3 and m['after_precision']==1/3 and m['after_recall']==1"
+        },
+        {
+          "label": "No-gold and empty pools",
+          "code": "m=paired_metrics([],[],set(),3);assert m=={'candidate_recall':None,'before_recall':None,'after_recall':None,'before_precision':0,'after_precision':0};assert paired_metrics([],[],{'missing'},3)['after_recall']==0"
+        },
+        {
+          "label": "Reject a changed contest or malformed cutoff",
+          "code": "p=['a','b'];r=['b','a'];before=repr((p,r));assert paired_metrics(p,r,{'a'},1)['after_recall']==0 and repr((p,r))==before;assert raises(ValueError,paired_metrics,p,['a','c'],{'a'},1) and raises(ValueError,paired_metrics,p,['a','a'],{'a'},1) and raises(ValueError,paired_metrics,p,r,{'a'},True) and raises(ValueError,paired_metrics,p,r,{'a'},0)"
+        }
+      ]
+    }
+  ]
+}
