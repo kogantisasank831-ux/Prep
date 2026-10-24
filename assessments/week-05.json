@@ -1,0 +1,3157 @@
+{
+  "schema_version": 1,
+  "week": 5,
+  "version": "1.0.0",
+  "title": "Embeddings and vector retrieval",
+  "source_lesson": "/weeks/week-05/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W05-Q001",
+      "type": "single",
+      "topic": "Embedding purpose",
+      "difficulty": "foundation",
+      "prompt": "What does a text embedding provide to the Week 5 retrieval pipeline?",
+      "explanation": "Embeddings enable comparison. Similarity does not establish factual support, authorization or a business decision.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A numerical representation used to compare texts under a declared model and metric"
+        },
+        {
+          "id": "o2",
+          "text": "Proof that a passage answers the question"
+        },
+        {
+          "id": "o3",
+          "text": "Permission to read every similar document"
+        },
+        {
+          "id": "o4",
+          "text": "A payment approval for the nearest supplier"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q002",
+      "type": "single",
+      "topic": "Cosine arithmetic",
+      "difficulty": "applied",
+      "prompt": "For a=(1,0) and b=(1,1), what is their cosine similarity, approximately?",
+      "explanation": "The dot product is 1 and the lengths are 1 and sqrt(2), giving 1/sqrt(2). The raw dot product alone is not cosine here.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1.0000"
+        },
+        {
+          "id": "o2",
+          "text": "0.0000"
+        },
+        {
+          "id": "o3",
+          "text": "2.0000"
+        },
+        {
+          "id": "o4",
+          "text": "0.7071"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q003",
+      "type": "single",
+      "topic": "Magnitude",
+      "difficulty": "applied",
+      "prompt": "Replace a non-zero vector v with 5*v. What happens to its cosine similarity with another non-zero vector?",
+      "explanation": "Positive scaling preserves direction, so cosine is unchanged. Dot products and Euclidean distances need not remain unchanged.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It becomes a probability"
+        },
+        {
+          "id": "o2",
+          "text": "It always becomes one"
+        },
+        {
+          "id": "o3",
+          "text": "It stays the same"
+        },
+        {
+          "id": "o4",
+          "text": "It is multiplied by five"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q004",
+      "type": "single",
+      "topic": "Zero vectors",
+      "difficulty": "foundation",
+      "prompt": "Why does the lab reject a zero vector before cosine search?",
+      "explanation": "A vector may contain zero coordinates, but an all-zero vector has zero length. Dividing it by its length does not define cosine.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Zero always means the source is irrelevant"
+        },
+        {
+          "id": "o2",
+          "text": "It has no defined direction for normalization"
+        },
+        {
+          "id": "o3",
+          "text": "Every coordinate must be positive"
+        },
+        {
+          "id": "o4",
+          "text": "A zero coordinate is individually forbidden"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q005",
+      "type": "single",
+      "topic": "Vector validation",
+      "difficulty": "applied",
+      "prompt": "Which Python value must be rejected as a vector coordinate under the lab's exact numeric-type policy?",
+      "explanation": "bool is an int subclass in Python, but this contract permits exact int/float values only. Non-finite values are also rejected.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "True"
+        },
+        {
+          "id": "o2",
+          "text": "0"
+        },
+        {
+          "id": "o3",
+          "text": "-1.5"
+        },
+        {
+          "id": "o4",
+          "text": "2.0"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q006",
+      "type": "single",
+      "topic": "Compatibility",
+      "difficulty": "applied",
+      "prompt": "A new embedding model returns the same number of coordinates as the old model. Can it query the old index safely on that fact alone?",
+      "explanation": "Dimension is necessary but insufficient. Model artifacts, runtime, preprocessing and task routing can change the meaning of coordinates.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; dimension completely defines the vector space"
+        },
+        {
+          "id": "o2",
+          "text": "Yes; any cosine metric makes models interchangeable"
+        },
+        {
+          "id": "o3",
+          "text": "Yes; a high similarity score proves compatibility"
+        },
+        {
+          "id": "o4",
+          "text": "No; the model and preprocessing contract must also match"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q007",
+      "type": "single",
+      "topic": "Unit-vector relation",
+      "difficulty": "foundation",
+      "prompt": "For unit vectors with dot product 0.75, what is their squared Euclidean distance?",
+      "explanation": "For unit vectors, squared L2 distance is 2-2*dot. Here it is 2-1.5=0.5; distance itself is sqrt(0.5).",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1.5"
+        },
+        {
+          "id": "o2",
+          "text": "2.75"
+        },
+        {
+          "id": "o3",
+          "text": "0.5"
+        },
+        {
+          "id": "o4",
+          "text": "0.25"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q008",
+      "type": "single",
+      "topic": "Metric direction",
+      "difficulty": "applied",
+      "prompt": "How should exact cosine search order candidate scores?",
+      "explanation": "Cosine is a similarity to maximize. A declared secondary key makes equal-score order reproducible.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Randomly whenever two scores differ"
+        },
+        {
+          "id": "o2",
+          "text": "Highest cosine first, then chunk ID ascending for ties"
+        },
+        {
+          "id": "o3",
+          "text": "Lowest cosine first"
+        },
+        {
+          "id": "o4",
+          "text": "Largest chunk ID first regardless of score"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q009",
+      "type": "single",
+      "topic": "Sensitive representations",
+      "difficulty": "applied",
+      "prompt": "A team replaces confidential source text in logs with its full embedding vector. What can it conclude?",
+      "explanation": "Numerical representation is not a de-identification guarantee. Limit raw text/vector logging and govern access and retention.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The representation can still be sensitive and needs controls"
+        },
+        {
+          "id": "o2",
+          "text": "All personal information has necessarily been removed"
+        },
+        {
+          "id": "o3",
+          "text": "Vectors are public because their elements are numbers"
+        },
+        {
+          "id": "o4",
+          "text": "Access controls no longer apply"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q010",
+      "type": "single",
+      "topic": "Asymmetric retrieval",
+      "difficulty": "foundation",
+      "prompt": "Why keep separate document and query embedding methods?",
+      "explanation": "Asymmetric search often pairs short questions with longer passages. Model-prescribed query/document preparation belongs in the compatibility contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Queries must always have a different dimension"
+        },
+        {
+          "id": "o2",
+          "text": "Document embeddings must be random"
+        },
+        {
+          "id": "o3",
+          "text": "The separation grants query authors access to all documents"
+        },
+        {
+          "id": "o4",
+          "text": "Some models require different prompts or task routing for queries and documents"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q011",
+      "type": "single",
+      "topic": "Character versus token limits",
+      "difficulty": "applied",
+      "prompt": "The lab limits short text to 1,000 Python characters. What does that establish?",
+      "explanation": "Characters, encoded bytes and tokenizer tokens are different units. Check the actual prefix-plus-text token budget at the model boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exactly 1,000 UTF-8 bytes"
+        },
+        {
+          "id": "o2",
+          "text": "A guarantee that no tokenizer can truncate it"
+        },
+        {
+          "id": "o3",
+          "text": "A bounded teaching input policy, not a model token budget"
+        },
+        {
+          "id": "o4",
+          "text": "Exactly 1,000 model tokens"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q012",
+      "type": "single",
+      "topic": "Initial chunking",
+      "difficulty": "applied",
+      "prompt": "What does the Week 5 baseline do with a valid short document?",
+      "explanation": "Week 5 deliberately uses one short document per chunk. It rejects oversized input instead of silently cutting off evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Remove all payment conditions before embedding"
+        },
+        {
+          "id": "o2",
+          "text": "Make one traceable chunk from the complete document"
+        },
+        {
+          "id": "o3",
+          "text": "Split it at every sentence using the Week 6 algorithm"
+        },
+        {
+          "id": "o4",
+          "text": "Keep only the first 100 characters"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q013",
+      "type": "single",
+      "topic": "Source digest",
+      "difficulty": "foundation",
+      "prompt": "What is hashed for a source document's content_digest in the lab?",
+      "explanation": "The text digest binds the stored passage bytes. Document identity and version remain separate provenance fields.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The exact UTF-8 bytes of its text"
+        },
+        {
+          "id": "o2",
+          "text": "Only its supplier name"
+        },
+        {
+          "id": "o3",
+          "text": "Its title with punctuation removed"
+        },
+        {
+          "id": "o4",
+          "text": "The displayed cosine score"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q014",
+      "type": "single",
+      "topic": "Scoped source identity",
+      "difficulty": "applied",
+      "prompt": "Which identity must be unique in the loaded corpus?",
+      "explanation": "The same document ID may legitimately occur in another tenant or version. Reject repeated complete identities instead of overwriting them.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Supplier name globally"
+        },
+        {
+          "id": "o2",
+          "text": "The title across all tenants"
+        },
+        {
+          "id": "o3",
+          "text": "Document ID without tenant or version"
+        },
+        {
+          "id": "o4",
+          "text": "The tuple (tenant_id, document_id, document_version)"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q015",
+      "type": "single",
+      "topic": "Payment evidence",
+      "difficulty": "applied",
+      "prompt": "The query asks which documents require approval before payment. Which practice documents directly support that condition?",
+      "explanation": "P-101 conditions invoice terms on inspection approval; P-104 conditions payment on receiving sign-off. P-103 concerns shipment checks, not payment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "P-102 and P-103"
+        },
+        {
+          "id": "o2",
+          "text": "Every document that mentions inspection or delivery"
+        },
+        {
+          "id": "o3",
+          "text": "P-101 and P-104"
+        },
+        {
+          "id": "o4",
+          "text": "P-101 and P-103"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q016",
+      "type": "single",
+      "topic": "Missing evidence",
+      "difficulty": "foundation",
+      "prompt": "A practice query asks for the copper-wire unit price, but no corpus text contains that price. What should the evaluator preserve?",
+      "explanation": "Topical overlap cannot supply an absent price. No-gold cases require separate reporting rather than fabricated support or success metrics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An automatic perfect recall score"
+        },
+        {
+          "id": "o2",
+          "text": "The empty relevance set and the need for no-evidence handling"
+        },
+        {
+          "id": "o3",
+          "text": "A guessed price as a relevant label"
+        },
+        {
+          "id": "o4",
+          "text": "Every copper-wire document as direct price evidence"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q017",
+      "type": "single",
+      "topic": "Authorization order",
+      "difficulty": "applied",
+      "prompt": "When does the baseline restrict candidates to readable source objects?",
+      "explanation": "Prefiltering protects the ranking boundary and avoids losing authorized candidates to unauthorized global neighbors. It is not a full side-channel guarantee.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Before any candidate scoring"
+        },
+        {
+          "id": "o2",
+          "text": "After choosing global top-k only"
+        },
+        {
+          "id": "o3",
+          "text": "Only when printing citations"
+        },
+        {
+          "id": "o4",
+          "text": "After sending all passages to an answer model"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q018",
+      "type": "single",
+      "topic": "Empty access set",
+      "difficulty": "applied",
+      "prompt": "After validating the request and adapter, no objects are authorized. What does the lab return?",
+      "explanation": "No authorized candidates means no result and no query embedding call. It does not prove that no relevant document exists elsewhere.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The global best match"
+        },
+        {
+          "id": "o2",
+          "text": "A guessed result with a redacted title"
+        },
+        {
+          "id": "o3",
+          "text": "A relevance score of one"
+        },
+        {
+          "id": "o4",
+          "text": "An empty tuple without query embedding"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q019",
+      "type": "single",
+      "topic": "top-k policy",
+      "difficulty": "foundation",
+      "prompt": "There are two authorized candidates and the caller requests k=3. What does the non-empty-set lab policy do?",
+      "explanation": "The baseline explicitly requires 1 <= k <= authorized candidate count. Other policies are possible but must be declared rather than silently substituted.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Add one unauthorized candidate"
+        },
+        {
+          "id": "o2",
+          "text": "Duplicate the top result to reach three"
+        },
+        {
+          "id": "o3",
+          "text": "Reject the request because k exceeds the authorized count"
+        },
+        {
+          "id": "o4",
+          "text": "Silently change k to 2"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q020",
+      "type": "single",
+      "topic": "Teaching encoder",
+      "difficulty": "applied",
+      "prompt": "The default feature encoder ranks P-101 and P-104 first. What does this run demonstrate?",
+      "explanation": "The default encoder is intentionally hand-designed and labelled as teaching features. Its tiny visible corpus is not an independent model benchmark.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A guarantee that all paraphrases will be handled"
+        },
+        {
+          "id": "o2",
+          "text": "Pipeline wiring and deterministic ranking with explicit teaching features"
+        },
+        {
+          "id": "o3",
+          "text": "Held-out accuracy of a trained semantic model"
+        },
+        {
+          "id": "o4",
+          "text": "Universal retrieval quality for procurement"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q021",
+      "type": "single",
+      "topic": "Precision denominator",
+      "difficulty": "applied",
+      "prompt": "Only two results are returned for requested k=5, and both are relevant. What is Precision@5 under the lesson's policy?",
+      "explanation": "Precision uses requested k: 2/5=0.4. Reporting returned_count separately prevents hiding the short result list.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "0.4"
+        },
+        {
+          "id": "o2",
+          "text": "1.0"
+        },
+        {
+          "id": "o3",
+          "text": "0.5"
+        },
+        {
+          "id": "o4",
+          "text": "Undefined solely because fewer than five returned"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q022",
+      "type": "single",
+      "topic": "Recall denominator",
+      "difficulty": "foundation",
+      "prompt": "Three documents are relevant and two appear in the selected top-k. What is Recall@k?",
+      "explanation": "Recall divides retrieved relevant items by all labelled relevant items in the authorized evaluation universe.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "2/k regardless of the gold set"
+        },
+        {
+          "id": "o2",
+          "text": "3/2"
+        },
+        {
+          "id": "o3",
+          "text": "1/2 because the first result was irrelevant"
+        },
+        {
+          "id": "o4",
+          "text": "2/3"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q023",
+      "type": "single",
+      "topic": "Reciprocal rank",
+      "difficulty": "applied",
+      "prompt": "The first relevant item is at rank 3 within the cutoff. What is reciprocal rank for this query?",
+      "explanation": "Reciprocal rank uses the first relevant result. MRR is the mean of per-query reciprocal ranks over a declared evaluation set.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1/k regardless of its rank"
+        },
+        {
+          "id": "o2",
+          "text": "The mean of every relevant item's rank"
+        },
+        {
+          "id": "o3",
+          "text": "1/3"
+        },
+        {
+          "id": "o4",
+          "text": "3"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q024",
+      "type": "single",
+      "topic": "No-gold metrics",
+      "difficulty": "applied",
+      "prompt": "For a query with no labelled relevant documents, which lab values are None?",
+      "explanation": "With no gold positives, those three relevance metrics have no defined positive target. Precision still uses hits/k, here zero, and counts remain visible.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "None; the lab assigns perfect scores"
+        },
+        {
+          "id": "o2",
+          "text": "Recall@k, reciprocal rank@k and nDCG@k"
+        },
+        {
+          "id": "o3",
+          "text": "All counts and Precision@k"
+        },
+        {
+          "id": "o4",
+          "text": "Only returned_count"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q025",
+      "type": "single",
+      "topic": "Position-sensitive evaluation",
+      "difficulty": "foundation",
+      "prompt": "Two rankings contain the same relevant items within k, but put them at different ranks. Which metric can reflect that placement?",
+      "explanation": "nDCG discounts gains at later ranks and normalizes by the ideal ranking. The same set of hits can receive different discounted scores.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Binary nDCG@k"
+        },
+        {
+          "id": "o2",
+          "text": "Recall@k alone"
+        },
+        {
+          "id": "o3",
+          "text": "Relevant-count alone"
+        },
+        {
+          "id": "o4",
+          "text": "Packed vector byte count"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q026",
+      "type": "single",
+      "topic": "ANN versus relevance",
+      "difficulty": "applied",
+      "prompt": "An approximate index matches 9 of the exact index's top 10 neighbors. What has been measured?",
+      "explanation": "ANN agreement tests approximation against exact neighbors under the same setup. The exact neighbors can still be poor answers to a human question.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "90% human-labelled relevance automatically"
+        },
+        {
+          "id": "o2",
+          "text": "90% answer factuality"
+        },
+        {
+          "id": "o3",
+          "text": "90% authorization coverage"
+        },
+        {
+          "id": "o4",
+          "text": "Neighbor overlap with an exact baseline"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q027",
+      "type": "single",
+      "topic": "Logical index identity",
+      "difficulty": "applied",
+      "prompt": "The logical index ID matches the expected recipe. What does that ID alone fail to attest?",
+      "explanation": "Recipe identity is not a snapshot checksum. Persisted vector artifacts need separate integrity checks and recovery validation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The recorded model fingerprint input"
+        },
+        {
+          "id": "o2",
+          "text": "The recorded corpus-digest input"
+        },
+        {
+          "id": "o3",
+          "text": "The actual persisted vector bytes"
+        },
+        {
+          "id": "o4",
+          "text": "The recipe it was calculated from"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q028",
+      "type": "single",
+      "topic": "Storage arithmetic",
+      "difficulty": "foundation",
+      "prompt": "What is the packed coordinate storage for 100,000 float32 vectors with dimension 384, excluding all overhead?",
+      "explanation": "100000*384*4=153600000 bytes, or 153.6 decimal MB. Python objects, indexes, metadata and source text add overhead.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exactly 153.6 GiB"
+        },
+        {
+          "id": "o2",
+          "text": "153,600,000 bytes"
+        },
+        {
+          "id": "o3",
+          "text": "38,400 bytes"
+        },
+        {
+          "id": "o4",
+          "text": "153,600 bytes"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W05-Q029",
+      "type": "single",
+      "topic": "Exact-search cost",
+      "difficulty": "applied",
+      "prompt": "Ignoring embedding time, how does brute-force vector comparison work scale with N candidates and dimension D?",
+      "explanation": "Exact search compares the query with each candidate over D coordinates. Sorting and other costs can add to this comparison work.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "O(ND) per query"
+        },
+        {
+          "id": "o2",
+          "text": "O(1) for all corpus sizes"
+        },
+        {
+          "id": "o3",
+          "text": "O(log D) independent of N"
+        },
+        {
+          "id": "o4",
+          "text": "O(N+D) because products need no summation"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W05-Q030",
+      "type": "single",
+      "topic": "Identity drift",
+      "difficulty": "applied",
+      "prompt": "An adapter reports a different model identity after embedding a batch. What should the index build do?",
+      "explanation": "Check observable identity around the call. A changed model/runtime/preprocessing boundary must not silently produce a supposedly compatible index.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep the vectors because their dimensions match"
+        },
+        {
+          "id": "o2",
+          "text": "Rewrite the old fingerprint to whatever arrived last"
+        },
+        {
+          "id": "o3",
+          "text": "Treat identity drift as a high-confidence score"
+        },
+        {
+          "id": "o4",
+          "text": "Reject the build rather than accept a mixed contract"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q031",
+      "type": "multiple",
+      "topic": "Metric identities",
+      "difficulty": "foundation",
+      "prompt": "Select every statement that holds for non-zero real vectors under the stated conditions.",
+      "explanation": "Unit normalization provides these metric relationships. Negative cosine describes direction, while arbitrary dot products are not probability-like bounded scores.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "For unit vectors, dot product equals cosine"
+        },
+        {
+          "id": "o2",
+          "text": "For unit vectors, squared L2 equals 2 minus twice the dot product"
+        },
+        {
+          "id": "o3",
+          "text": "Cosine may be negative"
+        },
+        {
+          "id": "o4",
+          "text": "Cosine is always a probability"
+        },
+        {
+          "id": "o5",
+          "text": "Unnormalized dot product is always between -1 and 1"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q032",
+      "type": "multiple",
+      "topic": "Invalid vectors",
+      "difficulty": "applied",
+      "prompt": "Which vectors must fail the lab's cosine-search vector invariants?",
+      "explanation": "Cosine search needs a non-empty, finite, numeric, non-zero vector. Negative coordinates are valid; bool coordinates violate the exact-type policy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A vector containing NaN"
+        },
+        {
+          "id": "o2",
+          "text": "An all-zero vector"
+        },
+        {
+          "id": "o3",
+          "text": "A vector containing True"
+        },
+        {
+          "id": "o4",
+          "text": "A finite non-zero vector with some negative coordinates"
+        },
+        {
+          "id": "o5",
+          "text": "An empty vector"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q033",
+      "type": "multiple",
+      "topic": "Stable normalization",
+      "difficulty": "applied",
+      "prompt": "Which choices help implement stable L2 normalization?",
+      "explanation": "Scaling avoids avoidable overflow and underflow without changing direction. Zero has no normalizable direction and negative components must be preserved.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use hypot on the scaled coordinates"
+        },
+        {
+          "id": "o2",
+          "text": "Square huge raw coordinates without guarding overflow"
+        },
+        {
+          "id": "o3",
+          "text": "Replace every negative coordinate with zero"
+        },
+        {
+          "id": "o4",
+          "text": "Scale coordinates by the largest absolute coordinate before computing the norm"
+        },
+        {
+          "id": "o5",
+          "text": "Reject the all-zero vector explicitly"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q034",
+      "type": "multiple",
+      "topic": "Embedding contract",
+      "difficulty": "foundation",
+      "prompt": "Which properties belong to the lab's embedding identity?",
+      "explanation": "A compatible coordinate space depends on more than a model display name. Artifact, runtime, preprocessing and metric/dimension identity are versioned together.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Dimension and metric"
+        },
+        {
+          "id": "o2",
+          "text": "The current learner's paper score"
+        },
+        {
+          "id": "o3",
+          "text": "Model artifact digest"
+        },
+        {
+          "id": "o4",
+          "text": "Runtime version"
+        },
+        {
+          "id": "o5",
+          "text": "Preprocessing version"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q035",
+      "type": "multiple",
+      "topic": "Task preparation",
+      "difficulty": "applied",
+      "prompt": "Which changes may require rebuilding or separately versioning the indexed embedding configuration?",
+      "explanation": "Text preparation and model/task behavior affect representation compatibility. Presentation-only changes do not alter the vector recipe.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reordering a dashboard's links only"
+        },
+        {
+          "id": "o2",
+          "text": "A document prefix change"
+        },
+        {
+          "id": "o3",
+          "text": "A model artifact change"
+        },
+        {
+          "id": "o4",
+          "text": "Different query/document task routing"
+        },
+        {
+          "id": "o5",
+          "text": "Changing the CSS theme only"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q036",
+      "type": "multiple",
+      "topic": "Batch boundary",
+      "difficulty": "applied",
+      "prompt": "Which checks should an index builder apply to an embedding response?",
+      "explanation": "Batch size, vector invariants and configuration identity are independent boundary checks. Filling missing embeddings would hide a runtime failure.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One vector per supplied document"
+        },
+        {
+          "id": "o2",
+          "text": "Each vector has the declared dimension"
+        },
+        {
+          "id": "o3",
+          "text": "Coordinates are finite and the vector is non-zero"
+        },
+        {
+          "id": "o4",
+          "text": "Observable identity is unchanged across the call"
+        },
+        {
+          "id": "o5",
+          "text": "Accept missing vectors by silently repeating the last one"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q037",
+      "type": "multiple",
+      "topic": "Source validation",
+      "difficulty": "foundation",
+      "prompt": "Which source inputs does the bounded Week 5 loader reject?",
+      "explanation": "The loader preserves scoped identity and valid bounded text. Different tenant identities are not duplicates merely because their document IDs match.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Blank source text"
+        },
+        {
+          "id": "o2",
+          "text": "A source text longer than its character limit"
+        },
+        {
+          "id": "o3",
+          "text": "Text with an unpaired surrogate that cannot encode as UTF-8"
+        },
+        {
+          "id": "o4",
+          "text": "The same document ID in two different tenants with valid distinct identities"
+        },
+        {
+          "id": "o5",
+          "text": "A repeated complete tenant/document/version identity"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q038",
+      "type": "multiple",
+      "topic": "Source provenance",
+      "difficulty": "applied",
+      "prompt": "Which fields help trace a returned passage to its exact stored source?",
+      "explanation": "Object identity, version, passage identity and digest support traceability. Similarity is not a business authorization or a substitute for source bytes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exact text content digest"
+        },
+        {
+          "id": "o2",
+          "text": "Chunk ID"
+        },
+        {
+          "id": "o3",
+          "text": "An unsupported claim that a high score means the invoice is approved"
+        },
+        {
+          "id": "o4",
+          "text": "Tenant ID and document ID"
+        },
+        {
+          "id": "o5",
+          "text": "Document version"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q039",
+      "type": "multiple",
+      "topic": "Access boundary",
+      "difficulty": "applied",
+      "prompt": "Which choices match the lab's authorization design?",
+      "explanation": "Retrieval must preserve source-object permissions before ranking. A text instruction or caller-supplied ID cannot grant authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Trust a query's instruction to ignore tenant isolation"
+        },
+        {
+          "id": "o2",
+          "text": "Use the top global result even if its source is unreadable"
+        },
+        {
+          "id": "o3",
+          "text": "Inject the access policy from trusted application code"
+        },
+        {
+          "id": "o4",
+          "text": "Evaluate full tenant/document/version grants"
+        },
+        {
+          "id": "o5",
+          "text": "Score only authorized candidates"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q040",
+      "type": "multiple",
+      "topic": "Filtering after top-k",
+      "difficulty": "foundation",
+      "prompt": "Why is selecting global top-k and only then removing unreadable objects problematic?",
+      "explanation": "Authorization is part of the candidate universe, not a display cleanup. Global truncation can produce a different and shorter authorized result list.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It converts similarity into relevance"
+        },
+        {
+          "id": "o2",
+          "text": "Unreadable objects already influenced candidate selection"
+        },
+        {
+          "id": "o3",
+          "text": "Readable results below the global cutoff may be lost"
+        },
+        {
+          "id": "o4",
+          "text": "It guarantees the best authorized top-k"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q041",
+      "type": "multiple",
+      "topic": "Relevance labels",
+      "difficulty": "applied",
+      "prompt": "Which practices make relevance labels defensible?",
+      "explanation": "Labels need an explicit support rule, granularity and snapshot. Shared words and absent values do not establish that a passage answers the question.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Define direct support for the query intent"
+        },
+        {
+          "id": "o2",
+          "text": "Use the same document/chunk granularity as ranking IDs"
+        },
+        {
+          "id": "o3",
+          "text": "Record source versions and the authorized evaluation universe"
+        },
+        {
+          "id": "o4",
+          "text": "Label any shared keyword as sufficient support"
+        },
+        {
+          "id": "o5",
+          "text": "Invent missing prices to avoid empty relevance sets"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q042",
+      "type": "multiple",
+      "topic": "Evaluation hygiene",
+      "difficulty": "applied",
+      "prompt": "Which actions help prevent evaluation leakage?",
+      "explanation": "Related examples can leak across naive row splits. A governed, versioned holdout is needed for model selection claims beyond the tiny visible practice set.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Group paraphrases of the same query intent"
+        },
+        {
+          "id": "o2",
+          "text": "Keep a frozen holdout separate from tuning"
+        },
+        {
+          "id": "o3",
+          "text": "Record label adjudication and versions"
+        },
+        {
+          "id": "o4",
+          "text": "Tune on the published practice queries and call them an unseen benchmark"
+        },
+        {
+          "id": "o5",
+          "text": "Group near-duplicate documents across splits"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q043",
+      "type": "multiple",
+      "topic": "Metric semantics",
+      "difficulty": "foundation",
+      "prompt": "Which statements follow the lesson's metric policy?",
+      "explanation": "Duplicate ranking IDs are rejected. Requested-k precision, gold-set recall and first-hit reciprocal rank answer different questions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reciprocal rank uses only the first hit within k"
+        },
+        {
+          "id": "o2",
+          "text": "A duplicate relevant ID can count twice"
+        },
+        {
+          "id": "o3",
+          "text": "No-gold recall is automatically one"
+        },
+        {
+          "id": "o4",
+          "text": "Precision@k divides hits by requested k"
+        },
+        {
+          "id": "o5",
+          "text": "Recall divides hits by all gold-relevant IDs"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q044",
+      "type": "multiple",
+      "topic": "No-gold reporting",
+      "difficulty": "applied",
+      "prompt": "How should queries with empty relevant sets be handled under the lab policy?",
+      "explanation": "No labelled target is a distinct evaluation condition. Neither inventing success nor silently dropping cases supports a defensible summary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Turn undefined recall into a perfect retrieval score"
+        },
+        {
+          "id": "o2",
+          "text": "Delete these queries without reporting the denominator"
+        },
+        {
+          "id": "o3",
+          "text": "Keep their no-gold status visible"
+        },
+        {
+          "id": "o4",
+          "text": "Keep undefined relevance metrics separate in aggregation"
+        },
+        {
+          "id": "o5",
+          "text": "Evaluate declared no-evidence or review behavior separately"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q045",
+      "type": "multiple",
+      "topic": "ANN measurement",
+      "difficulty": "applied",
+      "prompt": "Which comparisons are needed when considering an approximate index?",
+      "explanation": "Approximation quality, human usefulness and operational cost are separate measurements. The Week 5 lab provides the exact baseline, not an ANN implementation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assuming ANN eliminates authorization checks"
+        },
+        {
+          "id": "o2",
+          "text": "Neighbor agreement against the exact baseline"
+        },
+        {
+          "id": "o3",
+          "text": "Human-labelled relevance evaluation"
+        },
+        {
+          "id": "o4",
+          "text": "Latency, memory and configuration under a declared workload"
+        },
+        {
+          "id": "o5",
+          "text": "A claim that one toy corpus proves production capacity"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q046",
+      "type": "multiple",
+      "topic": "Latency evidence",
+      "difficulty": "foundation",
+      "prompt": "Which details should accompany retrieval latency results?",
+      "explanation": "A declared measurement boundary and workload make latency meaningful. Tail behavior and embedding/loading costs may dominate a tiny index scan.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether query embedding is included"
+        },
+        {
+          "id": "o2",
+          "text": "Cold/warm conditions and concurrency"
+        },
+        {
+          "id": "o3",
+          "text": "p50, p95 or p99 with workload and sample count"
+        },
+        {
+          "id": "o4",
+          "text": "Only the fastest single request"
+        },
+        {
+          "id": "o5",
+          "text": "A hardware-fit claim from coordinate bytes alone"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W05-Q047",
+      "type": "multiple",
+      "topic": "Safe observability",
+      "difficulty": "applied",
+      "prompt": "Which items are appropriate candidates for routine operational logs, subject to policy?",
+      "explanation": "Prefer compact provenance, counts and diagnostics over sensitive payloads. Version IDs still need appropriate access and retention handling.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Candidate counts and error codes"
+        },
+        {
+          "id": "o2",
+          "text": "Timing measurements with a declared boundary"
+        },
+        {
+          "id": "o3",
+          "text": "Every confidential passage and complete vector by default"
+        },
+        {
+          "id": "o4",
+          "text": "Credentials used to access the source system"
+        },
+        {
+          "id": "o5",
+          "text": "Index and model version IDs"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q048",
+      "type": "multiple",
+      "topic": "Snapshot integrity",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly distinguish recipe and artifact identity?",
+      "explanation": "Configuration/source identities and binary artifact integrity have different subjects. Hashes also do not establish authorization.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A matching corpus digest alone does not prove stored vector bytes are unchanged"
+        },
+        {
+          "id": "o2",
+          "text": "A logical recipe ID is a checksum of every persisted vector byte"
+        },
+        {
+          "id": "o3",
+          "text": "A text hash gives the reader access rights"
+        },
+        {
+          "id": "o4",
+          "text": "A logical index ID can identify a build recipe"
+        },
+        {
+          "id": "o5",
+          "text": "A persisted vector snapshot needs its own integrity checks"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q049",
+      "type": "multiple",
+      "topic": "Local model adapter",
+      "difficulty": "foundation",
+      "prompt": "Which are explicit controls of the optional Week 5 local-model adapter?",
+      "explanation": "The optional lab adapter is separate from the stdlib assessment tasks. Local loading controls do not independently establish model safety, license suitability or real accuracy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Check prefix-plus-text tokens before encoding"
+        },
+        {
+          "id": "o2",
+          "text": "Silently download a missing model during assessment scoring"
+        },
+        {
+          "id": "o3",
+          "text": "Use an already-materialized model directory"
+        },
+        {
+          "id": "o4",
+          "text": "Set local_files_only=True and trust_remote_code=False"
+        },
+        {
+          "id": "o5",
+          "text": "Refuse symlinks in the reviewed directory"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W05-Q050",
+      "type": "multiple",
+      "topic": "Result limits",
+      "difficulty": "applied",
+      "prompt": "Which statements about top-k retrieval are justified?",
+      "explanation": "Ranking always chooses relative neighbors when candidates exist. Evidence support and any no-answer policy need explicit evaluation outside bare top-k selection.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Requesting a larger k makes unsupported prices factual"
+        },
+        {
+          "id": "o2",
+          "text": "Increasing k may expose more relevant items but also more noise"
+        },
+        {
+          "id": "o3",
+          "text": "A high cosine score still needs source-support checks"
+        },
+        {
+          "id": "o4",
+          "text": "The baseline has no implemented relevance threshold or abstention rule"
+        },
+        {
+          "id": "o5",
+          "text": "The nearest result must answer the question"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W05-Q051",
+      "type": "match",
+      "topic": "Metric vocabulary",
+      "difficulty": "applied",
+      "prompt": "Match each quantity to its meaning.",
+      "explanation": "These related quantities have different magnitude dependence. Unit normalization establishes specific relationships rather than making every metric identical.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Dot product"
+        },
+        {
+          "id": "l2",
+          "text": "L2 distance"
+        },
+        {
+          "id": "l3",
+          "text": "Cosine similarity"
+        },
+        {
+          "id": "l4",
+          "text": "L2 normalization"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Sum of coordinate-wise products"
+        },
+        {
+          "id": "r2",
+          "text": "Euclidean separation between vectors"
+        },
+        {
+          "id": "r3",
+          "text": "Dot product divided by non-zero vector lengths"
+        },
+        {
+          "id": "r4",
+          "text": "Rescale a non-zero vector to unit length"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q052",
+      "type": "match",
+      "topic": "Metric ordering",
+      "difficulty": "foundation",
+      "prompt": "Match each retrieval score to the intended best-first direction or condition.",
+      "explanation": "Ranking direction is part of the metric contract. The declared tie key and zero-vector rule make boundary behavior deterministic.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Cosine similarity"
+        },
+        {
+          "id": "l2",
+          "text": "Euclidean distance"
+        },
+        {
+          "id": "l3",
+          "text": "Equal cosine scores"
+        },
+        {
+          "id": "l4",
+          "text": "All-zero cosine input"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Larger is better"
+        },
+        {
+          "id": "r2",
+          "text": "Smaller is better"
+        },
+        {
+          "id": "r3",
+          "text": "Chunk ID ascending in this baseline"
+        },
+        {
+          "id": "r4",
+          "text": "Reject because direction is undefined"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q053",
+      "type": "match",
+      "topic": "Embedding identity fields",
+      "difficulty": "applied",
+      "prompt": "Match each identity field to what it records.",
+      "explanation": "Changing any compatible-space component needs explicit handling. Matching only the dimension cannot substitute for the complete identity.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "artifact_digest"
+        },
+        {
+          "id": "l2",
+          "text": "runtime_version"
+        },
+        {
+          "id": "l3",
+          "text": "preprocessing_version"
+        },
+        {
+          "id": "l4",
+          "text": "dimension"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Fingerprint of reviewed model files"
+        },
+        {
+          "id": "r2",
+          "text": "Version identity of the embedding runtime"
+        },
+        {
+          "id": "r3",
+          "text": "Identity of text preparation and task-prefix policy"
+        },
+        {
+          "id": "r4",
+          "text": "Expected number of coordinates per vector"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q054",
+      "type": "match",
+      "topic": "Pipeline stages",
+      "difficulty": "applied",
+      "prompt": "Match each stage to its Week 5 responsibility.",
+      "explanation": "The baseline separates input validation, traceable chunking, representation and authorized ranking so failures can be identified at the correct boundary.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Load sources"
+        },
+        {
+          "id": "l2",
+          "text": "Make initial chunks"
+        },
+        {
+          "id": "l3",
+          "text": "Embed documents"
+        },
+        {
+          "id": "l4",
+          "text": "Search"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Validate bounded versioned input records"
+        },
+        {
+          "id": "r2",
+          "text": "Keep one complete accepted short document per chunk"
+        },
+        {
+          "id": "r3",
+          "text": "Produce one validated representation per chunk"
+        },
+        {
+          "id": "r4",
+          "text": "Rank the authorized candidate set with the compatible query encoder"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q055",
+      "type": "match",
+      "topic": "Provenance identities",
+      "difficulty": "foundation",
+      "prompt": "Match each item to the object it identifies.",
+      "explanation": "The subjects of these hashes differ. None alone is a grant of access or a checksum of actual persisted vector bytes.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "content_digest"
+        },
+        {
+          "id": "l2",
+          "text": "corpus_digest"
+        },
+        {
+          "id": "l3",
+          "text": "model fingerprint"
+        },
+        {
+          "id": "l4",
+          "text": "logical index ID"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Exact UTF-8 source text"
+        },
+        {
+          "id": "r2",
+          "text": "Sorted chunk identities and their text digests"
+        },
+        {
+          "id": "r3",
+          "text": "Declared embedding configuration"
+        },
+        {
+          "id": "r4",
+          "text": "Versioned source/configuration/chunk-policy recipe"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q056",
+      "type": "match",
+      "topic": "Practice corpus",
+      "difficulty": "applied",
+      "prompt": "Match each document to its actual direct content.",
+      "explanation": "Distinguishing shipment inspection from payment conditions prevents broad topic matching from becoming incorrect direct-support labels.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "P-101"
+        },
+        {
+          "id": "l2",
+          "text": "P-102"
+        },
+        {
+          "id": "l3",
+          "text": "P-103"
+        },
+        {
+          "id": "l4",
+          "text": "P-104"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Copper-wire invoice terms after inspection approval"
+        },
+        {
+          "id": "r2",
+          "text": "Polymer-pellet shipment and Net 15 from receipt"
+        },
+        {
+          "id": "r3",
+          "text": "Copper-wire shipment delay during quality checks"
+        },
+        {
+          "id": "r4",
+          "text": "Bolt payment after receiving-team sign-off"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q057",
+      "type": "match",
+      "topic": "Access outcomes",
+      "difficulty": "applied",
+      "prompt": "Match each condition to the baseline behavior.",
+      "explanation": "Permissions, top-k validity and adapter identity are separate controls. A successful similarity calculation cannot override them.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "No authorized objects"
+        },
+        {
+          "id": "l2",
+          "text": "k exceeds a non-empty authorized set"
+        },
+        {
+          "id": "l3",
+          "text": "Unreadable object"
+        },
+        {
+          "id": "l4",
+          "text": "Observable adapter identity changes"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Return empty without query embedding after request/adapter validation"
+        },
+        {
+          "id": "r2",
+          "text": "Reject rather than clamp"
+        },
+        {
+          "id": "r3",
+          "text": "Exclude before scoring"
+        },
+        {
+          "id": "r4",
+          "text": "Reject the compatibility boundary"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q058",
+      "type": "match",
+      "topic": "Ranking metrics",
+      "difficulty": "foundation",
+      "prompt": "Match each metric to the question it answers for labelled queries.",
+      "explanation": "The metrics describe distinct aspects of retrieval. Report their definitions and denominators instead of treating a single score as complete quality.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Precision@k"
+        },
+        {
+          "id": "l2",
+          "text": "Recall@k"
+        },
+        {
+          "id": "l3",
+          "text": "Reciprocal rank@k"
+        },
+        {
+          "id": "l4",
+          "text": "Binary nDCG@k"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "How many hits per requested result slot?"
+        },
+        {
+          "id": "r2",
+          "text": "What fraction of all gold items was retrieved?"
+        },
+        {
+          "id": "r3",
+          "text": "How early was the first hit within the cutoff?"
+        },
+        {
+          "id": "r4",
+          "text": "How good was discounted hit placement relative to the ideal?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q059",
+      "type": "match",
+      "topic": "Known metric values",
+      "difficulty": "applied",
+      "prompt": "Ranking is [X,A,B,Y,Z], gold={A,B,C}, and k=5. Match each reported quantity to its value.",
+      "explanation": "There are two hits in five requested slots, three gold positives, and the first hit is at rank two. The counts and denominators distinguish these quantities.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Precision@5"
+        },
+        {
+          "id": "l2",
+          "text": "Recall@5"
+        },
+        {
+          "id": "l3",
+          "text": "Reciprocal rank@5"
+        },
+        {
+          "id": "l4",
+          "text": "Returned count"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "0.4"
+        },
+        {
+          "id": "r2",
+          "text": "2/3"
+        },
+        {
+          "id": "r3",
+          "text": "0.5"
+        },
+        {
+          "id": "r4",
+          "text": "5"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q060",
+      "type": "match",
+      "topic": "Evaluation populations",
+      "difficulty": "applied",
+      "prompt": "Match each population to its purpose.",
+      "explanation": "Practice, tuning and held-out evaluation are different roles. Keep no-gold cases visible rather than silently counting them as successes.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Published practice queries"
+        },
+        {
+          "id": "l2",
+          "text": "Development split"
+        },
+        {
+          "id": "l3",
+          "text": "Frozen holdout"
+        },
+        {
+          "id": "l4",
+          "text": "No-gold queries"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Visible examples for learning and debugging"
+        },
+        {
+          "id": "r2",
+          "text": "Configuration tuning with declared selection rules"
+        },
+        {
+          "id": "r3",
+          "text": "Separate final evidence after tuning choices"
+        },
+        {
+          "id": "r4",
+          "text": "Separate evidence for no-answer or review behavior"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q061",
+      "type": "match",
+      "topic": "ANN tradeoffs",
+      "difficulty": "foundation",
+      "prompt": "Match each measurement to its interpretation.",
+      "explanation": "Approximation fidelity, relevance, latency and memory are separate axes. The exact index is a baseline rather than a universal quality oracle.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Exact neighbor overlap"
+        },
+        {
+          "id": "l2",
+          "text": "Gold-label Recall@k"
+        },
+        {
+          "id": "l3",
+          "text": "p95 retrieval latency"
+        },
+        {
+          "id": "l4",
+          "text": "Index memory"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Approximation agreement under the same vector setup"
+        },
+        {
+          "id": "r2",
+          "text": "Human-relevant source coverage"
+        },
+        {
+          "id": "r3",
+          "text": "95th percentile under a declared request boundary/workload"
+        },
+        {
+          "id": "r4",
+          "text": "Measured resource use beyond coordinate arithmetic"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q062",
+      "type": "match",
+      "topic": "Limits and units",
+      "difficulty": "applied",
+      "prompt": "Match each bound or size to the correct unit.",
+      "explanation": "Mixing character, byte, token and numeric-storage units causes incorrect capacity and truncation assumptions.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "MAX_DOCUMENT_CHARS"
+        },
+        {
+          "id": "l2",
+          "text": "Corpus loader bound"
+        },
+        {
+          "id": "l3",
+          "text": "Model input budget"
+        },
+        {
+          "id": "l4",
+          "text": "Packed float32 coordinate"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Python text characters"
+        },
+        {
+          "id": "r2",
+          "text": "UTF-8 input bytes"
+        },
+        {
+          "id": "r3",
+          "text": "Tokens after required preparation"
+        },
+        {
+          "id": "r4",
+          "text": "Four bytes"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q063",
+      "type": "match",
+      "topic": "Failure diagnosis",
+      "difficulty": "applied",
+      "prompt": "Match each symptom to the relevant issue.",
+      "explanation": "Structural, compatibility and evidence failures require different remedies. A syntactically usable vector does not establish relevance.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "A batch contains fewer vectors than documents"
+        },
+        {
+          "id": "l2",
+          "text": "A vector includes Infinity"
+        },
+        {
+          "id": "l3",
+          "text": "A new model has the old dimension"
+        },
+        {
+          "id": "l4",
+          "text": "A result mentions copper but no price"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Embedding response-count violation"
+        },
+        {
+          "id": "r2",
+          "text": "Non-finite coordinate violation"
+        },
+        {
+          "id": "r3",
+          "text": "Compatibility still requires full identity checks"
+        },
+        {
+          "id": "r4",
+          "text": "Topic similarity without direct price evidence"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q064",
+      "type": "match",
+      "topic": "Operational evidence",
+      "difficulty": "foundation",
+      "prompt": "Match each artifact to its intended use.",
+      "explanation": "Provenance, evaluation, performance and authorization evidence have different jobs and must not stand in for one another.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Snapshot checksum"
+        },
+        {
+          "id": "l2",
+          "text": "Versioned relevance labels"
+        },
+        {
+          "id": "l3",
+          "text": "Timing boundary specification"
+        },
+        {
+          "id": "l4",
+          "text": "Trusted access policy"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Verify persisted artifact bytes"
+        },
+        {
+          "id": "r2",
+          "text": "Reproduce evaluation judgments against a known source snapshot"
+        },
+        {
+          "id": "r3",
+          "text": "Interpret which retrieval work a latency includes"
+        },
+        {
+          "id": "r4",
+          "text": "Determine readable source objects"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q065",
+      "type": "match",
+      "topic": "Model preparation",
+      "difficulty": "applied",
+      "prompt": "Match each action to its purpose.",
+      "explanation": "Separate task preparation and boundary validation preserve the embedding contract. They do not claim that the learned model is accurate for every domain.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "encode_query path"
+        },
+        {
+          "id": "l2",
+          "text": "encode_document path"
+        },
+        {
+          "id": "l3",
+          "text": "Token count before embedding"
+        },
+        {
+          "id": "l4",
+          "text": "Identity check around the call"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Apply model-prescribed query task behavior"
+        },
+        {
+          "id": "r2",
+          "text": "Apply model-prescribed document task behavior"
+        },
+        {
+          "id": "r3",
+          "text": "Reject inputs that exceed the declared budget"
+        },
+        {
+          "id": "r4",
+          "text": "Detect observable runtime/configuration drift"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W05-Q066",
+      "type": "short",
+      "topic": "Packed element size",
+      "difficulty": "applied",
+      "prompt": "How many bytes does one float32 coordinate occupy? Type the integer only.",
+      "explanation": "A float32 coordinate occupies 32/8=4 bytes. Container/index/source overhead is additional.",
+      "accepted": [
+        "4"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q067",
+      "type": "short",
+      "topic": "Packed allocation",
+      "difficulty": "foundation",
+      "prompt": "Compute packed bytes for 10 vectors, dimension 3, four bytes per coordinate. Type the integer only.",
+      "explanation": "The coordinate count is 10*3 and each coordinate occupies four bytes: 120 bytes before all overhead.",
+      "accepted": [
+        "120"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q068",
+      "type": "short",
+      "topic": "Unit normalization",
+      "difficulty": "applied",
+      "prompt": "Fill the Python math function name: from math import ____; length = ____(3, 4) returns 5. Type the name only.",
+      "explanation": "math.hypot computes Euclidean length and supports stable norm calculation. It does not itself reject all-zero vectors for cosine use.",
+      "accepted": [
+        "hypot"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q069",
+      "type": "short",
+      "topic": "Finiteness",
+      "difficulty": "applied",
+      "prompt": "Which math function returns False for float('nan') and float('inf')? Type its lowercase Python name only.",
+      "explanation": "math.isfinite checks numerical finiteness. Exact type checks are still needed because bool is an int subclass.",
+      "accepted": [
+        "isfinite"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q070",
+      "type": "short",
+      "topic": "SHA algorithm",
+      "difficulty": "foundation",
+      "prompt": "Complete the exact hashlib function name used for source-text digests: hashlib.____(text.encode('utf-8')).hexdigest().",
+      "explanation": "SHA-256 binds the exact encoded bytes. The digest does not grant access or prove a passage answers a query.",
+      "accepted": [
+        "sha256"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q071",
+      "type": "short",
+      "topic": "Encoding",
+      "difficulty": "applied",
+      "prompt": "Type the exact encoding name, including its hyphen, used for the lab's source text bytes before hashing.",
+      "explanation": "Source hashes use UTF-8 bytes. Invalid surrogate-containing text is rejected rather than silently replaced.",
+      "accepted": [
+        "utf-8"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q072",
+      "type": "short",
+      "topic": "Tie ordering",
+      "difficulty": "applied",
+      "prompt": "Complete the sort key for (chunk_id, score) rows, best cosine first and chunk ID ascending: key=lambda row: (____row[1], row[0]). Type the one-character operator.",
+      "explanation": "Negating the score makes ascending sorting produce descending similarity; the second tuple element resolves ties by ID.",
+      "accepted": [
+        "-"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q073",
+      "type": "short",
+      "topic": "No-gold sentinel",
+      "difficulty": "foundation",
+      "prompt": "What exact Python literal does the lab use for undefined recall when the gold relevance set is empty?",
+      "explanation": "None preserves an undefined relevance target. Assigning zero or one would change the stated metric policy.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q074",
+      "type": "short",
+      "topic": "First relevant rank",
+      "difficulty": "applied",
+      "prompt": "The first relevant result is rank 4 within k=5. Type its reciprocal rank as a decimal.",
+      "explanation": "Reciprocal rank is 1/4=0.25. It does not average the positions of all relevant items.",
+      "accepted": [
+        "0.25"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q075",
+      "type": "short",
+      "topic": "Precision arithmetic",
+      "difficulty": "applied",
+      "prompt": "At requested k=4, there are three hits. Type Precision@4 as a decimal.",
+      "explanation": "Precision divides the three hits by four requested slots, giving 0.75 under this lesson's policy.",
+      "accepted": [
+        "0.75"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q076",
+      "type": "short",
+      "topic": "Rank origin",
+      "difficulty": "foundation",
+      "prompt": "Does the metric code enumerate result ranks starting at 0 or 1? Type the integer only.",
+      "explanation": "Rank is one-based for reciprocal-rank and logarithmic DCG formulas. Using zero would break the first-rank calculation.",
+      "accepted": [
+        "1"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q077",
+      "type": "short",
+      "topic": "Embedding count",
+      "difficulty": "applied",
+      "prompt": "A query call supplies exactly one query. How many vectors must its response contain? Type the integer only.",
+      "explanation": "The response count must match the query batch contract. A missing or extra vector is a boundary failure.",
+      "accepted": [
+        "1"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q078",
+      "type": "short",
+      "topic": "Source chunk ordinal",
+      "difficulty": "applied",
+      "prompt": "The initial chunk ID is tenant:document:version:____. Type the integer suffix for the one-short-document baseline.",
+      "explanation": "The first and only initial chunk uses ordinal zero. Long-document splitting and additional ordinals belong to later work.",
+      "accepted": [
+        "0"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W05-Q079",
+      "type": "short",
+      "topic": "Task-specific API",
+      "difficulty": "foundation",
+      "prompt": "Complete the Sentence Transformers query method name: encode____. Type the suffix including the underscore.",
+      "explanation": "encode_query can apply a query prompt and task routing appropriate to an asymmetric model. Document preparation is separately defined.",
+      "accepted": [
+        "_query"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q080",
+      "type": "short",
+      "topic": "Metric label",
+      "difficulty": "applied",
+      "prompt": "Type the exact lowercase metric name required by the baseline index manifest.",
+      "explanation": "The baseline normalizes vectors and uses cosine similarity. Other metrics need an explicitly compatible index contract.",
+      "accepted": [
+        "cosine"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W05-Q081",
+      "type": "code",
+      "topic": "Finite vector boundary",
+      "difficulty": "applied",
+      "prompt": "Implement finite_vector(values). Require a non-empty list/tuple of exact int or float coordinates, excluding bool. Convert to a tuple of floats without changing the input. Every converted value must be finite; raise ValueError for any invalid input or coordinate (including an int too large for float). An all-zero vector is allowed by this validation helper; cosine normalization rejects it separately.",
+      "explanation": "Type validation must precede coercion: float(True) or float('1') would conceal invalid coordinates. Zero-vector direction is a separate normalization rule.",
+      "starter": "def finite_vector(values: object) -> tuple[float, ...]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n",
+      "checks": [
+        {
+          "label": "Ordinary values and output type",
+          "code": "assert finite_vector([1,-2.5,0])==(1.0,-2.5,0.0)\nassert all(type(x) is float for x in finite_vector((1,2)))"
+        },
+        {
+          "label": "Zero is valid before normalization",
+          "code": "assert finite_vector([0,0])==(0.0,0.0)"
+        },
+        {
+          "label": "Reject empty and non-container inputs",
+          "code": "for x in [[],(),None,'12',{'x':1}]:\n    assert raises(ValueError,finite_vector,x)"
+        },
+        {
+          "label": "Reject coercible types and non-finite values",
+          "code": "for x in [[True],[False],['1'],[None],[float('nan')],[float('inf')],[-float('inf')]]:\n    assert raises(ValueError,finite_vector,x)"
+        },
+        {
+          "label": "Representable range and unchanged source",
+          "code": "x=[1,2.5];assert finite_vector(x)==(1.0,2.5) and x==[1,2.5]\nassert raises(ValueError,finite_vector,[10**1000])"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q082",
+      "type": "code",
+      "topic": "Checked dot product",
+      "difficulty": "foundation",
+      "prompt": "Implement checked_dot(left, right). Use the finite_vector contract (non-empty list/tuple, exact int/float, no bool, finite converted values), require matching dimensions, and return the sum of pairwise products as float. Raise ValueError for invalid inputs, dimension mismatch, or a non-finite/overflowing result. Do not mutate either input. Zero vectors are allowed for this dot-product helper.",
+      "explanation": "Dimension checks prevent zip from silently dropping coordinates. fsum preserves small terms in cancellation cases; finite-result checks keep overflow visible.",
+      "starter": "def checked_dot(left, right) -> float:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n\ndef checked_dot(left,right):\n    a,b=finite_vector(left),finite_vector(right)\n    if len(a)!=len(b):\n        raise ValueError(\"dimension mismatch\")\n    try:\n        value=math.fsum(x*y for x,y in zip(a,b))\n    except (OverflowError,ValueError) as exc:\n        raise ValueError(\"non-finite dot product\") from exc\n    if not math.isfinite(value):\n        raise ValueError(\"non-finite dot product\")\n    return value\n",
+      "checks": [
+        {
+          "label": "Known arithmetic",
+          "code": "assert checked_dot([1,2,3],[4,-5,6])==12.0"
+        },
+        {
+          "label": "Negative and zero products",
+          "code": "assert checked_dot([1,0],[-1,0])==-1.0\nassert checked_dot([0,0],[2,3])==0.0"
+        },
+        {
+          "label": "Dimension mismatch cannot truncate zip",
+          "code": "assert raises(ValueError,checked_dot,[1,2],[1])"
+        },
+        {
+          "label": "Invalid inputs and overflowing result",
+          "code": "assert raises(ValueError,checked_dot,[True],[1])\nassert raises(ValueError,checked_dot,[float('nan')],[1])\nassert raises(ValueError,checked_dot,[1e308],[1e308])\nassert raises(ValueError,checked_dot,[],[])"
+        },
+        {
+          "label": "Stable summation and no mutation",
+          "code": "a=[1e16,1,-1e16];b=[1,1,1];assert checked_dot(a,b)==1.0 and a==[1e16,1,-1e16] and b==[1,1,1]"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q083",
+      "type": "code",
+      "topic": "Stable unit normalization",
+      "difficulty": "applied",
+      "prompt": "Implement unit_vector(values). Apply the finite_vector contract (non-empty list/tuple, exact int/float, finite after float conversion, no bool), then return a tuple of floats in the same direction with L2 norm 1. Reject the all-zero vector with ValueError. Handle huge/tiny finite coordinates without raw square overflow or norm-product underflow. Do not mutate input. Results are compared with floating-point tolerance.",
+      "explanation": "Dividing by the largest absolute coordinate before hypot makes huge and tiny finite directions normalizable. Keep signs and reject only the all-zero direction.",
+      "starter": "def unit_vector(values) -> tuple[float, ...]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n\ndef unit_vector(values):\n    vector=finite_vector(values)\n    scale=max(abs(x) for x in vector)\n    if scale==0:\n        raise ValueError(\"zero has no direction\")\n    scaled=tuple(x/scale for x in vector)\n    length=math.hypot(*scaled)\n    return tuple(x/length for x in scaled)\n",
+      "checks": [
+        {
+          "label": "Known 3-4 direction",
+          "code": "import math\nu=unit_vector([3,4]);assert isinstance(u,tuple) and math.isclose(u[0],.6) and math.isclose(u[1],.8)"
+        },
+        {
+          "label": "Huge finite coordinates",
+          "code": "import math\nu=unit_vector([1e308,1e308]);assert all(math.isclose(x,1/math.sqrt(2)) for x in u)"
+        },
+        {
+          "label": "Tiny finite coordinates",
+          "code": "import math\nu=unit_vector([1e-300,-1e-300]);assert math.isclose(u[0],1/math.sqrt(2)) and math.isclose(u[1],-1/math.sqrt(2))"
+        },
+        {
+          "label": "Reject undefined or invalid vectors",
+          "code": "for x in [[0,0],[],[True],[float('inf')],['1']]:\n    assert raises(ValueError,unit_vector,x)"
+        },
+        {
+          "label": "Preserve sign, direction and input",
+          "code": "import math\nx=[-3,0,4];u=unit_vector(x);assert x==[-3,0,4] and u[0]<0 and u[1]==0 and math.isclose(math.hypot(*u),1)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q084",
+      "type": "code",
+      "topic": "Cosine similarity",
+      "difficulty": "applied",
+      "prompt": "Implement cosine(left, right), returning float in [-1,1]. Apply the finite_vector contract, require equal dimensions and reject either all-zero vector with ValueError. Normalize stably before multiplying; handle huge/tiny finite inputs. Clamp roundoff to [-1,1], preserve negative similarity and do not mutate input. Results use floating-point tolerance.",
+      "explanation": "Cosine compares directions rather than magnitudes. Stable normalization avoids overflowing the product of norms, and negative scores remain meaningful.",
+      "starter": "def cosine(left, right) -> float:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n\ndef unit_vector(values):\n    vector=finite_vector(values)\n    scale=max(abs(x) for x in vector)\n    if scale==0:\n        raise ValueError(\"zero has no direction\")\n    scaled=tuple(x/scale for x in vector)\n    length=math.hypot(*scaled)\n    return tuple(x/length for x in scaled)\n\ndef cosine(left,right):\n    a,b=unit_vector(left),unit_vector(right)\n    if len(a)!=len(b):\n        raise ValueError(\"dimension mismatch\")\n    return max(-1.0,min(1.0,math.fsum(x*y for x,y in zip(a,b))))\n",
+      "checks": [
+        {
+          "label": "Non-unit inputs",
+          "code": "import math\nassert math.isclose(cosine([1,0],[1,1]),1/math.sqrt(2))"
+        },
+        {
+          "label": "Opposite and orthogonal directions",
+          "code": "assert cosine([2,0],[-3,0])==-1.0\nassert cosine([1,0],[0,5])==0.0"
+        },
+        {
+          "label": "Positive scaling invariance",
+          "code": "import math\nassert math.isclose(cosine([2,4],[-2,3]),cosine([20,40],[-2,3]))"
+        },
+        {
+          "label": "Stable extreme scales",
+          "code": "import math\nassert math.isclose(cosine([1e308,1e308],[1e-300,1e-300]),1.0)\nassert -1<=cosine([1,1,1],[1,1,1])<=1"
+        },
+        {
+          "label": "Reject invalid directions and dimensions",
+          "code": "for a,b in [([0,0],[1,2]),([1,2],[1]),([True],[1]),([],[1]),([float('nan')],[1])]:\n    assert raises(ValueError,cosine,a,b)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q085",
+      "type": "code",
+      "topic": "Euclidean distance",
+      "difficulty": "foundation",
+      "prompt": "Implement distance(left, right). Apply the finite_vector contract, require matching dimensions and return Euclidean distance as float using a stable norm. Zero vectors are allowed. Raise ValueError for invalid input or a non-finite/overflowing distance. Do not mutate input. Return distance, not squared distance.",
+      "explanation": "Euclidean distance is the norm of coordinate differences. Some libraries expose squared L2 instead, so the output contract must say which is returned.",
+      "starter": "def distance(left, right) -> float:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n\ndef distance(left,right):\n    a,b=finite_vector(left),finite_vector(right)\n    if len(a)!=len(b):\n        raise ValueError(\"dimension mismatch\")\n    value=math.hypot(*(x-y for x,y in zip(a,b)))\n    if not math.isfinite(value):\n        raise ValueError(\"non-finite distance\")\n    return value\n",
+      "checks": [
+        {
+          "label": "3-4 separation",
+          "code": "assert distance([0,0],[3,4])==5.0"
+        },
+        {
+          "label": "Equal and opposite vectors",
+          "code": "assert distance([1,-2],[1,-2])==0\nassert distance([1,0],[-1,0])==2"
+        },
+        {
+          "label": "Stable representable large distance",
+          "code": "import math\nassert math.isclose(distance([0,0],[3e200,4e200]),5e200)"
+        },
+        {
+          "label": "Reject mismatch and invalid types",
+          "code": "assert raises(ValueError,distance,[1,2],[1])\nassert raises(ValueError,distance,[True],[1])\nassert raises(ValueError,distance,[],[])\nassert raises(ValueError,distance,[float('inf')],[0])"
+        },
+        {
+          "label": "Overflow and no mutation",
+          "code": "assert raises(ValueError,distance,[1e308],[-1e308])\na=[3,4];assert distance(a,[0,0])==5 and a==[3,4]"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q086",
+      "type": "code",
+      "topic": "Coordinate storage",
+      "difficulty": "applied",
+      "prompt": "Implement coordinate_bytes(count, dimension, bytes_per_coordinate=4). All arguments must be exact ints, excluding bool. Require count>=0, dimension>=1 and bytes_per_coordinate>=1; raise ValueError otherwise. Return their product as int. This computes packed coordinate bytes only, not Python objects, source text, metadata or index overhead.",
+      "explanation": "Multiply records, dimension and element width with explicit units. Coordinate arithmetic alone cannot establish total memory use or hardware fit.",
+      "starter": "def coordinate_bytes(count: int, dimension: int, bytes_per_coordinate: int = 4) -> int:\n    raise NotImplementedError\n",
+      "reference": "def coordinate_bytes(count,dimension,bytes_per_coordinate=4):\n    if any(type(x) is not int for x in (count,dimension,bytes_per_coordinate)) or count<0 or dimension<1 or bytes_per_coordinate<1:\n        raise ValueError(\"invalid storage dimensions\")\n    return count*dimension*bytes_per_coordinate\n",
+      "checks": [
+        {
+          "label": "Known allocation",
+          "code": "assert coordinate_bytes(100000,384)==153600000"
+        },
+        {
+          "label": "Zero records and alternate element width",
+          "code": "assert coordinate_bytes(0,384)==0\nassert coordinate_bytes(10,3,8)==240"
+        },
+        {
+          "label": "Scaling relation",
+          "code": "assert coordinate_bytes(7,12)==2*coordinate_bytes(7,6)"
+        },
+        {
+          "label": "Reject negative and zero dimensions",
+          "code": "for args in [(-1,3,4),(1,0,4),(1,3,0),(1,-2,4)]:\n    assert raises(ValueError,coordinate_bytes,*args)"
+        },
+        {
+          "label": "Exact integer boundary",
+          "code": "for args in [(True,3,4),(1,False,4),(1,3,True),(1.0,3,4),(1,3,'4')]:\n    assert raises(ValueError,coordinate_bytes,*args)\nassert type(coordinate_bytes(10,3)) is int"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q087",
+      "type": "code",
+      "topic": "Stable top-k ordering",
+      "difficulty": "applied",
+      "prompt": "Implement ranked_ids(rows, k). rows is a list of well-formed (unique_nonblank_chunk_id, finite_float_score) pairs; you may assume those row invariants. Require k to be an exact int with 1<=k<=len(rows), otherwise raise ValueError. Return a list of IDs ordered by score descending and ID ascending for ties, taking k. Do not reorder or mutate rows. Negative scores are valid.",
+      "explanation": "A secondary key removes input-order dependence for ties. Declare top-k bounds explicitly rather than silently padding, clamping or admitting bool as an integer.",
+      "starter": "def ranked_ids(rows: list[tuple[str, float]], k: int) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def ranked_ids(rows,k):\n    if type(k) is not int or not 1<=k<=len(rows):\n        raise ValueError(\"k outside candidate count\")\n    return [row[0] for row in sorted(rows,key=lambda row:(-row[1],row[0]))[:k]]\n",
+      "checks": [
+        {
+          "label": "Descending cosine",
+          "code": "assert ranked_ids([('C',.1),('A',.9),('B',.5)],2)==['A','B']"
+        },
+        {
+          "label": "Deterministic tied IDs",
+          "code": "assert ranked_ids([('z',.8),('a',.8),('b',.8)],3)==['a','b','z']"
+        },
+        {
+          "label": "Negative similarities",
+          "code": "assert ranked_ids([('A',-.9),('B',-.2),('C',0.0)],3)==['C','B','A']"
+        },
+        {
+          "label": "No silent k coercion/clamp",
+          "code": "for k in [0,-1,3,True,1.0]:\n    assert raises(ValueError,ranked_ids,[('A',.2),('B',.1)],k)\nassert raises(ValueError,ranked_ids,[],1)"
+        },
+        {
+          "label": "Input order preserved",
+          "code": "x=[('B',.5),('A',.5)];assert ranked_ids(x,1)==['A'] and x==[('B',.5),('A',.5)]"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q088",
+      "type": "code",
+      "topic": "Full object grants",
+      "difficulty": "foundation",
+      "prompt": "Implement readable_rows(rows, principal, grants). Each row is a well-formed dict containing chunk_id, tenant_id, document_id and document_version. grants is a trusted set of (principal, tenant_id, document_id, document_version) tuples. Return the original readable row objects in input order, without mutating rows/grants. Match all four grant components exactly; a document ID alone or matching tenant alone is insufficient. Assume input shapes are valid. This helper consumes grants; it does not authenticate a browser caller.",
+      "explanation": "A version-scoped grant does not automatically cover another tenant, principal or document version. Trusted grant creation and server authentication remain outside this small helper.",
+      "starter": "def readable_rows(rows: list[dict], principal: str, grants: set[tuple]) -> list[dict]:\n    raise NotImplementedError\n",
+      "reference": "def readable_rows(rows,principal,grants):\n    return [row for row in rows if (principal,row['tenant_id'],row['document_id'],row['document_version']) in grants]\n",
+      "checks": [
+        {
+          "label": "Matching full grant",
+          "code": "r={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'};result=readable_rows([r],'alice',{('alice','N','D','v1')});assert result==[r] and result[0] is r"
+        },
+        {
+          "label": "Principal and tenant isolation",
+          "code": "r={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'};assert readable_rows([r],'bob',{('alice','N','D','v1')})==[]\nassert readable_rows([r],'alice',{('alice','S','D','v1')})==[]"
+        },
+        {
+          "label": "Document and version isolation",
+          "code": "r={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'};assert readable_rows([r],'alice',{('alice','N','E','v1')})==[]\nassert readable_rows([r],'alice',{('alice','N','D','v2')})==[]"
+        },
+        {
+          "label": "Empty access and input",
+          "code": "assert readable_rows([{'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'}],'alice',set())==[]\nassert readable_rows([],'alice',{('alice','N','D','v1')})==[]"
+        },
+        {
+          "label": "Ordering and no mutation",
+          "code": "a={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'};b=dict(a,chunk_id='N:D:v1:1');rows=[b,a];grants={('alice','N','D','v1')};before=[dict(x) for x in rows];assert readable_rows(rows,'alice',grants)==[b,a] and rows==before and grants=={('alice','N','D','v1')}"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q089",
+      "type": "code",
+      "topic": "Authorization before scoring",
+      "difficulty": "applied",
+      "prompt": "Implement authorized_topk(rows, principal, grants, k, score). Inputs use the readable_rows contract and unique chunk IDs. score(row) returns a finite float and may raise if called on an unreadable row. Validate exact-int k>=1 first. Filter by the full trusted grant tuple BEFORE invoking score. If no rows are readable return [] with no score calls; otherwise reject k>readable_count with ValueError before scoring. Score every readable row exactly once, return k IDs by score descending then ID ascending. Preserve all inputs. No query embedding is performed by this helper.",
+      "explanation": "Prefiltering changes the candidate universe before ranking and avoids scoring unauthorized payloads. This teaching callback contract is not a complete multi-tenant timing-side-channel defense.",
+      "starter": "def authorized_topk(rows, principal: str, grants: set[tuple], k: int, score) -> list[str]:\n    raise NotImplementedError\n",
+      "reference": "def readable_rows(rows,principal,grants):\n    return [row for row in rows if (principal,row['tenant_id'],row['document_id'],row['document_version']) in grants]\n\ndef authorized_topk(rows,principal,grants,k,score):\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    allowed=readable_rows(rows,principal,grants)\n    if not allowed:\n        return []\n    if k>len(allowed):\n        raise ValueError(\"k exceeds authorized count\")\n    scored=[(row['chunk_id'],score(row)) for row in allowed]\n    return [x[0] for x in sorted(scored,key=lambda x:(-x[1],x[0]))[:k]]\n",
+      "checks": [
+        {
+          "label": "Never score unreadable objects",
+          "code": "a={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'};b=dict(a,tenant_id='S',chunk_id='S:D:v1:0');seen=[]\ndef score(r):\n    assert r['tenant_id']=='N'\n    seen.append(r['chunk_id']);return .2\nassert authorized_topk([b,a],'alice',{('alice','N','D','v1')},1,score)==['N:D:v1:0'] and seen==['N:D:v1:0']"
+        },
+        {
+          "label": "Empty access means no work",
+          "code": "def forbidden(r):\n    raise AssertionError('must not score')\nassert authorized_topk([{'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'}],'alice',set(),99,forbidden)==[]"
+        },
+        {
+          "label": "Nonempty count checked before scoring",
+          "code": "def forbidden(r):\n    raise AssertionError('must not score')\nassert raises(ValueError,authorized_topk,[{'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'}],'alice',{('alice','N','D','v1')},2,forbidden)"
+        },
+        {
+          "label": "Tie order and exactly once",
+          "code": "a={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1'};b=dict(a,chunk_id='N:D:v1:1');seen=[]\ndef score(r):\n    seen.append(r['chunk_id']);return -.5\nassert authorized_topk([b,a],'alice',{('alice','N','D','v1')},2,score)==['N:D:v1:0','N:D:v1:1'] and len(seen)==2"
+        },
+        {
+          "label": "Reject invalid k even with empty candidates",
+          "code": "for k in [0,-1,True,1.0]:\n    assert raises(ValueError,authorized_topk,[],'alice',set(),k,lambda r:0.0)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q090",
+      "type": "code",
+      "topic": "Traceable initial chunk",
+      "difficulty": "applied",
+      "prompt": "Implement initial_chunk(record). Require a dict with exactly tenant_id, document_id, document_version, title, text, all str. Each ID must fully match ASCII [A-Za-z0-9][A-Za-z0-9._-]{0,127}. Require nonblank title/text, lengths <=200/1000 Python characters respectively, and valid UTF-8 encoding for both. Raise ValueError otherwise. Preserve accepted text exactly. Return exactly chunk_id (tenant:document:version:0), the three identity fields, text, and content_digest (SHA-256 hex of text UTF-8 bytes). Do not mutate record or silently truncate. Cross-record duplicate checking is outside this single-record helper.",
+      "explanation": "One accepted source produces one complete chunk with scoped identity and an exact text hash. Text byte length and tokenizer budgets are different checks; this helper retains the lesson's character policy.",
+      "starter": "def initial_chunk(record: object) -> dict[str, str]:\n    raise NotImplementedError\n",
+      "reference": "import hashlib,re\ndef initial_chunk(record):\n    fields={'tenant_id','document_id','document_version','title','text'}\n    if not isinstance(record,dict) or set(record)!=fields or any(not isinstance(x,str) for x in record.values()):\n        raise ValueError(\"exact string fields required\")\n    parts=[record[k] for k in ('tenant_id','document_id','document_version')]\n    if any(re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,127}',x) is None for x in parts):\n        raise ValueError(\"invalid source identity\")\n    for key,limit in [('title',200),('text',1000)]:\n        value=record[key]\n        if not value.strip() or len(value)>limit:\n            raise ValueError(\"invalid source text size\")\n        try:\n            value.encode('utf-8')\n        except UnicodeEncodeError as exc:\n            raise ValueError(\"invalid UTF-8 text\") from exc\n    return {'chunk_id':':'.join(parts)+':0','tenant_id':parts[0],'document_id':parts[1],\n            'document_version':parts[2],'text':record['text'],\n            'content_digest':hashlib.sha256(record['text'].encode('utf-8')).hexdigest()}\n",
+      "checks": [
+        {
+          "label": "Identity, exact content and digest",
+          "code": "import hashlib\nr={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};c=initial_chunk(r);assert c=={'chunk_id':'N:D:v1:0','tenant_id':'N','document_id':'D','document_version':'v1','text':r['text'],'content_digest':hashlib.sha256(r['text'].encode('utf-8')).hexdigest()}"
+        },
+        {
+          "label": "Exact character boundaries and preserved whitespace",
+          "code": "r={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};r.update(title='t'*200,text=' é'+('x'*998));before=dict(r);assert len(initial_chunk(r)['text'])==1000 and r==before"
+        },
+        {
+          "label": "No truncation and no blank content",
+          "code": "for key,value in [('title','t'*201),('text','x'*1001),('text','  '),('title','')]:\n    r={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};r[key]=value;assert raises(ValueError,initial_chunk,r)"
+        },
+        {
+          "label": "Strict identities and encoding",
+          "code": "for key,value in [('tenant_id','N:other'),('document_id','é'),('document_version','x'*129),('text','\\ud800'),('title','\\udfff')]:\n    r={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};r[key]=value;assert raises(ValueError,initial_chunk,r)"
+        },
+        {
+          "label": "Exact fields and types",
+          "code": "r={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};r['extra']='x';assert raises(ValueError,initial_chunk,r)\nr={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};del r['title'];assert raises(ValueError,initial_chunk,r)\nr={'tenant_id':'N','document_id':'D','document_version':'v1','title':'Payment note','text':'Payment after receiving sign-off.'};r['text']=True;assert raises(ValueError,initial_chunk,r)\nassert raises(ValueError,initial_chunk,[])"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q091",
+      "type": "code",
+      "topic": "Embedding fingerprint",
+      "difficulty": "foundation",
+      "prompt": "Implement embedding_fingerprint(identity). Assume identity is a well-formed dict with model_id, artifact_digest, runtime_version, preprocessing_version (strings), dimension (positive int), metric (string), asymmetric (bool). In that exact order, join their str(value) representations with the single unit-separator character chr(31), encode as UTF-8, and return SHA-256 hexadecimal. Match Python str(True)/str(False) capitalization. Dict insertion order must not affect the result. Do not mutate input. This fingerprints the declared identity, not vector bytes.",
+      "explanation": "The explicit ordered serialization avoids dependence on dict insertion order and includes all compatibility fields. A same-size vector from another contract is still incompatible.",
+      "starter": "def embedding_fingerprint(identity: dict) -> str:\n    raise NotImplementedError\n",
+      "reference": "import hashlib\ndef embedding_fingerprint(identity):\n    fields=('model_id','artifact_digest','runtime_version','preprocessing_version','dimension','metric','asymmetric')\n    material=chr(31).join(str(identity[k]) for k in fields)\n    return hashlib.sha256(material.encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Explicit serialization",
+          "code": "import hashlib\nx={'model_id':'toy','artifact_digest':'abc','runtime_version':'1','preprocessing_version':'p1','dimension':2,'metric':'cosine','asymmetric':True};expected=hashlib.sha256(chr(31).join(['toy','abc','1','p1','2','cosine','True']).encode('utf-8')).hexdigest();assert embedding_fingerprint(x)==expected"
+        },
+        {
+          "label": "Order independent and immutable",
+          "code": "x={'model_id':'toy','artifact_digest':'abc','runtime_version':'1','preprocessing_version':'p1','dimension':2,'metric':'cosine','asymmetric':True};before=dict(x);assert embedding_fingerprint(x)==embedding_fingerprint(dict(reversed(list(x.items())))) and x==before"
+        },
+        {
+          "label": "Same dimension, different model or artifact",
+          "code": "x={'model_id':'toy','artifact_digest':'abc','runtime_version':'1','preprocessing_version':'p1','dimension':2,'metric':'cosine','asymmetric':True};a=embedding_fingerprint(x);assert embedding_fingerprint(dict(x,model_id='other'))!=a and embedding_fingerprint(dict(x,artifact_digest='def'))!=a"
+        },
+        {
+          "label": "Runtime and preparation identity",
+          "code": "x={'model_id':'toy','artifact_digest':'abc','runtime_version':'1','preprocessing_version':'p1','dimension':2,'metric':'cosine','asymmetric':True};a=embedding_fingerprint(x);assert embedding_fingerprint(dict(x,runtime_version='2'))!=a and embedding_fingerprint(dict(x,preprocessing_version='p2'))!=a"
+        },
+        {
+          "label": "Dimension, metric and asymmetric policy",
+          "code": "x={'model_id':'toy','artifact_digest':'abc','runtime_version':'1','preprocessing_version':'p1','dimension':2,'metric':'cosine','asymmetric':True};a=embedding_fingerprint(x);assert all(embedding_fingerprint(dict(x,**change))!=a for change in [{'dimension':3},{'metric':'dot'},{'asymmetric':False}])"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q092",
+      "type": "code",
+      "topic": "Embedding batch validation",
+      "difficulty": "applied",
+      "prompt": "Implement checked_batch(raw, count, dimension). count and dimension must be exact positive ints. raw must be list/tuple of exactly count vectors. Each vector must satisfy finite_vector (non-empty list/tuple, exact int/float, no bool, finite float conversion), have exactly dimension coordinates, and be non-zero. Return a tuple of stably L2-normalized vector tuples, preserving order and inputs. Raise ValueError for any violation. This checks returned vectors, not adapter identity before/after a call.",
+      "explanation": "Count, dimension and numerical invariants are separate. Normalizing returned vectors does not prove the adapter used the intended model or that rankings are relevant.",
+      "starter": "def checked_batch(raw, count: int, dimension: int) -> tuple[tuple[float, ...], ...]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n\ndef unit_vector(values):\n    vector=finite_vector(values)\n    scale=max(abs(x) for x in vector)\n    if scale==0:\n        raise ValueError(\"zero has no direction\")\n    scaled=tuple(x/scale for x in vector)\n    length=math.hypot(*scaled)\n    return tuple(x/length for x in scaled)\n\ndef checked_batch(raw,count,dimension):\n    if any(type(x) is not int or x<1 for x in (count,dimension)):\n        raise ValueError(\"positive exact counts required\")\n    if not isinstance(raw,(list,tuple)) or len(raw)!=count:\n        raise ValueError(\"embedding count mismatch\")\n    result=[]\n    for vector in raw:\n        value=unit_vector(vector)\n        if len(value)!=dimension:\n            raise ValueError(\"embedding dimension mismatch\")\n        result.append(value)\n    return tuple(result)\n",
+      "checks": [
+        {
+          "label": "One normalized vector per source",
+          "code": "import math\nx=checked_batch([[3,4],[0,-2]],2,2);assert isinstance(x,tuple) and all(isinstance(v,tuple) for v in x) and math.isclose(x[0][0],.6) and x[1]==(0.0,-1.0)"
+        },
+        {
+          "label": "Missing and extra embeddings",
+          "code": "assert raises(ValueError,checked_batch,[[1,0]],2,2)\nassert raises(ValueError,checked_batch,[[1,0],[0,1]],1,2)"
+        },
+        {
+          "label": "Dimension and zero constraints",
+          "code": "assert raises(ValueError,checked_batch,[[1,0,0]],1,2)\nassert raises(ValueError,checked_batch,[[0,0]],1,2)"
+        },
+        {
+          "label": "Finite exact types and counts",
+          "code": "assert raises(ValueError,checked_batch,[[True,0]],1,2)\nassert raises(ValueError,checked_batch,[[float('nan'),1]],1,2)\nfor count,dim in [(True,2),(1,False),(0,2),(1,0),(1.0,2)]:\n    assert raises(ValueError,checked_batch,[[1,0]],count,dim)"
+        },
+        {
+          "label": "Stable extremes and no mutation",
+          "code": "import math\nx=[[1e308,1e308],[1e-300,-1e-300]];before=[v[:] for v in x];out=checked_batch(x,2,2);assert x==before and all(math.isclose(math.hypot(*v),1) for v in out)\nassert raises(ValueError,checked_batch,None,1,2)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q093",
+      "type": "code",
+      "topic": "Corpus provenance digest",
+      "difficulty": "applied",
+      "prompt": "Implement chunk_corpus_digest(chunks). chunks is a non-empty list of well-formed dicts with chunk_id (nonblank str without newline or chr(31)) and content_digest (64 lowercase hex characters). You may assume field shapes; raise ValueError for an empty list or repeated chunk_id. Sort the strings chunk_id + chr(31) + content_digest, join with one newline (no final newline), hash UTF-8 with SHA-256 and return hexadecimal. Do not mutate input; input order must not affect the digest.",
+      "explanation": "Canonical ordering binds scoped chunk IDs and exact source-text digests independently of input order. This is a corpus recipe digest, not a vector snapshot checksum.",
+      "starter": "def chunk_corpus_digest(chunks: list[dict]) -> str:\n    raise NotImplementedError\n",
+      "reference": "import hashlib\ndef chunk_corpus_digest(chunks):\n    if not chunks or len({x['chunk_id'] for x in chunks})!=len(chunks):\n        raise ValueError(\"non-empty unique chunks required\")\n    entries=sorted(x['chunk_id']+chr(31)+x['content_digest'] for x in chunks)\n    return hashlib.sha256('\\n'.join(entries).encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact delimiter and newline recipe",
+          "code": "import hashlib\nx=[{'chunk_id':'b','content_digest':'b'*64},{'chunk_id':'a','content_digest':'a'*64}];expected=hashlib.sha256(('a'+chr(31)+'a'*64+'\\n'+'b'+chr(31)+'b'*64).encode('utf-8')).hexdigest();assert chunk_corpus_digest(x)==expected"
+        },
+        {
+          "label": "Order independent and no mutation",
+          "code": "x=[{'chunk_id':'b','content_digest':'b'*64},{'chunk_id':'a','content_digest':'a'*64}];before=[dict(v) for v in x];assert chunk_corpus_digest(x)==chunk_corpus_digest(x[::-1]) and x==before"
+        },
+        {
+          "label": "Text digest changes identity",
+          "code": "a=[{'chunk_id':'a','content_digest':'a'*64}];b=[{'chunk_id':'a','content_digest':'b'*64}];assert chunk_corpus_digest(a)!=chunk_corpus_digest(b)"
+        },
+        {
+          "label": "Source identity changes digest",
+          "code": "a=[{'chunk_id':'N:D:v1:0','content_digest':'a'*64}];b=[{'chunk_id':'N:D:v2:0','content_digest':'a'*64}];assert chunk_corpus_digest(a)!=chunk_corpus_digest(b)"
+        },
+        {
+          "label": "Reject missing or repeated chunks",
+          "code": "assert raises(ValueError,chunk_corpus_digest,[])\nx={'chunk_id':'a','content_digest':'a'*64};assert raises(ValueError,chunk_corpus_digest,[x,dict(x)])"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q094",
+      "type": "code",
+      "topic": "Requested-k precision",
+      "difficulty": "foundation",
+      "prompt": "Implement precision_at_k(ranked, gold, k). ranked must be a list/tuple of nonblank string IDs, unique across the ENTIRE ranking, not just top-k; gold must be a set/frozenset of nonblank string IDs. k must be an exact int>=1, excluding bool. Raise ValueError otherwise. Fewer than k returned IDs and empty rankings are allowed. Do not mutate inputs. Return hits within the first k divided by REQUESTED k as float. If gold is empty the result is 0.0. Do not divide by returned_count.",
+      "explanation": "Precision uses requested slots even if the system returns fewer results. Duplicate IDs cannot create additional hits and must be rejected before truncation.",
+      "starter": "def precision_at_k(ranked, gold, k: int) -> float:\n    raise NotImplementedError\n",
+      "reference": "def selected_ranking(ranked,gold,k):\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    if not isinstance(ranked,(list,tuple)) or not isinstance(gold,(set,frozenset)):\n        raise ValueError(\"ranking list/tuple and gold set required\")\n    if any(not isinstance(x,str) or not x.strip() for x in [*ranked,*gold]):\n        raise ValueError(\"nonblank IDs required\")\n    if len(set(ranked))!=len(ranked):\n        raise ValueError(\"duplicate ranking IDs\")\n    return ranked[:k]\n\ndef precision_at_k(ranked,gold,k):\n    selected=selected_ranking(ranked,gold,k)\n    return sum(x in gold for x in selected)/k\n",
+      "checks": [
+        {
+          "label": "Known mixed ranking",
+          "code": "assert precision_at_k(['X','A','Y','B'],{'A','B'},2)==.5"
+        },
+        {
+          "label": "Requested slots remain denominator",
+          "code": "assert precision_at_k(['A','B'],{'A','B'},5)==.4"
+        },
+        {
+          "label": "No gold and no results",
+          "code": "assert precision_at_k(['A'],set(),2)==0.0\nassert precision_at_k([],{'A'},3)==0.0"
+        },
+        {
+          "label": "Cutoff and preservation",
+          "code": "r=['A','X','B'];g={'A','B'};assert precision_at_k(r,g,1)==1.0 and r==['A','X','B'] and g=={'A','B'}"
+        },
+        {
+          "label": "Reject malformed rankings and k",
+          "code": "for r,g,k in [(['A','B','B'],{'A'},1),([''],{'A'},1),(['A'],{''},1),(['A'],{'A'},True),(['A'],{'A'},0),(['A'],{'A'},1.0)]:\n    assert raises(ValueError,precision_at_k,r,g,k)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q095",
+      "type": "code",
+      "topic": "Gold-set recall",
+      "difficulty": "applied",
+      "prompt": "Implement recall_at_k(ranked, gold, k). ranked must be a list/tuple of nonblank string IDs, unique across the ENTIRE ranking, not just top-k; gold must be a set/frozenset of nonblank string IDs. k must be an exact int>=1, excluding bool. Raise ValueError otherwise. Fewer than k returned IDs and empty rankings are allowed. Do not mutate inputs. Return None for an empty gold set; otherwise return hits within the first k divided by len(gold) as float, including 0.0 for no hit. Validate inputs even when gold is empty.",
+      "explanation": "Recall needs a defined positive target. No-gold queries remain distinct from labelled queries that simply retrieved no relevant item.",
+      "starter": "def recall_at_k(ranked, gold, k: int) -> float | None:\n    raise NotImplementedError\n",
+      "reference": "def selected_ranking(ranked,gold,k):\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    if not isinstance(ranked,(list,tuple)) or not isinstance(gold,(set,frozenset)):\n        raise ValueError(\"ranking list/tuple and gold set required\")\n    if any(not isinstance(x,str) or not x.strip() for x in [*ranked,*gold]):\n        raise ValueError(\"nonblank IDs required\")\n    if len(set(ranked))!=len(ranked):\n        raise ValueError(\"duplicate ranking IDs\")\n    return ranked[:k]\n\ndef recall_at_k(ranked,gold,k):\n    selected=selected_ranking(ranked,gold,k)\n    return sum(x in gold for x in selected)/len(gold) if gold else None\n",
+      "checks": [
+        {
+          "label": "Gold denominator",
+          "code": "import math\nassert math.isclose(recall_at_k(['A','X','B'],{'A','B','C'},3),2/3)"
+        },
+        {
+          "label": "Cutoff excludes later hits",
+          "code": "assert recall_at_k(['X','A','B'],{'A','B'},2)==.5"
+        },
+        {
+          "label": "No-gold is undefined, not perfect",
+          "code": "assert recall_at_k(['X'],set(),1) is None\nassert recall_at_k([],set(),3) is None"
+        },
+        {
+          "label": "No returned hit is observed zero with gold",
+          "code": "assert recall_at_k([],{'A'},5)==0.0\nassert recall_at_k(['X'],{'A'},1)==0.0"
+        },
+        {
+          "label": "Validation still required",
+          "code": "for r,g,k in [(['A','B','B'],{'A'},1),([''],{'A'},1),(['A'],{''},1),(['A'],{'A'},True),(['A'],{'A'},0),(['A'],{'A'},1.0)]:\n    assert raises(ValueError,recall_at_k,r,g,k)\nassert raises(ValueError,recall_at_k,['A','A'],set(),1)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q096",
+      "type": "code",
+      "topic": "First-hit reciprocal rank",
+      "difficulty": "applied",
+      "prompt": "Implement rr_at_k(ranked, gold, k). ranked must be a list/tuple of nonblank string IDs, unique across the ENTIRE ranking, not just top-k; gold must be a set/frozenset of nonblank string IDs. k must be an exact int>=1, excluding bool. Raise ValueError otherwise. Fewer than k returned IDs and empty rankings are allowed. Do not mutate inputs. After validation, return None for no gold; otherwise 1/rank of the FIRST relevant item within k using one-based ranks, or 0.0 if there is no hit. This is one query's reciprocal rank, not MRR.",
+      "explanation": "Only the first relevant result contributes to reciprocal rank. The cutoff and one-based rank origin are explicit; averaging across queries is a separate operation.",
+      "starter": "def rr_at_k(ranked, gold, k: int) -> float | None:\n    raise NotImplementedError\n",
+      "reference": "def selected_ranking(ranked,gold,k):\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    if not isinstance(ranked,(list,tuple)) or not isinstance(gold,(set,frozenset)):\n        raise ValueError(\"ranking list/tuple and gold set required\")\n    if any(not isinstance(x,str) or not x.strip() for x in [*ranked,*gold]):\n        raise ValueError(\"nonblank IDs required\")\n    if len(set(ranked))!=len(ranked):\n        raise ValueError(\"duplicate ranking IDs\")\n    return ranked[:k]\n\ndef rr_at_k(ranked,gold,k):\n    selected=selected_ranking(ranked,gold,k)\n    if not gold:\n        return None\n    for rank,item in enumerate(selected,1):\n        if item in gold:\n            return 1.0/rank\n    return 0.0\n",
+      "checks": [
+        {
+          "label": "First relevant result",
+          "code": "assert rr_at_k(['X','A','B'],{'A','B'},3)==.5"
+        },
+        {
+          "label": "Rank one and later rank",
+          "code": "assert rr_at_k(['A','X'],{'A'},2)==1.0\nassert rr_at_k(['X','Y','Z','A'],{'A'},4)==.25"
+        },
+        {
+          "label": "Cutoff and missing hit",
+          "code": "assert rr_at_k(['X','A'],{'A'},1)==0.0\nassert rr_at_k([],{'A'},2)==0.0"
+        },
+        {
+          "label": "No gold remains undefined",
+          "code": "assert rr_at_k(['X'],set(),2) is None"
+        },
+        {
+          "label": "Reject malformed ranking and k",
+          "code": "for r,g,k in [(['A','B','B'],{'A'},1),([''],{'A'},1),(['A'],{''},1),(['A'],{'A'},True),(['A'],{'A'},0),(['A'],{'A'},1.0)]:\n    assert raises(ValueError,rr_at_k,r,g,k)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q097",
+      "type": "code",
+      "topic": "Binary discounted gain",
+      "difficulty": "foundation",
+      "prompt": "Implement ndcg_at_k(ranked, gold, k). ranked must be a list/tuple of nonblank string IDs, unique across the ENTIRE ranking, not just top-k; gold must be a set/frozenset of nonblank string IDs. k must be an exact int>=1, excluding bool. Raise ValueError otherwise. Fewer than k returned IDs and empty rankings are allowed. Do not mutate inputs. Return None for no gold. Otherwise DCG=sum(1/log2(rank+1)) for relevant IDs within k, using one-based ranks; ideal DCG has relevant gains at ranks 1..min(k,len(gold)). Return DCG/ideal DCG as float. Binary relevance only; a labelled query with no hit scores 0.0.",
+      "explanation": "Binary nDCG gives earlier hits more gain and normalizes against the best possible order for the gold count and cutoff. It does not measure answer generation.",
+      "starter": "def ndcg_at_k(ranked, gold, k: int) -> float | None:\n    raise NotImplementedError\n",
+      "reference": "def selected_ranking(ranked,gold,k):\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    if not isinstance(ranked,(list,tuple)) or not isinstance(gold,(set,frozenset)):\n        raise ValueError(\"ranking list/tuple and gold set required\")\n    if any(not isinstance(x,str) or not x.strip() for x in [*ranked,*gold]):\n        raise ValueError(\"nonblank IDs required\")\n    if len(set(ranked))!=len(ranked):\n        raise ValueError(\"duplicate ranking IDs\")\n    return ranked[:k]\n\nimport math\ndef ndcg_at_k(ranked,gold,k):\n    selected=selected_ranking(ranked,gold,k)\n    if not gold:\n        return None\n    dcg=sum(1/math.log2(rank+1) for rank,item in enumerate(selected,1) if item in gold)\n    ideal=sum(1/math.log2(rank+1) for rank in range(1,min(k,len(gold))+1))\n    return dcg/ideal\n",
+      "checks": [
+        {
+          "label": "Perfect order",
+          "code": "import math\nassert math.isclose(ndcg_at_k(['A','B','X'],{'A','B'},3),1.0)"
+        },
+        {
+          "label": "Independent rank-two constant",
+          "code": "import math\nassert math.isclose(ndcg_at_k(['X','A'],{'A'},2),0.6309297535714575)"
+        },
+        {
+          "label": "Partial hit with ideal denominator",
+          "code": "import math\nassert math.isclose(ndcg_at_k(['A','X'],{'A','B'},2),0.6131471927654584)\nassert math.isclose(ndcg_at_k(['X','A','Y','B'],{'A','B'},4),0.6509209298071326)"
+        },
+        {
+          "label": "No hit and no gold differ",
+          "code": "assert ndcg_at_k([],{'A'},3)==0.0\nassert ndcg_at_k(['X'],set(),1) is None"
+        },
+        {
+          "label": "Validate before aggregation",
+          "code": "for r,g,k in [(['A','B','B'],{'A'},1),([''],{'A'},1),(['A'],{''},1),(['A'],{'A'},True),(['A'],{'A'},0),(['A'],{'A'},1.0)]:\n    assert raises(ValueError,ndcg_at_k,r,g,k)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q098",
+      "type": "code",
+      "topic": "MRR with explicit population",
+      "difficulty": "applied",
+      "prompt": "Implement summarize_rr(values). values is a list/tuple containing None or exact int/float values convertible to finite float in [0,1], excluding bool. Raise ValueError for invalid inputs. Return exactly {'mean_rr': mean_of_defined_values_or_None, 'defined_count': int, 'undefined_count': int}. Include defined zeros in the denominator. None is an undefined no-gold query; expose its count instead of turning it into zero or one. Preserve input.",
+      "explanation": "An average is interpretable only with its population and denominator. Defined zero-hit queries count; undefined no-gold cases are counted separately under this declared policy.",
+      "starter": "def summarize_rr(values) -> dict:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef summarize_rr(values):\n    if not isinstance(values,(list,tuple)):\n        raise ValueError(\"list or tuple required\")\n    defined=[]\n    for value in values:\n        if value is None:\n            continue\n        if type(value) not in (int,float):\n            raise ValueError(\"invalid reciprocal rank\")\n        try:\n            value=float(value)\n        except OverflowError as exc:\n            raise ValueError(\"non-finite rank\") from exc\n        if not math.isfinite(value) or not 0<=value<=1:\n            raise ValueError(\"rank outside [0,1]\")\n        defined.append(value)\n    return {'mean_rr':math.fsum(defined)/len(defined) if defined else None,\n            'defined_count':len(defined),'undefined_count':len(values)-len(defined)}\n",
+      "checks": [
+        {
+          "label": "Declared aggregation population",
+          "code": "assert summarize_rr([1,.5,0,None])=={'mean_rr':.5,'defined_count':3,'undefined_count':1}"
+        },
+        {
+          "label": "Zero failures stay in denominator",
+          "code": "assert summarize_rr([0,1])['mean_rr']==.5\nassert summarize_rr([0,0])['mean_rr']==0.0"
+        },
+        {
+          "label": "Undefined and empty populations",
+          "code": "assert summarize_rr([None,None])=={'mean_rr':None,'defined_count':0,'undefined_count':2}\nassert summarize_rr([])=={'mean_rr':None,'defined_count':0,'undefined_count':0}"
+        },
+        {
+          "label": "Reject types, range and non-finite",
+          "code": "for x in [[True],['0.5'],[-.1],[1.1],[float('nan')],[float('inf')],[10**1000],None]:\n    assert raises(ValueError,summarize_rr,x)"
+        },
+        {
+          "label": "Preserve tuple input",
+          "code": "x=(.25,None,.75);assert summarize_rr(x)=={'mean_rr':.5,'defined_count':2,'undefined_count':1} and x==(.25,None,.75)"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q099",
+      "type": "code",
+      "topic": "Approximate neighbor agreement",
+      "difficulty": "applied",
+      "prompt": "Implement neighbor_overlap(exact, approximate, k). Each ranking must be list/tuple of nonblank string IDs unique across its entire sequence. k is an exact int>=1, excluding bool, and both rankings must contain at least k IDs. Raise ValueError otherwise. Return the size of the intersection of their first k IDs divided by k as float. Order within top-k does not affect this overlap measure. Do not mutate inputs. This is ANN agreement with exact neighbors, not human relevance.",
+      "explanation": "Top-k set overlap measures approximation fidelity to an exact index under a compatible setup. Both indexes can agree on neighbors that fail a human support judgment.",
+      "starter": "def neighbor_overlap(exact, approximate, k: int) -> float:\n    raise NotImplementedError\n",
+      "reference": "def selected_ranking(ranked,gold,k):\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    if not isinstance(ranked,(list,tuple)) or not isinstance(gold,(set,frozenset)):\n        raise ValueError(\"ranking list/tuple and gold set required\")\n    if any(not isinstance(x,str) or not x.strip() for x in [*ranked,*gold]):\n        raise ValueError(\"nonblank IDs required\")\n    if len(set(ranked))!=len(ranked):\n        raise ValueError(\"duplicate ranking IDs\")\n    return ranked[:k]\n\ndef neighbor_overlap(exact,approximate,k):\n    selected_ranking(exact,set(),k)\n    selected_ranking(approximate,set(),k)\n    if len(exact)<k or len(approximate)<k:\n        raise ValueError(\"both rankings must fill k\")\n    return len(set(exact[:k]) & set(approximate[:k]))/k\n",
+      "checks": [
+        {
+          "label": "Partial overlap",
+          "code": "assert neighbor_overlap(['A','B','C'],['A','X','Y'],2)==.5"
+        },
+        {
+          "label": "Top-k set, not positional accuracy",
+          "code": "assert neighbor_overlap(['A','B'],['B','A'],2)==1.0"
+        },
+        {
+          "label": "No overlap and cutoff",
+          "code": "assert neighbor_overlap(['A','B'],['X','Y'],2)==0.0\nassert neighbor_overlap(['A','B'],['B','A'],1)==0.0"
+        },
+        {
+          "label": "Require k filled and valid",
+          "code": "for args in [(['A'],['A'],2),(['A'],['A'],True),(['A'],['A'],0),(['A'],['A'],1.0)]:\n    assert raises(ValueError,neighbor_overlap,*args)"
+        },
+        {
+          "label": "Full-ranking uniqueness and nonblank IDs",
+          "code": "assert raises(ValueError,neighbor_overlap,['A','B','B'],['A','X','Y'],1)\nassert raises(ValueError,neighbor_overlap,['A'],[''],1)\na=['B','A'];b=['A','B'];assert neighbor_overlap(a,b,2)==1 and a==['B','A'] and b==['A','B']"
+        }
+      ]
+    },
+    {
+      "id": "W05-Q100",
+      "type": "code",
+      "topic": "Exact synthetic retrieval",
+      "difficulty": "foundation",
+      "prompt": "Implement exact_search(query, rows, k). rows is a list of well-formed {'chunk_id': unique_nonblank_str, 'vector': list_or_tuple} dicts, already authorized by a trusted upstream policy. Validate query with the finite_vector contract and reject zero direction. Validate exact-int k>=1. If rows is empty return []; otherwise require k<=len(rows). Validate every row vector with the same contract, non-zero and query-matching dimension. Compute stable cosine and return a list of (chunk_id, score) tuples, score descending then ID ascending. Raise ValueError for violations. Preserve inputs. No relevance threshold or embedding model is implemented.",
+      "explanation": "This capstone checks exact cosine ranking over already-authorized synthetic vectors. It makes no semantic-model accuracy, no-answer or source-support claim; those require separate evidence.",
+      "starter": "def exact_search(query, rows: list[dict], k: int) -> list[tuple[str, float]]:\n    raise NotImplementedError\n",
+      "reference": "import math\ndef finite_vector(values):\n    if not isinstance(values,(list,tuple)) or not values:\n        raise ValueError(\"non-empty list or tuple required\")\n    result=[]\n    for x in values:\n        if type(x) not in (int,float):\n            raise ValueError(\"exact int or float required\")\n        try:\n            value=float(x)\n        except OverflowError as exc:\n            raise ValueError(\"coordinate exceeds finite float range\") from exc\n        if not math.isfinite(value):\n            raise ValueError(\"finite coordinates required\")\n        result.append(value)\n    return tuple(result)\n\ndef unit_vector(values):\n    vector=finite_vector(values)\n    scale=max(abs(x) for x in vector)\n    if scale==0:\n        raise ValueError(\"zero has no direction\")\n    scaled=tuple(x/scale for x in vector)\n    length=math.hypot(*scaled)\n    return tuple(x/length for x in scaled)\n\ndef exact_search(query,rows,k):\n    q=unit_vector(query)\n    if type(k) is not int or k<1:\n        raise ValueError(\"positive exact-int k required\")\n    if not rows:\n        return []\n    if k>len(rows):\n        raise ValueError(\"k exceeds candidate count\")\n    scored=[]\n    for row in rows:\n        v=unit_vector(row['vector'])\n        if len(v)!=len(q):\n            raise ValueError(\"dimension mismatch\")\n        score=max(-1.0,min(1.0,math.fsum(a*b for a,b in zip(q,v))))\n        scored.append((row['chunk_id'],score))\n    return sorted(scored,key=lambda x:(-x[1],x[0]))[:k]\n",
+      "checks": [
+        {
+          "label": "Known ranking and negative score",
+          "code": "import math\nr=exact_search([1,0],[{'chunk_id':'opposite','vector':[-2,0]},{'chunk_id':'same','vector':[5,0]},{'chunk_id':'orthogonal','vector':[0,3]}],3);assert [x[0] for x in r]==['same','orthogonal','opposite'] and all(math.isclose(x[1],y) for x,y in zip(r,[1,0,-1]))"
+        },
+        {
+          "label": "Tie order and magnitude independence",
+          "code": "r=exact_search([1,1],[{'chunk_id':'B','vector':[2,2]},{'chunk_id':'A','vector':[10,10]}],2);assert [x[0] for x in r]==['A','B']"
+        },
+        {
+          "label": "Stable extreme coordinates",
+          "code": "import math\nr=exact_search([1e308,1e308],[{'chunk_id':'tiny','vector':[1e-300,1e-300]}],1);assert math.isclose(r[0][1],1.0)"
+        },
+        {
+          "label": "Validate empty set and k policy",
+          "code": "assert exact_search([1,0],[],100)==[]\nassert raises(ValueError,exact_search,[0,0],[],1)\nfor k in [0,True,1.0,2]:\n    assert raises(ValueError,exact_search,[1,0],[{'chunk_id':'A','vector':[1,0]}],k)"
+        },
+        {
+          "label": "Reject any invalid row and preserve source",
+          "code": "for v in [[0,0],[1],[True,1],[float('nan'),1]]:\n    assert raises(ValueError,exact_search,[1,0],[{'chunk_id':'A','vector':v}],1)\nrows=[{'chunk_id':'B','vector':[0,2]},{'chunk_id':'A','vector':[2,0]}];before=[{'chunk_id':r['chunk_id'],'vector':r['vector'][:]} for r in rows];assert exact_search([1,0],rows,1)[0][0]=='A' and rows==before"
+        }
+      ]
+    }
+  ]
+}

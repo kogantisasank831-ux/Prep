@@ -17,6 +17,8 @@ alternate_label: Beginner version
 alternate_url: /weeks/week-05/beginner/
 ---
 
+Test your understanding with the [Week 5 assessment]({{ '/assessments/week-05/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on vector math, authorized ranking, provenance and retrieval metrics.
+
 ## Find the clause an analyst actually needs
 
 In Week 4, we checked whether extracted fields were supported by a supplied document. Now imagine the analyst has hundreds of documents and does not yet know which one contains the needed clause. Before extracting or answering anything, we need a way to find useful passages.

@@ -17,6 +17,8 @@ alternate_label: Production version
 alternate_url: /weeks/week-05/
 ---
 
+Test your understanding with the [Week 5 assessment]({{ '/assessments/week-05/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on vector math, authorized ranking, provenance and retrieval metrics.
+
 ## Find the passage that helps answer the question
 
 In Week 4, we extracted fields from a document we already had. This week, we first need to find that document. Imagine an analyst searching these four synthetic records:
