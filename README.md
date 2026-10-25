@@ -275,7 +275,7 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–11 assessment tests and Week 10–12 labs'
+requires Node 20+, checks the Week 7–12 assessment tests and Week 10–12 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
 application tests and Week 1 service regressions. A second required job builds
@@ -365,4 +365,18 @@ keeps PostgreSQL private; the CI override provides an isolated loopback test por
 The responder is scripted and the 32-dimensional token-hash encoder is a
 synthetic baseline. No provider/GPU/paid service or public backend is introduced.
 GitHub Pages publishes the static lessons, while these services run locally.
-Week 12 assessment questions remain a separate next step.
+The [Week 12 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-12/)
+adds 100 reviewed questions and balanced random 10-question papers. Its 20
+standard-library Python exercises cover settings, raw bytes, vectors, scoped
+identity, cache TTL/LRU, fixed windows, public projections, SSE, async callback
+failures, fresh rechecks, completion ownership and insert-only seed conflicts.
+The browser checker supports top-level await in checks. No database, backend
+server, container or provider is started by these small practice exercises.
+
+Run the bank and local service regression checks from the repository root:
+
+    python -m pytest tests/test_week12_assessment.py tests/test_week12_service.py -q
+
+These cover the shared scorer, reference/starter/wrong-solution checks and local
+service behavior. Required CI additionally runs the real database/container
+checks described above before promotion.

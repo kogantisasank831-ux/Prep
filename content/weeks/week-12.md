@@ -3,7 +3,7 @@ layout: week
 week: 12
 phase: 3
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-10-25
 estimated_hours: 8
 permalink: /weeks/week-12/
@@ -36,6 +36,8 @@ Bring the Python/API ideas from Week 1, source lineage from Week 6, retrieval/co
 | Hour 8 | Present the service and defend its limits | A short interview demo and a deployment decision note |
 
 Use the supplied lab as the working reference; the eight hours are for understanding, running, changing and explaining it. The full implementation does not need to be retyped.
+
+The [Week 12 assessment]({{ '/assessments/week-12/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
 ## Give the caller a small contract
 
@@ -354,7 +356,7 @@ Try these independent exercises:
 | What does cancelling an await stop? | It can stop the waiting request; it does not automatically terminate its Python thread. |
 | What remains before public hosting? | Identity/TLS, traffic and latency objectives, shared limits/cache policy, backups/recovery, image/security gates and an operating owner. |
 
-Your deliverable is a reproducible local service, an allowed/refused request comparison, real storage/HTTP evidence, and an honest explanation of the remaining deployment decisions. That completes the Phase 3 demonstration milestone. Week 13 introduces tool calling, where arguments and actual actions need their own authority checks. Week 12 assessment questions are a separate next step.
+Your deliverable is a reproducible local service, an allowed/refused request comparison, real storage/HTTP evidence, and an honest explanation of the remaining deployment decisions. That completes the Phase 3 demonstration milestone. Week 13 introduces tool calling, where arguments and actual actions need their own authority checks. Use the [Week 12 assessment]({{ '/assessments/week-12/' | relative_url }}) to check the service concepts and Python syntax before presenting the build.
 
 ## Sources and further reading
 

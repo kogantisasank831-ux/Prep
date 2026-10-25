@@ -1,0 +1,3073 @@
+{
+  "schema_version": 1,
+  "week": 12,
+  "version": "1.0.0",
+  "title": "Deploying the RAG service",
+  "source_lesson": "/weeks/week-12/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W12-Q001",
+      "type": "single",
+      "topic": "Service boundary",
+      "difficulty": "applied",
+      "prompt": "A colleague wants to call your already-running assistant from another program. What does the Week 12 API primarily add?",
+      "explanation": "The API gives clients a repeatable transport contract. The scripted responder and source authorization remain explicit components; a framework does not supply a trained model or broader permissions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Automatic permission to every stored document"
+        },
+        {
+          "id": "o2",
+          "text": "A trained language model merely by importing FastAPI"
+        },
+        {
+          "id": "o3",
+          "text": "An authenticated examination system"
+        },
+        {
+          "id": "o4",
+          "text": "A documented request/response boundary around the guarded assistant"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q002",
+      "type": "single",
+      "topic": "Transport versus outcome",
+      "difficulty": "applied",
+      "prompt": "POST /v1/ask returns HTTP 200 with status='refused'. How should a client record this?",
+      "explanation": "Transport success and answer outcome are separate fields. A deliberate refusal is a normal response under this contract and should not count as an answered quality success.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A normal application response whose answer outcome is a refusal"
+        },
+        {
+          "id": "o2",
+          "text": "A malformed HTTP response that must be silently retried"
+        },
+        {
+          "id": "o3",
+          "text": "A database outage regardless of the payload"
+        },
+        {
+          "id": "o4",
+          "text": "Proof that an evidence answer was correct"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q003",
+      "type": "single",
+      "topic": "Trusted scope",
+      "difficulty": "applied",
+      "prompt": "An authenticated North request includes tenant_id='South' alongside question in its JSON body. What does the lab do?",
+      "explanation": "The accepted body has only question. Trusted application code maps the credential to a fixed identity, and source grants are checked separately.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Switch to South because the body is more recent"
+        },
+        {
+          "id": "o2",
+          "text": "Reject the extra field; the bearer credential still determines trusted scope"
+        },
+        {
+          "id": "o3",
+          "text": "Choose whichever tenant yields the nearest vector"
+        },
+        {
+          "id": "o4",
+          "text": "Merge both tenants for retrieval"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W12-Q004",
+      "type": "single",
+      "topic": "Authentication order",
+      "difficulty": "applied",
+      "prompt": "A request has no valid bearer credential and carries a large untrusted body. Which application boundary is checked first in the lab?",
+      "explanation": "The manual Request path lets identity validation precede the application's body parser and database work. This does not claim that the network server never receives bytes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Vector ranking, to decide whether authentication is necessary"
+        },
+        {
+          "id": "o2",
+          "text": "JSON parsing, followed by a client-selected principal"
+        },
+        {
+          "id": "o3",
+          "text": "Credential validation, before application body parsing or repository access"
+        },
+        {
+          "id": "o4",
+          "text": "The responder, which decides whether the sender is trusted"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q005",
+      "type": "single",
+      "topic": "Received size",
+      "difficulty": "applied",
+      "prompt": "A client claims Content-Length: 10 but actually streams more than 4096 body bytes. What establishes the application's size decision?",
+      "explanation": "The parser checks the next chunk against the raw-byte bound before appending. Header assertions do not authorize a larger received representation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The number of TCP connections"
+        },
+        {
+          "id": "o2",
+          "text": "The claimed Content-Length alone"
+        },
+        {
+          "id": "o3",
+          "text": "The accumulated actual bytes received from request.stream()"
+        },
+        {
+          "id": "o4",
+          "text": "The decoded question's word count alone"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q006",
+      "type": "single",
+      "topic": "Bytes and characters",
+      "difficulty": "applied",
+      "prompt": "A JSON request has a decoded question of 700 NUL characters, serialized as \\u0000 escapes. Why can it exceed the raw-body limit?",
+      "explanation": "Decoded character length and serialized UTF-8 length measure different representations. Escapes and envelope punctuation count toward the 4096-byte request bound.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Python always stores one character in exactly six bytes"
+        },
+        {
+          "id": "o2",
+          "text": "JSON escaping changes the caller's tenant"
+        },
+        {
+          "id": "o3",
+          "text": "The 1000-character bound replaces all byte checks"
+        },
+        {
+          "id": "o4",
+          "text": "Each escape occupies six representation bytes even though it decodes to one character"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q007",
+      "type": "single",
+      "topic": "Canonical handoff",
+      "difficulty": "applied",
+      "prompt": "A valid request is exactly at the raw-byte boundary. Why does compute_answer use compact JSON separators when forwarding the accepted question to the guarded core?",
+      "explanation": "A later serialization is a new representation. Compact separators preserve the intended accepted boundary without introducing unnecessary bytes; they do not provide encryption or authentication.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To authenticate the original Content-Length header"
+        },
+        {
+          "id": "o2",
+          "text": "To turn a character limit into a model-token limit"
+        },
+        {
+          "id": "o3",
+          "text": "To encrypt the question"
+        },
+        {
+          "id": "o4",
+          "text": "To avoid adding serialization spaces that can make the forwarded representation exceed the same bound"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q008",
+      "type": "single",
+      "topic": "Async waiting",
+      "difficulty": "applied",
+      "prompt": "The API awaits an actual psycopg asynchronous database operation. What can the event loop do while that operation waits for I/O?",
+      "explanation": "Awaiting cooperative asynchronous I/O allows other tasks to run. Declaring an endpoint async does not make synchronous computation nonblocking or guarantee CPU parallel speedup.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Run other ready asynchronous tasks"
+        },
+        {
+          "id": "o2",
+          "text": "Ignore cancellation for every request"
+        },
+        {
+          "id": "o3",
+          "text": "Guarantee parallel execution of all Python CPU work"
+        },
+        {
+          "id": "o4",
+          "text": "Commit the database transaction before its SQL completes"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q009",
+      "type": "single",
+      "topic": "Blocking computation",
+      "difficulty": "applied",
+      "prompt": "Why does the lab move the bounded synchronous guarded computation through asyncio.to_thread?",
+      "explanation": "Offloading keeps that synchronous function off the event-loop thread. Thread lifetime, exceptions, GIL-related CPU limits and resource ownership still need explicit handling.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To make the worker impossible to cancel or fail"
+        },
+        {
+          "id": "o2",
+          "text": "To guarantee Python CPU parallel speedup"
+        },
+        {
+          "id": "o3",
+          "text": "To create a process memory sandbox"
+        },
+        {
+          "id": "o4",
+          "text": "So it does not execute inline on the event-loop thread"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q010",
+      "type": "single",
+      "topic": "Cancellation ownership",
+      "difficulty": "applied",
+      "prompt": "A client stops awaiting a shielded computation whose Python thread is still running. When may the lab return its expensive-work slot?",
+      "explanation": "Cancelling an await cannot kill a running Python thread. Returning its slot early would permit additional work while the old work still consumes capacity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "As soon as the client disconnects, regardless of worker state"
+        },
+        {
+          "id": "o2",
+          "text": "Never, even if completion is observed"
+        },
+        {
+          "id": "o3",
+          "text": "When the underlying worker actually finishes"
+        },
+        {
+          "id": "o4",
+          "text": "Only after the next successful database write"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q011",
+      "type": "single",
+      "topic": "Fresh transaction",
+      "difficulty": "applied",
+      "prompt": "A grant is revoked and committed after the first repeatable-read snapshot. What lets the return-time check observe that committed change?",
+      "explanation": "Repeatable read deliberately retains a transaction snapshot. The second repository operation starts a new transaction; repeating a read in the old one is not a freshness check.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A second repository call using a new transaction and snapshot"
+        },
+        {
+          "id": "o2",
+          "text": "Repeating the SELECT within the unchanged first repeatable-read transaction"
+        },
+        {
+          "id": "o3",
+          "text": "Changing the request ID"
+        },
+        {
+          "id": "o4",
+          "text": "Reusing the first fingerprint without any new read"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q012",
+      "type": "single",
+      "topic": "Representation before ranking",
+      "difficulty": "applied",
+      "prompt": "A row has matching tenant and reader grants, but its page metadata no longer matches the approved full representation pin. Where is it excluded?",
+      "explanation": "The application verifies current policy and full representation before passing eligible IDs into vector selection. A similarity score cannot repair a pin mismatch.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Nowhere, because a nearby vector approves metadata"
+        },
+        {
+          "id": "o2",
+          "text": "Only after the responder has read it"
+        },
+        {
+          "id": "o3",
+          "text": "Before it can enter the verified-ID vector candidate set"
+        },
+        {
+          "id": "o4",
+          "text": "Only when the browser displays a citation"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q013",
+      "type": "single",
+      "topic": "Vector baseline",
+      "difficulty": "applied",
+      "prompt": "What does the supplied 32-dimensional token-hash encoder represent?",
+      "explanation": "Signed token hashing supplies reproducible small vectors for the local storage exercise. Collisions and lexical limitations remain, and vector relevance confers no authorization or truth.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An automatic replacement for source access checks"
+        },
+        {
+          "id": "o2",
+          "text": "A proof that matching sources are factually true"
+        },
+        {
+          "id": "o3",
+          "text": "A deterministic synthetic baseline with possible collisions, not a trained semantic model"
+        },
+        {
+          "id": "o4",
+          "text": "A provider-trained embedding downloaded at startup"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q014",
+      "type": "single",
+      "topic": "Exact search",
+      "difficulty": "applied",
+      "prompt": "The lab's pgvector query orders eligible rows by cosine distance and has no ANN index. How should its search be described?",
+      "explanation": "The supplied query uses exact distance ordering and an eligible-ID restriction. The small scoped corpus and absence of an ANN index matter when discussing scale or recall.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exact distance ordering over the explicitly eligible candidate set"
+        },
+        {
+          "id": "o2",
+          "text": "A full production-scale vector benchmark"
+        },
+        {
+          "id": "o3",
+          "text": "Approximate HNSW search over every tenant"
+        },
+        {
+          "id": "o4",
+          "text": "A permission decision made by the distance operator"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q015",
+      "type": "single",
+      "topic": "SQL parameters",
+      "difficulty": "applied",
+      "prompt": "A question contains quote characters and SQL-like text. Which database practice prevents that text from becoming SQL syntax at the value boundary?",
+      "explanation": "Parameterized values remain data under the driver contract. Fixed SQL, source scope and least-privilege roles provide separate protections; HTML escaping is a different consumer boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pass values as bound parameters rather than interpolating them into SQL"
+        },
+        {
+          "id": "o2",
+          "text": "Escape the question only when rendering HTML"
+        },
+        {
+          "id": "o3",
+          "text": "Trust any text whose vector has 32 dimensions"
+        },
+        {
+          "id": "o4",
+          "text": "Place the raw text in an f-string query"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q016",
+      "type": "single",
+      "topic": "Scoped cache",
+      "difficulty": "applied",
+      "prompt": "Two callers named analyst ask the same question in North and South. What prevents the cache key from collapsing their contexts?",
+      "explanation": "Equal human-readable principal names do not imply equal scopes. The key includes tenant, principal, exact-question digest, current snapshot fingerprint and context configuration.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Including only the shared principal name"
+        },
+        {
+          "id": "o2",
+          "text": "Treating the request ID as a permanent access grant"
+        },
+        {
+          "id": "o3",
+          "text": "Including both tenant and principal, along with question, snapshot and configuration identity"
+        },
+        {
+          "id": "o4",
+          "text": "Including only normalized question text"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q017",
+      "type": "single",
+      "topic": "Cache hit work",
+      "difficulty": "applied",
+      "prompt": "A valid internal cache hit occurs. Which work does the published lab still perform?",
+      "explanation": "The cache saves intermediate Python computation. It still depends on fresh repository reads and does not serve stale answers when that dependency is unavailable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Both scoped database snapshots and the return-time fingerprint comparison"
+        },
+        {
+          "id": "o2",
+          "text": "A source update to extend every grant"
+        },
+        {
+          "id": "o3",
+          "text": "A new model-provider generation"
+        },
+        {
+          "id": "o4",
+          "text": "No database access at all"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q018",
+      "type": "single",
+      "topic": "Absolute expiry",
+      "difficulty": "applied",
+      "prompt": "An entry expires at monotonic time 20. A hit at time 19 moves it to the LRU end. What happens at time 20?",
+      "explanation": "Recency order and expiry are distinct state. The lab updates LRU position on a hit while retaining the original absolute expiration time.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It is expired; an LRU hit did not extend its absolute TTL"
+        },
+        {
+          "id": "o2",
+          "text": "Its expiry becomes 34 because every hit resets the TTL"
+        },
+        {
+          "id": "o3",
+          "text": "It transfers to the other tenant's cache"
+        },
+        {
+          "id": "o4",
+          "text": "It becomes permanently valid"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q019",
+      "type": "single",
+      "topic": "Rate scope",
+      "difficulty": "applied",
+      "prompt": "An authenticated malformed ask request fails body validation. Does it consume this lab's per-principal minute allowance?",
+      "explanation": "Counting authenticated attempts before parsing prevents repeated malformed attempts from bypassing this allowance. Keys are scoped by tenant and principal; invalid credentials are rejected before that step.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes; rate consumption happens before body parsing"
+        },
+        {
+          "id": "o2",
+          "text": "No; only answered requests count"
+        },
+        {
+          "id": "o3",
+          "text": "Yes, but it consumes every tenant's allowance together"
+        },
+        {
+          "id": "o4",
+          "text": "No; only database writes count"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q020",
+      "type": "single",
+      "topic": "Rate versus active work",
+      "difficulty": "applied",
+      "prompt": "A caller has minute allowance left, but both expensive-work slots are occupied. Which response represents this application's admission decision?",
+      "explanation": "The rate limiter controls attempts over time; admission limits active expensive pipelines. Exhausted application admission returns 503 busy, independently of remaining rate allowance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "200 with an invented cached answer"
+        },
+        {
+          "id": "o2",
+          "text": "429 solely because any work is running"
+        },
+        {
+          "id": "o3",
+          "text": "503 busy with a retry hint"
+        },
+        {
+          "id": "o4",
+          "text": "An unbounded wait queue by default"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q021",
+      "type": "single",
+      "topic": "Scaling limits",
+      "difficulty": "applied",
+      "prompt": "You run four independent copies of this service with unchanged process-local controls. Which conclusion is justified?",
+      "explanation": "Process-local memory is not distributed coordination. The supplied container uses one worker; broader deployment requires a deliberate shared-enforcement design.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One worker's revocation check locks every other process"
+        },
+        {
+          "id": "o2",
+          "text": "Each process has its own cache, allowance and admission slots"
+        },
+        {
+          "id": "o3",
+          "text": "A Python dictionary becomes a distributed store"
+        },
+        {
+          "id": "o4",
+          "text": "The four copies automatically share one global quota"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W12-Q022",
+      "type": "single",
+      "topic": "Stream meaning",
+      "difficulty": "applied",
+      "prompt": "When does /v1/ask/stream begin its meta/result/done frames in the supplied lab?",
+      "explanation": "This is a validated-result stream, not model-token generation. Completing safety checks before stream creation also keeps expected preflight failures as ordinary HTTP errors.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "After answer validation and the fresh-source recheck have completed"
+        },
+        {
+          "id": "o2",
+          "text": "Before authentication to reduce perceived latency"
+        },
+        {
+          "id": "o3",
+          "text": "Only after a separate provider has trained a model"
+        },
+        {
+          "id": "o4",
+          "text": "As soon as the first unvalidated responder fragment appears"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q023",
+      "type": "single",
+      "topic": "Incomplete delivery",
+      "difficulty": "applied",
+      "prompt": "A stream delivers meta and result but disconnects before done. What should the client conclude under this protocol?",
+      "explanation": "Prepared output and completed delivery are different observations. Without done the stream is incomplete; this protocol does not add durable replay or transactional delivery guarantees.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The request must have no side effects anywhere"
+        },
+        {
+          "id": "o2",
+          "text": "HTTP 200 proves every frame arrived"
+        },
+        {
+          "id": "o3",
+          "text": "Delivery is incomplete; the final completion marker was not observed"
+        },
+        {
+          "id": "o4",
+          "text": "The server is guaranteed never to have computed the answer"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q024",
+      "type": "single",
+      "topic": "Health signals",
+      "difficulty": "applied",
+      "prompt": "The process responds to /health/live, but PostgreSQL is unavailable. What should happen to the two health signals?",
+      "explanation": "Liveness asks whether this process responds. Readiness exercises the real database/schema/extension path and can fail separately without exposing driver payloads or credentials.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Readiness should reuse a cached successful answer instead of checking storage"
+        },
+        {
+          "id": "o2",
+          "text": "Liveness can remain successful while readiness reports 503"
+        },
+        {
+          "id": "o3",
+          "text": "Both endpoints must disclose the database password for diagnosis"
+        },
+        {
+          "id": "o4",
+          "text": "Liveness must prove every dependency is healthy"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W12-Q025",
+      "type": "single",
+      "topic": "Secret rotation",
+      "difficulty": "applied",
+      "prompt": "You replace the mounted bearer secret file while an API process is already running. What does the documented setup require before that process uses the replacement?",
+      "explanation": "Settings and secret contents are loaded at startup. File replacement is not an automatic in-process rotation mechanism; database credential rotation also needs the corresponding role change.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Nothing; the process reloads every file on every comparison"
+        },
+        {
+          "id": "o2",
+          "text": "Restart it so startup settings are loaded again"
+        },
+        {
+          "id": "o3",
+          "text": "Add the new token as a question field"
+        },
+        {
+          "id": "o4",
+          "text": "Commit the secret into the Docker image"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W12-Q026",
+      "type": "single",
+      "topic": "Container DNS",
+      "difficulty": "applied",
+      "prompt": "Inside the API container, why is db:5432 the documented database address rather than localhost:5432?",
+      "explanation": "Containers have their own network namespaces. Compose service discovery provides the database service name to peers on the appropriate network.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "db is the Compose service name on the shared backend network; localhost is the API container itself"
+        },
+        {
+          "id": "o2",
+          "text": "Port 5432 automatically selects another container"
+        },
+        {
+          "id": "o3",
+          "text": "A named volume supplies network DNS"
+        },
+        {
+          "id": "o4",
+          "text": "localhost always names the physical Docker host"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q027",
+      "type": "single",
+      "topic": "Persistent state",
+      "difficulty": "applied",
+      "prompt": "You run ordinary docker compose down without -v, then start the same project with the same secret files. What happens to the named database volume?",
+      "explanation": "Named volumes have a lifecycle distinct from containers. The documented restart preserves state; deleting the volume is a separate data-deletion operation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It is copied into the static GitHub Pages build"
+        },
+        {
+          "id": "o2",
+          "text": "It replaces every source grant with a default public grant"
+        },
+        {
+          "id": "o3",
+          "text": "It remains available for the next start"
+        },
+        {
+          "id": "o4",
+          "text": "It is always erased along with the containers"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q028",
+      "type": "single",
+      "topic": "Bootstrap conflict",
+      "difficulty": "applied",
+      "prompt": "A saved fixture policy differs from the incoming expected fixture during bootstrap. What does the lab do?",
+      "explanation": "Insert-only bootstrap accepts identical records and rejects conflicts. That preserves evidence of edits and avoids silently restoring old grants during a restart.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Abort the transaction with a conflict instead of silently resetting the policy"
+        },
+        {
+          "id": "o2",
+          "text": "Ignore the mismatch and declare the seed verified"
+        },
+        {
+          "id": "o3",
+          "text": "Overwrite it because setup is always authoritative"
+        },
+        {
+          "id": "o4",
+          "text": "Delete all unrelated database rows"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W12-Q029",
+      "type": "single",
+      "topic": "Runtime privileges",
+      "difficulty": "applied",
+      "prompt": "Which credential should the normal API process use to read Week 12 sources?",
+      "explanation": "Bootstrap and runtime have separate capabilities and secret mounts. The reader role cannot perform the tested writes/DDL; application tenant filtering is still required because the role is not per-tenant row-level authorization.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The administrator credential so each request can create roles"
+        },
+        {
+          "id": "o2",
+          "text": "The limited rag_reader role, rather than the bootstrap administrator"
+        },
+        {
+          "id": "o3",
+          "text": "A bearer token interpolated as the database user"
+        },
+        {
+          "id": "o4",
+          "text": "Any role chosen in the question JSON"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W12-Q030",
+      "type": "single",
+      "topic": "Static hosting",
+      "difficulty": "applied",
+      "prompt": "After this assessment and lesson are published to GitHub Pages, where does the FastAPI/PostgreSQL lab run?",
+      "explanation": "The browser can render lessons and run small Python exercises. The Python HTTP backend and PostgreSQL containers remain a separately started local demonstration.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "In every learner's browser as a complete PostgreSQL server"
+        },
+        {
+          "id": "o2",
+          "text": "Inside the static question JSON"
+        },
+        {
+          "id": "o3",
+          "text": "Automatically as a public database on Pages"
+        },
+        {
+          "id": "o4",
+          "text": "In the explicitly started local stack; Pages serves the static learning material"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q031",
+      "type": "multiple",
+      "topic": "HTTP contract",
+      "difficulty": "applied",
+      "prompt": "Which statements match the published ask interface?",
+      "explanation": "The small public projection separates correlation, application outcome and internal diagnosis. Neither a request ID nor transport success grants evidence access.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A 200 response can represent a deliberate refusal"
+        },
+        {
+          "id": "o2",
+          "text": "The public answer omits internal reason and denied-source identifiers"
+        },
+        {
+          "id": "o3",
+          "text": "A request_id grants source access"
+        },
+        {
+          "id": "o4",
+          "text": "The body permits question as its only field"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q032",
+      "type": "multiple",
+      "topic": "Raw parsing",
+      "difficulty": "applied",
+      "prompt": "Which checks protect different parts of the request boundary?",
+      "explanation": "Time, representation size and decoded schema are separate limits. Duplicate member names are rejected under the strict local contract rather than relying on last-value behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Enforce a body-read deadline"
+        },
+        {
+          "id": "o2",
+          "text": "Count received bytes before appending an oversized chunk"
+        },
+        {
+          "id": "o3",
+          "text": "Treat duplicate question keys as automatically unambiguous"
+        },
+        {
+          "id": "o4",
+          "text": "Validate decoded question type, length, nonblank content and UTF-8"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q033",
+      "type": "multiple",
+      "topic": "Credential scope",
+      "difficulty": "applied",
+      "prompt": "Which choices fit the lab's identity design?",
+      "explanation": "Credential checks establish the synthetic identity, while source grants still control individual reads. Constant-time comparison does not itself implement source authorization or secret rotation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use constant-time comparison for the secret comparison boundary"
+        },
+        {
+          "id": "o2",
+          "text": "Let a body field choose the caller's effective tenant"
+        },
+        {
+          "id": "o3",
+          "text": "Map a valid bearer secret to a fixed trusted tenant/principal"
+        },
+        {
+          "id": "o4",
+          "text": "Check current document grants after authenticating the caller"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q034",
+      "type": "multiple",
+      "topic": "Async boundaries",
+      "difficulty": "applied",
+      "prompt": "Which statements about async work in this lab are correct?",
+      "explanation": "Cooperative I/O and explicit offloading address event-loop blocking at different boundaries. Thread completion and cancellation remain separate lifecycle events.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Cancelling the await necessarily kills a running Python thread"
+        },
+        {
+          "id": "o2",
+          "text": "Offload the bounded synchronous guarded computation rather than running it inline"
+        },
+        {
+          "id": "o3",
+          "text": "Await asynchronous database I/O so other ready tasks can run"
+        },
+        {
+          "id": "o4",
+          "text": "An async def declaration makes every ordinary function it calls nonblocking"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q035",
+      "type": "multiple",
+      "topic": "Worker ownership",
+      "difficulty": "applied",
+      "prompt": "Which measures are needed by the published cancellation/admission design?",
+      "explanation": "The service owns outstanding tasks and their resources. Shielding an await alone neither retains every needed reference nor returns capacity at the correct time.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Delay slot release until the still-running worker really completes"
+        },
+        {
+          "id": "o2",
+          "text": "Retrieve a completed worker exception without printing its raw message"
+        },
+        {
+          "id": "o3",
+          "text": "Keep a strong reference to the scheduled worker task"
+        },
+        {
+          "id": "o4",
+          "text": "Release the work slot when the client cancels even if its thread is running"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q036",
+      "type": "multiple",
+      "topic": "Snapshot isolation",
+      "difficulty": "applied",
+      "prompt": "Which claims correctly describe the two-read repository flow?",
+      "explanation": "The first transaction provides a coherent view; the later transaction supplies a fresh comparison. Neither read creates retroactive erasure or distributed atomicity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The final recheck retracts data already read by the responder"
+        },
+        {
+          "id": "o2",
+          "text": "Each repository snapshot uses a short-lived read-only repeatable-read transaction"
+        },
+        {
+          "id": "o3",
+          "text": "A matching final fingerprint proves atomic revocation across all distributed readers"
+        },
+        {
+          "id": "o4",
+          "text": "The second new transaction can observe changes committed before its snapshot"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q037",
+      "type": "multiple",
+      "topic": "Pre-vector eligibility",
+      "difficulty": "applied",
+      "prompt": "Which conditions are applied before IDs enter vector candidate selection in the supplied repository?",
+      "explanation": "SQL scope is followed by application policy/pin checks and the lab's bounded screening. Similarity and model assertions are not approval authorities; the scanner also has documented limits.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Current tenant/principal grant and approved policy"
+        },
+        {
+          "id": "o2",
+          "text": "Known permitted-body screening"
+        },
+        {
+          "id": "o3",
+          "text": "The model's unsupported claim that a source is safe"
+        },
+        {
+          "id": "o4",
+          "text": "Full source/representation pin consistency"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q038",
+      "type": "multiple",
+      "topic": "Vector contracts",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly describe this encoder and search setup?",
+      "explanation": "The deterministic synthetic encoder supports a reproducible database exercise. Zero vectors, collisions, corpus bounds and the absence of a trained semantic model limit the conclusions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The supplied query is exact ordering over eligible IDs without an ANN index"
+        },
+        {
+          "id": "o2",
+          "text": "Nonempty vectors use 32 signed token-hash dimensions and L2 normalization"
+        },
+        {
+          "id": "o3",
+          "text": "An all-zero feature result has no usable query vector"
+        },
+        {
+          "id": "o4",
+          "text": "Passing these storage tests proves real-model semantic retrieval quality"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q039",
+      "type": "multiple",
+      "topic": "Database authority",
+      "difficulty": "applied",
+      "prompt": "Which statements remain true even with the read-only runtime role?",
+      "explanation": "Least privilege limits what the runtime connection can do. It does not replace the application's per-caller scope queries or protected source validation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Schema and source integrity checks remain separate from vector relevance"
+        },
+        {
+          "id": "o2",
+          "text": "SQL values should still be parameterized"
+        },
+        {
+          "id": "o3",
+          "text": "The shared reader role independently enforces each caller's tenant through RLS"
+        },
+        {
+          "id": "o4",
+          "text": "Application queries must still bind trusted caller scope"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q040",
+      "type": "multiple",
+      "topic": "Cache identity",
+      "difficulty": "applied",
+      "prompt": "Which changes must affect the published cache key?",
+      "explanation": "The key binds scope, exact question, source/policy state and context configuration. A request ID is regenerated for the response rather than preventing safe scoped reuse.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only a fresh request ID while all cache scope/content/configuration inputs are identical"
+        },
+        {
+          "id": "o2",
+          "text": "A change to the exact question text"
+        },
+        {
+          "id": "o3",
+          "text": "A changed source/policy snapshot fingerprint"
+        },
+        {
+          "id": "o4",
+          "text": "A different tenant or principal"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q041",
+      "type": "multiple",
+      "topic": "Cache lifecycle",
+      "difficulty": "applied",
+      "prompt": "Which statements match the internal cache implementation?",
+      "explanation": "The bounded cache keeps successes with absolute monotonic expiry. LRU recency and TTL are separate, and the cache never substitutes stale success for an unavailable repository.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only reason='ok' results are inserted"
+        },
+        {
+          "id": "o2",
+          "text": "At most 32 entries are retained using LRU eviction"
+        },
+        {
+          "id": "o3",
+          "text": "Hits extend the original absolute TTL"
+        },
+        {
+          "id": "o4",
+          "text": "A cache hit still requires fresh dependency reads and source revalidation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q042",
+      "type": "multiple",
+      "topic": "Rate limits",
+      "difficulty": "applied",
+      "prompt": "Which claims are correct for the supplied fixed-window limiter?",
+      "explanation": "Window state is process-local and based on monotonic time. Exact boundaries and zero need explicit tests; fixed windows are not smooth rolling quotas or distributed coordination.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Starting more processes automatically preserves one global allowance"
+        },
+        {
+          "id": "o2",
+          "text": "Its key includes tenant and principal"
+        },
+        {
+          "id": "o3",
+          "text": "A timestamp of zero is a valid clock reading"
+        },
+        {
+          "id": "o4",
+          "text": "A boundary can permit a burst across two adjacent windows"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q043",
+      "type": "multiple",
+      "topic": "Capacity layers",
+      "difficulty": "applied",
+      "prompt": "Which distinctions are accurate?",
+      "explanation": "Rate, application admission and server concurrency control different resources and can refuse independently. One process still does not create an environment-wide quota.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "429 represents the application's exhausted per-principal allowance"
+        },
+        {
+          "id": "o2",
+          "text": "Uvicorn's concurrency setting of 16 is the same counter as the application's two slots"
+        },
+        {
+          "id": "o3",
+          "text": "The configured single worker avoids multiplying the process-local state within that container"
+        },
+        {
+          "id": "o4",
+          "text": "503 busy represents full expensive-work admission"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q044",
+      "type": "multiple",
+      "topic": "Stream handling",
+      "difficulty": "applied",
+      "prompt": "Which choices match validated-result SSE in this lab?",
+      "explanation": "The protocol emits meta, result and done after preflight. Framing and a final marker describe delivery; they do not add token generation, replay or durable jobs.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Complete validation and rechecking before constructing the streaming response"
+        },
+        {
+          "id": "o2",
+          "text": "Accept a missing done marker as proof of complete delivery"
+        },
+        {
+          "id": "o3",
+          "text": "Serialize payload data as JSON so embedded newlines remain data"
+        },
+        {
+          "id": "o4",
+          "text": "Treat expected preflight failures as ordinary HTTP errors"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q045",
+      "type": "multiple",
+      "topic": "Health and diagnosis",
+      "difficulty": "applied",
+      "prompt": "Which observations are appropriate?",
+      "explanation": "Health probes and bounded diagnostics answer specific operational questions. A prepared response is not completed delivery, and logging code alone does not configure collector retention.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A response-prepared log proves all streaming frames reached the client"
+        },
+        {
+          "id": "o2",
+          "text": "Readiness checks the actual schema/extension/dependency path"
+        },
+        {
+          "id": "o3",
+          "text": "Routine events should avoid raw questions, bearer secrets and driver error payloads"
+        },
+        {
+          "id": "o4",
+          "text": "Liveness can pass during a database outage"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q046",
+      "type": "multiple",
+      "topic": "Settings",
+      "difficulty": "applied",
+      "prompt": "Which rules are implemented by the documented settings loader?",
+      "explanation": "Explicit parsing and validation make configuration predictable. The Python settings loader has no implicit dotenv discovery; Compose interpolation is a separate layer.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Read only the documented environment names and secret-file paths"
+        },
+        {
+          "id": "o2",
+          "text": "Reject exact integer settings that are bool or outside their ranges"
+        },
+        {
+          "id": "o3",
+          "text": "Reject equal North and South bearer secret values"
+        },
+        {
+          "id": "o4",
+          "text": "Automatically load every .env file it can find"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q047",
+      "type": "multiple",
+      "topic": "Secret handling",
+      "difficulty": "applied",
+      "prompt": "Which choices follow the supplied local setup?",
+      "explanation": "File mounts and limited exposure support the demo boundary. Loaded settings remain in process memory until restart, and a database role retains its own credential state.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep generated secret files out of git and the image build context"
+        },
+        {
+          "id": "o2",
+          "text": "Coordinate database role and file changes when rotating its password"
+        },
+        {
+          "id": "o3",
+          "text": "Assume changing a file updates the already-running API immediately"
+        },
+        {
+          "id": "o4",
+          "text": "Mount only the secret files each service needs"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q048",
+      "type": "multiple",
+      "topic": "Container boundary",
+      "difficulty": "applied",
+      "prompt": "Which facts describe the ordinary Compose file?",
+      "explanation": "The API connects to backend and frontend networks; the ordinary database remains private to backend. Bootstrap and API receive different secret sets and capabilities.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The API host port is published on 127.0.0.1:8000"
+        },
+        {
+          "id": "o2",
+          "text": "The normal API receives the bootstrap administrator secret"
+        },
+        {
+          "id": "o3",
+          "text": "The database is on the internal backend network without a host-published port"
+        },
+        {
+          "id": "o4",
+          "text": "The API can reach peers using service names on shared networks"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W12-Q049",
+      "type": "multiple",
+      "topic": "Restart and seed",
+      "difficulty": "applied",
+      "prompt": "Which statements match the documented persistence path?",
+      "explanation": "Persistent storage and credentials survive on separate lifecycles. Insert-only conflict checks prevent an ordinary restart from quietly resetting edited policy data.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The same secret files should remain paired with a retained volume"
+        },
+        {
+          "id": "o2",
+          "text": "Identical existing fixture rows are accepted by bootstrap"
+        },
+        {
+          "id": "o3",
+          "text": "Ordinary down retains the named database volume"
+        },
+        {
+          "id": "o4",
+          "text": "Conflicting fixture rows are silently reset to their original grants"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q050",
+      "type": "multiple",
+      "topic": "Evidence claims",
+      "difficulty": "applied",
+      "prompt": "Which conclusions are justified by the separate validation layers?",
+      "explanation": "A controlled repository, a real database and a running container/HTTP path provide different evidence. Exact candidate identity connects release checks to what is promoted.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Passing synthetic examples does not prove production scale or real-model answer quality"
+        },
+        {
+          "id": "o2",
+          "text": "Real PostgreSQL integration can test vector/schema and reader write-denial behavior"
+        },
+        {
+          "id": "o3",
+          "text": "Real HTTP smoke before and after restart tests that candidate's runnable path"
+        },
+        {
+          "id": "o4",
+          "text": "Tests using an in-memory repository prove the actual database's permissions"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W12-Q051",
+      "type": "match",
+      "topic": "Public interfaces",
+      "difficulty": "applied",
+      "prompt": "Match each endpoint to the question it answers.",
+      "explanation": "Transport, framed delivery, liveness and readiness are distinct interfaces. A healthy process does not imply usable storage or an answered evidence result.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "POST /v1/ask"
+        },
+        {
+          "id": "l2",
+          "text": "POST /v1/ask/stream"
+        },
+        {
+          "id": "l3",
+          "text": "GET /health/live"
+        },
+        {
+          "id": "l4",
+          "text": "GET /health/ready"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Check the real database/schema/extension dependency path"
+        },
+        {
+          "id": "r2",
+          "text": "Return a complete public JSON answer or refusal"
+        },
+        {
+          "id": "r3",
+          "text": "Deliver meta, validated result and done frames"
+        },
+        {
+          "id": "r4",
+          "text": "Check whether the process responds"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l1": "r2",
+        "l2": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W12-Q052",
+      "type": "match",
+      "topic": "Expected HTTP errors",
+      "difficulty": "applied",
+      "prompt": "Match each lab response status to its application-level cause.",
+      "explanation": "Authentication, representation size, rate and active-work admission fail at different boundaries. The status should preserve that distinction for clients.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "401"
+        },
+        {
+          "id": "l2",
+          "text": "413"
+        },
+        {
+          "id": "l3",
+          "text": "429"
+        },
+        {
+          "id": "l4",
+          "text": "503 busy"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Missing or invalid bearer credential"
+        },
+        {
+          "id": "r2",
+          "text": "Both expensive-work slots are occupied"
+        },
+        {
+          "id": "r3",
+          "text": "Authenticated principal's minute allowance is exhausted"
+        },
+        {
+          "id": "r4",
+          "text": "Actual raw body exceeds 4096 bytes"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l4": "r2",
+        "l3": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W12-Q053",
+      "type": "match",
+      "topic": "Input representations",
+      "difficulty": "applied",
+      "prompt": "Match each request concern to the relevant measurement or validation.",
+      "explanation": "Byte count, decoded schema, decoder ambiguity and elapsed time constrain different things. A check on one representation does not silently bound the others.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Received request size"
+        },
+        {
+          "id": "l2",
+          "text": "Question length"
+        },
+        {
+          "id": "l3",
+          "text": "Repeated question members"
+        },
+        {
+          "id": "l4",
+          "text": "Slow body arrival"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Apply the body's asynchronous read deadline"
+        },
+        {
+          "id": "r2",
+          "text": "Count decoded string characters"
+        },
+        {
+          "id": "r3",
+          "text": "Reject duplicates during strict JSON decoding"
+        },
+        {
+          "id": "r4",
+          "text": "Accumulate actual body bytes with a bound"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l1": "r4"
+      }
+    },
+    {
+      "id": "W12-Q054",
+      "type": "match",
+      "topic": "Authority ownership",
+      "difficulty": "applied",
+      "prompt": "Match each value to its role in the published service.",
+      "explanation": "Authority follows the producing boundary. Strings in task text and correlation identifiers do not replace credential or resource authorization checks.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Bearer credential"
+        },
+        {
+          "id": "l2",
+          "text": "Question JSON"
+        },
+        {
+          "id": "l3",
+          "text": "Protected document policy"
+        },
+        {
+          "id": "l4",
+          "text": "Request ID"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Supply task text under a closed input schema"
+        },
+        {
+          "id": "r2",
+          "text": "Correlate one execution without granting permission"
+        },
+        {
+          "id": "r3",
+          "text": "Select a fixed trusted synthetic caller identity"
+        },
+        {
+          "id": "r4",
+          "text": "Supply current grant, state and pin baselines"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l4": "r2",
+        "l1": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W12-Q055",
+      "type": "match",
+      "topic": "Async mechanics",
+      "difficulty": "applied",
+      "prompt": "Match each Python operation to its purpose in the lab.",
+      "explanation": "Cooperative waiting, offloading, cancellation propagation and resource release have separate responsibilities. Shielding alone cannot kill a thread or implement all ownership.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "await asynchronous repository I/O"
+        },
+        {
+          "id": "l2",
+          "text": "asyncio.to_thread"
+        },
+        {
+          "id": "l3",
+          "text": "asyncio.shield"
+        },
+        {
+          "id": "l4",
+          "text": "worker completion callback"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Return a retained admission slot after actual completion"
+        },
+        {
+          "id": "r2",
+          "text": "Yield while the database operation waits"
+        },
+        {
+          "id": "r3",
+          "text": "Run the synchronous guarded function off the event-loop thread"
+        },
+        {
+          "id": "r4",
+          "text": "Prevent cancellation of this await from cancelling its inner task"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l1": "r2",
+        "l2": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W12-Q056",
+      "type": "match",
+      "topic": "Database flow",
+      "difficulty": "applied",
+      "prompt": "Match each database step to its purpose.",
+      "explanation": "Snapshot coherence, freshness, query construction and connection privilege are different properties. The shared reader role still requires application caller scoping.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Read-only repeatable-read transaction"
+        },
+        {
+          "id": "l2",
+          "text": "New return-time transaction"
+        },
+        {
+          "id": "l3",
+          "text": "Parameterized SQL values"
+        },
+        {
+          "id": "l4",
+          "text": "Limited runtime reader role"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Observe a fresh snapshot for comparison"
+        },
+        {
+          "id": "r2",
+          "text": "Keep bound values distinct from SQL syntax"
+        },
+        {
+          "id": "r3",
+          "text": "Provide a coherent view within one repository snapshot"
+        },
+        {
+          "id": "r4",
+          "text": "Prevent the tested writes and DDL by the API connection"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l3": "r2",
+        "l1": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W12-Q057",
+      "type": "match",
+      "topic": "Vector path",
+      "difficulty": "applied",
+      "prompt": "Match each detail to the claim it supports.",
+      "explanation": "The vector math and query scope are explicit. None of them establishes semantic model quality, factual truth or access beyond the eligible set.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "32 signed token-hash dimensions"
+        },
+        {
+          "id": "l2",
+          "text": "L2 normalization"
+        },
+        {
+          "id": "l3",
+          "text": "pgvector <=>"
+        },
+        {
+          "id": "l4",
+          "text": "Verified eligible-ID restriction"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Keep the vector query within previously checked candidates"
+        },
+        {
+          "id": "r2",
+          "text": "Cosine distance used for ordering"
+        },
+        {
+          "id": "r3",
+          "text": "A deterministic synthetic feature representation"
+        },
+        {
+          "id": "r4",
+          "text": "Scale a nonzero feature vector to unit length"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l3": "r2",
+        "l1": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W12-Q058",
+      "type": "match",
+      "topic": "Cache identity components",
+      "difficulty": "applied",
+      "prompt": "Match each key component to the change it distinguishes.",
+      "explanation": "A reusable answer depends on caller scope, task, source state and configuration. Request correlation is renewed on a hit rather than made part of this key.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Tenant and principal"
+        },
+        {
+          "id": "l2",
+          "text": "Exact-question digest"
+        },
+        {
+          "id": "l3",
+          "text": "Snapshot fingerprint"
+        },
+        {
+          "id": "l4",
+          "text": "Context character setting"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Different effective caller scopes"
+        },
+        {
+          "id": "r2",
+          "text": "Different question text, including preserved whitespace"
+        },
+        {
+          "id": "r3",
+          "text": "Changed selected source or policy representation"
+        },
+        {
+          "id": "r4",
+          "text": "Different context configuration for computation"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W12-Q059",
+      "type": "match",
+      "topic": "Cache lifecycle",
+      "difficulty": "applied",
+      "prompt": "Match each cache observation to the corresponding behavior.",
+      "explanation": "Recency, expiry, capacity and admission policy are distinct cache decisions. Successful reuse still requires both repository reads.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "A live entry is hit"
+        },
+        {
+          "id": "l2",
+          "text": "Clock reaches the stored expiry"
+        },
+        {
+          "id": "l3",
+          "text": "An insertion exceeds 32 entries"
+        },
+        {
+          "id": "l4",
+          "text": "A guarded result has reason other than ok"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Delete the targeted expired entry and return a miss"
+        },
+        {
+          "id": "r2",
+          "text": "Do not insert that refusal into the result cache"
+        },
+        {
+          "id": "r3",
+          "text": "Evict from the least-recent end"
+        },
+        {
+          "id": "r4",
+          "text": "Move it to the most-recent end without extending expiry"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l4": "r2",
+        "l3": "r3",
+        "l1": "r4"
+      }
+    },
+    {
+      "id": "W12-Q060",
+      "type": "match",
+      "topic": "Limits and scope",
+      "difficulty": "applied",
+      "prompt": "Match each supplied limit to the resource or unit it constrains.",
+      "explanation": "These limits count different resources. They do not combine into a global quota, an end-to-end deadline, a model token bound or a process memory sandbox.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "12 authenticated attempts per minute"
+        },
+        {
+          "id": "l2",
+          "text": "Two expensive-work slots"
+        },
+        {
+          "id": "l3",
+          "text": "4096 body bytes"
+        },
+        {
+          "id": "l4",
+          "text": "Uvicorn concurrency setting 16"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A principal's process-local fixed-window allowance"
+        },
+        {
+          "id": "r2",
+          "text": "A separate server connection/concurrency layer"
+        },
+        {
+          "id": "r3",
+          "text": "Received raw request representation"
+        },
+        {
+          "id": "r4",
+          "text": "Active admitted pipelines in one service process"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l4": "r2",
+        "l3": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W12-Q061",
+      "type": "match",
+      "topic": "Stream observations",
+      "difficulty": "applied",
+      "prompt": "Match each SSE observation to its interpretation.",
+      "explanation": "The stream communicates a completed computation through framed delivery. A client still needs to observe the final marker; prepared output is not proof of delivery.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "meta with mode validated-result"
+        },
+        {
+          "id": "l2",
+          "text": "result with public answer fields"
+        },
+        {
+          "id": "l3",
+          "text": "done with complete=true"
+        },
+        {
+          "id": "l4",
+          "text": "Connection closes before done"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Identify this framed-result protocol"
+        },
+        {
+          "id": "r2",
+          "text": "Mark observed completion for that request"
+        },
+        {
+          "id": "r3",
+          "text": "Carry the already-validated answer or refusal"
+        },
+        {
+          "id": "r4",
+          "text": "Leave delivery incomplete without inventing replay guarantees"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l3": "r2",
+        "l2": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W12-Q062",
+      "type": "match",
+      "topic": "Configuration layers",
+      "difficulty": "applied",
+      "prompt": "Match each configuration concern to its documented behavior.",
+      "explanation": "Process settings, Compose interpolation, mounted files and database role state have distinct owners and lifecycles. There is no implicit Python dotenv discovery.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Python Settings.from_env"
+        },
+        {
+          "id": "l2",
+          "text": "Compose variable interpolation"
+        },
+        {
+          "id": "l3",
+          "text": "Mounted bearer file changed"
+        },
+        {
+          "id": "l4",
+          "text": "Database password rotated"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Coordinate the file value with the database role credential"
+        },
+        {
+          "id": "r2",
+          "text": "Resolve container environment values through Compose's own rules"
+        },
+        {
+          "id": "r3",
+          "text": "Restart the API to load the replacement value"
+        },
+        {
+          "id": "r4",
+          "text": "Read documented variables and referenced secret files at startup"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l1": "r4"
+      }
+    },
+    {
+      "id": "W12-Q063",
+      "type": "match",
+      "topic": "Container concepts",
+      "difficulty": "applied",
+      "prompt": "Match each deployment object to its purpose in this build.",
+      "explanation": "Packaging, execution, persistence and networking are different parts of the runnable system. Rebuilding an image does not inherently delete the named data volume.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Docker image"
+        },
+        {
+          "id": "l2",
+          "text": "API container"
+        },
+        {
+          "id": "l3",
+          "text": "Named database volume"
+        },
+        {
+          "id": "l4",
+          "text": "Compose backend network"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Packaged application filesystem and startup configuration"
+        },
+        {
+          "id": "r2",
+          "text": "Running instance using that image and mounted configuration"
+        },
+        {
+          "id": "r3",
+          "text": "Shared internal connectivity between API, bootstrap and database"
+        },
+        {
+          "id": "r4",
+          "text": "Persistent database files across ordinary container replacement"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l4": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W12-Q064",
+      "type": "match",
+      "topic": "Startup ordering",
+      "difficulty": "applied",
+      "prompt": "Match each startup detail to its reason.",
+      "explanation": "Startup order is useful but does not guarantee future dependency availability. Readiness and runtime failure handling remain necessary after containers have started.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Database health dependency"
+        },
+        {
+          "id": "l2",
+          "text": "Bootstrap completed successfully"
+        },
+        {
+          "id": "l3",
+          "text": "Insert-only seed conflict check"
+        },
+        {
+          "id": "l4",
+          "text": "API readiness after startup"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Abort rather than overwrite unexpected existing fixture values"
+        },
+        {
+          "id": "r2",
+          "text": "Check current schema/extension connectivity, not only past startup success"
+        },
+        {
+          "id": "r3",
+          "text": "Require schema/fixture setup before the API starts"
+        },
+        {
+          "id": "r4",
+          "text": "Wait for the database's startup health condition"
+        }
+      ],
+      "correct": {
+        "l3": "r1",
+        "l4": "r2",
+        "l2": "r3",
+        "l1": "r4"
+      }
+    },
+    {
+      "id": "W12-Q065",
+      "type": "match",
+      "topic": "Verification evidence",
+      "difficulty": "applied",
+      "prompt": "Match each check to the evidence it actually supplies.",
+      "explanation": "Different checks cover different boundaries. A browser coding score is not a database test, and a successful local demonstration does not establish production performance.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "FastAPI tests with a controlled repository"
+        },
+        {
+          "id": "l2",
+          "text": "Real PostgreSQL integration suite"
+        },
+        {
+          "id": "l3",
+          "text": "Container HTTP smoke after restart"
+        },
+        {
+          "id": "l4",
+          "text": "Published assessment in a browser"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Actual vector/schema, grant-change and reader-permission behavior"
+        },
+        {
+          "id": "r2",
+          "text": "The tested image, server and retained-volume path run together"
+        },
+        {
+          "id": "r3",
+          "text": "Application request, response and lifecycle behavior with that external boundary substituted"
+        },
+        {
+          "id": "r4",
+          "text": "Static UI, worker execution and practice-score behavior on that page"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l3": "r2",
+        "l1": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W12-Q066",
+      "type": "short",
+      "topic": "Async syntax",
+      "difficulty": "applied",
+      "prompt": "Inside async def, complete: result = ____ repository.snapshot(context, question). Enter the Python keyword only.",
+      "explanation": "await suspends this coroutine while the asynchronous operation progresses. It does not make an ordinary blocking function cooperative by itself.",
+      "accepted": [
+        "await"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q067",
+      "type": "short",
+      "topic": "Thread offloading",
+      "difficulty": "applied",
+      "prompt": "Complete asyncio.____(compute, context, question) to create an awaitable that runs the ordinary function in a separate thread. Function name only.",
+      "explanation": "to_thread moves the synchronous call off the event-loop thread. It does not supply a hard thread-kill mechanism or guarantee CPU parallel speedup.",
+      "accepted": [
+        "to_thread"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q068",
+      "type": "short",
+      "topic": "Task scheduling",
+      "difficulty": "applied",
+      "prompt": "Complete asyncio.____(coroutine) to schedule that coroutine as a Task. Function name only.",
+      "explanation": "create_task schedules the coroutine. The application must retain needed ownership and handle its eventual completion, failure or cancellation.",
+      "accepted": [
+        "create_task"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q069",
+      "type": "short",
+      "topic": "Shielded await",
+      "difficulty": "applied",
+      "prompt": "Complete await asyncio.____(worker) so cancellation of this await does not cancel the inner worker task through that await. Function name only.",
+      "explanation": "shield changes cancellation propagation to the inner task; the outer await can still be cancelled, and an already-running Python thread needs separate lifetime management.",
+      "accepted": [
+        "shield"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q070",
+      "type": "short",
+      "topic": "Async deadline",
+      "difficulty": "applied",
+      "prompt": "Complete async with asyncio.____(3): for the Python asynchronous deadline context manager. Function name only.",
+      "explanation": "timeout bounds the asynchronous block through cancellation semantics. It does not forcibly terminate an arbitrary running Python thread.",
+      "accepted": [
+        "timeout"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q071",
+      "type": "short",
+      "topic": "Immediate admission",
+      "difficulty": "applied",
+      "prompt": "Complete slots.____() with the asyncio.Queue method that takes an available token immediately or raises QueueEmpty, instead of waiting. Method name only.",
+      "explanation": "get_nowait supports the explicit fail-fast admission policy. A bounded Queue alone does not require callers to refuse instead of waiting.",
+      "accepted": [
+        "get_nowait"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q072",
+      "type": "short",
+      "topic": "Worker completion",
+      "difficulty": "applied",
+      "prompt": "Complete worker.____(release_after_completion) to register a callback to run when the Task/Future completes. Method name only.",
+      "explanation": "A completion callback can release retained resources at actual completion. Cancellation and exceptions still need appropriate handling inside the callback.",
+      "accepted": [
+        "add_done_callback"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q073",
+      "type": "short",
+      "topic": "Monotonic time",
+      "difficulty": "applied",
+      "prompt": "Complete time.____() with the clock used for elapsed-time cache expiry and rate windows, rather than wall-clock timestamps. Function name only.",
+      "explanation": "A monotonic clock avoids wall-clock adjustment jumps for these elapsed-time decisions. Its reading is not a civil timestamp and may validly be zero in tests.",
+      "accepted": [
+        "monotonic"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q074",
+      "type": "short",
+      "topic": "Retry rounding",
+      "difficulty": "applied",
+      "prompt": "Complete math.____(window_end - now) to round a positive fractional wait upward to whole seconds. Function name only.",
+      "explanation": "Ceiling avoids advising a retry earlier than a positive remaining window interval. The limiter also enforces a minimum retry of one second.",
+      "accepted": [
+        "ceil"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q075",
+      "type": "short",
+      "topic": "LRU update",
+      "difficulty": "applied",
+      "prompt": "Complete entries.____(key) with the OrderedDict method that makes an existing key most recent at the default end. Method name only.",
+      "explanation": "move_to_end updates recency order. It does not modify a separately stored expiration timestamp.",
+      "accepted": [
+        "move_to_end"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q076",
+      "type": "short",
+      "topic": "Oldest eviction",
+      "difficulty": "applied",
+      "prompt": "Complete entries.popitem(last=____) to remove the first, least-recent entry from this OrderedDict. Enter the case-sensitive Python boolean literal.",
+      "explanation": "last=False pops the first entry, while the default removes the last. Recency order must be maintained consistently on hits and insertions.",
+      "accepted": [
+        "False"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q077",
+      "type": "short",
+      "topic": "Bounded secret comparison",
+      "difficulty": "applied",
+      "prompt": "Complete hmac.____(supplied, expected) with the standard-library comparison function used for the validated ASCII bearer values. Function name only.",
+      "explanation": "compare_digest is designed for secret comparison at this boundary. It does not authenticate unrelated input or implement source grants, rotation or request throttling.",
+      "accepted": [
+        "compare_digest"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q078",
+      "type": "short",
+      "topic": "Runtime cleanup",
+      "difficulty": "applied",
+      "prompt": "Complete @contextlib.____ above an async generator used to own FastAPI startup and shutdown resources. Decorator name only.",
+      "explanation": "asynccontextmanager turns the async generator's entry, yield and cleanup into an asynchronous context manager used by the app lifespan.",
+      "accepted": [
+        "asynccontextmanager"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q079",
+      "type": "short",
+      "topic": "SQL binding",
+      "difficulty": "applied",
+      "prompt": "In psycopg cursor.execute('SELECT ... WHERE tenant_id = ____', (tenant,)), enter the two-character unquoted positional VALUE placeholder.",
+      "explanation": "The %s placeholder is bound by execute, not Python percent formatting. It is used for values; dynamic SQL identifiers require the driver's identifier-composition API.",
+      "accepted": [
+        "%s"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q080",
+      "type": "short",
+      "topic": "HTTP caching",
+      "difficulty": "applied",
+      "prompt": "Complete the header Cache-Control: ____ with the directive used to tell browser/proxy HTTP caches not to store the response. Directive only.",
+      "explanation": "no-store governs HTTP caches. The deliberate server-side application result cache is a separate component with its own scope and revalidation rules.",
+      "accepted": [
+        "no-store"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W12-Q081",
+      "type": "code",
+      "topic": "Strict integer configuration",
+      "difficulty": "applied",
+      "prompt": "Implement config_integer(raw, minimum, maximum). minimum and maximum are trusted exact ints with 1 <= minimum <= maximum <= 65535. Accept raw only when it is a str of 1 through 5 ASCII decimal digits whose integer value is in that inclusive range. Leading zeros are allowed; whitespace, signs, decimal points, Unicode digits and non-str inputs are not. Return the int, or raise ValueError('configuration_invalid') without including raw. Do not clamp, strip or coerce other types. This is one configuration component, not the entire Settings loader.",
+      "explanation": "Validate representation before conversion, then check the declared inclusive range. An exact local grammar avoids silently accepting alternate spellings or changing invalid values.",
+      "starter": "def config_integer(raw, minimum, maximum):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\ndef config_integer(raw, minimum, maximum):\n    if not isinstance(raw,str) or re.fullmatch(r'[0-9]{1,5}',raw) is None:\n        raise ValueError('configuration_invalid')\n    number=int(raw)\n    if not minimum<=number<=maximum:\n        raise ValueError('configuration_invalid')\n    return number\n",
+      "checks": [
+        {
+          "label": "Inclusive values and leading zeros",
+          "code": "assert config_integer('1',1,120)==1 and config_integer('120',1,120)==120 and config_integer('00012',1,120)==12"
+        },
+        {
+          "label": "Range is enforced, not clamped",
+          "code": "assert raises(ValueError,config_integer,'0',1,120) and raises(ValueError,config_integer,'121',1,120) and config_integer('65535',1,65535)==65535"
+        },
+        {
+          "label": "Exact textual grammar",
+          "code": "assert all(raises(ValueError,config_integer,s,1,120) for s in ('',' 12','12\\n','+12','-1','1.0','000012'))"
+        },
+        {
+          "label": "ASCII and input type",
+          "code": "assert all(raises(ValueError,config_integer,s,1,120) for s in ('１２','١٢',12,True,None))"
+        },
+        {
+          "label": "Bounded failure text",
+          "code": "try:config_integer('PRIVATE_INVALID_VALUE',1,120)\nexcept ValueError as e:assert str(e)=='configuration_invalid'\nelse:raise AssertionError('accepted invalid setting')"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q082",
+      "type": "code",
+      "topic": "Secret representation",
+      "difficulty": "applied",
+      "prompt": "Implement secret_value(raw). raw must be bytes holding 32 through 128 ASCII letters, digits, underscores or hyphens, optionally followed by ONE LF byte. Return the decoded value after removing only that optional final LF. Reject all other inputs, including CRLF, extra newlines, whitespace, non-ASCII and non-bytes, with ValueError('configuration_invalid'). Do not print or include raw in the exception. This checks the already-read representation; it does not read files, secure file permissions or authenticate a caller. The examples are synthetic.",
+      "explanation": "Remove only the documented optional LF and validate the complete ASCII value. General strip() and silent type conversion broaden the accepted secret grammar.",
+      "starter": "def secret_value(raw):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\ndef secret_value(raw):\n    if not isinstance(raw,bytes) or len(raw)>129:\n        raise ValueError('configuration_invalid')\n    try:value=raw.decode('ascii').removesuffix('\\n')\n    except UnicodeError as error:raise ValueError('configuration_invalid') from error\n    if re.fullmatch(r'[A-Za-z0-9_-]{32,128}',value) is None:\n        raise ValueError('configuration_invalid')\n    return value\n",
+      "checks": [
+        {
+          "label": "Valid synthetic values and single LF",
+          "code": "assert secret_value(b'A'*32)=='A'*32 and secret_value(b'aZ0_-'*8+b'\\n')=='aZ0_-'*8"
+        },
+        {
+          "label": "Length boundaries",
+          "code": "assert secret_value(b'B'*128+b'\\n')=='B'*128 and raises(ValueError,secret_value,b'A'*31) and raises(ValueError,secret_value,b'A'*129)"
+        },
+        {
+          "label": "No broad stripping",
+          "code": "assert all(raises(ValueError,secret_value,s) for s in (b'A'*32+b'\\r\\n',b'A'*32+b'\\n\\n',b' '+b'A'*32,b'A'*32+b' '))"
+        },
+        {
+          "label": "ASCII bytes only",
+          "code": "assert raises(ValueError,secret_value,('é'*32).encode()) and raises(ValueError,secret_value,'A'*32) and raises(ValueError,secret_value,bytearray(b'A'*32))"
+        },
+        {
+          "label": "No payload in error",
+          "code": "try:secret_value(b'SYNTHETIC_PRIVATE_VALUE!')\nexcept ValueError as e:assert str(e)=='configuration_invalid'\nelse:raise AssertionError('accepted bad representation')"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q083",
+      "type": "code",
+      "topic": "Compact question handoff",
+      "difficulty": "applied",
+      "prompt": "Implement question_bytes(question). Accept only a nonblank str of at most 1000 characters that encodes as valid UTF-8. Preserve its original text. Serialize {'question': question} with json.dumps(ensure_ascii=False, separators=(',', ':'), allow_nan=False), encode UTF-8 and return those bytes only if their length is at most 4096. Otherwise raise ValueError('invalid_request'), including for unpaired surrogates and non-str inputs. Do not add spaces or trim accepted text. This is serialization of an already-decoded value, not a raw JSON parser or authentication check.",
+      "explanation": "The forwarded representation needs its own byte accounting. Compact punctuation preserves a valid 4096-byte handoff that default serialization could expand beyond the bound.",
+      "starter": "def question_bytes(question):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import json\ndef question_bytes(question):\n    if not isinstance(question,str) or not question.strip() or len(question)>1000:\n        raise ValueError('invalid_request')\n    try:\n        raw=json.dumps({'question':question},ensure_ascii=False,separators=(',',':'),allow_nan=False).encode('utf-8')\n    except UnicodeError as error:raise ValueError('invalid_request') from error\n    if len(raw)>4096:raise ValueError('invalid_request')\n    return raw\n",
+      "checks": [
+        {
+          "label": "Exact compact envelope preserves text",
+          "code": "assert question_bytes('  terms?  ')==b'{\"question\":\"  terms?  \"}'"
+        },
+        {
+          "label": "Unicode is encoded directly",
+          "code": "import json\nq='😀'*1000;raw=question_bytes(q);assert len(raw)==4015 and json.loads(raw)=={'question':q}"
+        },
+        {
+          "label": "Exact raw-byte boundary",
+          "code": "q='\\x00'*680+'a';assert len(question_bytes(q))==4096 and raises(ValueError,question_bytes,'\\x00'*681)"
+        },
+        {
+          "label": "Decoded shape and length",
+          "code": "assert all(raises(ValueError,question_bytes,q) for q in ('',' \\t','a'*1001,None,False,17)) and len(question_bytes('a'*1000))==1015"
+        },
+        {
+          "label": "Escaping and invalid Unicode",
+          "code": "import json\nq='quote:\" newline:\\n backslash:\\\\';assert json.loads(question_bytes(q))['question']==q and raises(ValueError,question_bytes,chr(0xd800))"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q084",
+      "type": "code",
+      "topic": "Bounded chunk collection",
+      "difficulty": "applied",
+      "prompt": "Implement collect_body(chunks, limit). chunks is a one-pass iterable of bytes chunks; empty chunks are valid. limit is a trusted nonnegative exact int. Return their concatenation as bytes if the cumulative length never exceeds limit. On the first chunk that would exceed it, raise ValueError('request_too_large') before consuming ANY later chunk. An encountered non-bytes chunk instead raises ValueError('invalid_chunk') without consuming later chunks. Do not mutate chunks. This synchronous helper models byte accounting only, not an HTTP server, streaming memory sandbox, authentication or a deadline.",
+      "explanation": "Account for each received byte chunk before adding it, and stop at the first failure. Joining everything first loses the early-consumption boundary.",
+      "starter": "def collect_body(chunks, limit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def collect_body(chunks, limit):\n    result=bytearray()\n    for chunk in chunks:\n        if not isinstance(chunk,bytes):raise ValueError('invalid_chunk')\n        if len(result)+len(chunk)>limit:raise ValueError('request_too_large')\n        result.extend(chunk)\n    return bytes(result)\n",
+      "checks": [
+        {
+          "label": "Order, empty chunks and exact limit",
+          "code": "assert collect_body(iter([b'ab',b'',b'cd']),4)==b'abcd' and collect_body([],0)==b''"
+        },
+        {
+          "label": "Byte length rather than decoded length",
+          "code": "assert collect_body(['é'.encode()],2)=='é'.encode() and raises(ValueError,collect_body,['é'.encode()],1)"
+        },
+        {
+          "label": "Stop at first oversized chunk",
+          "code": "seen=[]\ndef parts():\n    for x in (b'ab',b'cd',b'NEVER'):\n        seen.append(x);yield x\nassert raises(ValueError,collect_body,parts(),3) and seen==[b'ab',b'cd']"
+        },
+        {
+          "label": "Non-bytes is an explicit error",
+          "code": "seen=[]\ndef parts():\n    for x in (b'a','bad',b'NEVER'):\n        seen.append(x);yield x\ntry:collect_body(parts(),10)\nexcept ValueError as e:assert str(e)=='invalid_chunk' and seen==[b'a','bad']\nelse:raise AssertionError('accepted non-bytes')"
+        },
+        {
+          "label": "No oversize payload in error",
+          "code": "try:collect_body([b'SYNTHETIC_PRIVATE'],0)\nexcept ValueError as e:assert str(e)=='request_too_large'\nelse:raise AssertionError('accepted oversized body')"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q085",
+      "type": "code",
+      "topic": "Vector normalization",
+      "difficulty": "applied",
+      "prompt": "Implement unit_vector(values). Accept a list or tuple of exactly 32 finite exact int/float values (bool is disallowed), each with absolute value at most 1000000. Reject other shapes, types or nonfinite values with ValueError('vector_invalid'). Return the 32-float L2-normalized tuple, or the empty tuple () when all features are zero. Do not mutate values or hash/tokenize text. This is one numeric component of a synthetic encoder; a zero result must not be treated as a usable cosine query.",
+      "explanation": "Validate the declared numeric domain before computing length. Preserve sign and dimension, normalize only a nonzero vector, and make the zero-feature case explicit.",
+      "starter": "def unit_vector(values):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import math\ndef unit_vector(values):\n    if not isinstance(values,(list,tuple)) or len(values)!=32:\n        raise ValueError('vector_invalid')\n    if any(type(x) not in (int,float) or not -1000000<=x<=1000000 for x in values):\n        raise ValueError('vector_invalid')\n    norm=math.hypot(*values)\n    return tuple(float(x/norm) for x in values) if norm else ()\n",
+      "checks": [
+        {
+          "label": "Known unit vector and dimension",
+          "code": "v=unit_vector([3,4]+[0]*30);assert len(v)==32 and abs(v[0]-.6)<1e-12 and abs(v[1]-.8)<1e-12 and all(type(x) is float for x in v)"
+        },
+        {
+          "label": "Zero is absent, not a query vector",
+          "code": "assert unit_vector([0]*32)==() and unit_vector(tuple([0.0]*32))==()"
+        },
+        {
+          "label": "Signs and no input mutation",
+          "code": "import math\nx=[-3,4]+[0]*30;y=x.copy();v=unit_vector(x);assert v[0]<0 and abs(sum(a*a for a in v)-1)<1e-12 and x==y"
+        },
+        {
+          "label": "Shape and scalar types",
+          "code": "assert raises(ValueError,unit_vector,[1]*31) and raises(ValueError,unit_vector,'0'*32) and raises(ValueError,unit_vector,[True]+[0]*31) and raises(ValueError,unit_vector,['1']+[0]*31)"
+        },
+        {
+          "label": "Finite bounded domain and tiny nonzero values",
+          "code": "assert all(raises(ValueError,unit_vector,[v]+[0]*31) for v in (float('nan'),float('inf'),-float('inf'),1000001)) and unit_vector([1000000]+[0]*31)[0]==1.0 and unit_vector([1e-300]+[0]*31)[0]==1.0"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q086",
+      "type": "code",
+      "topic": "Eligible distance ordering",
+      "difficulty": "applied",
+      "prompt": "Implement vector_candidates(rows, tenant, verified_ids, contract, limit). Inputs are trusted normalized data: rows is a list of dicts with tenant, chunk_id, embedding_contract and finite nonnegative distance; IDs are unique within a tenant. tenant and contract are str, verified_ids is a set of already policy/pin/screening-verified chunk IDs, and limit is an exact int from 0 through 12. First retain only rows matching all three: tenant, ID membership and embedding contract. Sort those rows by ascending (distance, chunk_id), take at most limit and return a list of IDs. Preserve inputs. This models an eligible-set query; it does not calculate vectors or independently verify grants.",
+      "explanation": "Eligibility must be applied before sorting and truncation. A closer denied or mismatched-contract row must neither occupy the limit nor become a fallback result.",
+      "starter": "def vector_candidates(rows, tenant, verified_ids, contract, limit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def vector_candidates(rows, tenant, verified_ids, contract, limit):\n    eligible=[r for r in rows if r['tenant']==tenant and r['chunk_id'] in verified_ids and r['embedding_contract']==contract]\n    return [r['chunk_id'] for r in sorted(eligible,key=lambda r:(r['distance'],r['chunk_id']))[:limit]]\n",
+      "checks": [
+        {
+          "label": "Same IDs in different tenants",
+          "code": "rows=[dict(tenant='S',chunk_id='x',embedding_contract='v1',distance=0),dict(tenant='N',chunk_id='x',embedding_contract='v1',distance=.8)];assert vector_candidates(rows,'N',{'x'},'v1',12)==['x'] and vector_candidates(rows,'N',set(),'v1',12)==[]"
+        },
+        {
+          "label": "Filter before limiting",
+          "code": "rows=[dict(tenant='S',chunk_id='denied',embedding_contract='v1',distance=0),dict(tenant='N',chunk_id='ok',embedding_contract='v1',distance=.9)];assert vector_candidates(rows,'N',{'ok'},'v1',1)==['ok']"
+        },
+        {
+          "label": "Contract membership is required",
+          "code": "rows=[dict(tenant='N',chunk_id='a',embedding_contract='old',distance=0),dict(tenant='N',chunk_id='b',embedding_contract='v1',distance=.4)];assert vector_candidates(rows,'N',{'a','b'},'v1',12)==['b']"
+        },
+        {
+          "label": "Distance, deterministic tie and cap",
+          "code": "rows=[dict(tenant='N',chunk_id=k,embedding_contract='v1',distance=d) for k,d in [('z',.2),('b',.1),('a',.1)]];assert vector_candidates(rows,'N',{'a','b','z'},'v1',2)==['a','b'] and vector_candidates(rows,'N',{'a'},'v1',0)==[]"
+        },
+        {
+          "label": "No mutation or extra fallback",
+          "code": "import copy\nrows=[dict(tenant='N',chunk_id='private',embedding_contract='v1',distance=0)];before=copy.deepcopy(rows);ids=set();assert vector_candidates(rows,'N',ids,'v1',12)==[] and rows==before and ids==set()"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q087",
+      "type": "code",
+      "topic": "Scoped cache key",
+      "difficulty": "applied",
+      "prompt": "Implement answer_key(tenant, principal, question, fingerprint, context_chars). All inputs are trusted validated values: the first four are str (question is valid UTF-8), context_chars is an exact int from 2 through 1400. Return the tuple (tenant, principal, digest, fingerprint, context_chars), where digest is the lowercase SHA-256 hex digest of UTF-8 bytes for 'week12-guarded-v1' + one NUL character + the EXACT question. Do not normalize question, include a request ID or drop scope/configuration fields. This key does not replace fresh source permission checks.",
+      "explanation": "Cache reuse depends on the caller, exact task, current source/policy fingerprint and configuration. A fixed namespace separates this digest's purpose without making it a permission token.",
+      "starter": "def answer_key(tenant, principal, question, fingerprint, context_chars):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import hashlib\ndef answer_key(tenant, principal, question, fingerprint, context_chars):\n    digest=hashlib.sha256(('week12-guarded-v1\\x00'+question).encode('utf-8')).hexdigest()\n    return tenant,principal,digest,fingerprint,context_chars\n",
+      "checks": [
+        {
+          "label": "Exact shape and domain-separated digest",
+          "code": "import hashlib\nx=answer_key('N','a','Q','fp',1400);assert x==('N','a',hashlib.sha256(b'week12-guarded-v1\\x00Q').hexdigest(),'fp',1400)"
+        },
+        {
+          "label": "Tenant and principal isolation",
+          "code": "a=answer_key('N','a','Q','f',1400);assert a!=answer_key('S','a','Q','f',1400) and a!=answer_key('N','b','Q','f',1400)"
+        },
+        {
+          "label": "Exact text including whitespace and Unicode",
+          "code": "assert answer_key('N','a',' Q','f',2)!=answer_key('N','a','Q','f',2) and answer_key('N','a','é','f',2)!=answer_key('N','a','e','f',2)"
+        },
+        {
+          "label": "Snapshot and configuration identity",
+          "code": "a=answer_key('N','a','Q','f',1400);assert a!=answer_key('N','a','Q','g',1400) and a!=answer_key('N','a','Q','f',2)"
+        },
+        {
+          "label": "Reproducible without correlation ID",
+          "code": "a=answer_key('N','a','Q','f',1400);assert a==answer_key('N','a','Q','f',1400) and len(a[2])==64 and all(c in '0123456789abcdef' for c in a[2])"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q088",
+      "type": "code",
+      "topic": "Complete snapshot fingerprint",
+      "difficulty": "applied",
+      "prompt": "Implement snapshot_digest(chunks, policies, contract). Inputs are trusted finite JSON-compatible records without duplicate object keys or invalid Unicode. chunks is an ORDERED list of complete chunk dicts. policies is a list of complete policy dicts with unique (tenant, document, version) str keys and a readers list of unique str values; other fields can be nested JSON data. Deep-copy policies, sort them by (tenant, document, version), and sort each readers list. Build {'embedding': contract, 'chunks': chunks, 'policies': normalized_policies}; serialize with sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False. Return lowercase SHA-256 hex of its UTF-8 bytes. Preserve chunk order and ALL fields, without mutating inputs. This exercise's normalized dict schema differs from the lab's dataclass adapter; a digest checks consistency, not truth or current authorization.",
+      "explanation": "Normalize only the explicitly unordered fields and serialize the complete records canonically. Omitting metadata, grants, bindings or encoder identity can let changed state reuse an old cache identity.",
+      "starter": "def snapshot_digest(chunks, policies, contract):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\nimport hashlib\nimport json\ndef snapshot_digest(chunks, policies, contract):\n    normalized=copy.deepcopy(policies)\n    normalized.sort(key=lambda p:(p['tenant'],p['document'],p['version']))\n    for policy in normalized:policy['readers'].sort()\n    raw=json.dumps({'embedding':contract,'chunks':chunks,'policies':normalized},sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False)\n    return hashlib.sha256(raw.encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact canonical digest",
+          "code": "import json,hashlib\nc=[{'id':'c','text':'é','metadata':{'page':1}}];p=[dict(tenant='N',document='D',version='1',readers=['b','a'],bindings={'c':'pin'})];expected={'embedding':'v1','chunks':c,'policies':[dict(p[0],readers=['a','b'])]};assert snapshot_digest(c,p,'v1')==hashlib.sha256(json.dumps(expected,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode()).hexdigest()"
+        },
+        {
+          "label": "Policy and reader order are normalized",
+          "code": "p=[dict(tenant='S',document='D',version='1',readers=['z','a']),dict(tenant='N',document='D',version='1',readers=['b'])];q=[dict(p[1]),dict(p[0],readers=['a','z'])];assert snapshot_digest([],p,'v1')==snapshot_digest([],q,'v1')"
+        },
+        {
+          "label": "Metadata and grants remain covered",
+          "code": "c=[{'id':'c','text':'same','metadata':{'page':1}}];p=[dict(tenant='N',document='D',version='1',readers=['a'])];a=snapshot_digest(c,p,'v1');assert a!=snapshot_digest([dict(c[0],metadata={'page':2})],p,'v1') and a!=snapshot_digest(c,[dict(p[0],readers=[])],'v1')"
+        },
+        {
+          "label": "Chunk order and embedding contract matter",
+          "code": "c=[{'id':'a'},{'id':'b'}];assert snapshot_digest(c,[],'v1')!=snapshot_digest(c[::-1],[],'v1') and snapshot_digest(c,[],'v1')!=snapshot_digest(c,[],'v2')"
+        },
+        {
+          "label": "Complete nested records and no mutation",
+          "code": "import copy\np=[dict(tenant='N',document='D',version='1',readers=['z','a'],state='approved',bindings={'c':'old'})];c=[{'id':'c'}];old=copy.deepcopy((c,p));a=snapshot_digest(c,p,'v1');assert (c,p)==old;p[0]['bindings']['c']='new';assert snapshot_digest(c,p,'v1')!=a"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q089",
+      "type": "code",
+      "topic": "Fresh response correlation",
+      "difficulty": "applied",
+      "prompt": "Implement renew_request(cached, request_id). cached is a trusted JSON-compatible dict representing an internal result, possibly with nested citation lists/dicts. Return an independent deep copy with request_id replaced by the supplied trusted str. Preserve every other field and leave cached unchanged. Neither later nested mutations to the returned object nor to cached may affect the other. This copies state for a fresh response; it does not revalidate sources, authenticate request IDs or implement the whole cache.",
+      "explanation": "A cache hit belongs to the current request even when answer computation is reused. Independent copies avoid accidental mutation of retained state; authorization is still checked separately.",
+      "starter": "def renew_request(cached, request_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef renew_request(cached, request_id):\n    result=copy.deepcopy(cached)\n    result['request_id']=request_id\n    return result\n",
+      "checks": [
+        {
+          "label": "New ID and preserved result",
+          "code": "c={'request_id':'old','answer':'Net 30','reason':'ok'};assert renew_request(c,'new')==dict(c,request_id='new')"
+        },
+        {
+          "label": "Original remains unchanged",
+          "code": "c={'request_id':'old','citation_ids':['S1']};r=renew_request(c,'new');assert c=={'request_id':'old','citation_ids':['S1']} and r is not c"
+        },
+        {
+          "label": "Returned nested data is independent",
+          "code": "c={'request_id':'old','citations':[{'id':'S1'}]};r=renew_request(c,'new');r['citations'][0]['id']='S2';assert c['citations'][0]['id']=='S1'"
+        },
+        {
+          "label": "Original nested changes do not leak",
+          "code": "c={'request_id':'old','extra':{'rows':[1]}};r=renew_request(c,'new');c['extra']['rows'].append(2);assert r['extra']['rows']==[1]"
+        },
+        {
+          "label": "Add missing ID and preserve other values",
+          "code": "c={'answer':'','citation_ids':[],'count':0,'flag':False};r=renew_request(c,'r');assert r==dict(c,request_id='r') and 'request_id' not in c"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q090",
+      "type": "code",
+      "topic": "Absolute TTL lookup",
+      "difficulty": "applied",
+      "prompt": "Implement cache_read(entries, key, now). entries is an OrderedDict mapping arbitrary hashable keys to (absolute_expiry, value); expiry and now are trusted finite monotonic numbers and value is a non-None trusted object. Return None for a missing key, leaving entries unchanged. For a present key with now >= expiry, delete that entry and return None. Otherwise move it to the end (most recent) and return the ORIGINAL value object without changing its expiry. Mutate only the target entry/order; do not purge unrelated expired entries or extend TTL.",
+      "explanation": "TTL is an absolute deadline tested with >=. Updating LRU order on a live hit must not quietly turn the cache into sliding expiration.",
+      "starter": "def cache_read(entries, key, now):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def cache_read(entries, key, now):\n    entry=entries.get(key)\n    if entry is None:return None\n    expires,value=entry\n    if now>=expires:\n        del entries[key]\n        return None\n    entries.move_to_end(key)\n    return value\n",
+      "checks": [
+        {
+          "label": "Hit returns original value",
+          "code": "from collections import OrderedDict\nv={'answer':'ok'};e=OrderedDict([('a',(20,v)),('b',(30,{}))]);assert cache_read(e,'a',19) is v and list(e)==['b','a'] and e['a'][0]==20"
+        },
+        {
+          "label": "Equality is expired",
+          "code": "from collections import OrderedDict\ne=OrderedDict([('a',(20,{})),('b',(30,{}))]);assert cache_read(e,'a',20) is None and list(e)==['b']"
+        },
+        {
+          "label": "No sliding expiration",
+          "code": "from collections import OrderedDict\ne=OrderedDict([('a',(20,{}))]);assert cache_read(e,'a',19) is not None and cache_read(e,'a',20) is None"
+        },
+        {
+          "label": "Missing key preserves order and entries",
+          "code": "from collections import OrderedDict\ne=OrderedDict([('a',(1,{})),('b',(2,{}))]);before=list(e.items());assert cache_read(e,'x',50) is None and list(e.items())==before"
+        },
+        {
+          "label": "Zero clock and unrelated expired rows",
+          "code": "from collections import OrderedDict\ne=OrderedDict([('old',(-1,{})),('live',(1,{'n':1}))]);assert cache_read(e,'live',0)=={'n':1} and 'old' in e and e['live'][0]==1"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q091",
+      "type": "code",
+      "topic": "Bounded success cache insertion",
+      "difficulty": "applied",
+      "prompt": "Implement cache_write(entries, key, result, now, ttl, capacity). entries is an OrderedDict mapping hashable keys to (absolute_expiry, result); result is a trusted dict containing reason. now is finite monotonic time, ttl is a positive finite duration, and capacity is a trusted positive exact int. If result['reason'] != 'ok', leave entries entirely unchanged. Otherwise store (now + ttl, result) under key, retaining the ORIGINAL result object, move key to the most-recent end, and evict oldest entries until len(entries) <= capacity. Return None. Replacing an existing key renews its expiry. Copying/revalidation and distributed coordination are outside this helper.",
+      "explanation": "Cache only validated successes, explicitly update recency and evict from the oldest end. Capacity is an invariant after an allowed write, not just a one-entry adjustment.",
+      "starter": "def cache_write(entries, key, result, now, ttl, capacity):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def cache_write(entries, key, result, now, ttl, capacity):\n    if result['reason']!='ok':return None\n    entries[key]=(now+ttl,result)\n    entries.move_to_end(key)\n    while len(entries)>capacity:entries.popitem(last=False)\n    return None\n",
+      "checks": [
+        {
+          "label": "Absolute expiry and original object",
+          "code": "from collections import OrderedDict\ne=OrderedDict();r={'reason':'ok'};assert cache_write(e,'a',r,0,15,2) is None and e['a'][0]==15 and e['a'][1] is r"
+        },
+        {
+          "label": "Do not cache refusals or remove old success",
+          "code": "from collections import OrderedDict\nold={'reason':'ok'};e=OrderedDict([('a',(20,old))]);cache_write(e,'a',{'reason':'source_changed'},1,15,1);assert list(e.items())==[('a',(20,old))]"
+        },
+        {
+          "label": "Evict least recent, not newest",
+          "code": "from collections import OrderedDict\ne=OrderedDict([('a',(20,{})),('b',(20,{}))]);cache_write(e,'c',{'reason':'ok'},1,15,2);assert list(e)==['b','c']"
+        },
+        {
+          "label": "Replacement updates order and expiry",
+          "code": "from collections import OrderedDict\ne=OrderedDict([('a',(20,{})),('b',(20,{}))]);r={'reason':'ok'};cache_write(e,'a',r,10,15,2);assert list(e)==['b','a'] and e['a']==(25,r)"
+        },
+        {
+          "label": "Restore capacity even from oversized state",
+          "code": "from collections import OrderedDict\ne=OrderedDict((x,(20,{})) for x in 'abcd');cache_write(e,'e',{'reason':'ok'},2,3,1);assert list(e)==['e'] and e['e'][0]==5"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q092",
+      "type": "code",
+      "topic": "Fixed-window step",
+      "difficulty": "applied",
+      "prompt": "Implement window_step(state, now, limit). This pure helper represents ONE already-scoped caller. state is None or a trusted (window_number, admitted_count) tuple of nonnegative exact ints; now is a finite monotonic number >= 0; limit is a positive exact int. The current window is int(now // 60). If state is missing or from another window, start count at zero. If count < limit, return ((current_window, count+1), 0). Otherwise return ((current_window, count), max(1, math.ceil((current_window+1)*60-now))). Do not mutate state or increment blocked attempts. Timestamp 0 is valid. Scope storage and multi-process coordination are separate responsibilities.",
+      "explanation": "Use a real missing-state marker rather than the truthiness of a timestamp. Fixed windows reset by window identity; blocked attempts keep the count and receive a ceiling-rounded retry.",
+      "starter": "def window_step(state, now, limit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import math\ndef window_step(state, now, limit):\n    window=int(now//60)\n    count=state[1] if state is not None and state[0]==window else 0\n    if count>=limit:\n        return (window,count),max(1,math.ceil((window+1)*60-now))\n    return (window,count+1),0\n",
+      "checks": [
+        {
+          "label": "First call at zero",
+          "code": "assert window_step(None,0,2)==((0,1),0) and window_step((0,1),0,2)==((0,2),0)"
+        },
+        {
+          "label": "Exhaustion does not increment",
+          "code": "assert window_step((0,2),10,2)==((0,2),50) and window_step((0,2),10,2)==((0,2),50)"
+        },
+        {
+          "label": "Round retry upward",
+          "code": "assert window_step((0,2),59.1,2)==((0,2),1) and window_step((0,2),58.2,2)==((0,2),2)"
+        },
+        {
+          "label": "Exact boundary resets",
+          "code": "assert window_step((0,2),60,2)==((1,1),0) and window_step((1,1),60,2)==((1,2),0)"
+        },
+        {
+          "label": "Skip windows without mutating state",
+          "code": "state=(0,2);assert window_step(state,180.5,2)==((3,1),0) and state==(0,2)"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q093",
+      "type": "code",
+      "topic": "Closed public projection",
+      "difficulty": "applied",
+      "prompt": "Implement public_result(result, request_id, cache_hit). Inputs are trusted internal data: result is a dict containing reason (str), answer (str) and citation_ids (a list or tuple of str), plus arbitrary internal fields; request_id is a trusted str and cache_hit a bool. Return a NEW dict with EXACTLY request_id, status, answer, citation_ids and cache_hit. status is 'answered' iff reason == 'ok', otherwise 'refused'. citation_ids must be a NEW list in original order. Copy answer exactly, omit all internal fields and leave inputs unchanged. Prior guarded validation decides whether the answer is allowed; this helper does not make unsafe text safe.",
+      "explanation": "An allowlist projection prevents internal diagnostics from leaking through a dictionary copy. The public envelope still relies on upstream evidence checks and safe handling by later consumers.",
+      "starter": "def public_result(result, request_id, cache_hit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def public_result(result, request_id, cache_hit):\n    return dict(request_id=request_id,status='answered' if result['reason']=='ok' else 'refused',answer=result['answer'],citation_ids=list(result['citation_ids']),cache_hit=cache_hit)\n",
+      "checks": [
+        {
+          "label": "Exact answered projection",
+          "code": "r={'reason':'ok','answer':'Net 30','citation_ids':('S1',),'candidate_count':2,'denied_ids':['private']};assert public_result(r,'new',False)==dict(request_id='new',status='answered',answer='Net 30',citation_ids=['S1'],cache_hit=False)"
+        },
+        {
+          "label": "Any other reason is a refusal",
+          "code": "for reason in ('no_context','source_changed','input_blocked'):\n    r={'reason':reason,'answer':'Cannot answer','citation_ids':[]};assert public_result(r,'r',False)['status']=='refused'"
+        },
+        {
+          "label": "Fresh correlation and cache flag",
+          "code": "r={'request_id':'old','reason':'ok','answer':'a','citation_ids':[]};out=public_result(r,'new',True);assert out['request_id']=='new' and out['cache_hit'] is True and r['request_id']=='old'"
+        },
+        {
+          "label": "Independent citation list",
+          "code": "r={'reason':'ok','answer':'a','citation_ids':['S2','S1']};out=public_result(r,'r',False);out['citation_ids'].append('S3');assert r['citation_ids']==['S2','S1']"
+        },
+        {
+          "label": "Preserved text, no arbitrary payload fields",
+          "code": "r={'reason':'ok','answer':' <tag>\\n ','citation_ids':[],'error_message':'SYNTHETIC_PRIVATE','token':'SYNTHETIC'};out=public_result(r,'r',False);assert out['answer']==r['answer'] and set(out)=={'request_id','status','answer','citation_ids','cache_hit'}"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q094",
+      "type": "code",
+      "topic": "SSE JSON framing",
+      "difficulty": "applied",
+      "prompt": "Implement sse_frame(event, payload). event must be a str equal to meta, result or done; otherwise raise ValueError('event_invalid'). payload is trusted finite JSON-compatible data with valid Unicode. Serialize it with json.dumps(ensure_ascii=False, separators=(',', ':'), allow_nan=False), then return exactly 'event: ' + event + '\\n' + 'data: ' + serialized + '\\n\\n'. Keep embedded CR/LF in payload strings as escaped JSON data; do not interpolate raw payload text or add extra data/event lines. This frames an already validated object; it does not authenticate events or generate model tokens.",
+      "explanation": "Serialize structured data before placing it on a single SSE data line, and restrict event names. JSON escaping preserves embedded line breaks without turning them into protocol delimiters.",
+      "starter": "def sse_frame(event, payload):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import json\ndef sse_frame(event, payload):\n    if not isinstance(event,str) or event not in ('meta','result','done'):\n        raise ValueError('event_invalid')\n    data=json.dumps(payload,ensure_ascii=False,separators=(',',':'),allow_nan=False)\n    return 'event: '+event+'\\n'+'data: '+data+'\\n\\n'\n",
+      "checks": [
+        {
+          "label": "Exact canonical frame",
+          "code": "assert sse_frame('done',{'complete':True})=='event: done\\ndata: {\"complete\":true}\\n\\n'"
+        },
+        {
+          "label": "Payload newlines cannot create frames",
+          "code": "import json\np={'answer':'first\\n\\nevent: forged\\r\\ndata: other'};f=sse_frame('result',p);assert len(f.splitlines())==3 and json.loads(f.splitlines()[1][6:])==p"
+        },
+        {
+          "label": "Unicode and quotation round trip",
+          "code": "import json\np={'answer':'é \"quoted\" \\\\'};f=sse_frame('result',p);assert 'é' in f and json.loads(f.splitlines()[1][6:])==p"
+        },
+        {
+          "label": "Event allowlist prevents name injection",
+          "code": "assert all(raises(ValueError,sse_frame,e,{}) for e in ('error','meta\\nevent: other','',None,12))"
+        },
+        {
+          "label": "All three event types and input intact",
+          "code": "p={'request_id':'r'};assert all(sse_frame(e,p).startswith('event: '+e+'\\ndata: ') for e in ('meta','result','done')) and p=={'request_id':'r'}"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q095",
+      "type": "code",
+      "topic": "Observed stream completion",
+      "difficulty": "applied",
+      "prompt": "Implement stream_complete(frames, request_id). frames is a list of already-decoded (event_name, payload_dict) pairs with arbitrary JSON-compatible values; request_id is a trusted nonempty str. Return True only if there are exactly three frames in order meta, result, done; every payload's request_id equals the supplied ID; meta.mode == 'validated-result'; result.status is 'answered' or 'refused'; and done.complete is the boolean True (not 1). Missing fields or mismatched values return False; extra payload fields are allowed. Preserve inputs. This tests the stated completion markers, not full answer-schema validation, network delivery beyond the observed frames, permission or cryptographic authenticity.",
+      "explanation": "Completion requires the full ordered protocol and consistent correlation. Truthiness or a result frame alone cannot replace the exact final completion marker.",
+      "starter": "def stream_complete(frames, request_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def stream_complete(frames, request_id):\n    if len(frames)!=3 or [event for event,_ in frames]!=['meta','result','done']:\n        return False\n    if any(payload.get('request_id')!=request_id for _,payload in frames):\n        return False\n    return (frames[0][1].get('mode')=='validated-result'\n            and frames[1][1].get('status') in ('answered','refused')\n            and frames[2][1].get('complete') is True)\n",
+      "checks": [
+        {
+          "label": "Complete answered and refused streams",
+          "code": "for status in ('answered','refused'):\n    f=[('meta',{'request_id':'r','mode':'validated-result'}),('result',{'request_id':'r','status':status}),('done',{'request_id':'r','complete':True})];assert stream_complete(f,'r') is True"
+        },
+        {
+          "label": "Missing done remains incomplete",
+          "code": "f=[('meta',{'request_id':'r','mode':'validated-result'}),('result',{'request_id':'r','status':'answered'})];assert stream_complete(f,'r') is False and stream_complete([],'r') is False"
+        },
+        {
+          "label": "Order and exact frame count",
+          "code": "f=[('meta',{'request_id':'r','mode':'validated-result'}),('result',{'request_id':'r','status':'answered'}),('done',{'request_id':'r','complete':True})];assert not stream_complete(f[::-1],'r') and not stream_complete(f+[f[-1]],'r')"
+        },
+        {
+          "label": "Correlation required on every frame",
+          "code": "f=[('meta',{'request_id':'other','mode':'validated-result'}),('result',{'request_id':'r','status':'answered'}),('done',{'request_id':'r','complete':True})];assert not stream_complete(f,'r');f[0][1]['request_id']='r';del f[1][1]['request_id'];assert not stream_complete(f,'r')"
+        },
+        {
+          "label": "Exact marker and protocol values; no mutation",
+          "code": "import copy\nf=[('meta',{'request_id':'r','mode':'validated-result'}),('result',{'request_id':'r','status':'answered'}),('done',{'request_id':'r','complete':1})];before=copy.deepcopy(f);assert not stream_complete(f,'r') and f==before;f[2][1]['complete']=True;f[0][1]['mode']='tokens';assert not stream_complete(f,'r');f[0][1]['mode']='validated-result';f[1][1]['status']='pending';assert not stream_complete(f,'r')"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q096",
+      "type": "code",
+      "topic": "Bounded response metadata",
+      "difficulty": "applied",
+      "prompt": "Implement response_headers(request_id). Accept only a str of exactly 32 lowercase ASCII hex characters, representing this exercise's server-generated request-ID format; otherwise raise ValueError('request_id_invalid'). Return EXACTLY {'X-Request-ID': request_id, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'}. Do not trim, coerce or allow CR/LF. This shape check and header projection do not authenticate an ID's origin, establish source access or configure a server-side cache.",
+      "explanation": "A narrow ID grammar prevents unexpected header syntax, and an explicit projection avoids unrelated fields. Valid shape remains distinct from verified origin or permission.",
+      "starter": "def response_headers(request_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\ndef response_headers(request_id):\n    if not isinstance(request_id,str) or re.fullmatch(r'[0-9a-f]{32}',request_id) is None:\n        raise ValueError('request_id_invalid')\n    return {'X-Request-ID':request_id,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}\n",
+      "checks": [
+        {
+          "label": "Exact allowlisted headers",
+          "code": "r='0123456789abcdef'*2;assert response_headers(r)=={'X-Request-ID':r,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}"
+        },
+        {
+          "label": "Full length and lowercase hex only",
+          "code": "assert all(raises(ValueError,response_headers,r) for r in ('a'*31,'a'*33,'A'*32,'g'*32))"
+        },
+        {
+          "label": "No header injection or trimming",
+          "code": "assert all(raises(ValueError,response_headers,r) for r in ('a'*32+'\\n','a'*32+'\\r\\nX: y',' '+'a'*32))"
+        },
+        {
+          "label": "No type coercion or Unicode lookalikes",
+          "code": "assert all(raises(ValueError,response_headers,r) for r in (None,True,123,'ａ'*32))"
+        },
+        {
+          "label": "Independent outputs",
+          "code": "r='0'*32;a=response_headers(r);a['Cache-Control']='public';assert response_headers(r)['Cache-Control']=='no-store'"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q097",
+      "type": "code",
+      "topic": "One asynchronous attempt",
+      "difficulty": "applied",
+      "prompt": "Implement async attempt_once(send). send is a trusted async zero-argument callback. Invoke it exactly once, await it, and return its ORIGINAL result, including None, False or an empty container. Propagate its original exceptions and asyncio.CancelledError without wrapping, retrying or fabricating a success. Do not schedule a second call. Each check can use top-level await in the provided checker. This is a callback contract exercise, not a retry policy, thread wrapper or complete HTTP request handler.",
+      "explanation": "A simple await preserves the callback's outcome and failure semantics. Hidden retries or broad exception fallbacks can change a service contract even when an example succeeds.",
+      "starter": "async def attempt_once(send):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "async def attempt_once(send):\n    return await send()\n",
+      "checks": [
+        {
+          "label": "Await and return original object once",
+          "code": "calls=[];value=[]\nasync def send():calls.append('call');return value\nassert await attempt_once(send) is value and calls==['call']"
+        },
+        {
+          "label": "Preserve falsy results",
+          "code": "for value in (None,False,0,''):\n    async def send():return value\n    assert await attempt_once(send) is value"
+        },
+        {
+          "label": "Original ordinary exception, no retry",
+          "code": "calls=[];error=RuntimeError('synthetic')\nasync def send():calls.append('call');raise error\ntry:await attempt_once(send)\nexcept RuntimeError as e:assert e is error and calls==['call']\nelse:raise AssertionError('failure suppressed')"
+        },
+        {
+          "label": "Cancellation propagates",
+          "code": "import asyncio\ncalls=[];error=asyncio.CancelledError()\nasync def send():calls.append('call');raise error\ntry:await attempt_once(send)\nexcept asyncio.CancelledError as e:assert e is error and calls==['call']\nelse:raise AssertionError('cancellation suppressed')"
+        },
+        {
+          "label": "Callback is awaited through a yield",
+          "code": "import asyncio\nseen=[]\nasync def send():\n    seen.append('start');await asyncio.sleep(0);seen.append('end');return 7\nassert await attempt_once(send)==7 and seen==['start','end']"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q098",
+      "type": "code",
+      "topic": "Fresh return-time comparison",
+      "difficulty": "applied",
+      "prompt": "Implement async revalidate_once(read, compute). Both callbacks are trusted async functions. First await read() once to obtain a snapshot dict with fingerprint and arbitrary records. Await compute(first_snapshot) exactly once to obtain an arbitrary result object. Then await read() a second time to obtain a NEW snapshot. Return (result, True), retaining result identity, iff the two fingerprint strings are equal; otherwise return (None, False). Propagate original callback failures/cancellation, do not retry and do not mutate snapshots. Checks support top-level await. The read callback owns real transaction freshness; this helper cannot prove that property, retract earlier reads or make revocation atomic.",
+      "explanation": "Freshness must come from a genuinely new read, and a failed or changed final snapshot cannot become a stale successful return. This teaching helper models ordering, not the lab's entire admission/cache implementation.",
+      "starter": "async def revalidate_once(read, compute):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "async def revalidate_once(read, compute):\n    first=await read()\n    result=await compute(first)\n    current=await read()\n    return (result,True) if first['fingerprint']==current['fingerprint'] else (None,False)\n",
+      "checks": [
+        {
+          "label": "Two reads surround exactly one compute",
+          "code": "events=[];first={'fingerprint':'a','records':[1]};second={'fingerprint':'a','records':[1]};value=[]\nasync def read():events.append('read');return first if len(events)==1 else second\nasync def compute(s):assert s is first;events.append('compute');return value\nout=await revalidate_once(read,compute);assert out[0] is value and out[1] is True and events==['read','compute','read']"
+        },
+        {
+          "label": "Changed fingerprint suppresses release",
+          "code": "calls=[]\nasync def read():calls.append('read');return {'fingerprint':str(len(calls))}\nasync def compute(s):return {'answer':'old'}\nassert await revalidate_once(read,compute)==(None,False) and calls==['read','read']"
+        },
+        {
+          "label": "Second read failure is not stale success",
+          "code": "calls=[];error=RuntimeError('unavailable')\nasync def read():\n    calls.append('read')\n    if len(calls)==2:raise error\n    return {'fingerprint':'a'}\nasync def compute(s):return 'cached-like result'\ntry:await revalidate_once(read,compute)\nexcept RuntimeError as e:assert e is error and calls==['read','read']\nelse:raise AssertionError('stale success')"
+        },
+        {
+          "label": "Compute failure stops without retry",
+          "code": "events=[];error=ValueError('compute')\nasync def read():events.append('read');return {'fingerprint':'a'}\nasync def compute(s):events.append('compute');raise error\ntry:await revalidate_once(read,compute)\nexcept ValueError as e:assert e is error and events==['read','compute']\nelse:raise AssertionError('failure hidden')"
+        },
+        {
+          "label": "Cancellation and input preservation",
+          "code": "import asyncio,copy\ns={'fingerprint':'a','records':[{'id':'c'}]};old=copy.deepcopy(s);error=asyncio.CancelledError()\nasync def read():return s\nasync def compute(x):raise error\ntry:await revalidate_once(read,compute)\nexcept asyncio.CancelledError as e:assert e is error and s==old\nelse:raise AssertionError('cancellation hidden')"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q099",
+      "type": "code",
+      "topic": "Release on actual completion",
+      "difficulty": "applied",
+      "prompt": "Implement own_slot(worker, token, release). worker is a trusted asyncio.Future or Task owned elsewhere; release is a trusted nonblocking callback that does not raise. This function is called exactly once per token. If worker is already done, immediately retrieve worker.exception() unless it is cancelled, then call release(token) once. If it is pending, register a done callback that performs the same operations when it finishes; do NOT release now, cancel the worker, inspect its result early or print the exception. Return None. Cancellation completion still releases once without calling exception() on the cancelled worker. Checks support top-level await. This helper owns release timing; it does not kill threads or retain the application's strong task references.",
+      "explanation": "Resource release follows actual completion, including failure or cancellation completion. Retrieving a stored exception avoids leaving it unobserved, while printing its message would expose an unnecessary payload.",
+      "starter": "def own_slot(worker, token, release):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def own_slot(worker, token, release):\n    def completed(task):\n        if not task.cancelled():task.exception()\n        release(token)\n    if worker.done():completed(worker)\n    else:worker.add_done_callback(completed)\n    return None\n",
+      "checks": [
+        {
+          "label": "Pending work retains slot",
+          "code": "import asyncio\nf=asyncio.get_running_loop().create_future();seen=[];assert own_slot(f,'slot',seen.append) is None and seen==[] and not f.cancelled();f.set_result(1);await asyncio.sleep(0);assert seen==['slot']"
+        },
+        {
+          "label": "Already completed releases immediately",
+          "code": "import asyncio\nf=asyncio.get_running_loop().create_future();f.set_result(None);seen=[];own_slot(f,0,seen.append);assert seen==[0];await asyncio.sleep(0);assert seen==[0]"
+        },
+        {
+          "label": "Failure retrieved before release without printing",
+          "code": "import asyncio\nseen=[]\nclass Tracked(asyncio.Future):\n    def exception(self):seen.append('retrieved');return super().exception()\nf=Tracked();f.set_exception(RuntimeError('SYNTHETIC_PRIVATE'))\ntry:\n    own_slot(f,7,lambda token:seen.append(token));assert seen==['retrieved',7]\nfinally:asyncio.Future.exception(f)"
+        },
+        {
+          "label": "Pending failure retrieved on completion",
+          "code": "import asyncio\nseen=[]\nclass Tracked(asyncio.Future):\n    def exception(self):seen.append('retrieved');return super().exception()\nf=Tracked()\ntry:\n    own_slot(f,'s',seen.append);assert seen==[];f.set_exception(ValueError('synthetic'));await asyncio.sleep(0);assert seen==['retrieved','s']\nfinally:\n    if f.done() and not f.cancelled():asyncio.Future.exception(f)\n    else:f.cancel()"
+        },
+        {
+          "label": "Cancellation completion avoids exception()",
+          "code": "import asyncio\nseen=[]\nclass Tracked(asyncio.Future):\n    def exception(self):raise AssertionError('cancelled future inspected')\nf=Tracked();own_slot(f,1,seen.append);f.cancel();await asyncio.sleep(0);assert seen==[1];g=Tracked();g.cancel();own_slot(g,2,seen.append);assert seen==[1,2]"
+        }
+      ]
+    },
+    {
+      "id": "W12-Q100",
+      "type": "code",
+      "topic": "Insert-only seed merge",
+      "difficulty": "applied",
+      "prompt": "Implement seed_merge(existing, incoming). Both inputs are trusted dicts mapping str fixture keys to finite JSON-compatible records. Return a new independent deep-copied dict with all existing entries, followed by only incoming keys not already present, in input insertion order. A key present in both must have equal records under Python equality; otherwise raise ValueError('seed_conflict'). Never mutate either input, including when a conflict is discovered after other candidate inserts. Later nested edits to the returned result must not change either input. This in-memory exercise models insert-only conflict semantics; it does not implement a SQL transaction or replace schema/version/role checks.",
+      "explanation": "Identical seeds are repeatable; conflicting saved state requires an explicit decision instead of a silent overwrite. Independent copies preserve inputs, while the real bootstrap supplies database transaction semantics.",
+      "starter": "def seed_merge(existing, incoming):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef seed_merge(existing, incoming):\n    for key,value in incoming.items():\n        if key in existing and existing[key]!=value:raise ValueError('seed_conflict')\n    merged=copy.deepcopy(existing)\n    for key,value in incoming.items():\n        if key not in merged:merged[key]=copy.deepcopy(value)\n    return merged\n",
+      "checks": [
+        {
+          "label": "Fresh insert and preserved order",
+          "code": "a={'old':{'readers':['a']}};b={'new':{'readers':['b']}};out=seed_merge(a,b);assert list(out)==['old','new'] and out=={'old':a['old'],'new':b['new']}"
+        },
+        {
+          "label": "Identical state is idempotent",
+          "code": "a={'x':{'readers':['a'],'state':'approved'}};b={'x':{'readers':['a'],'state':'approved'}};assert seed_merge(a,b)==a and seed_merge(seed_merge(a,b),b)==a"
+        },
+        {
+          "label": "Policy conflict fails without reset",
+          "code": "a={'x':{'readers':[]}};b={'x':{'readers':['a']}}\ntry:seed_merge(a,b)\nexcept ValueError as e:assert str(e)=='seed_conflict' and a=={'x':{'readers':[]}}\nelse:raise AssertionError('grant reset')"
+        },
+        {
+          "label": "Late conflict leaves both inputs unchanged",
+          "code": "import copy\na={'x':{'pin':'old'}};b={'new':{'pin':'n'},'x':{'pin':'different'}};before=copy.deepcopy((a,b));assert raises(ValueError,seed_merge,a,b) and (a,b)==before"
+        },
+        {
+          "label": "Nested output isolation and empty inputs",
+          "code": "a={'x':{'readers':['a']}};b={'y':{'metadata':{'page':1}}};out=seed_merge(a,b);out['x']['readers'].append('z');out['y']['metadata']['page']=2;assert a['x']['readers']==['a'] and b['y']['metadata']['page']==1 and seed_merge({}, {})=={}"
+        }
+      ]
+    }
+  ]
+}

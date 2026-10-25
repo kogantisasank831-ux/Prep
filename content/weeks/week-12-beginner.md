@@ -3,7 +3,7 @@ layout: week
 week: 12
 phase: 3
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-10-25
 estimated_hours: 8
 permalink: /weeks/week-12/beginner/
@@ -36,6 +36,8 @@ The practical build is a local demonstration with synthetic invoice text. It use
 | Hour 8 | Rehearse the project demonstration | Present the working path and its remaining limits |
 
 Use this as an alternative eight-hour route through the same week. Revisit [Week 1's API material]({{ '/weeks/week-01/beginner/' | relative_url }}) or [Week 11's security lesson]({{ '/weeks/week-11/beginner/' | relative_url }}) when a boundary feels unfamiliar.
+
+The [Week 12 assessment]({{ '/assessments/week-12/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
 ## Start with a question envelope
 
@@ -246,7 +248,7 @@ Then complete three exercises:
 
 For interviews, be ready to answer: Why async? Why PostgreSQL with pgvector here? What changes with multiple workers? Why does streaming start after validation? What does the new transaction establish about revocation? What does this local build still need before public use?
 
-You finish the week when another person can follow the run instructions and you can explain both an allowed request and a failure. Keep the code, test/commit reference and a small boundary diagram or note with your project. This reaches the Phase 3 interview-demo milestone. Week 12's assessment bank comes separately; Week 13 adds tool calling and the permissions around actual actions.
+You finish the week when another person can follow the run instructions and you can explain both an allowed request and a failure. Keep the code, test/commit reference and a small boundary diagram or note with your project. This reaches the Phase 3 interview-demo milestone. Try the [Week 12 assessment]({{ '/assessments/week-12/' | relative_url }}) for a random paper with concept, syntax and Python questions. Week 13 adds tool calling and the permissions around actual actions.
 
 ## Read alongside the build
 
