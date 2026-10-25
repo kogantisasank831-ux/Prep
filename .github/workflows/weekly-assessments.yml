@@ -87,7 +87,18 @@ jobs:
           docker compose -f labs/week_12/compose.yml -f labs/week_12/compose.ci.yml exec -T db psql -U postgres -d rag_demo -Atc "SELECT extversion FROM pg_extension WHERE extname='vector'"
       - name: Bounded application diagnostics on failure
         if: failure()
-        run: docker compose -f labs/week_12/compose.yml -f labs/week_12/compose.ci.yml logs --tail=80 api bootstrap
+        run: |
+          docker compose -f labs/week_12/compose.yml -f labs/week_12/compose.ci.yml ps
+          python - <<'PY'
+          import json, urllib.request
+          for path in ('/health/live','/health/ready'):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8000'+path,timeout=2) as r:
+                      print(json.dumps({'from':'host','path':path,'status':r.status,'body':r.read(256).decode()}))
+              except Exception as error:
+                  print(json.dumps({'from':'host','path':path,'type':type(error).__name__,'status':getattr(error,'code',None)}))
+          PY
+          docker compose -f labs/week_12/compose.yml -f labs/week_12/compose.ci.yml logs --tail=80 api bootstrap
       - name: Stop only this isolated stack
         if: always()
         run: docker compose -f labs/week_12/compose.yml -f labs/week_12/compose.ci.yml down

@@ -261,7 +261,10 @@ def create_app(
         try:
             async with asyncio.timeout(3):
                 available = await service.repository.ready()
-        except (RepositoryUnavailable, TimeoutError):
+        except (RepositoryUnavailable, TimeoutError) as error:
+            logger.warning(
+                "rag_readiness_failed:%s", type(error.__cause__ or error).__name__
+            )
             available = False
         if not available:
             raise HTTPException(503, "not_ready")

@@ -56,7 +56,7 @@ services:
     tmpfs: [/tmp]
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
-    networks: [backend]
+    networks: [backend, frontend]
 
 secrets:
   db_admin:
@@ -72,3 +72,4 @@ volumes:
 networks:
   backend:
     internal: true
+  frontend: {}

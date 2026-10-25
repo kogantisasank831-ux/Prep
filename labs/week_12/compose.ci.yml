@@ -1,5 +1,6 @@
 # CI runner only: allow its Python integration tests to reach the private DB.
 services:
   db:
+    networks: [backend, frontend]
     ports:
       - "127.0.0.1:55432:5432"
