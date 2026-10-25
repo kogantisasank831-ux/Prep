@@ -35,11 +35,11 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: Lint, format and type checks
         run: |
-          python -m ruff check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py tests/test_week10_assessment.py labs/week_10 tests/test_week10_tracing.py
-          python -m ruff format --check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py tests/test_week10_assessment.py labs/week_10 tests/test_week10_tracing.py
-          python -m mypy --strict --explicit-package-bases tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py tests/test_week10_assessment.py labs/week_10 tests/test_week10_tracing.py
+          python -m ruff check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py tests/test_week10_assessment.py labs/week_10 tests/test_week10_tracing.py labs/week_11 tests/test_week11_security.py
+          python -m ruff format --check tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py tests/test_week10_assessment.py labs/week_10 tests/test_week10_tracing.py labs/week_11 tests/test_week11_security.py
+          python -m mypy --strict --explicit-package-bases tests/test_week07_assessment.py tests/test_week08_assessment.py tests/test_week09_assessment.py tests/test_week10_assessment.py labs/week_10 tests/test_week10_tracing.py labs/week_11 tests/test_week11_security.py
       - name: Assessment, retrieval/assistant/evaluation/tracing lab and service regressions
         run: >-
           python -m pytest tests/test_week*_assessment.py
-          tests/test_week07_hybrid.py tests/test_week08_assistant.py tests/test_week09_evaluation.py tests/test_week10_tracing.py tests/test_api.py tests/test_models.py
+          tests/test_week07_hybrid.py tests/test_week08_assistant.py tests/test_week09_evaluation.py tests/test_week10_tracing.py tests/test_week11_security.py tests/test_api.py tests/test_models.py
           tests/test_readers.py tests/test_service.py -q

@@ -1,6 +1,6 @@
 "use strict";
 
-window.PUBLISHED_WEEKS = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+window.PUBLISHED_WEEKS = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 window.ASSESSMENT_WEEKS = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
 const shellScriptUrl = new URL(document.currentScript.src);

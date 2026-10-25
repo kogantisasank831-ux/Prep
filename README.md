@@ -275,9 +275,9 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–10 assessment tests and Week 10 tracing lab's
+requires Node 20+, checks the Week 7–10 assessment tests and Week 10–11 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
-Week 8 assistant/Week 9 evaluation/Week 10 tracing tests and Week 1 service
+Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security tests and Week 1 service
 regressions. The candidate commit must pass before its branch is promoted to
 main; GitHub Pages build and relevant live browser checks follow promotion. The
 selected suite avoids the unrelated Windows-only comparison module and does
@@ -306,3 +306,26 @@ adds 100 questions: 30 single-choice, 20 multiple-correct, 15 matching, 15 short
 syntax and 20 Python tasks. A random paper draws two of each format for 100 marks.
 Run `python -m pytest tests/test_week10_assessment.py tests/test_week10_tracing.py`
 for the bank/reference checks, composed observation contracts and local tracing lab.
+
+## Week 11 content and security lab
+
+[Week 11 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-11/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-11/beginner/)
+cover direct/indirect prompt injection, malicious sources, leakage, poisoning,
+trusted tenant/principal scope, access-controlled retrieval and input/output
+validation. The [local security lab](labs/week_11/README.md) reuses the Week 8
+retrieval pipeline with a protected synthetic catalogue and quote-only output.
+
+```shell
+python -m labs.week_11.demo --scenario clean --output-dir .runtime/week11-clean --show-answer
+python -m labs.week_11.demo --scenario detector-miss --output-dir .runtime/week11-miss --show-answer
+python -m labs.week_11.demo --scenario poisoned-fact --output-dir .runtime/week11-poisoned --show-answer
+python -m pytest tests/test_week11_security.py -q
+```
+
+Choose fresh directories. Thirteen synthetic cases include source isolation,
+tampering, unsafe proposals, revocation, a detector miss/false positive and an
+approved false statement. These demonstrate local controls and their limits;
+the responder is scripted, with no provider call or action dispatcher. The
+existing CI gate includes the security lab's tests, lint and typing. Week 11
+assessment questions are deferred.
