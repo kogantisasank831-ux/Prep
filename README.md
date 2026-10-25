@@ -275,7 +275,7 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–9 assessment tests and Week 10 tracing lab's
+requires Node 20+, checks the Week 7–10 assessment tests and Week 10 tracing lab's
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing tests and Week 1 service
 regressions. The candidate commit must pass before its branch is promoted to
@@ -301,4 +301,8 @@ python -m pytest tests/test_week10_tracing.py -q
 Choose fresh output directories. The optional model is a scripted fixture with
 synthetic usage and invented rates; it makes no provider call and does not
 replace the extractive answer. JSON is a custom local trace format, not OTLP.
-The Week 10 question bank and assessment page are deferred.
+The [Week 10 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-10/)
+adds 100 questions: 30 single-choice, 20 multiple-correct, 15 matching, 15 short
+syntax and 20 Python tasks. A random paper draws two of each format for 100 marks.
+Run `python -m pytest tests/test_week10_assessment.py tests/test_week10_tracing.py`
+for the bank/reference checks, composed observation contracts and local tracing lab.

@@ -3,8 +3,8 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-24
+version: 1.0.1
+last_reviewed: 2026-10-25
 estimated_hours: 8
 permalink: /weeks/week-10/beginner/
 title: "LLM observability: see what happened inside one answer"
@@ -16,6 +16,8 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-10/
 ---
+
+Test your understanding with the [Week 10 assessment]({{ '/assessments/week-10/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on trace structure, timing, usage, costs, failure handling and paired diagnosis.
 
 ## Start with a question you can investigate
 
@@ -232,7 +234,7 @@ Practice these interview answers aloud:
 | What if usage is unavailable? | Keep it unknown and distinguish it from known zero or estimated usage. |
 | Can observability expose private data? | Yes. Minimize collection and control source/payload access and retention. |
 
-You are ready to move on when you can show another person where support disappeared, explain the timing boundary, and separate an application failure from a trace-delivery failure. Keep the runnable lab, traces, calculation and diagnostic note. The assessment question bank will be a separate step.
+You are ready to move on when you can show another person where support disappeared, explain the timing boundary, and separate an application failure from a trace-delivery failure. Keep the runnable lab, traces, calculation and diagnostic note. Use the Week 10 assessment for independent practice.
 
 ## Read alongside the lab
 

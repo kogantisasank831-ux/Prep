@@ -1,0 +1,3059 @@
+{
+  "schema_version": 1,
+  "week": 10,
+  "version": "1.0.0",
+  "title": "Observability and tracing",
+  "source_lesson": "/weeks/week-10/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W10-Q001",
+      "type": "single",
+      "topic": "Signals",
+      "difficulty": "foundation",
+      "prompt": "A user reports one unexpectedly slow answer. Which observation best localizes the work inside that particular execution?",
+      "explanation": "Request-level spans reveal stage intervals and relationships. Aggregate metrics help establish prevalence but cannot by themselves reconstruct this execution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A trace connecting timed stages for that request"
+        },
+        {
+          "id": "o2",
+          "text": "Only the service-wide request count"
+        },
+        {
+          "id": "o3",
+          "text": "Only the final answer string"
+        },
+        {
+          "id": "o4",
+          "text": "Only a model leaderboard score"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q002",
+      "type": "single",
+      "topic": "Execution versus quality",
+      "difficulty": "applied",
+      "prompt": "A trace ends with status ok, but the catalogue excerpts omit the requested delivery date. What can you conclude?",
+      "explanation": "Operational status describes execution. Real excerpts can still fail the task, as the Week 10 missing-fact scenario illustrates.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The answer is necessarily correct"
+        },
+        {
+          "id": "o2",
+          "text": "The source grants were necessarily bypassed"
+        },
+        {
+          "id": "o3",
+          "text": "The model necessarily fabricated a date"
+        },
+        {
+          "id": "o4",
+          "text": "Execution completed; task adequacy still needs evaluation"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q003",
+      "type": "single",
+      "topic": "Trace identity",
+      "difficulty": "applied",
+      "prompt": "What does a trace ID identify in the local Week 10 recorder?",
+      "explanation": "The trace ID correlates operations. It carries no authority to read documents, validate an answer or authenticate an assessment result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A model tokenizer vocabulary"
+        },
+        {
+          "id": "o2",
+          "text": "A permanent learner score"
+        },
+        {
+          "id": "o3",
+          "text": "The group of related operations for one observed request"
+        },
+        {
+          "id": "o4",
+          "text": "A document access grant"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q004",
+      "type": "single",
+      "topic": "Parent relationships",
+      "difficulty": "foundation",
+      "prompt": "A hybrid-search span has a retrieval span as parent. What does that relationship establish?",
+      "explanation": "Parentage records containment. Concurrency comes from intervals, success from status, and permissions from independent access enforcement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The search may read any document"
+        },
+        {
+          "id": "o2",
+          "text": "The search is a sub-operation of that retrieval operation"
+        },
+        {
+          "id": "o3",
+          "text": "The search ran in parallel with every sibling"
+        },
+        {
+          "id": "o4",
+          "text": "The search was successful"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q005",
+      "type": "single",
+      "topic": "Completion order",
+      "difficulty": "applied",
+      "prompt": "In the lab JSON, a child appears before its request parent. Why can this be normal?",
+      "explanation": "An inner with block normally closes before the outer block. Rebuild the hierarchy with IDs rather than treating array order as start order.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Records are appended when operations finish"
+        },
+        {
+          "id": "o2",
+          "text": "The parent never existed"
+        },
+        {
+          "id": "o3",
+          "text": "The trace ID must have changed"
+        },
+        {
+          "id": "o4",
+          "text": "The child authorized the parent"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q006",
+      "type": "single",
+      "topic": "Clock choice",
+      "difficulty": "applied",
+      "prompt": "Which clock pairing matches the lab contract?",
+      "explanation": "Wall time locates the event; a monotonic performance-counter interval measures elapsed time. CPU-only time excludes waits and is a different measurement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Local calendar strings for both duration and identity"
+        },
+        {
+          "id": "o2",
+          "text": "Random IDs for chronology and token counts for elapsed time"
+        },
+        {
+          "id": "o3",
+          "text": "CPU process time as the complete user journey"
+        },
+        {
+          "id": "o4",
+          "text": "Aware UTC for chronology and perf_counter_ns differences for elapsed time"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q007",
+      "type": "single",
+      "topic": "Inclusive latency",
+      "difficulty": "foundation",
+      "prompt": "A request lasts 100 ms and its nested retrieval lasts 40 ms. What is the observed request duration?",
+      "explanation": "The request interval already includes retrieval. Summing the parent with its child double-counts that child interval.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "60 ms"
+        },
+        {
+          "id": "o2",
+          "text": "40 ms"
+        },
+        {
+          "id": "o3",
+          "text": "100 ms"
+        },
+        {
+          "id": "o4",
+          "text": "140 ms"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q008",
+      "type": "single",
+      "topic": "Overlapping work",
+      "difficulty": "applied",
+      "prompt": "A 60 ms parent contains two 40 ms children. Under which explanation can those durations be consistent?",
+      "explanation": "Concurrent children can overlap. Parentage alone does not assert sequential execution; inspect start/end intervals before computing exclusive time.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The parent is necessarily corrupted"
+        },
+        {
+          "id": "o2",
+          "text": "The child intervals overlap within the parent"
+        },
+        {
+          "id": "o3",
+          "text": "Duration must always be added across every span"
+        },
+        {
+          "id": "o4",
+          "text": "Every child must use another trace ID"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q009",
+      "type": "single",
+      "topic": "Missing timing",
+      "difficulty": "applied",
+      "prompt": "The recorder cannot obtain a valid monotonic reading. What should the duration mean?",
+      "explanation": "A missing measurement is not an observation of zero. The local recorder retains null intervals and a timing-error count rather than fabricating a duration.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Unknown, with the timing problem visible"
+        },
+        {
+          "id": "o2",
+          "text": "Measured zero"
+        },
+        {
+          "id": "o3",
+          "text": "Negative latency"
+        },
+        {
+          "id": "o4",
+          "text": "The average duration of neighboring requests"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q010",
+      "type": "single",
+      "topic": "Measurement boundary",
+      "difficulty": "foundation",
+      "prompt": "Which work is excluded from the Week 10 request interval?",
+      "explanation": "The measured boundary is the observed assistant call, including instrumentation. It does not claim browser/network, ingestion or export time.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All validation inside observe_request"
+        },
+        {
+          "id": "o2",
+          "text": "All context construction inside observe_request"
+        },
+        {
+          "id": "o3",
+          "text": "All optional fixture generation inside observe_request"
+        },
+        {
+          "id": "o4",
+          "text": "Corpus loading before observe_request and file export afterward"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q011",
+      "type": "single",
+      "topic": "Controlled context regression",
+      "difficulty": "applied",
+      "prompt": "In the payment/tight pair, candidates and reranking are equal. Tight context retains Net 30 but loses the connecting clause and line item. Where does support first disappear?",
+      "explanation": "The controlled pair changes context capacity from 1400 to 300 characters. The first lost support is in selected context, after unchanged retrieval and ranking.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Hybrid candidate retrieval"
+        },
+        {
+          "id": "o2",
+          "text": "Provider billing"
+        },
+        {
+          "id": "o3",
+          "text": "Context admission"
+        },
+        {
+          "id": "o4",
+          "text": "Corpus ingestion"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q012",
+      "type": "single",
+      "topic": "Rewrite constraints",
+      "difficulty": "applied",
+      "prompt": "A rewrite keeps CW-1000 but drops the protected Net 30 and approval condition. What should the lab do?",
+      "explanation": "The reused query planner protects codes, numbers and declared condition terms. A failed guard is a validation failure, not a reason to broaden permissions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Treat the missing terms as a model timeout"
+        },
+        {
+          "id": "o2",
+          "text": "Reject the invalid query plan"
+        },
+        {
+          "id": "o3",
+          "text": "Use it silently because the code survived"
+        },
+        {
+          "id": "o4",
+          "text": "Grant access to a larger corpus"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q013",
+      "type": "single",
+      "topic": "Reranker question",
+      "difficulty": "foundation",
+      "prompt": "When reviewed variants expand search, which question does the Week 10 reranker use?",
+      "explanation": "Variants contribute candidates, while the reused pair scorer evaluates those candidates against the original target question.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The original user question"
+        },
+        {
+          "id": "o2",
+          "text": "Always the last rewrite"
+        },
+        {
+          "id": "o3",
+          "text": "The highest-scoring source passage"
+        },
+        {
+          "id": "o4",
+          "text": "The model fixture response"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q014",
+      "type": "single",
+      "topic": "Authorization invariance",
+      "difficulty": "applied",
+      "prompt": "A source denied to the analyst is added to the raw corpus. What should happen to their candidate results and routine stage metadata?",
+      "explanation": "Filtering and grants define the eligible snapshot before retrieval. Observing a request must not trigger a more privileged explanatory search.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The denied source appears as a debug-only candidate"
+        },
+        {
+          "id": "o2",
+          "text": "The candidate count increases by one automatically"
+        },
+        {
+          "id": "o3",
+          "text": "The trace grants access because its ID is opaque"
+        },
+        {
+          "id": "o4",
+          "text": "They remain unchanged under the same eligible-source contract"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q015",
+      "type": "single",
+      "topic": "Score interpretation",
+      "difficulty": "applied",
+      "prompt": "Why should you not compare a hybrid fusion score numerically to a reranker score as if both were probabilities?",
+      "explanation": "Rank fusion and pair scoring implement different scoring rules. Compare membership/order and independent quality outcomes rather than assuming cross-stage calibration.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reranking necessarily uses a live provider"
+        },
+        {
+          "id": "o2",
+          "text": "The larger numeric score always proves correctness"
+        },
+        {
+          "id": "o3",
+          "text": "They have different meanings and scales"
+        },
+        {
+          "id": "o4",
+          "text": "Both values are always token counts"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q016",
+      "type": "single",
+      "topic": "Version identity",
+      "difficulty": "foundation",
+      "prompt": "A model display name is unchanged, but the response differs. Which investigation is most justified first?",
+      "explanation": "Many inputs can change while a display name stays fixed, and aliases can move. Version identities constrain hypotheses without proving a cause by themselves.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Assume the trace proves a provider update"
+        },
+        {
+          "id": "o2",
+          "text": "Compare request, source, configuration, prompt and resolved component identities"
+        },
+        {
+          "id": "o3",
+          "text": "Conclude the model cannot be involved"
+        },
+        {
+          "id": "o4",
+          "text": "Delete the earlier trace"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q017",
+      "type": "single",
+      "topic": "Development digest",
+      "difficulty": "applied",
+      "prompt": "What does the lab implementation_digest establish?",
+      "explanation": "The digest covers a defined file set. It is useful comparison evidence but does not include every runtime/dependency input or certify deployment provenance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An identity over the included development Python sources"
+        },
+        {
+          "id": "o2",
+          "text": "A signed production release with all dependencies"
+        },
+        {
+          "id": "o3",
+          "text": "A guarantee of identical stochastic output"
+        },
+        {
+          "id": "o4",
+          "text": "An automatic license or permission grant"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q018",
+      "type": "single",
+      "topic": "Prompt tracing",
+      "difficulty": "applied",
+      "prompt": "The prompt template version matches in two runs. Why might constructed prompts still differ?",
+      "explanation": "A template identifier is only one input. Inspect the constructed message content through an authorized capture when actual serialization differences matter.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A matching version guarantees identical messages"
+        },
+        {
+          "id": "o2",
+          "text": "Prompt text is always equal to token count"
+        },
+        {
+          "id": "o3",
+          "text": "Trace export rewrites all prompt content"
+        },
+        {
+          "id": "o4",
+          "text": "Different context or request values were inserted"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q019",
+      "type": "single",
+      "topic": "No model call",
+      "difficulty": "foundation",
+      "prompt": "What generation-usage state describes the default cited-extractive Week 10 assistant?",
+      "explanation": "The default path does no generative model call. This does not mean retrieval has zero CPU or infrastructure cost.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "synthetic_fixture with measured provider billing"
+        },
+        {
+          "id": "o2",
+          "text": "estimated from answer characters and called exact"
+        },
+        {
+          "id": "o3",
+          "text": "not_applicable with null counts"
+        },
+        {
+          "id": "o4",
+          "text": "provider_reported with invented zero counts"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q020",
+      "type": "single",
+      "topic": "Fixture provenance",
+      "difficulty": "applied",
+      "prompt": "The optional fixture records 1000 input and 300 output tokens. What are these numbers?",
+      "explanation": "The fixture demonstrates the observation contract without inference. Its usage source remains synthetic_fixture and its response remains separate from the returned extractive answer.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A throughput benchmark for a downloaded model"
+        },
+        {
+          "id": "o2",
+          "text": "Scripted synthetic counters for teaching"
+        },
+        {
+          "id": "o3",
+          "text": "Measurements from a live tokenizer"
+        },
+        {
+          "id": "o4",
+          "text": "A provider invoice"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q021",
+      "type": "single",
+      "topic": "Timeout usage",
+      "difficulty": "applied",
+      "prompt": "A model attempt raises TimeoutError before reporting usage. What should you record?",
+      "explanation": "An exception may arrive without final counters even if work occurred. Missing usage cannot establish a zero bill or justify replaying a model call automatically.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Missing usage, without assuming that no work or charges occurred"
+        },
+        {
+          "id": "o2",
+          "text": "Zero input and output as measured facts"
+        },
+        {
+          "id": "o3",
+          "text": "The previous successful request usage"
+        },
+        {
+          "id": "o4",
+          "text": "A successful answer and hidden retry"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q022",
+      "type": "single",
+      "topic": "Cached subset",
+      "difficulty": "foundation",
+      "prompt": "A report gives 1000 total input tokens and 200 cached input tokens. How many input tokens are uncached?",
+      "explanation": "Cached input is already inside total input. Subtract the subset to obtain uncached input instead of adding it a second time.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "1200"
+        },
+        {
+          "id": "o2",
+          "text": "1000"
+        },
+        {
+          "id": "o3",
+          "text": "200"
+        },
+        {
+          "id": "o4",
+          "text": "800"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q023",
+      "type": "single",
+      "topic": "Illustrative cost",
+      "difficulty": "applied",
+      "prompt": "Using invented per-million USD rates of 2 uncached input, 0.50 cached input and 8 output, what is the estimate for input=1000, cached=200, output=300?",
+      "explanation": "The numerator is 800*2 + 200*0.50 + 300*8 = 4100. Dividing by one million gives 0.0041; these are teaching rates, not current provider prices.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "4.1 USD"
+        },
+        {
+          "id": "o2",
+          "text": "0 USD"
+        },
+        {
+          "id": "o3",
+          "text": "0.0041 USD"
+        },
+        {
+          "id": "o4",
+          "text": "0.0045 USD"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q024",
+      "type": "single",
+      "topic": "Unknown cost",
+      "difficulty": "applied",
+      "prompt": "A positive cached-token count is known, but the applicable cached-input rate is missing. What is the safest estimate under the lesson contract?",
+      "explanation": "A missing required rate prevents a supported estimate. Preserve the gap rather than inventing a billing rule.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Copy another model price silently"
+        },
+        {
+          "id": "o2",
+          "text": "Unknown with a reason identifying the missing rate"
+        },
+        {
+          "id": "o3",
+          "text": "Zero because the cache exists"
+        },
+        {
+          "id": "o4",
+          "text": "Assume the uncached rate without declaring a policy"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q025",
+      "type": "single",
+      "topic": "Exception propagation",
+      "difficulty": "foundation",
+      "prompt": "A wrapped operation raises a particular ValueError instance. What should tracing do?",
+      "explanation": "Observation must preserve the application error contract while finalizing useful records. Raw exception payloads may expose sensitive inputs.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Close error spans and re-raise that original failure"
+        },
+        {
+          "id": "o2",
+          "text": "Convert it into a successful empty answer"
+        },
+        {
+          "id": "o3",
+          "text": "Suppress it if the trace was saved"
+        },
+        {
+          "id": "o4",
+          "text": "Replace it with the complete prompt as a diagnostic"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q026",
+      "type": "single",
+      "topic": "Export isolation",
+      "difficulty": "applied",
+      "prompt": "An answer is computed, then the trace sink raises OSError. What should the lab exporter do?",
+      "explanation": "Trace delivery and application work are separate outcomes. Replaying application work would create another potentially different/costly attempt.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Rerun generation until export succeeds"
+        },
+        {
+          "id": "o2",
+          "text": "Replace the answer with a success message"
+        },
+        {
+          "id": "o3",
+          "text": "Claim the entire request never executed"
+        },
+        {
+          "id": "o4",
+          "text": "Report one delivery failure separately from the answer"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q027",
+      "type": "single",
+      "topic": "Span capacity",
+      "difficulty": "applied",
+      "prompt": "The local recorder reaches its span budget. What happens to later wrapped operation bodies?",
+      "explanation": "Recorder limits bound telemetry storage, not application execution. Descendants of an omitted parent are also omitted to avoid orphan records.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They always execute twice"
+        },
+        {
+          "id": "o2",
+          "text": "Their descendants are stored with missing parent IDs"
+        },
+        {
+          "id": "o3",
+          "text": "They still execute, while omitted spans are counted"
+        },
+        {
+          "id": "o4",
+          "text": "They are skipped as an optimization"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q028",
+      "type": "single",
+      "topic": "Content capture",
+      "difficulty": "foundation",
+      "prompt": "Which action saves raw prompt/response content in the fixed synthetic demo?",
+      "explanation": "The content artifact is an explicit option for controlled examples. This is not content-aware PII detection or permission to collect real conversations.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Adding the question as a duration metric label"
+        },
+        {
+          "id": "o2",
+          "text": "Explicitly enabling the separate synthetic-content capture option"
+        },
+        {
+          "id": "o3",
+          "text": "Merely creating a trace ID"
+        },
+        {
+          "id": "o4",
+          "text": "The normal metadata export always does it"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q029",
+      "type": "single",
+      "topic": "OTel boundary",
+      "difficulty": "applied",
+      "prompt": "Can the custom Week 10 trace JSON be sent unchanged as an OTLP payload?",
+      "explanation": "Shared concepts do not make two wire formats compatible. Use a supported SDK/export contract when integrating a tracing stack.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No; its custom schema/status/null rules need an explicit mapping"
+        },
+        {
+          "id": "o2",
+          "text": "Yes; any JSON containing span_id is OTLP"
+        },
+        {
+          "id": "o3",
+          "text": "Yes; a 32-hex trace ID makes every field standard"
+        },
+        {
+          "id": "o4",
+          "text": "Only if the question text is added"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W10-Q030",
+      "type": "single",
+      "topic": "Sampling bias",
+      "difficulty": "applied",
+      "prompt": "You retain mainly slow and failed traces. What limitation matters when reporting an overall failure rate?",
+      "explanation": "Diagnostic selection can be useful while distorting population rates. Use an appropriate request denominator and a declared sampling/weighting policy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every retained trace has incorrect timing"
+        },
+        {
+          "id": "o2",
+          "text": "Sampling automatically provides a valid population denominator"
+        },
+        {
+          "id": "o3",
+          "text": "All successful requests must be counted as failures"
+        },
+        {
+          "id": "o4",
+          "text": "The retained set is biased relative to all requests"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q031",
+      "type": "multiple",
+      "topic": "Signal boundaries",
+      "difficulty": "foundation",
+      "prompt": "Which observations answer distinct useful questions?",
+      "explanation": "Quality, execution structure and population behavior are separate claims; none should silently stand in for the others.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A metric distribution can describe many request durations"
+        },
+        {
+          "id": "o2",
+          "text": "A trace status alone proves semantic correctness"
+        },
+        {
+          "id": "o3",
+          "text": "An evaluation can check whether the answer met task criteria"
+        },
+        {
+          "id": "o4",
+          "text": "A trace can localize a specific request operation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q032",
+      "type": "multiple",
+      "topic": "Trace structure",
+      "difficulty": "applied",
+      "prompt": "Which statements hold for the local trace structure?",
+      "explanation": "IDs reconstruct relationships even though records are appended on completion. Correlation carries no authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A trace ID authenticates the user"
+        },
+        {
+          "id": "o2",
+          "text": "Child parent IDs should resolve within the request"
+        },
+        {
+          "id": "o3",
+          "text": "The root has no parent"
+        },
+        {
+          "id": "o4",
+          "text": "Array order always equals start order"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q033",
+      "type": "multiple",
+      "topic": "Clock discipline",
+      "difficulty": "applied",
+      "prompt": "Which timing practices are justified?",
+      "explanation": "The unit and the clock resolution are different. Missing readings remain unknown rather than becoming a favorable observation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use monotonic differences for local elapsed intervals"
+        },
+        {
+          "id": "o2",
+          "text": "Keep UTC chronology separately"
+        },
+        {
+          "id": "o3",
+          "text": "Treat null duration as measured zero"
+        },
+        {
+          "id": "o4",
+          "text": "Infer nanosecond hardware accuracy from nanosecond units"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q034",
+      "type": "multiple",
+      "topic": "Inclusive intervals",
+      "difficulty": "foundation",
+      "prompt": "Which statements about span duration are correct?",
+      "explanation": "Relationship and timing are separate. Parent/child nesting and overlap both create double-counting hazards.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Overlapping direct-child intervals require union accounting for exclusive time"
+        },
+        {
+          "id": "o2",
+          "text": "Sum every span to obtain end-to-end latency"
+        },
+        {
+          "id": "o3",
+          "text": "Same parent implies siblings run concurrently"
+        },
+        {
+          "id": "o4",
+          "text": "Parent duration includes work inside children"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q035",
+      "type": "multiple",
+      "topic": "Measurement limits",
+      "difficulty": "applied",
+      "prompt": "Which claims accurately describe the Week 10 local timer?",
+      "explanation": "A useful timing result needs a named measurement boundary and workload. The local fixture is not an inference benchmark.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It measures browser-to-provider production latency"
+        },
+        {
+          "id": "o2",
+          "text": "It proves model throughput from the scripted fixture"
+        },
+        {
+          "id": "o3",
+          "text": "It includes tracing/source-hashing overhead inside the observed call"
+        },
+        {
+          "id": "o4",
+          "text": "It excludes corpus ingestion before the observed call"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q036",
+      "type": "multiple",
+      "topic": "Query plans",
+      "difficulty": "applied",
+      "prompt": "Which query-plan statements are correct?",
+      "explanation": "The planner provides a lexical guard and reviewed variants. Retrieval expansion does not replace the original task target.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The reranker must use only the final rewrite"
+        },
+        {
+          "id": "o2",
+          "text": "The original question remains part of the plan"
+        },
+        {
+          "id": "o3",
+          "text": "Protected-term retention cannot prove full semantic equivalence"
+        },
+        {
+          "id": "o4",
+          "text": "A useful rewrite may remove any number silently"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q037",
+      "type": "multiple",
+      "topic": "Source scope",
+      "difficulty": "foundation",
+      "prompt": "Which controls preserve the retrieval authority boundary?",
+      "explanation": "Observability inherits the source-scope boundary. Neither correlation IDs nor explanation needs establish permission.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Apply grants/filters before forming eligible retrieval statistics"
+        },
+        {
+          "id": "o2",
+          "text": "Keep denied-source text out of diagnostic captures"
+        },
+        {
+          "id": "o3",
+          "text": "Run a privileged second search for all traces"
+        },
+        {
+          "id": "o4",
+          "text": "Treat a chunk fingerprint as an access grant"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q038",
+      "type": "multiple",
+      "topic": "Rank diagnostics",
+      "difficulty": "applied",
+      "prompt": "Which comparisons are valid diagnostic steps?",
+      "explanation": "Membership and order locate evidence movement. Different scoring rules and semantic support still need their own interpretation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Compare context-selected source IDs after ranking"
+        },
+        {
+          "id": "o2",
+          "text": "Treat retrieval/reranker raw scores as one calibrated probability scale"
+        },
+        {
+          "id": "o3",
+          "text": "Conclude a genuine citation proves complete support"
+        },
+        {
+          "id": "o4",
+          "text": "Compare ordered candidate IDs between matched requests"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q039",
+      "type": "multiple",
+      "topic": "Behavior identity",
+      "difficulty": "applied",
+      "prompt": "Which inputs can change an answer while the displayed model name stays fixed?",
+      "explanation": "A display name covers only one part of system identity. Source, configuration and construction boundaries can change behavior independently.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Constructed prompt or generation settings"
+        },
+        {
+          "id": "o2",
+          "text": "No input can change it if the name matches"
+        },
+        {
+          "id": "o3",
+          "text": "Context budget or compression policy"
+        },
+        {
+          "id": "o4",
+          "text": "Eligible source/index snapshot"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q040",
+      "type": "multiple",
+      "topic": "Reproduction limits",
+      "difficulty": "foundation",
+      "prompt": "Which limitations should a diagnostic note retain?",
+      "explanation": "Record exactly what an identity includes and what cannot be resolved or replayed. Do not make stronger reproducibility/privacy claims than the evidence permits.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A mutable provider alias is necessarily a pinned artifact"
+        },
+        {
+          "id": "o2",
+          "text": "A development-file digest does not pin every dependency"
+        },
+        {
+          "id": "o3",
+          "text": "Matching inputs do not guarantee an identical stochastic provider response"
+        },
+        {
+          "id": "o4",
+          "text": "Any hash proves data is anonymous"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q041",
+      "type": "multiple",
+      "topic": "Usage provenance",
+      "difficulty": "applied",
+      "prompt": "Which usage statements are correct?",
+      "explanation": "Counters need provenance. Missing final reports and scripted data cannot be promoted into measured provider observations.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Known zero cached input differs from missing cached usage"
+        },
+        {
+          "id": "o2",
+          "text": "Fixture counters must remain labelled synthetic"
+        },
+        {
+          "id": "o3",
+          "text": "Character length is an exact provider-token count"
+        },
+        {
+          "id": "o4",
+          "text": "A timeout establishes that no provider work occurred"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q042",
+      "type": "multiple",
+      "topic": "Integer counters",
+      "difficulty": "applied",
+      "prompt": "Which values violate the stated exact nonnegative integer token-count contract?",
+      "explanation": "Python bool is an int subclass, so exact-type validation matters. Cached counts also require a known containing input total.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A negative integer output count"
+        },
+        {
+          "id": "o2",
+          "text": "Cached input greater than known total input"
+        },
+        {
+          "id": "o3",
+          "text": "Known integer zero cached input"
+        },
+        {
+          "id": "o4",
+          "text": "True used as an input-token count"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q043",
+      "type": "multiple",
+      "topic": "Cost estimates",
+      "difficulty": "foundation",
+      "prompt": "Which practices keep token-cost arithmetic honest?",
+      "explanation": "Cost interpretation depends on categories, units, rate identity and rounding policy. The lesson preserves small Decimal estimates and labels invented inputs.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Describe the fixture prices as current provider rates"
+        },
+        {
+          "id": "o2",
+          "text": "Round every sub-cent request to zero before aggregation"
+        },
+        {
+          "id": "o3",
+          "text": "Use an explicit versioned rate card and currency"
+        },
+        {
+          "id": "o4",
+          "text": "Subtract cached input before applying the uncached rate"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q044",
+      "type": "multiple",
+      "topic": "Failure records",
+      "difficulty": "applied",
+      "prompt": "Which behaviors are required when tracing fails inside application work?",
+      "explanation": "Useful observation must preserve error and cancellation semantics. Bounded codes avoid automatically copying sensitive messages.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Convert every failure into a successful answer"
+        },
+        {
+          "id": "o2",
+          "text": "Finalize affected parent/child spans on unwinding"
+        },
+        {
+          "id": "o3",
+          "text": "Re-raise original exceptions/cancellation"
+        },
+        {
+          "id": "o4",
+          "text": "Always serialize exception messages into routine metadata"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q045",
+      "type": "multiple",
+      "topic": "Delivery versus work",
+      "difficulty": "applied",
+      "prompt": "Which statements about delivery are correct?",
+      "explanation": "Recorder completeness, application outcome and export delivery are distinct dimensions. Treating them as one success flag hides useful failure evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A saved error trace can describe a failed application call"
+        },
+        {
+          "id": "o2",
+          "text": "A successful application call can have failed trace delivery"
+        },
+        {
+          "id": "o3",
+          "text": "Delivery retry always requires rerunning the model"
+        },
+        {
+          "id": "o4",
+          "text": "telemetry_complete proves that a file was delivered"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q046",
+      "type": "multiple",
+      "topic": "Bounded telemetry",
+      "difficulty": "foundation",
+      "prompt": "Which limits are part of the local teaching recorder?",
+      "explanation": "Shape/resource limits are enforced while application work continues. Allowed names and lengths do not establish that arbitrary values are safe content.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Bounded attribute arrays and strings"
+        },
+        {
+          "id": "o2",
+          "text": "A complete automatic sensitive-content classifier"
+        },
+        {
+          "id": "o3",
+          "text": "Skipping application bodies after telemetry fills"
+        },
+        {
+          "id": "o4",
+          "text": "A maximum retained span count"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q047",
+      "type": "multiple",
+      "topic": "Payload policy",
+      "difficulty": "applied",
+      "prompt": "Which claims are justified for routine metadata and synthetic capture?",
+      "explanation": "Minimization reduces exposure but does not make identifiers harmless. Real collection needs an appropriate purpose and source-aware controls.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The flag authorizes uploading real conversations anywhere"
+        },
+        {
+          "id": "o2",
+          "text": "No raw text means no access/retention policy is needed"
+        },
+        {
+          "id": "o3",
+          "text": "Raw text capture requires an explicit fixed-demo option"
+        },
+        {
+          "id": "o4",
+          "text": "Fingerprints/source IDs can still reveal sensitive relationships"
+        }
+      ],
+      "correct": [
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q048",
+      "type": "multiple",
+      "topic": "Cardinality",
+      "difficulty": "applied",
+      "prompt": "Which values are better candidates for bounded metric labels than individual question text?",
+      "explanation": "Metric dimensions should permit meaningful aggregation. Per-request values belong in controlled trace/log correlation rather than creating a new series each time.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every raw prompt"
+        },
+        {
+          "id": "o2",
+          "text": "A reviewed finite operation name"
+        },
+        {
+          "id": "o3",
+          "text": "A closed operational outcome category"
+        },
+        {
+          "id": "o4",
+          "text": "Every unique request ID"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W10-Q049",
+      "type": "multiple",
+      "topic": "Sampling",
+      "difficulty": "foundation",
+      "prompt": "Which sampling statements are accurate?",
+      "explanation": "Head/tail choices have different evidence and resource requirements. The local lab records under a capacity limit without either production sampling implementation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Head sampling cannot know every eventual failure at decision time"
+        },
+        {
+          "id": "o2",
+          "text": "Tail sampling needs enough later trace information and buffering"
+        },
+        {
+          "id": "o3",
+          "text": "Error-biased samples automatically represent all requests fairly"
+        },
+        {
+          "id": "o4",
+          "text": "The teaching recorder implements a production tail sampler"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2"
+      ]
+    },
+    {
+      "id": "W10-Q050",
+      "type": "multiple",
+      "topic": "Framework translation",
+      "difficulty": "applied",
+      "prompt": "Which steps matter when moving this lab into a distributed service?",
+      "explanation": "Explicit local handles demonstrate relationships but are not a cross-process or concurrent context implementation. Production integration needs supported lifecycle and authority controls.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep authentication/authorization independent of trace IDs"
+        },
+        {
+          "id": "o2",
+          "text": "Map custom fields to a reviewed SDK/export contract"
+        },
+        {
+          "id": "o3",
+          "text": "Share one mutable synchronous recorder across unrelated concurrent requests"
+        },
+        {
+          "id": "o4",
+          "text": "Use supported propagation across HTTP/queue boundaries"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W10-Q051",
+      "type": "match",
+      "topic": "Observation signals",
+      "difficulty": "applied",
+      "prompt": "Match each signal to its primary question.",
+      "explanation": "Each signal supports a different claim. Execution completion and task success must remain distinguishable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Trace"
+        },
+        {
+          "id": "l2",
+          "text": "Metric"
+        },
+        {
+          "id": "l3",
+          "text": "Log"
+        },
+        {
+          "id": "l4",
+          "text": "Evaluation"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Which operations composed this execution?"
+        },
+        {
+          "id": "r2",
+          "text": "How does a population of observations behave?"
+        },
+        {
+          "id": "r3",
+          "text": "Which discrete event occurred?"
+        },
+        {
+          "id": "r4",
+          "text": "Did behavior satisfy the task criteria?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q052",
+      "type": "match",
+      "topic": "Identity fields",
+      "difficulty": "applied",
+      "prompt": "Match each field to its purpose.",
+      "explanation": "These identifiers reconstruct and correlate execution; none independently grants source access.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "trace_id"
+        },
+        {
+          "id": "l2",
+          "text": "span_id"
+        },
+        {
+          "id": "l3",
+          "text": "parent_span_id"
+        },
+        {
+          "id": "l4",
+          "text": "request_id"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Correlates related operations"
+        },
+        {
+          "id": "r2",
+          "text": "Identifies one operation"
+        },
+        {
+          "id": "r3",
+          "text": "Points to a containing operation"
+        },
+        {
+          "id": "r4",
+          "text": "Application-level correlation label"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q053",
+      "type": "match",
+      "topic": "Local stages",
+      "difficulty": "applied",
+      "prompt": "Match each stage to the operation it observes.",
+      "explanation": "Stage boundaries separate scope, query expansion, ranking and evidence admission so failures can be localized.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "eligible_snapshot"
+        },
+        {
+          "id": "l2",
+          "text": "query_plan"
+        },
+        {
+          "id": "l3",
+          "text": "rerank"
+        },
+        {
+          "id": "l4",
+          "text": "context"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Apply grants/filters before retrieval"
+        },
+        {
+          "id": "r2",
+          "text": "Keep original plus reviewed variants"
+        },
+        {
+          "id": "r3",
+          "text": "Reorder candidates against original question"
+        },
+        {
+          "id": "r4",
+          "text": "Admit exact evidence under a size budget"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q054",
+      "type": "match",
+      "topic": "Timing quantities",
+      "difficulty": "applied",
+      "prompt": "Match each quantity to its interpretation.",
+      "explanation": "Calendar placement, elapsed work and missing data are different facts. Inclusive timing cannot be summed blindly.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "UTC start"
+        },
+        {
+          "id": "l2",
+          "text": "Monotonic duration"
+        },
+        {
+          "id": "l3",
+          "text": "Inclusive parent duration"
+        },
+        {
+          "id": "l4",
+          "text": "Null duration"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Calendar chronology"
+        },
+        {
+          "id": "r2",
+          "text": "Elapsed interval"
+        },
+        {
+          "id": "r3",
+          "text": "Contains child work"
+        },
+        {
+          "id": "r4",
+          "text": "Valid interval unavailable"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q055",
+      "type": "match",
+      "topic": "Version evidence",
+      "difficulty": "applied",
+      "prompt": "Match each identity to the change it helps detect.",
+      "explanation": "Identity is evidence about a defined input set. A changed fingerprint is an investigation lead, not a complete causal explanation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "config_id"
+        },
+        {
+          "id": "l2",
+          "text": "snapshot_id"
+        },
+        {
+          "id": "l3",
+          "text": "prompt_version"
+        },
+        {
+          "id": "l4",
+          "text": "model_revision"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Changed pipeline configuration"
+        },
+        {
+          "id": "r2",
+          "text": "Changed eligible source state"
+        },
+        {
+          "id": "r3",
+          "text": "Changed declared template version"
+        },
+        {
+          "id": "r4",
+          "text": "Changed declared generation artifact/revision"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q056",
+      "type": "match",
+      "topic": "Usage sources",
+      "difficulty": "applied",
+      "prompt": "Match each source label to its declared meaning.",
+      "explanation": "Provenance prevents fixture or missing values from being misrepresented as measured provider usage.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "synthetic_fixture"
+        },
+        {
+          "id": "l2",
+          "text": "provider_reported"
+        },
+        {
+          "id": "l3",
+          "text": "not_reported"
+        },
+        {
+          "id": "l4",
+          "text": "not_applicable"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Scripted teaching counts"
+        },
+        {
+          "id": "r2",
+          "text": "Counts reported by an actual provider adapter"
+        },
+        {
+          "id": "r3",
+          "text": "A model attempt lacks usage observations"
+        },
+        {
+          "id": "r4",
+          "text": "No generative model attempt applies"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q057",
+      "type": "match",
+      "topic": "Token accounting",
+      "difficulty": "applied",
+      "prompt": "Match each field/concept to its meaning.",
+      "explanation": "The cached subset is not additional input. Provider-specific categories still need an adapter normalization contract.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "input_tokens"
+        },
+        {
+          "id": "l2",
+          "text": "cached_input_tokens"
+        },
+        {
+          "id": "l3",
+          "text": "output_tokens"
+        },
+        {
+          "id": "l4",
+          "text": "Uncached input"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Total input including cached subset"
+        },
+        {
+          "id": "r2",
+          "text": "Subset of total input"
+        },
+        {
+          "id": "r3",
+          "text": "Declared generated-output count"
+        },
+        {
+          "id": "r4",
+          "text": "Total input minus cached input"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q058",
+      "type": "match",
+      "topic": "Known versus unknown",
+      "difficulty": "applied",
+      "prompt": "Match each situation to the appropriate interpretation.",
+      "explanation": "Zero, unknown, not applicable and estimated information should not be collapsed into one favorable number.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Provider explicitly reports cached=0"
+        },
+        {
+          "id": "l2",
+          "text": "Timeout has no counters"
+        },
+        {
+          "id": "l3",
+          "text": "Default extractive path"
+        },
+        {
+          "id": "l4",
+          "text": "Local character-count heuristic"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Known zero cache usage"
+        },
+        {
+          "id": "r2",
+          "text": "Unknown usage"
+        },
+        {
+          "id": "r3",
+          "text": "Generative usage not applicable"
+        },
+        {
+          "id": "r4",
+          "text": "Estimate, not exact provider usage"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q059",
+      "type": "match",
+      "topic": "Failure categories",
+      "difficulty": "applied",
+      "prompt": "Match each local failure to its category.",
+      "explanation": "The local categories describe observed contract failures without exporting raw exception messages.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Protected-term rewrite rejection"
+        },
+        {
+          "id": "l2",
+          "text": "Changed reranker identity during request"
+        },
+        {
+          "id": "l3",
+          "text": "Scripted TimeoutError"
+        },
+        {
+          "id": "l4",
+          "text": "Empty model response rejected"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "validation"
+        },
+        {
+          "id": "r2",
+          "text": "identity_drift"
+        },
+        {
+          "id": "r3",
+          "text": "timeout"
+        },
+        {
+          "id": "r4",
+          "text": "model_contract"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q060",
+      "type": "match",
+      "topic": "Three outcomes",
+      "difficulty": "applied",
+      "prompt": "Match each observation to the dimension it describes.",
+      "explanation": "Application, recorder, delivery and quality outcomes can vary independently and need distinct evidence.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "status=error on request"
+        },
+        {
+          "id": "l2",
+          "text": "telemetry_complete=false from drops"
+        },
+        {
+          "id": "l3",
+          "text": "trace_delivered=false"
+        },
+        {
+          "id": "l4",
+          "text": "Missing-date response judged inadequate"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Application execution failed"
+        },
+        {
+          "id": "r2",
+          "text": "Recorder omitted some observations"
+        },
+        {
+          "id": "r3",
+          "text": "Export delivery failed"
+        },
+        {
+          "id": "r4",
+          "text": "Task quality failed"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q061",
+      "type": "match",
+      "topic": "Boundary mistakes",
+      "difficulty": "applied",
+      "prompt": "Match each mistake to its consequence.",
+      "explanation": "These errors confuse distinct accounting and lifecycle boundaries. Preserve what was actually observed.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Sum root and nested search durations"
+        },
+        {
+          "id": "l2",
+          "text": "Fill missing usage with zero"
+        },
+        {
+          "id": "l3",
+          "text": "Add cached input to total input"
+        },
+        {
+          "id": "l4",
+          "text": "Replay model after export failure"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Double-count elapsed work"
+        },
+        {
+          "id": "r2",
+          "text": "Invent a favorable measurement"
+        },
+        {
+          "id": "r3",
+          "text": "Double-count a token subset"
+        },
+        {
+          "id": "r4",
+          "text": "Create another application attempt"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q062",
+      "type": "match",
+      "topic": "Capture levels",
+      "difficulty": "applied",
+      "prompt": "Match each item to the appropriate destination or policy.",
+      "explanation": "Collection purpose and source access govern payload handling; size/name limits alone do not classify sensitive content.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Bounded stage/count metadata"
+        },
+        {
+          "id": "l2",
+          "text": "Raw constructed synthetic prompt"
+        },
+        {
+          "id": "l3",
+          "text": "Exception text containing secrets"
+        },
+        {
+          "id": "l4",
+          "text": "Real source payload access"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Routine trace projection"
+        },
+        {
+          "id": "r2",
+          "text": "Explicit synthetic-content artifact"
+        },
+        {
+          "id": "r3",
+          "text": "Exclude from routine trace"
+        },
+        {
+          "id": "r4",
+          "text": "Require source-aware authorized policy"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q063",
+      "type": "match",
+      "topic": "Sampling choices",
+      "difficulty": "applied",
+      "prompt": "Match each term to its meaning.",
+      "explanation": "Selection policy and storage overflow are different mechanisms. Report denominators and missing observations explicitly.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Head sampling"
+        },
+        {
+          "id": "l2",
+          "text": "Tail sampling"
+        },
+        {
+          "id": "l3",
+          "text": "Error-biased retained set"
+        },
+        {
+          "id": "l4",
+          "text": "Span-capacity drop count"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Choose early without complete outcomes"
+        },
+        {
+          "id": "r2",
+          "text": "Choose with later trace information"
+        },
+        {
+          "id": "r3",
+          "text": "Useful diagnosis but biased population sample"
+        },
+        {
+          "id": "r4",
+          "text": "Local recorder omission, not a head/tail sampler"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q064",
+      "type": "match",
+      "topic": "Production translation",
+      "difficulty": "applied",
+      "prompt": "Match each integration concern to its response.",
+      "explanation": "Moving from local explicit handles to a service needs supported transport and concurrency semantics without weakening authorization.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "HTTP/queue trace correlation"
+        },
+        {
+          "id": "l2",
+          "text": "Cross-request concurrent execution"
+        },
+        {
+          "id": "l3",
+          "text": "Custom JSON versus OTLP"
+        },
+        {
+          "id": "l4",
+          "text": "Trace ID from a client"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Supported context propagation"
+        },
+        {
+          "id": "r2",
+          "text": "Task-aware SDK context/lifecycle"
+        },
+        {
+          "id": "r3",
+          "text": "Explicit export-schema mapping"
+        },
+        {
+          "id": "r4",
+          "text": "Correlation input, never an access credential"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q065",
+      "type": "match",
+      "topic": "Paired diagnosis",
+      "difficulty": "applied",
+      "prompt": "Match each observed first difference to the next focused investigation.",
+      "explanation": "Follow the first meaningful stage difference in a controlled comparison, then test the hypothesis before generalizing.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Eligible source state differs"
+        },
+        {
+          "id": "l2",
+          "text": "Candidate order differs with same scope"
+        },
+        {
+          "id": "l3",
+          "text": "Candidates/ranks same, context differs"
+        },
+        {
+          "id": "l4",
+          "text": "Prompt/context same, real response differs"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Check grants, filters and data/index state"
+        },
+        {
+          "id": "r2",
+          "text": "Check query/retrieval inputs and versions"
+        },
+        {
+          "id": "r3",
+          "text": "Check context budget/compression policy"
+        },
+        {
+          "id": "r4",
+          "text": "Check generation identity/settings and nondeterminism"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W10-Q066",
+      "type": "short",
+      "topic": "Performance counter",
+      "difficulty": "applied",
+      "prompt": "Enter the Python time-module function that returns the integer-nanosecond performance counter used for elapsed intervals. Function name only.",
+      "explanation": "perf_counter_ns provides integer readings for interval differences. Its reference point is not a calendar timestamp.",
+      "accepted": [
+        "perf_counter_ns"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q067",
+      "type": "short",
+      "topic": "Time conversion",
+      "difficulty": "applied",
+      "prompt": "Complete duration_ms = duration_ns / ___. Enter the integer divisor in decimal digits, without underscores.",
+      "explanation": "There are one million nanoseconds per millisecond. The conversion changes units, not hardware clock accuracy.",
+      "accepted": [
+        "1000000"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q068",
+      "type": "short",
+      "topic": "Monotonic syntax",
+      "difficulty": "applied",
+      "prompt": "With integers start_ns and end_ns, complete elapsed_ns = ___ - start_ns. Variable name only.",
+      "explanation": "Elapsed time is end minus start under a valid nondecreasing clock. Validate missing/backwards readings before claiming a duration.",
+      "accepted": [
+        "end_ns"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q069",
+      "type": "short",
+      "topic": "Unknown value",
+      "difficulty": "applied",
+      "prompt": "Enter the Python singleton literal used for an unavailable duration or token count.",
+      "explanation": "None preserves a missing observation. Zero instead asserts a measured numeric value and is not an equivalent substitute.",
+      "accepted": [
+        "None"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q070",
+      "type": "short",
+      "topic": "Exact integer type",
+      "difficulty": "applied",
+      "prompt": "Complete the bool-rejecting check: type(count) is ___. Built-in type name only.",
+      "explanation": "Exact type identity excludes True/False even though isinstance(True, int) is true. The token contract requires actual integers.",
+      "accepted": [
+        "int"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q071",
+      "type": "short",
+      "topic": "Cached subset expression",
+      "difficulty": "applied",
+      "prompt": "Complete uncached = input_tokens - ___. Variable name only.",
+      "explanation": "Cached input is included in total input, so subtract it before charging the uncached-input category.",
+      "accepted": [
+        "cached_input_tokens"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q072",
+      "type": "short",
+      "topic": "Decimal constructor",
+      "difficulty": "applied",
+      "prompt": "Complete from decimal import ___. Enter the class used for exact decimal-string rate inputs.",
+      "explanation": "Decimal constructed from decimal strings avoids importing the binary approximation of a float rate.",
+      "accepted": [
+        "Decimal"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q073",
+      "type": "short",
+      "topic": "Reraise syntax",
+      "difficulty": "applied",
+      "prompt": "Inside an except block, enter the single Python keyword that re-raises the active original exception.",
+      "explanation": "A bare raise preserves the active failure. Returning an empty successful result would change the application contract.",
+      "accepted": [
+        "raise"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q074",
+      "type": "short",
+      "topic": "Cleanup syntax",
+      "difficulty": "applied",
+      "prompt": "Enter the try-statement clause keyword that runs cleanup on normal return or exception unwinding. Keyword only.",
+      "explanation": "finally closes the operation lifetime on both paths. Cancellation still needs to propagate rather than being converted to success.",
+      "accepted": [
+        "finally"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q075",
+      "type": "short",
+      "topic": "Context manager syntax",
+      "difficulty": "applied",
+      "prompt": "Enter the Python statement keyword in ___ recorder.span(Stage.REQUEST) as root:",
+      "explanation": "with invokes the context manager lifecycle and ensures exit handling around the wrapped operation.",
+      "accepted": [
+        "with"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q076",
+      "type": "short",
+      "topic": "Parent field",
+      "difficulty": "applied",
+      "prompt": "Enter the exact local trace field that references the containing span ID.",
+      "explanation": "parent_span_id reconstructs the hierarchy; the root uses null/None for this field.",
+      "accepted": [
+        "parent_span_id"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q077",
+      "type": "short",
+      "topic": "Fixture source label",
+      "difficulty": "applied",
+      "prompt": "Enter the exact usage_source value for the Week 10 scripted model counters.",
+      "explanation": "The counters are scripted teaching values. This label keeps them separate from actual provider reports or estimates.",
+      "accepted": [
+        "synthetic_fixture"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q078",
+      "type": "short",
+      "topic": "Digest method",
+      "difficulty": "applied",
+      "prompt": "After hashlib.sha256(payload), which method returns its hexadecimal string digest? Method name only.",
+      "explanation": "hexdigest creates a comparable text representation of the hash; it does not establish anonymity or access rights.",
+      "accepted": [
+        "hexdigest"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q079",
+      "type": "short",
+      "topic": "Finite measurements",
+      "difficulty": "applied",
+      "prompt": "Complete from math import ___. Enter the predicate used to reject NaN and positive/negative infinity.",
+      "explanation": "isfinite distinguishes finite numeric observations from NaN/infinity. Numeric type and range validation are separate checks.",
+      "accepted": [
+        "isfinite"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q080",
+      "type": "short",
+      "topic": "Explicit content switch",
+      "difficulty": "applied",
+      "prompt": "Enter the exact CLI flag that opts into the fixed synthetic demo raw-content artifact, including its leading dashes.",
+      "explanation": "The option is explicit and separate from trace.json. It is not automatic PII classification or permission to capture real conversations.",
+      "accepted": [
+        "--capture-synthetic-content"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W10-Q081",
+      "type": "code",
+      "topic": "Trace/span ID validation",
+      "difficulty": "applied",
+      "prompt": "Implement valid_ids(trace_id, span_id). Return True only when trace_id is a str of exactly 32 lowercase hex characters and span_id is a str of exactly 16 lowercase hex characters, with neither value all zeros. Return False for all other inputs, including whitespace, uppercase and non-string values; do not coerce or strip. This validates shape only, not uniqueness, authorization or cross-process propagation.",
+      "explanation": "Use full-string lowercase-hex checks and nonzero guards. Correct-looking correlation identifiers still confer no authority.",
+      "starter": "def valid_ids(trace_id, span_id):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import re\ndef valid_ids(trace_id, span_id):\n    def valid(value, width):\n        return isinstance(value,str) and re.fullmatch(r'[0-9a-f]{'+str(width)+'}',value) is not None and value != '0'*width\n    return valid(trace_id,32) and valid(span_id,16)\n",
+      "checks": [
+        {
+          "label": "Valid lowercase widths",
+          "code": "assert valid_ids('a'*32,'b'*16) is True"
+        },
+        {
+          "label": "Zero IDs rejected",
+          "code": "assert valid_ids('0'*32,'b'*16) is False and valid_ids('a'*32,'0'*16) is False"
+        },
+        {
+          "label": "Exact width and alphabet",
+          "code": "assert not valid_ids('a'*31,'b'*16) and not valid_ids('a'*32,'g'*16) and not valid_ids('A'*32,'b'*16)"
+        },
+        {
+          "label": "No stripping or coercion",
+          "code": "assert not valid_ids(' '+'a'*32,'b'*16) and not valid_ids(None,'b'*16) and not valid_ids('a'*32,123)"
+        },
+        {
+          "label": "Leading zeros may be valid",
+          "code": "assert valid_ids('0'*31+'1','0'*15+'1') is True and not valid_ids('a'*33,'b'*16)"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q082",
+      "type": "code",
+      "topic": "Null-aware interval conversion",
+      "difficulty": "applied",
+      "prompt": "Implement elapsed_ms(start_ns, end_ns). Each input must be None or an EXACT int in [0,10**18]; validate BOTH inputs even when one is None. Invalid values raise ValueError. If either valid input is None return None. Otherwise reject end_ns < start_ns and return (end_ns-start_ns)/1000000 as a float. Known zero duration must remain 0.0. Do not use absolute values, wall time or a real clock.",
+      "explanation": "Validate tick types/ranges before the missing-data branch. Subtract in the declared order and divide by one million; zero and missing remain different.",
+      "starter": "def elapsed_ms(start_ns, end_ns):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def elapsed_ms(start_ns, end_ns):\n    for value in (start_ns,end_ns):\n        if value is not None and (type(value) is not int or not 0 <= value <= 10**18):\n            raise ValueError('invalid tick')\n    if start_ns is None or end_ns is None:\n        return None\n    if end_ns < start_ns:\n        raise ValueError('backwards interval')\n    return (end_ns-start_ns)/1000000\n",
+      "checks": [
+        {
+          "label": "Independent units",
+          "code": "assert elapsed_ms(1000000,3500000)==2.5"
+        },
+        {
+          "label": "Known zero versus missing",
+          "code": "assert elapsed_ms(0,0)==0.0 and elapsed_ms(None,0) is None and elapsed_ms(0,None) is None"
+        },
+        {
+          "label": "Backwards rejected",
+          "code": "assert raises(ValueError,elapsed_ms,2,1)"
+        },
+        {
+          "label": "Exact types even beside None",
+          "code": "assert raises(ValueError,elapsed_ms,None,True) and raises(ValueError,elapsed_ms,1.0,2) and raises(ValueError,elapsed_ms,'1',2)"
+        },
+        {
+          "label": "Range boundaries",
+          "code": "assert elapsed_ms(10**18-1000000,10**18)==1.0 and raises(ValueError,elapsed_ms,-1,0) and raises(ValueError,elapsed_ms,0,10**18+1)"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q083",
+      "type": "code",
+      "topic": "Parent-tree validation",
+      "difficulty": "applied",
+      "prompt": "Implement trace_root(spans). spans must be a list/tuple with 1..64 dicts. Each needs id (nonblank str <=64 chars) and parent (None or nonblank str <=64 chars); ignore extra fields. Require unique IDs, exactly one root (parent=None), every non-null parent present, and every parent chain terminating at that root without cycles. Rows may arrive child-first. Return the root ID; reject any invalid input with ValueError. Do not mutate inputs. This simplified helper uses arbitrary bounded IDs, not the hex-ID contract of other questions.",
+      "explanation": "A root alone does not make a valid tree. Check uniqueness, referenced parents and disconnected cycles, independently of completion order.",
+      "starter": "def trace_root(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def trace_root(spans):\n    if not isinstance(spans,(list,tuple)) or not 1 <= len(spans) <= 64:raise ValueError('span collection')\n    parents={}\n    for row in spans:\n        if not isinstance(row,dict) or 'id' not in row or 'parent' not in row:raise ValueError('shape')\n        ident,parent=row['id'],row['parent']\n        if not isinstance(ident,str) or not ident.strip() or len(ident)>64:raise ValueError('id')\n        if parent is not None and (not isinstance(parent,str) or not parent.strip() or len(parent)>64):raise ValueError('parent')\n        if ident in parents:raise ValueError('duplicate')\n        parents[ident]=parent\n    roots=[ident for ident,parent in parents.items() if parent is None]\n    if len(roots)!=1:raise ValueError('one root required')\n    for ident in parents:\n        seen=set()\n        node=ident\n        while node is not None:\n            if node not in parents or node in seen:raise ValueError('orphan or cycle')\n            seen.add(node)\n            node=parents[node]\n    return roots[0]\n",
+      "checks": [
+        {
+          "label": "Child-first valid tree",
+          "code": "assert trace_root([{'id':'c','parent':'r'},{'id':'r','parent':None}])=='r'"
+        },
+        {
+          "label": "Duplicate and root count",
+          "code": "assert raises(ValueError,trace_root,[{'id':'r','parent':None},{'id':'r','parent':None}]) and raises(ValueError,trace_root,[{'id':'a','parent':None},{'id':'b','parent':None}])"
+        },
+        {
+          "label": "Orphan and disconnected cycle",
+          "code": "assert raises(ValueError,trace_root,[{'id':'r','parent':None},{'id':'c','parent':'missing'}]) and raises(ValueError,trace_root,[{'id':'r','parent':None},{'id':'a','parent':'b'},{'id':'b','parent':'a'}])"
+        },
+        {
+          "label": "Schema and capacity",
+          "code": "assert raises(ValueError,trace_root,[]) and raises(ValueError,trace_root,[{'id':'r'}]) and raises(ValueError,trace_root,[{'id':' ','parent':None}]) and raises(ValueError,trace_root,[{'id':str(i),'parent':None} for i in range(65)])"
+        },
+        {
+          "label": "No mutation; singleton",
+          "code": "import copy\ns=[{'id':'r','parent':None,'note':'keep'},{'id':'c','parent':'r'}];before=copy.deepcopy(s);assert trace_root(s)=='r' and s==before and trace_root(({'id':'solo','parent':None},))=='solo'"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q084",
+      "type": "code",
+      "topic": "Stable timeline order",
+      "difficulty": "applied",
+      "prompt": "Implement timeline(spans) for TRUSTED data: a list/tuple of <=128 dicts containing id and start_ns, where start_ns is a nonnegative int or None. Return a NEW list of the same row objects, ordered by known start_ns ascending, with equal starts in original order and all missing starts last in original order. Do not mutate input or turn None into zero. No additional schema validation is required.",
+      "explanation": "A stable sort can order known starts while keeping missing observations separate. Preserve the caller collection and do not infer starts from completion order.",
+      "starter": "def timeline(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def timeline(spans):\n    return sorted(spans,key=lambda row:(row['start_ns'] is None,row['start_ns'] if row['start_ns'] is not None else 0))\n",
+      "checks": [
+        {
+          "label": "Completion order is not start order",
+          "code": "s=[dict(id='child',start_ns=20),dict(id='root',start_ns=10)];assert [r['id'] for r in timeline(s)]==['root','child']"
+        },
+        {
+          "label": "Missing last; zero valid",
+          "code": "s=[dict(id='m',start_ns=None),dict(id='z',start_ns=0)];assert [r['id'] for r in timeline(s)]==['z','m']"
+        },
+        {
+          "label": "Stable ties",
+          "code": "s=[dict(id='b',start_ns=3),dict(id='a',start_ns=3)];assert [r['id'] for r in timeline(s)]==['b','a']"
+        },
+        {
+          "label": "Stable unknowns and empty",
+          "code": "s=[dict(id='b',start_ns=None),dict(id='a',start_ns=None)];assert timeline(s)==s and timeline([])==[]"
+        },
+        {
+          "label": "Input and row identity",
+          "code": "s=[dict(id='b',start_ns=9),dict(id='a',start_ns=1)];out=timeline(s);assert s[0]['id']=='b' and out is not s and out[0] is s[1]"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q085",
+      "type": "code",
+      "topic": "Exclusive interval accounting",
+      "difficulty": "applied",
+      "prompt": "Implement self_time_ns(start, end, children). start/end must be EXACT ints in [0,10**18] with start<=end. children must be a list/tuple of <=64 list/tuple pairs (a,b), each exact ints with start<=a<=b<=end. Invalid input raises ValueError. Return integer parent duration minus the UNION length of child intervals, so overlapping/touching children are not double-counted. Empty children means full parent duration; zero-width intervals consume zero. Do not mutate inputs. All endpoints use one local clock.",
+      "explanation": "Subtract the union of child coverage, not the sum. This helper assumes aligned local endpoints and is not a distributed critical-path reconstruction.",
+      "starter": "def self_time_ns(start, end, children):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def self_time_ns(start,end,children):\n    if any(type(v) is not int or not 0<=v<=10**18 for v in (start,end)) or start>end:raise ValueError('parent')\n    if not isinstance(children,(list,tuple)) or len(children)>64:raise ValueError('children')\n    parts=[]\n    for pair in children:\n        if not isinstance(pair,(list,tuple)) or len(pair)!=2:raise ValueError('pair')\n        a,b=pair\n        if type(a) is not int or type(b) is not int or not start<=a<=b<=end:raise ValueError('interval')\n        parts.append((a,b))\n    covered=0\n    cursor=start\n    for a,b in sorted(parts):\n        covered+=max(0,b-max(a,cursor))\n        cursor=max(cursor,b)\n    return end-start-covered\n",
+      "checks": [
+        {
+          "label": "Overlap union",
+          "code": "assert self_time_ns(0,100,[(10,60),(40,80)])==30"
+        },
+        {
+          "label": "Nested and touching",
+          "code": "assert self_time_ns(0,100,[(20,30),(10,80),(80,90)])==20"
+        },
+        {
+          "label": "Empty and zero intervals",
+          "code": "assert self_time_ns(10,30,[])==20 and self_time_ns(0,0,[(0,0)])==0 and self_time_ns(0,10,[(0,0),(10,10)])==10"
+        },
+        {
+          "label": "Boundaries rejected",
+          "code": "assert raises(ValueError,self_time_ns,0,10,[(5,11)]) and raises(ValueError,self_time_ns,10,0,[]) and raises(ValueError,self_time_ns,0,10,[(True,4)]) and raises(ValueError,self_time_ns,0,10,[(1,)])"
+        },
+        {
+          "label": "Input preserved",
+          "code": "s=[[40,80],[10,60]];assert self_time_ns(0,100,s)==30 and s==[[40,80],[10,60]] and raises(ValueError,self_time_ns,0,10,[(0,1)]*65)"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q086",
+      "type": "code",
+      "topic": "Usage validation and provenance",
+      "difficulty": "applied",
+      "prompt": "Implement usage_record(input_tokens, output_tokens, cached_input_tokens, source). source must be one of provider_reported, estimated, synthetic_fixture, not_reported, not_applicable. Each count is None or an EXACT int in [0,100000000]. Known cached input requires known total input and cannot exceed it. For not_reported/not_applicable every count must be None; other sources may have missing counts. Invalid input raises ValueError. Return a new dict with keys input_tokens, output_tokens, cached_input_tokens, source, preserving values exactly.",
+      "explanation": "Exact count validation and provenance protect unknown, synthetic and reported observations from being silently conflated.",
+      "starter": "def usage_record(input_tokens, output_tokens, cached_input_tokens, source):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def usage_record(input_tokens,output_tokens,cached_input_tokens,source):\n    if source not in ('provider_reported','estimated','synthetic_fixture','not_reported','not_applicable'):raise ValueError('source')\n    values=(input_tokens,output_tokens,cached_input_tokens)\n    if any(v is not None and (type(v) is not int or not 0<=v<=100000000) for v in values):raise ValueError('count')\n    if cached_input_tokens is not None and (input_tokens is None or cached_input_tokens>input_tokens):raise ValueError('cache')\n    if source in ('not_reported','not_applicable') and any(v is not None for v in values):raise ValueError('invented count')\n    return dict(input_tokens=input_tokens,output_tokens=output_tokens,cached_input_tokens=cached_input_tokens,source=source)\n",
+      "checks": [
+        {
+          "label": "Known zero preserved",
+          "code": "assert usage_record(0,0,0,'provider_reported')==dict(input_tokens=0,output_tokens=0,cached_input_tokens=0,source='provider_reported')"
+        },
+        {
+          "label": "Missing counts preserved",
+          "code": "assert usage_record(None,None,None,'not_reported')['input_tokens'] is None and usage_record(10,None,None,'estimated')['output_tokens'] is None"
+        },
+        {
+          "label": "Subset rule",
+          "code": "assert raises(ValueError,usage_record,10,1,11,'provider_reported') and raises(ValueError,usage_record,None,1,0,'provider_reported')"
+        },
+        {
+          "label": "Exact type and bounds",
+          "code": "assert raises(ValueError,usage_record,True,0,0,'synthetic_fixture') and raises(ValueError,usage_record,-1,0,None,'provider_reported') and raises(ValueError,usage_record,100000001,0,0,'provider_reported')"
+        },
+        {
+          "label": "Source consistency",
+          "code": "assert raises(ValueError,usage_record,0,0,0,'not_applicable') and raises(ValueError,usage_record,None,None,None,'unknown') and usage_record(1,2,0,'synthetic_fixture')['source']=='synthetic_fixture'"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q087",
+      "type": "code",
+      "topic": "Decimal token-cost estimate",
+      "difficulty": "applied",
+      "prompt": "Implement token_cost(usage, rates) for TRUSTED bounded inputs. usage has input_tokens, output_tokens, cached_input_tokens (nonnegative exact ints <=100000000 or None), and source. rates is None or a dict with input/output as valid finite nonnegative decimal STRINGS <=1000000 with <=9 fractional places; cached is such a string or None. Counts satisfy the cached-subset rule. Return None unless source is provider_reported or synthetic_fixture, rates exists, and all three counts are known; also return None if cached>0 but cached rate is None. Otherwise calculate ((input-cached)*input_rate+cached*cached_rate+output*output_rate)/1000000 with Decimal precision 50. Return a fixed-point string with insignificant trailing fractional zeros removed (zero is \"0\"). Do not mutate input or round to cents. Rates are invented arithmetic inputs, not current prices.",
+      "explanation": "Cached tokens are a subset, Decimal rates preserve small estimates, and unknown usage/rates remain unknown instead of being called free.",
+      "starter": "def token_cost(usage, rates):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from decimal import Decimal,localcontext\ndef token_cost(usage,rates):\n    if usage['source'] not in ('provider_reported','synthetic_fixture') or rates is None:return None\n    i,o,c=(usage[k] for k in ('input_tokens','output_tokens','cached_input_tokens'))\n    if i is None or o is None or c is None or (c>0 and rates['cached'] is None):return None\n    with localcontext() as ctx:\n        ctx.prec=50\n        value=((i-c)*Decimal(rates['input'])+c*Decimal(rates['cached'] or '0')+o*Decimal(rates['output']))/Decimal(1000000)\n        return format(value.normalize(),'f')\n",
+      "checks": [
+        {
+          "label": "Independent cache arithmetic",
+          "code": "u=dict(input_tokens=1000,output_tokens=300,cached_input_tokens=200,source='synthetic_fixture');r=dict(input='2',output='8',cached='0.50');assert token_cost(u,r)=='0.0041'"
+        },
+        {
+          "label": "No cache and known zero",
+          "code": "r=dict(input='2',output='8',cached=None);assert token_cost(dict(input_tokens=1000,output_tokens=300,cached_input_tokens=0,source='provider_reported'),r)=='0.0044' and token_cost(dict(input_tokens=0,output_tokens=0,cached_input_tokens=0,source='provider_reported'),r)=='0'"
+        },
+        {
+          "label": "Missing cache or rate",
+          "code": "u=dict(input_tokens=10,output_tokens=1,cached_input_tokens=None,source='provider_reported');r=dict(input='2',output='8',cached=None);assert token_cost(u,r) is None and token_cost(dict(u,cached_input_tokens=1),r) is None and token_cost(dict(u,cached_input_tokens=0),None) is None"
+        },
+        {
+          "label": "Provenance gate",
+          "code": "u=dict(input_tokens=10,output_tokens=1,cached_input_tokens=0,source='estimated');r=dict(input='2',output='8',cached='0.5');assert token_cost(u,r) is None and token_cost(dict(u,source='not_reported',input_tokens=None,output_tokens=None,cached_input_tokens=None),r) is None"
+        },
+        {
+          "label": "Sub-cent precision; no mutation",
+          "code": "import copy\nu=dict(input_tokens=1,output_tokens=0,cached_input_tokens=0,source='provider_reported');r=dict(input='0.25',output='8',cached='0');before=copy.deepcopy((u,r));assert token_cost(u,r)=='0.00000025' and (u,r)==before"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q088",
+      "type": "code",
+      "topic": "Bounded failure categories",
+      "difficulty": "applied",
+      "prompt": "Implement error_category(error). Require a BaseException instance or raise ValueError. In this order return: cancelled for any BaseException that is NOT an Exception (for example KeyboardInterrupt/SystemExit); timeout for TimeoutError; permission for PermissionError; dependency for ConnectionError or OSError; validation for ValueError; internal for other Exceptions. Return only the category string: do not return str(error), class names, payloads or tracebacks. This simplified exercise does not add the lab-specific model_contract/identity_drift classes.",
+      "explanation": "Order subtype checks before broad OSError and keep cancellation separate. Bounded categories avoid automatically exporting exception text.",
+      "starter": "def error_category(error):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def error_category(error):\n    if not isinstance(error,BaseException):raise ValueError('exception required')\n    if not isinstance(error,Exception):return 'cancelled'\n    if isinstance(error,TimeoutError):return 'timeout'\n    if isinstance(error,PermissionError):return 'permission'\n    if isinstance(error,(ConnectionError,OSError)):return 'dependency'\n    if isinstance(error,ValueError):return 'validation'\n    return 'internal'\n",
+      "checks": [
+        {
+          "label": "Timeout before OSError",
+          "code": "assert error_category(TimeoutError('private'))=='timeout'"
+        },
+        {
+          "label": "Permission before OSError",
+          "code": "assert error_category(PermissionError('private'))=='permission'"
+        },
+        {
+          "label": "Dependency and validation",
+          "code": "assert error_category(ConnectionError('x'))=='dependency' and error_category(OSError('x'))=='dependency' and error_category(ValueError('x'))=='validation'"
+        },
+        {
+          "label": "Cancellation not success",
+          "code": "assert error_category(KeyboardInterrupt('x'))=='cancelled' and error_category(SystemExit(2))=='cancelled'"
+        },
+        {
+          "label": "No payload; invalid type",
+          "code": "assert error_category(RuntimeError('PRIVATE RAW PROMPT'))=='internal' and raises(ValueError,error_category,'message')"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q089",
+      "type": "code",
+      "topic": "Routine metadata projection",
+      "difficulty": "applied",
+      "prompt": "Implement metadata_only(record). record must be a dict with <=64 keys or raise ValueError. Copy ONLY these keys if present: request_id, model_id, model_revision, candidate_count, input_tokens, output_tokens. For each selected value permit None, str <=128 characters, or EXACT int in [0,100000000]; reject all other selected values with ValueError, including bool. Ignore unknown keys without copying their values. Return a new dict; do not mutate input. This generic scalar projection bounds shape; it does not validate semantic IDs, detect PII or implement source authorization.",
+      "explanation": "An explicit allowlist avoids copying arbitrary payload keys. Its structural constraints are not a content-sensitive redaction or authority system.",
+      "starter": "def metadata_only(record):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def metadata_only(record):\n    if not isinstance(record,dict) or len(record)>64:raise ValueError('record')\n    output={}\n    for key in ('request_id','model_id','model_revision','candidate_count','input_tokens','output_tokens'):\n        if key not in record:continue\n        value=record[key]\n        if not (value is None or (isinstance(value,str) and len(value)<=128) or (type(value) is int and 0<=value<=100000000)):raise ValueError('attribute')\n        output[key]=value\n    return output\n",
+      "checks": [
+        {
+          "label": "Payload keys excluded",
+          "code": "r=dict(request_id='r',query='PRIVATE',prompt='PRIVATE',response='PRIVATE',exception_message='PRIVATE');assert metadata_only(r)=={'request_id':'r'}"
+        },
+        {
+          "label": "Unknown differs from zero",
+          "code": "assert metadata_only({'input_tokens':None,'output_tokens':0})=={'input_tokens':None,'output_tokens':0}"
+        },
+        {
+          "label": "Bounds and types",
+          "code": "assert raises(ValueError,metadata_only,{'candidate_count':True}) and raises(ValueError,metadata_only,{'model_id':'x'*129}) and raises(ValueError,metadata_only,{'input_tokens':-1})"
+        },
+        {
+          "label": "Unknown fields ignored; shape",
+          "code": "assert metadata_only({'unapproved':object()})=={} and raises(ValueError,metadata_only,[]) and raises(ValueError,metadata_only,{str(i):i for i in range(65)})"
+        },
+        {
+          "label": "New object; no mutation",
+          "code": "r={'request_id':'r','candidate_count':100000000,'query':'keep local'};out=metadata_only(r);assert out is not r and r['query']=='keep local' and out=={'request_id':'r','candidate_count':100000000}"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q090",
+      "type": "code",
+      "topic": "Scoped source-unit deduplication",
+      "difficulty": "applied",
+      "prompt": "Implement source_units(spans) for TRUSTED authorized observations: spans is a list/tuple of <=128 dicts with key equal to an immutable four-string tuple (tenant, document, version, location). Several quote spans may share a source unit. Return a new list of unique FULL keys in first-seen order. Keep different tenants, versions and locations distinct; do not mutate input. This helper counts observed units and does not establish document permission or claim support.",
+      "explanation": "A source-unit key must retain full scope and stable order. Counting quote spans or collapsing to document names can misrepresent context movement.",
+      "starter": "def source_units(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def source_units(spans):\n    seen=set()\n    output=[]\n    for span in spans:\n        key=span['key']\n        if key not in seen:\n            seen.add(key)\n            output.append(key)\n    return output\n",
+      "checks": [
+        {
+          "label": "Repeated quotes collapse one unit",
+          "code": "k=('N','D','1','p1');assert source_units([{'key':k},{'key':k}])==[k]"
+        },
+        {
+          "label": "Version and location stay separate",
+          "code": "a=('N','D','1','p1');b=('N','D','2','p1');c=('N','D','1','p2');assert source_units([{'key':a},{'key':b},{'key':c}])==[a,b,c]"
+        },
+        {
+          "label": "Tenant remains scoped",
+          "code": "a=('N','D','1','p1');b=('S','D','1','p1');assert source_units([{'key':a},{'key':b}])==[a,b]"
+        },
+        {
+          "label": "Stable order and empty",
+          "code": "a=('N','Z','1','p1');b=('N','A','1','p1');assert source_units([{'key':a},{'key':b},{'key':a}])==[a,b] and source_units([])==[]"
+        },
+        {
+          "label": "Input preserved",
+          "code": "s=[{'key':('N','D','1','p1'),'quote':'one'},{'key':('N','D','1','p1'),'quote':'two'}];assert len(source_units(s))==1 and len(s)==2 and s[1]['quote']=='two'"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q091",
+      "type": "code",
+      "topic": "First differing stage",
+      "difficulty": "applied",
+      "prompt": "Implement first_difference(baseline, candidate) for TRUSTED bounded state dicts. Each contains all seven keys scope, queries, candidates, reranked, context, prompt, response. Values are already-normalized JSON-compatible stage observations; list order is meaningful. Compare equality in exactly that stage order and return the first differing key, or None when all agree. Do not sort candidate lists, inspect duration/ID noise or mutate inputs. A differing stage is a diagnostic lead, not proof of a universal cause.",
+      "explanation": "Compare normalized stage observations in pipeline order. A final-output-first comparison misses the earlier boundary where support diverged.",
+      "starter": "def first_difference(baseline, candidate):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def first_difference(baseline,candidate):\n    for key in ('scope','queries','candidates','reranked','context','prompt','response'):\n        if baseline[key]!=candidate[key]:return key\n    return None\n",
+      "checks": [
+        {
+          "label": "Context before response",
+          "code": "a={k:[] for k in ('scope','queries','candidates','reranked','context','prompt','response')};b=dict(a,context=['S1'],response='short');assert first_difference(a,b)=='context'"
+        },
+        {
+          "label": "Scope checked first",
+          "code": "a={k:[] for k in ('scope','queries','candidates','reranked','context','prompt','response')};b=dict(a,scope='new',queries=['rewrite']);assert first_difference(a,b)=='scope'"
+        },
+        {
+          "label": "Rank order matters",
+          "code": "a={k:[] for k in ('scope','queries','candidates','reranked','context','prompt','response')};a['candidates']=['a','b'];b=dict(a,candidates=['b','a']);assert first_difference(a,b)=='candidates'"
+        },
+        {
+          "label": "Equal and response-only",
+          "code": "a={k:None for k in ('scope','queries','candidates','reranked','context','prompt','response')};assert first_difference(a,dict(a)) is None and first_difference(a,dict(a,response='changed'))=='response'"
+        },
+        {
+          "label": "Declared order, not dictionary order",
+          "code": "a={k:[] for k in ('response','prompt','context','reranked','candidates','queries','scope')};b=dict(a,prompt=['changed'],reranked=['changed']);assert first_difference(a,b)=='reranked' and a['reranked']==[]"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q092",
+      "type": "code",
+      "topic": "Canonical configuration fingerprint",
+      "difficulty": "applied",
+      "prompt": "Implement manifest_digest(manifest). Require a dict. Its keys are trusted strings and its nesting is trusted acyclic/bounded; values may still be non-JSON values or non-finite floats. Serialize the WHOLE dict using json.dumps(sort_keys=True, separators=(\",\",\":\"), ensure_ascii=False, allow_nan=False). The resulting string must be <=20000 characters. On invalid type/value/serialization/size raise ValueError. Otherwise return SHA-256 hexdigest of its exact UTF-8 bytes. Do not drop nulls, reorder lists, strip strings or mutate the manifest. This identity covers only its declared inputs and does not prove anonymity.",
+      "explanation": "Canonical dictionary serialization and complete input coverage make a comparable identity. List order, null and exact inserted text can all affect behavior.",
+      "starter": "def manifest_digest(manifest):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "import hashlib,json\ndef manifest_digest(manifest):\n    if not isinstance(manifest,dict):raise ValueError('dict required')\n    try:\n        payload=json.dumps(manifest,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False)\n        if len(payload)>20000:raise ValueError('size')\n        encoded=payload.encode('utf-8')\n    except (TypeError,ValueError,UnicodeError) as error:\n        raise ValueError('canonical manifest required') from error\n    return hashlib.sha256(encoded).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Independent exact bytes",
+          "code": "import hashlib\nassert manifest_digest({'b':2,'a':None})==hashlib.sha256(b'{\"a\":null,\"b\":2}').hexdigest()"
+        },
+        {
+          "label": "Dictionary order irrelevant; list order matters",
+          "code": "assert manifest_digest({'a':1,'b':2})==manifest_digest({'b':2,'a':1}) and manifest_digest({'r':['a','b']})!=manifest_digest({'r':['b','a']})"
+        },
+        {
+          "label": "Version and null retained",
+          "code": "assert manifest_digest({'model':'m','revision':'1'})!=manifest_digest({'model':'m','revision':'2'}) and manifest_digest({'usage':None})!=manifest_digest({})"
+        },
+        {
+          "label": "Invalid serialization rejected",
+          "code": "assert raises(ValueError,manifest_digest,[]) and raises(ValueError,manifest_digest,{'x':float('nan')}) and raises(ValueError,manifest_digest,{'x':object()}) and raises(ValueError,manifest_digest,{'x':'a'*20001})"
+        },
+        {
+          "label": "Unicode and exact whitespace",
+          "code": "import hashlib\nm={'a':'café '};assert manifest_digest(m)==hashlib.sha256('{\"a\":\"café \"}'.encode('utf-8')).hexdigest() and m=={'a':'café '} and manifest_digest(m)!=manifest_digest({'a':'café'})"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q093",
+      "type": "code",
+      "topic": "Request versus span summary",
+      "difficulty": "applied",
+      "prompt": "Implement trace_summary(spans) for TRUSTED data: a list/tuple of <=128 span dicts with parent (ID or None), status (ok/error/cancelled), duration_ns (nonnegative int or None). Nonempty input is an already-validated tree with exactly one root; completion order may put that root last. Return a new dict with span_count, error_span_count, cancelled_span_count and root_duration_ns. Count error/cancelled SPANS, not failed requests. Take duration only from the root, never sum nested durations. Empty input has counts zero and root_duration_ns=None. Do not mutate input.",
+      "explanation": "The root defines the request boundary; child durations are already inside it. Span failure counts are not population request-failure rates.",
+      "starter": "def trace_summary(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def trace_summary(spans):\n    return dict(span_count=len(spans),error_span_count=sum(s['status']=='error' for s in spans),cancelled_span_count=sum(s['status']=='cancelled' for s in spans),root_duration_ns=next((s['duration_ns'] for s in spans if s['parent'] is None),None))\n",
+      "checks": [
+        {
+          "label": "Nested duration not summed",
+          "code": "s=[dict(parent='r',status='ok',duration_ns=40),dict(parent=None,status='ok',duration_ns=100)];assert trace_summary(s)==dict(span_count=2,error_span_count=0,cancelled_span_count=0,root_duration_ns=100)"
+        },
+        {
+          "label": "Span failures counted explicitly",
+          "code": "s=[dict(parent=None,status='error',duration_ns=10),dict(parent='r',status='error',duration_ns=5)];assert trace_summary(s)['error_span_count']==2"
+        },
+        {
+          "label": "Cancellation separate",
+          "code": "s=[dict(parent=None,status='cancelled',duration_ns=9)];assert trace_summary(s)['cancelled_span_count']==1 and trace_summary(s)['error_span_count']==0"
+        },
+        {
+          "label": "Empty and unknown root timing",
+          "code": "assert trace_summary([])==dict(span_count=0,error_span_count=0,cancelled_span_count=0,root_duration_ns=None) and trace_summary([dict(parent=None,status='ok',duration_ns=None)])['root_duration_ns'] is None"
+        },
+        {
+          "label": "Known zero and no mutation",
+          "code": "s=[dict(parent=None,status='ok',duration_ns=0)];assert trace_summary(s)['root_duration_ns']==0 and s==[dict(parent=None,status='ok',duration_ns=0)]"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q094",
+      "type": "code",
+      "topic": "Bounded observation storage",
+      "difficulty": "applied",
+      "prompt": "Implement append_bounded(records, record, limit). limit must be an EXACT int in [0,64]. records must be a list/tuple with len(records)<=limit; record and existing rows are trusted objects. Invalid capacity/collection/length raises ValueError. Return (NEW_list, dropped_bool): if capacity is available, copy existing row references then append record and return False; if full, copy existing row references without appending and return True. Capacity zero drops every record. Do not mutate records or its rows; no deep copy is required. This helper bounds observation storage, not application work.",
+      "explanation": "Bounded recording must report omission while preserving caller data. Dropping an observation is separate from deciding whether application work executes.",
+      "starter": "def append_bounded(records, record, limit):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def append_bounded(records,record,limit):\n    if type(limit) is not int or not 0<=limit<=64 or not isinstance(records,(list,tuple)) or len(records)>limit:raise ValueError('capacity')\n    output=list(records)\n    dropped=len(output)==limit\n    if not dropped:output.append(record)\n    return output,dropped\n",
+      "checks": [
+        {
+          "label": "Available capacity",
+          "code": "assert append_bounded(['a'],'b',2)==(['a','b'],False)"
+        },
+        {
+          "label": "Full capacity",
+          "code": "assert append_bounded(['a'],'b',1)==(['a'],True)"
+        },
+        {
+          "label": "Zero and tuple",
+          "code": "assert append_bounded([],{},0)==([],True) and append_bounded(('a',),'b',2)==(['a','b'],False)"
+        },
+        {
+          "label": "Invalid capacity/shape",
+          "code": "assert raises(ValueError,append_bounded,[],1,True) and raises(ValueError,append_bounded,[],1,65) and raises(ValueError,append_bounded,[1,2],3,1) and raises(ValueError,append_bounded,None,1,1)"
+        },
+        {
+          "label": "New list; row references preserved",
+          "code": "row={'id':'a'};s=[row];out,dropped=append_bounded(s,{'id':'b'},2);assert not dropped and out is not s and out[0] is row and s==[{'id':'a'}]"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q095",
+      "type": "code",
+      "topic": "Explicit synthetic capture",
+      "difficulty": "applied",
+      "prompt": "Implement synthetic_capture(request, spans, enabled). enabled must be an EXACT bool or raise ValueError. If False return None without inspecting payloads. If True, request and spans are TRUSTED bounded JSON-compatible synthetic data: request is a dict; spans is a list of dicts with an authorized bool set by an upstream trusted grant check. Return a DEEP independent copy of {\"request\": request, \"spans\": only rows with authorized=True}, preserving allowed-row order and fields. Never change input. This fixture filter does not authenticate clients, replace real source checks or detect PII.",
+      "explanation": "Explicit opt-in and an already trusted grant decision define this synthetic capture. Deep copying prevents later debug-artifact edits from altering application inputs.",
+      "starter": "def synthetic_capture(request, spans, enabled):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "from copy import deepcopy\ndef synthetic_capture(request,spans,enabled):\n    if type(enabled) is not bool:raise ValueError('explicit bool required')\n    if not enabled:return None\n    return deepcopy({'request':request,'spans':[s for s in spans if s['authorized'] is True]})\n",
+      "checks": [
+        {
+          "label": "Off means no payload",
+          "code": "assert synthetic_capture({'query':'private'},[dict(authorized=True,text='x')],False) is None"
+        },
+        {
+          "label": "Denied rows absent",
+          "code": "out=synthetic_capture({'query':'synthetic'},[dict(authorized=False,text='DENIED'),dict(authorized=True,text='allowed')],True);assert out['spans']==[dict(authorized=True,text='allowed')]"
+        },
+        {
+          "label": "Explicit type",
+          "code": "assert raises(ValueError,synthetic_capture,{},[],1) and raises(ValueError,synthetic_capture,{},[],'yes')"
+        },
+        {
+          "label": "Deep independence",
+          "code": "r={'filters':['catalogue']};s=[dict(authorized=True,parts=['a'])];out=synthetic_capture(r,s,True);out['request']['filters'].append('x');out['spans'][0]['parts'].append('b');assert r=={'filters':['catalogue']} and s[0]['parts']==['a']"
+        },
+        {
+          "label": "Preserved order and empty",
+          "code": "s=[dict(authorized=True,id='b'),dict(authorized=False,id='x'),dict(authorized=True,id='a')];assert [x['id'] for x in synthetic_capture({},s,True)['spans']]==['b','a'] and synthetic_capture({},[],True)=={'request':{},'spans':[]}"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q096",
+      "type": "code",
+      "topic": "Complete-attempt usage totals",
+      "difficulty": "applied",
+      "prompt": "Implement attempt_totals(attempts). Require a list/tuple of <=64 dicts, each with attempt_id (nonblank str <=64 chars), input_tokens and output_tokens (None or EXACT ints in [0,100000000]); ignore extra fields. IDs must be unique. Invalid input raises ValueError. Return {\"attempt_count\": n, \"input_tokens\": total_or_None, \"output_tokens\": total_or_None}. A total is known only if n>0 and EVERY attempt reports that counter; otherwise None. Input and output completeness are independent. Do not replace unknown with zero, silently deduplicate retries or mutate input.",
+      "explanation": "Observed partial usage is not a complete total. Distinct attempt identities prevent silent replay/deduplication from hiding potentially billable work.",
+      "starter": "def attempt_totals(attempts):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def attempt_totals(attempts):\n    if not isinstance(attempts,(list,tuple)) or len(attempts)>64:raise ValueError('attempts')\n    seen=set()\n    for row in attempts:\n        if not isinstance(row,dict) or not {'attempt_id','input_tokens','output_tokens'}<=row.keys():raise ValueError('shape')\n        ident=row['attempt_id']\n        if not isinstance(ident,str) or not ident.strip() or len(ident)>64 or ident in seen:raise ValueError('id')\n        seen.add(ident)\n        for key in ('input_tokens','output_tokens'):\n            value=row[key]\n            if value is not None and (type(value) is not int or not 0<=value<=100000000):raise ValueError('count')\n    output={'attempt_count':len(attempts)}\n    for key in ('input_tokens','output_tokens'):\n        output[key]=sum(r[key] for r in attempts) if attempts and all(r[key] is not None for r in attempts) else None\n    return output\n",
+      "checks": [
+        {
+          "label": "Count every distinct retry",
+          "code": "s=[dict(attempt_id='a1',input_tokens=100,output_tokens=20),dict(attempt_id='a2',input_tokens=80,output_tokens=10)];assert attempt_totals(s)==dict(attempt_count=2,input_tokens=180,output_tokens=30)"
+        },
+        {
+          "label": "Independent completeness",
+          "code": "s=[dict(attempt_id='a1',input_tokens=100,output_tokens=20),dict(attempt_id='a2',input_tokens=None,output_tokens=10)];assert attempt_totals(s)==dict(attempt_count=2,input_tokens=None,output_tokens=30)"
+        },
+        {
+          "label": "Zero known; empty unknown",
+          "code": "assert attempt_totals([dict(attempt_id='a',input_tokens=0,output_tokens=0)])['input_tokens']==0 and attempt_totals([])==dict(attempt_count=0,input_tokens=None,output_tokens=None)"
+        },
+        {
+          "label": "Duplicates and invalid values",
+          "code": "r=dict(attempt_id='a',input_tokens=1,output_tokens=2);assert raises(ValueError,attempt_totals,[r,r]) and raises(ValueError,attempt_totals,[dict(r,input_tokens=True)]) and raises(ValueError,attempt_totals,[dict(r,output_tokens=-1)]) and raises(ValueError,attempt_totals,[{'attempt_id':'a'}])"
+        },
+        {
+          "label": "Bounds and preservation",
+          "code": "s=[dict(attempt_id='a',input_tokens=100000000,output_tokens=None)];assert attempt_totals(s)['input_tokens']==100000000 and s[0]['output_tokens'] is None and raises(ValueError,attempt_totals,[dict(s[0],input_tokens=100000001)]) and raises(ValueError,attempt_totals,[dict(attempt_id=str(i),input_tokens=1,output_tokens=1) for i in range(65)])"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q097",
+      "type": "code",
+      "topic": "Failure/cancellation lifecycle",
+      "difficulty": "applied",
+      "prompt": "Implement run_observed(action, events). action is a trusted zero-argument callable; events is a caller-owned list to which this task INTENTIONALLY appends lifecycle strings. Append start, call action EXACTLY once, then append ok on normal return, error for an Exception, or cancelled for a BaseException that is not an Exception. Always append end last, including on failure. Return the identical action result on success. On failure re-raise the SAME exception instance, including cancellation; do not serialize its message or convert it into an answer. Do not clear or replace existing events.",
+      "explanation": "Observe success and failure without changing return/error semantics. finally closes the lifecycle; cancellation is recorded and propagated rather than hidden.",
+      "starter": "def run_observed(action, events):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def run_observed(action,events):\n    events.append('start')\n    try:\n        result=action()\n        events.append('ok')\n        return result\n    except BaseException as error:\n        events.append('error' if isinstance(error,Exception) else 'cancelled')\n        raise\n    finally:\n        events.append('end')\n",
+      "checks": [
+        {
+          "label": "Normal result identity",
+          "code": "value=object();events=[];assert run_observed(lambda:value,events) is value and events==['start','ok','end']"
+        },
+        {
+          "label": "Same failure re-raised",
+          "code": "err=ValueError('private');events=[]\ndef fail():raise err\ntry:run_observed(fail,events)\nexcept ValueError as caught:assert caught is err\nelse:raise AssertionError('error swallowed')\nassert events==['start','error','end']"
+        },
+        {
+          "label": "Cancellation propagates",
+          "code": "err=KeyboardInterrupt('private');events=[]\ndef cancel():raise err\ntry:run_observed(cancel,events)\nexcept KeyboardInterrupt as caught:assert caught is err\nelse:raise AssertionError('cancel swallowed')\nassert events==['start','cancelled','end']"
+        },
+        {
+          "label": "One action call; existing events",
+          "code": "calls=[];events=['earlier'];assert run_observed(lambda:calls.append(1),events) is None and calls==[1] and events==['earlier','start','ok','end']"
+        },
+        {
+          "label": "No payload or falsey-result loss",
+          "code": "events=[];assert run_observed(lambda:0,events)==0 and events==['start','ok','end']\nerr=RuntimeError('RAW SECRET');events=[]\ndef fail():raise err\nassert raises(RuntimeError,run_observed,fail,events) and 'RAW SECRET' not in str(events)"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q098",
+      "type": "code",
+      "topic": "One delivery attempt",
+      "difficulty": "applied",
+      "prompt": "Implement deliver_once(result, sink, trace). result is any already-computed object, sink is a trusted callable accepting the trace object, and trace is a trusted dict. Call sink(trace) exactly ONCE. If it returns, return (the identical result object, True). If it raises an Exception, return (the identical result object, False). A BaseException that is not an Exception must propagate unchanged. Do not mutate result/trace, retry, rerun application work, or include exception text. This is one best-effort delivery, not durable persistence.",
+      "explanation": "Application results and trace delivery have independent outcomes. Export failure does not authorize replaying application work or suppressing cancellation.",
+      "starter": "def deliver_once(result, sink, trace):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def deliver_once(result,sink,trace):\n    try:sink(trace)\n    except Exception:return result,False\n    return result,True\n",
+      "checks": [
+        {
+          "label": "Successful delivery",
+          "code": "answer=object();seen=[];trace={'id':'r'};out,ok=deliver_once(answer,lambda t:seen.append(t),trace);assert out is answer and ok is True and seen==[trace] and seen[0] is trace"
+        },
+        {
+          "label": "Failure one attempt; result preserved",
+          "code": "calls=[];answer={'text':'computed'}\ndef broken(t):calls.append(t);raise OSError('PRIVATE')\nout,ok=deliver_once(answer,broken,{});assert out is answer and ok is False and len(calls)==1"
+        },
+        {
+          "label": "Cancellation not swallowed",
+          "code": "err=KeyboardInterrupt();answer=object()\ndef cancel(t):raise err\ntry:deliver_once(answer,cancel,{})\nexcept KeyboardInterrupt as caught:assert caught is err\nelse:raise AssertionError('cancellation swallowed')"
+        },
+        {
+          "label": "Falsey answer retained",
+          "code": "out,ok=deliver_once(0,lambda t:None,{});assert out==0 and ok is True"
+        },
+        {
+          "label": "Inputs unchanged; general Exception",
+          "code": "r={'answer':['a']};t={'id':'r'}\ndef bad(trace):raise ValueError('no sink')\nout,ok=deliver_once(r,bad,t);assert out is r and not ok and r=={'answer':['a']} and t=={'id':'r'}"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q099",
+      "type": "code",
+      "topic": "Prompt-message contract",
+      "difficulty": "applied",
+      "prompt": "Implement validate_messages(messages). Require a list/tuple of EXACTLY two dicts, each with ONLY role and content keys. Roles in order are system then user. Content must be nonblank str, valid UTF-8 encodable, with combined raw text length <=20000 characters. Reject all invalid input with ValueError. Return a new tuple of (role, content) tuples, preserving exact content including whitespace. Do not mutate input, strip text, add instructions or call a model. This checks shape/size, not faithfulness or injection resistance.",
+      "explanation": "Validate the message envelope and preserve actual serialized content. Shape, UTF-8 and size checks do not evaluate whether evidence is trustworthy or output is correct.",
+      "starter": "def validate_messages(messages):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def validate_messages(messages):\n    if not isinstance(messages,(list,tuple)) or len(messages)!=2:raise ValueError('messages')\n    output=[]\n    for row,role in zip(messages,('system','user')):\n        if not isinstance(row,dict) or set(row)!={'role','content'} or row['role']!=role:raise ValueError('role/keys')\n        text=row['content']\n        if not isinstance(text,str) or not text.strip():raise ValueError('text')\n        try:text.encode('utf-8')\n        except UnicodeError as error:raise ValueError('UTF-8') from error\n        output.append((role,text))\n    if sum(len(text) for _,text in output)>20000:raise ValueError('size')\n    return tuple(output)\n",
+      "checks": [
+        {
+          "label": "Roles and exact text",
+          "code": "m=[dict(role='system',content=' Evidence only. '),dict(role='user',content='café\\n')];assert validate_messages(m)==(('system',' Evidence only. '),('user','café\\n'))"
+        },
+        {
+          "label": "Wrong role/count/shape",
+          "code": "assert raises(ValueError,validate_messages,[]) and raises(ValueError,validate_messages,[dict(role='user',content='x'),dict(role='system',content='x')]) and raises(ValueError,validate_messages,['system','user'])"
+        },
+        {
+          "label": "No extra keys or blank content",
+          "code": "assert raises(ValueError,validate_messages,[dict(role='system',content='x',secret='y'),dict(role='user',content='x')]) and raises(ValueError,validate_messages,[dict(role='system',content=' '),dict(role='user',content='x')])"
+        },
+        {
+          "label": "UTF-8 and combined size",
+          "code": "assert raises(ValueError,validate_messages,[dict(role='system',content='x'),dict(role='user',content='\\ud800')]) and raises(ValueError,validate_messages,[dict(role='system',content='x'*10000),dict(role='user',content='x'*10001)])"
+        },
+        {
+          "label": "Exact limit; input preserved",
+          "code": "m=[dict(role='system',content='x'*10000),dict(role='user',content='y'*10000)];out=validate_messages(m);assert len(out[0][1])+len(out[1][1])==20000 and m[0]['content']=='x'*10000"
+        }
+      ]
+    },
+    {
+      "id": "W10-Q100",
+      "type": "code",
+      "topic": "Matched latency comparisons",
+      "difficulty": "applied",
+      "prompt": "Implement paired_latency(baseline, candidate). Both must be dicts of <=64 identical request-ID keys (nonblank str <=64 chars). Each value is None or an EXACT int duration in [0,10**18] nanoseconds. Reject shape/key-set/value violations with ValueError. Return {\"pairs\": rows, \"excluded\": count}; rows in sorted request-ID order include only IDs known in BOTH inputs, each row {\"request_id\": id, \"baseline_ms\": b/1000000, \"candidate_ms\": c/1000000, \"delta_ms\": (c-b)/1000000}. Count excluded IDs once when either value is None. Empty maps give empty rows/excluded=0. Preserve zeros, negative deltas and input. This diagnoses matched observations, not a production performance claim.",
+      "explanation": "Compare the same request population and retain missingness, zero and direction. Independent unpaired means can confuse a population change with a latency change.",
+      "starter": "def paired_latency(baseline, candidate):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
+      "reference": "def paired_latency(baseline,candidate):\n    for group in (baseline,candidate):\n        if not isinstance(group,dict) or len(group)>64:raise ValueError('mapping')\n        for key,value in group.items():\n            if not isinstance(key,str) or not key.strip() or len(key)>64:raise ValueError('id')\n            if value is not None and (type(value) is not int or not 0<=value<=10**18):raise ValueError('duration')\n    if set(baseline)!=set(candidate):raise ValueError('population differs')\n    rows=[]\n    excluded=0\n    for key in sorted(baseline):\n        b,c=baseline[key],candidate[key]\n        if b is None or c is None:excluded+=1;continue\n        rows.append(dict(request_id=key,baseline_ms=b/1000000,candidate_ms=c/1000000,delta_ms=(c-b)/1000000))\n    return dict(pairs=rows,excluded=excluded)\n",
+      "checks": [
+        {
+          "label": "Matched arithmetic and order",
+          "code": "o=paired_latency({'b':2000000,'a':1000000},{'a':3000000,'b':1000000});assert o=={'pairs':[dict(request_id='a',baseline_ms=1.0,candidate_ms=3.0,delta_ms=2.0),dict(request_id='b',baseline_ms=2.0,candidate_ms=1.0,delta_ms=-1.0)],'excluded':0}"
+        },
+        {
+          "label": "Zero and missing distinct",
+          "code": "o=paired_latency({'a':0,'b':None,'c':1},{'a':0,'b':2,'c':None});assert o=={'pairs':[dict(request_id='a',baseline_ms=0.0,candidate_ms=0.0,delta_ms=0.0)],'excluded':2}"
+        },
+        {
+          "label": "Changed population rejected",
+          "code": "assert raises(ValueError,paired_latency,{'a':1},{'b':1}) and raises(ValueError,paired_latency,{'a':1},{})"
+        },
+        {
+          "label": "Exact types and bounds",
+          "code": "assert raises(ValueError,paired_latency,{'a':True},{'a':1}) and raises(ValueError,paired_latency,{'a':-1},{'a':1}) and raises(ValueError,paired_latency,{'a':10**18+1},{'a':1}) and raises(ValueError,paired_latency,{1:0},{1:0})"
+        },
+        {
+          "label": "Empty and preserved input",
+          "code": "a={'a':1000000};b={'a':500000};assert paired_latency(a,b)['pairs'][0]['delta_ms']==-0.5 and a=={'a':1000000} and b=={'a':500000} and paired_latency({},{})==dict(pairs=[],excluded=0)"
+        }
+      ]
+    }
+  ]
+}

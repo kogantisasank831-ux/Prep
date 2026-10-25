@@ -3,8 +3,8 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-24
+version: 1.0.1
+last_reviewed: 2026-10-25
 estimated_hours: 8
 permalink: /weeks/week-10/
 title: "LLM observability: follow a request and explain what changed"
@@ -16,6 +16,8 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-10/beginner/
 ---
+
+Test your understanding with the [Week 10 assessment]({{ '/assessments/week-10/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on trace structure, timing, usage, costs, failure handling and paired diagnosis.
 
 ## The answer worked last week. What changed?
 
@@ -298,7 +300,7 @@ For interviews, answer with a boundary and a concrete consequence:
 
 Close your notebook and explain why a complete error trace differs from a successful answer, why a hash does not establish anonymity, and why the tight context case is a context failure despite successful retrieval. Reopen the trace and point to the fields supporting each statement.
 
-Your weekly deliverable is the observed assistant plus a short diagnostic note, trace artifacts, cost calculation and payload policy. It is ready for handoff when someone else can reproduce the controlled support loss, locate its stage and state what the trace cannot establish. The Week 10 assessment is a separate next step.
+Your weekly deliverable is the observed assistant plus a short diagnostic note, trace artifacts, cost calculation and payload policy. It is ready for handoff when someone else can reproduce the controlled support loss, locate its stage and state what the trace cannot establish. Use the Week 10 assessment as the next independent practice step.
 
 ## Sources and next reading
 
