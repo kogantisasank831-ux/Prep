@@ -44,6 +44,9 @@ services:
       W12_DB_PASSWORD_FILE: /run/secrets/db_app
       W12_NORTH_TOKEN_FILE: /run/secrets/north_token
       W12_SOUTH_TOKEN_FILE: /run/secrets/south_token
+      W12_CONTEXT_CHARS: "${W12_CONTEXT_CHARS:-1400}"
+      W12_REQUESTS_PER_MINUTE: "${W12_REQUESTS_PER_MINUTE:-12}"
+      W12_CACHE_SECONDS: "${W12_CACHE_SECONDS:-15}"
     secrets: [db_app, north_token, south_token]
     depends_on:
       db:

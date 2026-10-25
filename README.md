@@ -275,10 +275,13 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–11 assessment tests and Week 10–11 labs'
+requires Node 20+, checks the Week 7–11 assessment tests and Week 10–12 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
-Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security tests and Week 1 service
-regressions. The candidate commit must pass before its branch is promoted to
+Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
+application tests and Week 1 service regressions. A second required job builds
+the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
+integration and real HTTP smoke before and after its volume-preserving restart.
+The candidate commit must pass before its branch is promoted to
 main; GitHub Pages build and relevant live browser checks follow promotion. The
 selected suite avoids the unrelated Windows-only comparison module and does
 not claim an unrestricted whole-repository test pass.
@@ -335,3 +338,31 @@ The coding exercises use standard-library functions with five checks each;
 public practice scores do not establish source truth or complete attack detection.
 Run `python -m pytest tests/test_week11_assessment.py tests/test_week11_security.py`
 for bank/reference checks, composed security contracts and the local security lab.
+
+## Week 12 content and local deployment lab
+
+[Week 12 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-12/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-12/beginner/)
+turn the guarded assistant into a local FastAPI service backed by PostgreSQL
+and pgvector. The [lab](labs/week_12/README.md) includes strict authenticated
+requests, current source/pin checks before vector selection, validated-result
+SSE, bounded process-local caching/rate/admission, secret files, health checks,
+versioned insert-only bootstrap and a non-root Compose setup.
+
+```shell
+python -m pip install -r requirements-dev.txt -r labs/week_12/requirements.txt
+python -m labs.week_12.cli secrets
+docker compose -f labs/week_12/compose.yml build api
+docker compose -f labs/week_12/compose.yml up -d --no-build api
+python -m labs.week_12.cli smoke
+python -m pytest tests/test_week12_service.py -q
+```
+
+Run from the repository root in an activated environment; generate credentials
+once for a fresh setup. Keep the files and named volume together. The API binds
+to 127.0.0.1:8000 and provides /docs and /openapi.json. The ordinary Compose file
+keeps PostgreSQL private; the CI override provides an isolated loopback test port.
+The responder is scripted and the 32-dimensional token-hash encoder is a
+synthetic baseline. No provider/GPU/paid service or public backend is introduced.
+GitHub Pages publishes the static lessons, while these services run locally.
+Week 12 assessment questions remain a separate next step.

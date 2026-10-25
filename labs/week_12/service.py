@@ -86,7 +86,7 @@ def compute_answer(
 ) -> SecuredResult:
     return secure_ask(
         context,
-        json.dumps({"question": question}, ensure_ascii=False),
+        json.dumps({"question": question}, ensure_ascii=False, separators=(",", ":")),
         snapshot.chunks,
         PolicyStore(snapshot.policies),
         limits=limits,

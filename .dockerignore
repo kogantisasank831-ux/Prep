@@ -1,6 +1,9 @@
 .git
 .venv
 .runtime
+.env
+**/.env
+**/.env.*
 .qa-*
 __pycache__
 *.pyc

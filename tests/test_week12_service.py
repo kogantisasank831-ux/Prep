@@ -343,6 +343,26 @@ def test_body_limit_counts_received_bytes_and_handles_chunking() -> None:
     assert repo.calls == []
 
 
+def test_valid_4096_byte_envelope_is_not_inflated_between_layers() -> None:
+    question = "invoice " + "\0" * 616 + "é" + "a" * 375
+    raw = json.dumps(
+        {"question": question}, ensure_ascii=False, separators=(",", ":")
+    ).encode()
+    assert len(question) == 1000 and len(raw) == 4096
+    repo = MemoryRepository()
+    with TestClient(create_app(settings(), repo)) as client:
+        response = client.post(
+            "/v1/ask",
+            headers={
+                "Authorization": "Bearer " + NORTH_SECRET,
+                "Content-Type": "application/json",
+            },
+            content=raw,
+        )
+        assert response.status_code == 200 and response.json()["status"] == "answered"
+    assert len(repo.calls) == 2
+
+
 def test_body_read_deadline_is_an_expected_error() -> None:
     async def run() -> None:
         async def receive() -> dict[str, object]:
