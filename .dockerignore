@@ -1,0 +1,6 @@
+.git
+.venv
+.runtime
+.qa-*
+__pycache__
+*.pyc

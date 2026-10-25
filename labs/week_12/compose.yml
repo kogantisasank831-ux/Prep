@@ -1,0 +1,74 @@
+name: prep-week12
+services:
+  db:
+    image: pgvector/pgvector:0.8.7-pg17-bookworm
+    environment:
+      POSTGRES_DB: rag_demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin
+    secrets: [db_admin]
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres -d rag_demo"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [backend]
+
+  bootstrap:
+    build:
+      context: ../..
+      dockerfile: labs/week_12/Dockerfile
+    image: prep-week12-api:local
+    command: [python, -m, labs.week_12.cli, bootstrap, --admin-secret, /run/secrets/db_admin, --app-secret, /run/secrets/db_app]
+    environment:
+      W12_DB_HOST: db
+    secrets: [db_admin, db_app]
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [backend]
+
+  api:
+    build:
+      context: ../..
+      dockerfile: labs/week_12/Dockerfile
+    image: prep-week12-api:local
+    environment:
+      W12_DB_HOST: db
+      W12_DB_PASSWORD_FILE: /run/secrets/db_app
+      W12_NORTH_TOKEN_FILE: /run/secrets/north_token
+      W12_SOUTH_TOKEN_FILE: /run/secrets/south_token
+    secrets: [db_app, north_token, south_token]
+    depends_on:
+      db:
+        condition: service_healthy
+      bootstrap:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [backend]
+
+secrets:
+  db_admin:
+    file: ../../.runtime/week12-secrets/db_admin
+  db_app:
+    file: ../../.runtime/week12-secrets/db_app
+  north_token:
+    file: ../../.runtime/week12-secrets/north_token
+  south_token:
+    file: ../../.runtime/week12-secrets/south_token
+volumes:
+  database:
+networks:
+  backend:
+    internal: true
