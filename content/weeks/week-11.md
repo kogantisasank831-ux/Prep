@@ -3,7 +3,7 @@ layout: week
 week: 11
 phase: 3
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-10-25
 estimated_hours: 8
 permalink: /weeks/week-11/
@@ -16,6 +16,9 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-11/beginner/
 ---
+
+Test your understanding with the [Week 11 assessment]({{ '/assessments/week-11/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on source permissions, strict JSON, screening limits, exact quotes and safe output.
+
 
 ## An invoice note tries to become an instruction
 
@@ -320,7 +323,7 @@ This build exercises real local parsing, source scope, retrieval, citations, res
 
 Close the lesson and explain how a request can be operationally successful, fully cited, permitted and still wrong. Then explain which independent controls stop the same request from obtaining another tenant's data or triggering an export.
 
-Keep the guarded assistant, synthetic case outcomes, a small threat register and the benign/malicious comparison as your weekly deliverable. Week 12 will put a service around the pipeline; this week's authority and failure boundaries should survive that packaging. The Week 11 question bank is a separate next step.
+Keep the guarded assistant, synthetic case outcomes, a small threat register and the benign/malicious comparison as your weekly deliverable. Week 12 will put a service around the pipeline; this week's authority and failure boundaries should survive that packaging. Use the assessment to check the same boundaries in concepts and Python syntax.
 
 ## Sources and further reading
 

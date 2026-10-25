@@ -3,7 +3,7 @@ layout: week
 week: 11
 phase: 3
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-10-25
 estimated_hours: 8
 permalink: /weeks/week-11/beginner/
@@ -16,6 +16,9 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-11/
 ---
+
+Try the [Week 11 assessment]({{ '/assessments/week-11/' | relative_url }}): ten randomly selected questions from a bank of 100, with concept checks, matching, short syntax answers and small Python tasks.
+
 
 ## A useful document can contain an unsafe request
 
@@ -250,7 +253,7 @@ Practice these interview answers aloud:
 | What if the detector misses? | Separate source, schema and action controls must still constrain accepted behavior. |
 | What does the local lab establish? | Deterministic controls work for the declared synthetic cases, including known misses and utility loss; it does not measure a real model's attack resistance. |
 
-You are ready to move on when you can show a working permitted answer, a denied cross-tenant path, a rejected unsafe proposal and an honest explanation of the remaining poisoned-fact and detector limits. Keep the code, case events and a short threat note. Week 12 will add deployment concerns; the Week 11 assessment comes separately.
+You are ready to move on when you can show a working permitted answer, a denied cross-tenant path, a rejected unsafe proposal and an honest explanation of the remaining poisoned-fact and detector limits. Keep the code, case events and a short threat note. Week 12 will add deployment concerns; the assessment lets you practice these boundaries before moving on.
 
 ## Read alongside the build
 

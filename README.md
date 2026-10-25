@@ -275,7 +275,7 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–10 assessment tests and Week 10–11 labs'
+requires Node 20+, checks the Week 7–11 assessment tests and Week 10–11 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security tests and Week 1 service
 regressions. The candidate commit must pass before its branch is promoted to
@@ -327,5 +327,11 @@ Choose fresh directories. Thirteen synthetic cases include source isolation,
 tampering, unsafe proposals, revocation, a detector miss/false positive and an
 approved false statement. These demonstrate local controls and their limits;
 the responder is scripted, with no provider call or action dispatcher. The
-existing CI gate includes the security lab's tests, lint and typing. Week 11
-assessment questions are deferred.
+existing CI gate includes the security lab's tests, lint and typing. The
+[Week 11 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-11/)
+adds 100 questions: 30 single-choice, 20 multiple-correct, 15 matching, 15 short
+syntax and 20 Python tasks. A random paper draws two of each format for 100 marks.
+The coding exercises use standard-library functions with five checks each;
+public practice scores do not establish source truth or complete attack detection.
+Run `python -m pytest tests/test_week11_assessment.py tests/test_week11_security.py`
+for bank/reference checks, composed security contracts and the local security lab.
