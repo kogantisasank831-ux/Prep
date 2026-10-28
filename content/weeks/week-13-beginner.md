@@ -3,8 +3,8 @@ layout: week
 week: 13
 phase: 4
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-26
+version: 1.0.1
+last_reviewed: 2026-10-28
 estimated_hours: 8
 permalink: /weeks/week-13/beginner/
 title: "Give your assistant a tool it can propose"
@@ -39,6 +39,8 @@ The lab uses fictional records, a real local SQLite file and a scripted planner.
 | Hour 8 | Practise changes and interview answers | Explain the working example and its limits |
 
 Use this as an alternative eight-hour route through the same build. Revisit [Week 1]({{ '/weeks/week-01/beginner/' | relative_url }}) for functions and typed inputs, [Week 11]({{ '/weeks/week-11/beginner/' | relative_url }}) for source permission, or [Week 12]({{ '/weeks/week-12/beginner/' | relative_url }}) for waiting and cancellation.
+
+The [Week 13 assessment]({{ '/assessments/week-13/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
 ## Start with one operation you can name
 
@@ -266,7 +268,7 @@ Then try three small exercises. Change the proposed SQL limit to a boolean and p
 
 For interviews, practise explaining invalid arguments, duplicate execution and write idempotency. Include who supplied authority, when the effect committed, how the original result is recovered and what your tests do not prove.
 
-You finish when you can follow a proposed operation across each application check and explain a failure without guessing. Week 14 compares workflows with agent-driven decisions. Week 13's assessment bank comes separately.
+You finish when you can follow a proposed operation across each application check and explain a failure without guessing. Week 14 compares workflows with agent-driven decisions. Try the [Week 13 assessment]({{ '/assessments/week-13/' | relative_url }}) for a random paper with concept, syntax and Python questions.
 
 ## Read alongside the build
 

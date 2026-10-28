@@ -275,7 +275,7 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–12 assessment tests and Week 10–13 labs'
+requires Node 20+, checks the Week 7–13 assessment tests and Week 10–13 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
 application/Week 13 tool-calling tests and Week 1 service regressions. A second
@@ -410,4 +410,19 @@ existing files. The planner and approval are explicit synthetic fixtures,
 not a real-model benchmark or authenticated human approval flow. No provider,
 paid service, new dependency or public backend is introduced. CI requires the
 tool tests and actual CLI smoke alongside the existing database/container gates.
-Week 13 assessment questions are a separate next step.
+The [Week 13 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-13/)
+adds 100 questions with balanced random 10-question papers, explanations and
+scoring out of 100. Twenty independent standard-library Python tasks cover
+closed arguments/schemas, exact decimal variance, scoped rows, result correlation,
+evidence membership, canonical intent, approval, replay/conflict, bounded retries,
+async ordering/cancellation/deadlines and complete transcript-byte accounting.
+Each task has five executable checks. In-memory exercises model individual
+components; the full SQLite transaction and runnable tool loop stay in the lab.
+
+Run the bank and local tool regression checks from the repository root:
+
+    python -m pytest tests/test_week13_assessment.py tests/test_week13_tools.py -q
+
+The shared browser worker and scoring rules are unchanged. The assessment runs
+on GitHub Pages without a hosted Python service or database. Required CI keeps
+the actual SQLite CLI smoke and PostgreSQL/container gates described above.

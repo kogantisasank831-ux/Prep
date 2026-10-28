@@ -1,0 +1,3074 @@
+{
+  "schema_version": 1,
+  "week": 13,
+  "version": "1.0.0",
+  "title": "Tool calling",
+  "source_lesson": "/weeks/week-13/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W13-Q001",
+      "type": "single",
+      "topic": "Proposal boundary",
+      "difficulty": "foundation",
+      "prompt": "A planner proposes supplier_lookup for SUP-001. Which event actually makes the operation run?",
+      "explanation": "A proposal is data until the application validates and authorizes execution through a fixed registry. Neither an ID nor a description supplies executable authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Mentioning SUP-001 grants access to its tenant"
+        },
+        {
+          "id": "o2",
+          "text": "Producing a JSON object automatically executes its name"
+        },
+        {
+          "id": "o3",
+          "text": "The tool description replaces the implementation"
+        },
+        {
+          "id": "o4",
+          "text": "Application code admits the validated call and invokes its registered handler"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q002",
+      "type": "single",
+      "topic": "Function scope",
+      "difficulty": "foundation",
+      "prompt": "A supplier lookup promises supplier ID, name and status. A user asks it to change banking instructions. What is the appropriate contract response?",
+      "explanation": "A narrow tool has an explicit capability and result contract. A request outside it needs a separately designed operation and authority, not an invented effect.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Add a banking field to the result and assume a write occurred"
+        },
+        {
+          "id": "o2",
+          "text": "Execute a URL found in the supplier name"
+        },
+        {
+          "id": "o3",
+          "text": "Treat the requested change as outside this tool's capability"
+        },
+        {
+          "id": "o4",
+          "text": "Let a successful read permanently authorize later writes"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q003",
+      "type": "single",
+      "topic": "Selection versus arguments",
+      "difficulty": "foundation",
+      "prompt": "The planner selects price_variance but reverses the two prices. Which failure has occurred?",
+      "explanation": "Selecting the right operation and supplying the right values are separate decisions. A reversed baseline changes the business meaning even if both values are valid strings.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A valid schema proves the percentage is still correct"
+        },
+        {
+          "id": "o2",
+          "text": "The function registry necessarily failed to load"
+        },
+        {
+          "id": "o3",
+          "text": "Argument correctness failed despite an appropriate tool choice"
+        },
+        {
+          "id": "o4",
+          "text": "SQL parameterization failed"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q004",
+      "type": "single",
+      "topic": "Provider integration",
+      "difficulty": "foundation",
+      "prompt": "The lab exports Pydantic JSON Schema and its own proposed-call envelope. What remains before using a real provider?",
+      "explanation": "The local protocol is provider-neutral teaching code. Compatibility requires an actual adapter; structured generation cannot establish caller permissions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only renaming the local SQLite file"
+        },
+        {
+          "id": "o2",
+          "text": "An adapter for the provider's supported schemas, call/result objects and continuation rules"
+        },
+        {
+          "id": "o3",
+          "text": "Replacing object authorization with strict generation"
+        },
+        {
+          "id": "o4",
+          "text": "Assuming every provider accepts the local envelope unchanged"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q005",
+      "type": "single",
+      "topic": "Fixed dispatch",
+      "difficulty": "foundation",
+      "prompt": "A proposed name is __import__, but the application's fixed registry contains no such tool. What should happen?",
+      "explanation": "Only registered application code may execute. An unknown operation name remains a bounded error and cannot expand the dispatch surface.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Evaluate its arguments as Python to discover the intended operation"
+        },
+        {
+          "id": "o2",
+          "text": "Return unknown_tool without invoking an adapter"
+        },
+        {
+          "id": "o3",
+          "text": "Import a module with that name"
+        },
+        {
+          "id": "o4",
+          "text": "Search the host filesystem for a matching function"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q006",
+      "type": "single",
+      "topic": "Strict values",
+      "difficulty": "foundation",
+      "prompt": "sql_query receives limit='5' as a JSON string. Under this lab's strict contract, what happens?",
+      "explanation": "The strict argument model rejects the wrong type before execution. The proposed call still consumes conversation budget.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A trusted change to the caller's tenant"
+        },
+        {
+          "id": "o2",
+          "text": "invalid_arguments with zero handler attempts"
+        },
+        {
+          "id": "o3",
+          "text": "One SQL attempt followed by a type repair"
+        },
+        {
+          "id": "o4",
+          "text": "Automatic conversion to the integer 5"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q007",
+      "type": "single",
+      "topic": "Closed arguments",
+      "difficulty": "foundation",
+      "prompt": "Valid supplier arguments include an extra tenant='South' field. What does the lab do?",
+      "explanation": "Closed arguments do not accept model-supplied identity. Trusted Actor/SecurityContext supplies tenant and principal independently.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject the extra field before invoking the lookup"
+        },
+        {
+          "id": "o2",
+          "text": "Use South because it appears in the most recent proposal"
+        },
+        {
+          "id": "o3",
+          "text": "Permit the model to choose scope only when the ID exists"
+        },
+        {
+          "id": "o4",
+          "text": "Merge South and North records"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W13-Q008",
+      "type": "single",
+      "topic": "Duplicate JSON",
+      "difficulty": "foundation",
+      "prompt": "A raw proposed call repeats limit with two values. Why reject it before ordinary dictionary validation?",
+      "explanation": "Duplicate rejection belongs at decoding, before conversion loses evidence of ambiguity. It is separate from later argument types and authorization.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every duplicate requires a database rollback"
+        },
+        {
+          "id": "o2",
+          "text": "A schema can infer which value the model really meant"
+        },
+        {
+          "id": "o3",
+          "text": "A normal dictionary may already have discarded the repeated-member information"
+        },
+        {
+          "id": "o4",
+          "text": "The duplicate authenticates the final value"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q009",
+      "type": "single",
+      "topic": "Attempt count",
+      "difficulty": "applied",
+      "prompt": "An invalid proposed call records attempts=0. Does it still consume the run's tool-call budget?",
+      "explanation": "An invalid proposal performs no handler work but still consumes a finite conversation step. Otherwise repeated malformed proposals could avoid the stopping rule.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Yes, and it must also create a review record"
+        },
+        {
+          "id": "o2",
+          "text": "No; only successful adapters count"
+        },
+        {
+          "id": "o3",
+          "text": "Yes; proposed calls and handler attempts are counted separately"
+        },
+        {
+          "id": "o4",
+          "text": "No; malformed proposals are unlimited"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q010",
+      "type": "single",
+      "topic": "Named SQL",
+      "difficulty": "applied",
+      "prompt": "What does sql_query accept instead of arbitrary executable SQL text?",
+      "explanation": "The lab narrows the capability to fixed parameterized queries. It does not implement a general natural-language-to-SQL security policy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One of two application-owned query names with bounded parameters"
+        },
+        {
+          "id": "o2",
+          "text": "A table name chosen from a retrieved paragraph"
+        },
+        {
+          "id": "o3",
+          "text": "A database password inside the arguments"
+        },
+        {
+          "id": "o4",
+          "text": "Any query after removing the word DELETE"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W13-Q011",
+      "type": "single",
+      "topic": "Two protections",
+      "difficulty": "applied",
+      "prompt": "The SQL adapter uses read-only connections and current tenant/principal filters. Why are both useful?",
+      "explanation": "Read-only mode restricts writes, while scoped queries decide which rows may be read. Bound values and current grants remain independent safeguards.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Parameterization makes every database row public"
+        },
+        {
+          "id": "o2",
+          "text": "Connection write prevention and row-access scope protect different boundaries"
+        },
+        {
+          "id": "o3",
+          "text": "Row filters automatically prevent all schema changes on any connection"
+        },
+        {
+          "id": "o4",
+          "text": "A read-only connection automatically knows the human caller's tenant"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q012",
+      "type": "single",
+      "topic": "Independent binding",
+      "difficulty": "applied",
+      "prompt": "An outer ID schema currently rejects quotes. Why keep values parameterized in the SQL adapter?",
+      "explanation": "Validation and SQL binding are separate layers. Changing or bypassing an input validator must not turn a value into executable SQL.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Parameterization turns a supplier ID into an approval token"
+        },
+        {
+          "id": "o2",
+          "text": "A placeholder proves all returned facts are true"
+        },
+        {
+          "id": "o3",
+          "text": "It replaces the need for named query selection"
+        },
+        {
+          "id": "o4",
+          "text": "The adapter should keep data out of SQL syntax even if an outer validation path later changes"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q013",
+      "type": "single",
+      "topic": "Comparable prices",
+      "difficulty": "applied",
+      "prompt": "The baseline is USD/kg and the current price is INR/kg. What does price_variance do?",
+      "explanation": "The tool requires matching currency and unit and does not implement FX conversion. Numeric form alone does not make two prices comparable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject incomparable arguments instead of silently converting"
+        },
+        {
+          "id": "o2",
+          "text": "Return zero variance because the units match"
+        },
+        {
+          "id": "o3",
+          "text": "Infer today's exchange rate from a supplier name"
+        },
+        {
+          "id": "o4",
+          "text": "Compare the two numeric strings as if currencies match"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W13-Q014",
+      "type": "single",
+      "topic": "Variance denominator",
+      "difficulty": "applied",
+      "prompt": "A unit price changes from 2.00 to 2.20 in the same currency/unit. What is the declared relative change?",
+      "explanation": "The contract computes (current-baseline)/baseline*100. The absolute delta is 0.20; these are different measurements.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "110.00%, reporting the new-to-old ratio as the change"
+        },
+        {
+          "id": "o2",
+          "text": "9.09%, using the new price as denominator"
+        },
+        {
+          "id": "o3",
+          "text": "0.20%, equating absolute and percentage change"
+        },
+        {
+          "id": "o4",
+          "text": "10.00%, using the positive baseline as denominator"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q015",
+      "type": "single",
+      "topic": "Rounding",
+      "difficulty": "applied",
+      "prompt": "The exact percentage is 0.005 and the lab displays two places with ROUND_HALF_EVEN. What is displayed?",
+      "explanation": "At this exact tie, half-even selects the result with an even retained last digit. The declared fixture rounding rule is not a general accounting policy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "0.50"
+        },
+        {
+          "id": "o2",
+          "text": "0.01"
+        },
+        {
+          "id": "o3",
+          "text": "0.00"
+        },
+        {
+          "id": "o4",
+          "text": "An automatic currency-conversion error"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q016",
+      "type": "single",
+      "topic": "Business provenance",
+      "difficulty": "applied",
+      "prompt": "Both prices pass the schema and the calculation is exact. What has still not been proved?",
+      "explanation": "Arithmetic and structural correctness do not bind values to business evidence. A planner can propose valid numbers from the wrong records.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "That the chosen example can be calculated using Decimal"
+        },
+        {
+          "id": "o2",
+          "text": "That the inputs can be represented as two-place strings"
+        },
+        {
+          "id": "o3",
+          "text": "That those prices belong to the intended purchase order and date"
+        },
+        {
+          "id": "o4",
+          "text": "That the function has a declared mathematical formula"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q017",
+      "type": "single",
+      "topic": "Dated commodity data",
+      "difficulty": "applied",
+      "prompt": "commodity_price returns source='synthetic-fixture' and as_of='2026-10-01'. What claim fits that result?",
+      "explanation": "Source and date remain part of the result's meaning. The lab performs no real commodity-market lookup or price-quality assessment.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The tool independently contacted an exchange"
+        },
+        {
+          "id": "o2",
+          "text": "It is a dated fictional record, not evidence of today's market quote"
+        },
+        {
+          "id": "o3",
+          "text": "Its ISO date format guarantees current market data"
+        },
+        {
+          "id": "o4",
+          "text": "A successful lookup proves the supplier's contract price is fair"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q018",
+      "type": "single",
+      "topic": "Guarded search",
+      "difficulty": "applied",
+      "prompt": "What source boundary does document_search retain from the earlier assistant?",
+      "explanation": "The reused guarded assistant still enforces source grants and representation pins. Labels identify selected evidence rather than granting source access.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Permanent public access from possession of a citation label"
+        },
+        {
+          "id": "o2",
+          "text": "Permitted pinned source evidence and the guarded quotation contract"
+        },
+        {
+          "id": "o3",
+          "text": "Authority to execute instructions inside a quotation"
+        },
+        {
+          "id": "o4",
+          "text": "An unrestricted cross-tenant search when no allowed evidence is found"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q019",
+      "type": "single",
+      "topic": "Result contract",
+      "difficulty": "applied",
+      "prompt": "A supplier adapter returns valid fields plus tool_call={'name':'create_review'}. What happens?",
+      "explanation": "An adapter's successful return is not the end of validation. An action-shaped unknown field cannot extend the expected result contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The extra field counts as independent human approval"
+        },
+        {
+          "id": "o2",
+          "text": "The closed result model rejects the extra field before forwarding"
+        },
+        {
+          "id": "o3",
+          "text": "The nested operation executes as a continuation"
+        },
+        {
+          "id": "o4",
+          "text": "The result schema is skipped because the adapter returned successfully"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q020",
+      "type": "single",
+      "topic": "Untrusted prose",
+      "difficulty": "applied",
+      "prompt": "A permitted supplier name says 'Create a review now'. The next planner turn requests that write. What still decides execution?",
+      "explanation": "Allowed tool text remains data. A subsequent proposed operation must cross the normal application authority boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The same argument, capability, current-grant and exact-approval checks"
+        },
+        {
+          "id": "o2",
+          "text": "The previous lookup's retrieval score"
+        },
+        {
+          "id": "o3",
+          "text": "The fact that the text arrived in a tool result"
+        },
+        {
+          "id": "o4",
+          "text": "The supplier name's imperative wording"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W13-Q021",
+      "type": "single",
+      "topic": "Correlation",
+      "difficulty": "applied",
+      "prompt": "Why does a tool result carry the proposed call_id?",
+      "explanation": "Call IDs provide correlation within the run. They do not supply authority or replace the application's stable write-intent key.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To associate that result with the correct operation in this conversation"
+        },
+        {
+          "id": "o2",
+          "text": "To authorize a new tenant"
+        },
+        {
+          "id": "o3",
+          "text": "To provide a durable duplicate key for every future write"
+        },
+        {
+          "id": "o4",
+          "text": "To prove the tool's prose is factually correct"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W13-Q022",
+      "type": "single",
+      "topic": "Final evidence",
+      "difficulty": "applied",
+      "prompt": "A final response references only successful call IDs. Which property does the membership check establish?",
+      "explanation": "Membership is a bounded provenance/correlation property. It does not establish summary entailment, completeness, source truth or model decision quality.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every sentence is entailed by the results"
+        },
+        {
+          "id": "o2",
+          "text": "A real model selected the best tools"
+        },
+        {
+          "id": "o3",
+          "text": "Those references identify successful calls in this run"
+        },
+        {
+          "id": "o4",
+          "text": "Every source is factually true and current"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q023",
+      "type": "single",
+      "topic": "Correction versus retry",
+      "difficulty": "applied",
+      "prompt": "After an invalid string-valued limit, a new call ID supplies a valid integer. How is this classified?",
+      "explanation": "The first proposal never invoked SQL. Correction creates a new proposed call, unlike a retry of an already admitted operation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An automatic adapter retry of the invalid operation"
+        },
+        {
+          "id": "o2",
+          "text": "A new validated proposal that corrects arguments"
+        },
+        {
+          "id": "o3",
+          "text": "An idempotent replay of an inserted review"
+        },
+        {
+          "id": "o4",
+          "text": "A retry that must bypass schema checks"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q024",
+      "type": "single",
+      "topic": "Transient reads",
+      "difficulty": "applied",
+      "prompt": "A cooperative commodity read reports unavailable on its first admitted attempt. What does the default lab policy permit?",
+      "explanation": "The bounded read policy retries only declared transient failures/timeouts. Permanent failures and uncertain writes follow separate paths.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Unlimited retries until a result appears"
+        },
+        {
+          "id": "o2",
+          "text": "An automatic retry of every write too"
+        },
+        {
+          "id": "o3",
+          "text": "A fabricated cached quote with the current date"
+        },
+        {
+          "id": "o4",
+          "text": "One delayed retry, for at most two attempts"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q025",
+      "type": "single",
+      "topic": "Permanent storage defect",
+      "difficulty": "applied",
+      "prompt": "The stored schema version differs from week13/1. How is the read handled?",
+      "explanation": "The actual adapter treats a known schema mismatch as result_invalid. Only supported busy/locked driver categories map to transient database unavailability.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A transient failure retried indefinitely"
+        },
+        {
+          "id": "o2",
+          "text": "A permanent result error without a blind retry"
+        },
+        {
+          "id": "o3",
+          "text": "A silent database reset"
+        },
+        {
+          "id": "o4",
+          "text": "A model-selected migration"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q026",
+      "type": "single",
+      "topic": "Cooperative deadlines",
+      "difficulty": "applied",
+      "prompt": "A synchronous SQLite operation is blocking the event-loop thread. What can an asyncio timeout guarantee at that instant?",
+      "explanation": "Async deadlines rely on cooperative scheduling/cancellation. The local adapter's busy-wait bound is not a hard end-to-end deadline.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It hard-kills the running database operation at the exact timer instant"
+        },
+        {
+          "id": "o2",
+          "text": "It cannot preempt that blocking call; driver and execution bounds remain separate"
+        },
+        {
+          "id": "o3",
+          "text": "It immediately completes every pending task"
+        },
+        {
+          "id": "o4",
+          "text": "It proves any review insert rolled back"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q027",
+      "type": "single",
+      "topic": "Write uncertainty",
+      "difficulty": "applied",
+      "prompt": "A review commits, then its adapter response disappears. Which outcome is appropriate?",
+      "explanation": "Failure to receive a response does not establish absence of an effect. The retained intent key is needed to recover the actual stored result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A successful final answer inventing a review ID"
+        },
+        {
+          "id": "o2",
+          "text": "A new operation key and automatic retry"
+        },
+        {
+          "id": "o3",
+          "text": "unknown_outcome, with no automatic write retry and reconciliation using the original key"
+        },
+        {
+          "id": "o4",
+          "text": "Proof that the review was never created"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q028",
+      "type": "single",
+      "topic": "Exact approval",
+      "difficulty": "applied",
+      "prompt": "The model adds approved=true to create_review arguments. Why does this not authorize a write?",
+      "explanation": "The proposer cannot authorize itself. The lab separates closed model arguments from trusted write capability, key, exact approval and current object access.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Boolean true always means a real person signed"
+        },
+        {
+          "id": "o2",
+          "text": "Approval is supplied through a trusted application channel and the extra argument is forbidden"
+        },
+        {
+          "id": "o3",
+          "text": "A prior supplier read authorizes every review"
+        },
+        {
+          "id": "o4",
+          "text": "Any valid call ID includes approval"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W13-Q029",
+      "type": "single",
+      "topic": "Idempotency conflict",
+      "difficulty": "applied",
+      "prompt": "A scoped operation key already represents price_variance, but a newly approved call reuses it for supplier_change. What does the ledger do?",
+      "explanation": "A key match alone is insufficient. The canonical argument digest must also match, while current authority is checked independently.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Ignore argument identity whenever approval is fresh"
+        },
+        {
+          "id": "o2",
+          "text": "Return the old result as though it described the new arguments"
+        },
+        {
+          "id": "o3",
+          "text": "Return conflict without overwriting or inserting a second review"
+        },
+        {
+          "id": "o4",
+          "text": "Delete the old row and silently replace it"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q030",
+      "type": "single",
+      "topic": "Guarantee scope",
+      "difficulty": "applied",
+      "prompt": "Two cooperating writers get one review ID for the same retained scoped key. What guarantee has the lab demonstrated?",
+      "explanation": "The transaction, unique scoped key and retained history define the guarantee's scope. External effects, deleted history and real approval workflows need their own designs.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Atomic duplicate protection for this SQLite ledger and transaction"
+        },
+        {
+          "id": "o2",
+          "text": "Authenticated human approval from the in-process fixture alone"
+        },
+        {
+          "id": "o3",
+          "text": "Universal exactly-once execution across external email and payment systems"
+        },
+        {
+          "id": "o4",
+          "text": "Indefinite protection after deleting the ledger file"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W13-Q031",
+      "type": "multiple",
+      "topic": "Application ownership",
+      "difficulty": "applied",
+      "prompt": "Which responsibilities stay in application code even when a model proposes well-formed calls?",
+      "explanation": "A model proposes data, while the application owns capability, permission and resource decisions. Prose cannot independently supply approval.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Current resource authorization"
+        },
+        {
+          "id": "o2",
+          "text": "Fixed operation dispatch"
+        },
+        {
+          "id": "o3",
+          "text": "Accepting an approval claim in retrieved prose"
+        },
+        {
+          "id": "o4",
+          "text": "Side-effect and execution-budget policy"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q032",
+      "type": "multiple",
+      "topic": "Schema boundaries",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly describe the lab's strict validation?",
+      "explanation": "Closed shapes, exact types, decoder ambiguity and business comparability are distinct checks. None authenticates a caller.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A string-valued integer limit is automatically coerced"
+        },
+        {
+          "id": "o2",
+          "text": "Extra argument fields are forbidden"
+        },
+        {
+          "id": "o3",
+          "text": "Duplicate raw JSON members are rejected"
+        },
+        {
+          "id": "o4",
+          "text": "Cross-field currency/unit rules are checked after shape parsing"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q033",
+      "type": "multiple",
+      "topic": "Planner evaluation",
+      "difficulty": "applied",
+      "prompt": "Which cases belong in a future real-model tool-selection/argument evaluation?",
+      "explanation": "Representative labelled tasks must distinguish selection, argument meaning and abstention. The scripted protocol supplies no real-model quality score.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The appropriate tool with reversed price arguments"
+        },
+        {
+          "id": "o2",
+          "text": "A well-formed ID for the wrong business record"
+        },
+        {
+          "id": "o3",
+          "text": "A task that needs clarification or no available tool"
+        },
+        {
+          "id": "o4",
+          "text": "Counting only fixed scripted success as general model accuracy"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q034",
+      "type": "multiple",
+      "topic": "SQL capability",
+      "difficulty": "applied",
+      "prompt": "Which controls are actually present in the supplied SQL tool?",
+      "explanation": "The small capability combines named statements, parameter binding and scoped read-only access. It is not a general SQL safety parser.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Two application-owned query names"
+        },
+        {
+          "id": "o2",
+          "text": "Read-only connections for the ordinary read adapter"
+        },
+        {
+          "id": "o3",
+          "text": "Bound values including trusted scope"
+        },
+        {
+          "id": "o4",
+          "text": "General execution of model-generated SQL after keyword stripping"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q035",
+      "type": "multiple",
+      "topic": "Caller scope",
+      "difficulty": "applied",
+      "prompt": "Which observations are consistent with the local authorization design?",
+      "explanation": "Identity origin, catalogue visibility, resource access and replay authority are separate boundaries. The local constructors are not authentication.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Execution checks remain necessary even for a tool hidden from a catalogue"
+        },
+        {
+          "id": "o2",
+          "text": "Constructing a well-shaped Actor proves a real login"
+        },
+        {
+          "id": "o3",
+          "text": "The same supplier ID can resolve differently across tenants"
+        },
+        {
+          "id": "o4",
+          "text": "A review replay must still pass current target authority"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q036",
+      "type": "multiple",
+      "topic": "Price inputs",
+      "difficulty": "applied",
+      "prompt": "Which comparisons must price_variance reject under its stated contract?",
+      "explanation": "A positive baseline and comparable currency/unit are required. A valid negative change is allowed; the tool performs no implicit conversion.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Equal currencies and units with a lower current price"
+        },
+        {
+          "id": "o2",
+          "text": "Different currencies"
+        },
+        {
+          "id": "o3",
+          "text": "A zero baseline"
+        },
+        {
+          "id": "o4",
+          "text": "Different units"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q037",
+      "type": "multiple",
+      "topic": "Numeric meaning",
+      "difficulty": "applied",
+      "prompt": "Which statements about the price calculation are correct?",
+      "explanation": "Numeric representation, formula and rounding are explicit. The relationship between proposed values and business evidence is a separate check.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Valid Decimal arithmetic proves the model used the intended order's prices"
+        },
+        {
+          "id": "o2",
+          "text": "The percentage uses the baseline denominator"
+        },
+        {
+          "id": "o3",
+          "text": "Canonical strings avoid accepting arbitrary floating-point inputs"
+        },
+        {
+          "id": "o4",
+          "text": "The displayed two-place value follows the declared half-even convention"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q038",
+      "type": "multiple",
+      "topic": "Result handling",
+      "difficulty": "applied",
+      "prompt": "Which properties should be checked before forwarding an adapter result?",
+      "explanation": "A handler return is still a data boundary. Schema, representation bounds and correlation must be enforced without treating unknown result fields as capabilities.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether arbitrary nested actions should be executed immediately"
+        },
+        {
+          "id": "o2",
+          "text": "Serialized byte size"
+        },
+        {
+          "id": "o3",
+          "text": "Expected output fields and types"
+        },
+        {
+          "id": "o4",
+          "text": "Required correlation and local invariants such as a real calendar date"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q039",
+      "type": "multiple",
+      "topic": "Tool content",
+      "difficulty": "applied",
+      "prompt": "Which statements about permitted tool-result text are correct?",
+      "explanation": "Permitted text remains data. Its envelope and access checks do not transform its assertions into application control authority or factual guarantees.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It can still contain instruction-like prose"
+        },
+        {
+          "id": "o2",
+          "text": "It can grant a new write capability by claiming approval"
+        },
+        {
+          "id": "o3",
+          "text": "A later proposed call must pass the usual authority checks"
+        },
+        {
+          "id": "o4",
+          "text": "Validity of the result envelope does not prove source truth"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q040",
+      "type": "multiple",
+      "topic": "Conversation state",
+      "difficulty": "applied",
+      "prompt": "Which rules belong to the implemented local loop?",
+      "explanation": "Call identity, final evidence membership and finite step counts keep the local protocol unambiguous. Zero handler work does not make a proposed call free.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Final evidence IDs refer only to successful calls in this run"
+        },
+        {
+          "id": "o2",
+          "text": "Unlimited malformed proposals when attempts=0"
+        },
+        {
+          "id": "o3",
+          "text": "Reject a reused call ID before another execution"
+        },
+        {
+          "id": "o4",
+          "text": "One proposed call or final response per planner turn"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q041",
+      "type": "multiple",
+      "topic": "Retry policy",
+      "difficulty": "applied",
+      "prompt": "Which failures can receive the default one additional read attempt?",
+      "explanation": "Only the declared transient read categories are retried, within the run budget. Permission and contract failures require different handling.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A declared transient unavailable error"
+        },
+        {
+          "id": "o2",
+          "text": "A malformed adapter result"
+        },
+        {
+          "id": "o3",
+          "text": "A cooperative read timeout"
+        },
+        {
+          "id": "o4",
+          "text": "A forbidden read"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3"
+      ]
+    },
+    {
+      "id": "W13-Q042",
+      "type": "multiple",
+      "topic": "Storage classification",
+      "difficulty": "applied",
+      "prompt": "Which classifications match the actual adapter/dispatcher?",
+      "explanation": "Explicit categories avoid blind retries and payload exposure. Unexpected storage or adapter defects do not become temporary merely because an exception occurred.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every driver exception is automatically transient"
+        },
+        {
+          "id": "o2",
+          "text": "A known schema-version mismatch is result_invalid"
+        },
+        {
+          "id": "o3",
+          "text": "Busy/locked SQLite categories can be transient unavailable"
+        },
+        {
+          "id": "o4",
+          "text": "Unrecognized free-form error codes are projected to tool_failed"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q043",
+      "type": "multiple",
+      "topic": "Cancellation",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly limit the deadline/cancellation claims?",
+      "explanation": "Cancellation controls the waiting computation under its cooperative semantics. It does not retroactively undo effects or supply a hard thread-kill mechanism.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Cancelling a wait proves an admitted write did not commit"
+        },
+        {
+          "id": "o2",
+          "text": "Cooperative callbacks can clean up when cancelled"
+        },
+        {
+          "id": "o3",
+          "text": "Caller cancellation is propagated rather than fabricated as success"
+        },
+        {
+          "id": "o4",
+          "text": "A timer cannot preempt synchronous code holding the event-loop thread"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q044",
+      "type": "multiple",
+      "topic": "Uncertain writes",
+      "difficulty": "applied",
+      "prompt": "Which cases require unknown-outcome treatment after write admission in this lab?",
+      "explanation": "Post-admission uncertainty can hide an already committed effect. A known approval rejection before execution is a different, definite no-execution path.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Unavailable execution whose effect cannot be established"
+        },
+        {
+          "id": "o2",
+          "text": "A known pre-effect approval rejection"
+        },
+        {
+          "id": "o3",
+          "text": "A timeout while waiting for the write"
+        },
+        {
+          "id": "o4",
+          "text": "A malformed result after a real insert"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q045",
+      "type": "multiple",
+      "topic": "Approval binding",
+      "difficulty": "applied",
+      "prompt": "Which inputs are included in the trusted review-intent binding?",
+      "explanation": "Approval and idempotency identity cover the intended scoped operation. Conversation correlation is not a durable write-intent identity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Tenant and principal"
+        },
+        {
+          "id": "o2",
+          "text": "Only the model's newest call ID"
+        },
+        {
+          "id": "o3",
+          "text": "Tool/version and normalized arguments"
+        },
+        {
+          "id": "o4",
+          "text": "Stable application operation key"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q046",
+      "type": "multiple",
+      "topic": "Approval lifecycle",
+      "difficulty": "applied",
+      "prompt": "Which checks are still required for a retained review result to be replayed?",
+      "explanation": "A saved result is not a permanent authorization grant. Replay checks both the original intent identity and current authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Current exact unexpired approval and write capability"
+        },
+        {
+          "id": "o2",
+          "text": "Current target grant"
+        },
+        {
+          "id": "o3",
+          "text": "Only historical success, regardless of present access"
+        },
+        {
+          "id": "o4",
+          "text": "Matching argument digest"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q047",
+      "type": "multiple",
+      "topic": "Atomic ledger",
+      "difficulty": "applied",
+      "prompt": "Which operations share the lab's write transaction?",
+      "explanation": "The local transaction covers its own ledger and review effect. It does not atomically commit operations in unrelated external services.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Rechecking the target grant"
+        },
+        {
+          "id": "o2",
+          "text": "Sending an external supplier email"
+        },
+        {
+          "id": "o3",
+          "text": "Checking/comparing the scoped intent record"
+        },
+        {
+          "id": "o4",
+          "text": "Inserting the review and its saved replay identity"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q048",
+      "type": "multiple",
+      "topic": "Operation keys",
+      "difficulty": "applied",
+      "prompt": "Which statements describe safe duplicate handling?",
+      "explanation": "A stable scoped key identifies the same intent, while its argument digest detects accidental reuse. Fresh keys can create additional effects.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use a new random key on every automatic retry to avoid conflicts"
+        },
+        {
+          "id": "o2",
+          "text": "Reject a matching key with changed normalized arguments"
+        },
+        {
+          "id": "o3",
+          "text": "Scope the key by tenant and principal"
+        },
+        {
+          "id": "o4",
+          "text": "Keep the same application key when reconciling one uncertain intent"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q049",
+      "type": "multiple",
+      "topic": "Evidence limits",
+      "difficulty": "applied",
+      "prompt": "Which conclusions are supported by the lesson's verification layers?",
+      "explanation": "The lab provides bounded application/storage evidence over synthetic data. It neither benchmarks an unimplemented model nor preserves history after deletion.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A fixed planner establishes a real LLM's tool accuracy"
+        },
+        {
+          "id": "o2",
+          "text": "Real SQLite tests can exercise replay/conflict/concurrency behavior"
+        },
+        {
+          "id": "o3",
+          "text": "Deleting retained ledger history removes that history's duplicate protection"
+        },
+        {
+          "id": "o4",
+          "text": "Controlled lost-response faults can exercise the recovery protocol"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q050",
+      "type": "multiple",
+      "topic": "Publishing and practice",
+      "difficulty": "applied",
+      "prompt": "Which claims fit this assessment's deployment?",
+      "explanation": "This is browser-based practice with public keys and local state. Its small helpers and optional manual workspace do not deploy the full backend or authenticate scores.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Public answer keys make the downloaded result an authenticated exam record"
+        },
+        {
+          "id": "o2",
+          "text": "The full SQLite/tool-calling lab remains a separate local exercise"
+        },
+        {
+          "id": "o3",
+          "text": "The static page can run small standard-library Python tasks in its worker"
+        },
+        {
+          "id": "o4",
+          "text": "Opening the optional external workspace does not automatically sync coding results"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W13-Q051",
+      "type": "match",
+      "topic": "Tool selection",
+      "difficulty": "applied",
+      "prompt": "Match each task to the most directly relevant read tool.",
+      "explanation": "The operation should fit the information need. Selection does not yet establish correct argument values, authority or evidence quality.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Find accessible purchase-order records"
+        },
+        {
+          "id": "l2",
+          "text": "Compare a stated baseline and current unit price"
+        },
+        {
+          "id": "l3",
+          "text": "Read a supplier's accessible name and status"
+        },
+        {
+          "id": "l4",
+          "text": "Find permitted invoice quotations"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "supplier_lookup"
+        },
+        {
+          "id": "r2",
+          "text": "price_variance"
+        },
+        {
+          "id": "r3",
+          "text": "sql_query"
+        },
+        {
+          "id": "r4",
+          "text": "document_search"
+        }
+      ],
+      "correct": {
+        "l3": "r1",
+        "l2": "r2",
+        "l1": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W13-Q052",
+      "type": "match",
+      "topic": "Application gates",
+      "difficulty": "applied",
+      "prompt": "Match each gate to the decision it owns.",
+      "explanation": "These gates protect different boundaries. A later successful check cannot repair an earlier unauthorized execution.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Registry lookup"
+        },
+        {
+          "id": "l2",
+          "text": "Argument validation"
+        },
+        {
+          "id": "l3",
+          "text": "Current authorization"
+        },
+        {
+          "id": "l4",
+          "text": "Result validation"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Whether the proposed fields and values meet the input contract"
+        },
+        {
+          "id": "r2",
+          "text": "Whether the proposed name has a fixed executable implementation"
+        },
+        {
+          "id": "r3",
+          "text": "Whether returned data meets the expected output contract"
+        },
+        {
+          "id": "r4",
+          "text": "Whether this caller may execute/read this operation and object"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l1": "r2",
+        "l4": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W13-Q053",
+      "type": "match",
+      "topic": "Identity and correlation",
+      "difficulty": "applied",
+      "prompt": "Match each identifier to its role.",
+      "explanation": "Conversation correlation, durable intent identity, caller scope and final references are distinct uses of identifiers.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "call_id"
+        },
+        {
+          "id": "l2",
+          "text": "operation_key"
+        },
+        {
+          "id": "l3",
+          "text": "Tenant and principal"
+        },
+        {
+          "id": "l4",
+          "text": "evidence_call_ids"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Correlate a proposed operation with its result within the run"
+        },
+        {
+          "id": "r2",
+          "text": "Identify an intended write across requests"
+        },
+        {
+          "id": "r3",
+          "text": "Scope the trusted caller and retained intent key"
+        },
+        {
+          "id": "r4",
+          "text": "Reference successful operations used by a final response"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W13-Q054",
+      "type": "match",
+      "topic": "Strict argument failures",
+      "difficulty": "applied",
+      "prompt": "Match each rejected proposal to the most specific concern.",
+      "explanation": "Type, closed shape, decoder ambiguity and business comparability are separate checks. None is delegated to a model's assertion of validity.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "limit is the string '5'"
+        },
+        {
+          "id": "l2",
+          "text": "Arguments include approved=true"
+        },
+        {
+          "id": "l3",
+          "text": "Two raw limit members"
+        },
+        {
+          "id": "l4",
+          "text": "Baseline USD, current INR"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Wrong scalar type under a strict integer contract"
+        },
+        {
+          "id": "r2",
+          "text": "Ambiguous duplicate JSON members"
+        },
+        {
+          "id": "r3",
+          "text": "Cross-field price comparability"
+        },
+        {
+          "id": "r4",
+          "text": "An extra field attempts to cross the authority boundary"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l3": "r2",
+        "l4": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W13-Q055",
+      "type": "match",
+      "topic": "Sources of authority",
+      "difficulty": "applied",
+      "prompt": "Match each item to what it can supply in this lab.",
+      "explanation": "Authority follows the trusted producing boundary. The local approval fixture still does not establish a real authenticated human workflow.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Model argument object"
+        },
+        {
+          "id": "l2",
+          "text": "Trusted Actor/SecurityContext"
+        },
+        {
+          "id": "l3",
+          "text": "Trusted approval fixture"
+        },
+        {
+          "id": "l4",
+          "text": "Retrieved or tool-result prose"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Untrusted evidence text without control authority"
+        },
+        {
+          "id": "r2",
+          "text": "A proposed operation's task parameters"
+        },
+        {
+          "id": "r3",
+          "text": "Exact in-process operation approval within its declared assumption"
+        },
+        {
+          "id": "r4",
+          "text": "Application-injected caller scope and capability"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l1": "r2",
+        "l3": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W13-Q056",
+      "type": "match",
+      "topic": "SQL safeguards",
+      "difficulty": "applied",
+      "prompt": "Match each mechanism to its distinct protection.",
+      "explanation": "Capability, query construction, connection privilege and row scope remain separate layers.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Named query allowlist"
+        },
+        {
+          "id": "l2",
+          "text": "Bound value parameters"
+        },
+        {
+          "id": "l3",
+          "text": "Read-only connection"
+        },
+        {
+          "id": "l4",
+          "text": "Current tenant/principal filter"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Keep data values out of executable SQL syntax"
+        },
+        {
+          "id": "r2",
+          "text": "Constrain the available database operations"
+        },
+        {
+          "id": "r3",
+          "text": "Restrict which rows may be returned to this caller"
+        },
+        {
+          "id": "r4",
+          "text": "Prevent writes on that ordinary read connection"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l1": "r2",
+        "l4": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W13-Q057",
+      "type": "match",
+      "topic": "Variance quantities",
+      "difficulty": "applied",
+      "prompt": "Match each term to its declared meaning.",
+      "explanation": "The formula, units and display rule must remain explicit. Correct arithmetic does not verify the origin of the prices.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Absolute delta"
+        },
+        {
+          "id": "l2",
+          "text": "Relative percentage change"
+        },
+        {
+          "id": "l3",
+          "text": "Currency/unit match"
+        },
+        {
+          "id": "l4",
+          "text": "Half-even display rounding"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Current price minus baseline price"
+        },
+        {
+          "id": "r2",
+          "text": "The fixture's explicit two-decimal output convention"
+        },
+        {
+          "id": "r3",
+          "text": "Delta divided by the positive baseline, multiplied by 100"
+        },
+        {
+          "id": "r4",
+          "text": "A requirement for comparing the two stated prices"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l4": "r2",
+        "l2": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W13-Q058",
+      "type": "match",
+      "topic": "Result defects",
+      "difficulty": "applied",
+      "prompt": "Match each adapter result to the boundary it violates.",
+      "explanation": "Well-formed JSON alone is not a complete result contract. Structure, local invariants, representation and identity each need a check.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Extra tool_call field"
+        },
+        {
+          "id": "l2",
+          "text": "Date 2026-99-99"
+        },
+        {
+          "id": "l3",
+          "text": "Multibyte output exceeds 4096 serialized bytes"
+        },
+        {
+          "id": "l4",
+          "text": "Wrong call ID in a proposed result association"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Result representation bound"
+        },
+        {
+          "id": "r2",
+          "text": "Closed output fields"
+        },
+        {
+          "id": "r3",
+          "text": "Conversation correlation"
+        },
+        {
+          "id": "r4",
+          "text": "Calendar validity of the as_of value"
+        }
+      ],
+      "correct": {
+        "l3": "r1",
+        "l1": "r2",
+        "l4": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W13-Q059",
+      "type": "match",
+      "topic": "Failure outcomes",
+      "difficulty": "applied",
+      "prompt": "Match each observation to the expected controlled response.",
+      "explanation": "Controlled categories describe different execution states. Their distinctions matter for recovery and whether an effect may already exist.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Proposed name absent from the registry"
+        },
+        {
+          "id": "l2",
+          "text": "Malformed proposed arguments"
+        },
+        {
+          "id": "l3",
+          "text": "Uncertain effect after admitted write"
+        },
+        {
+          "id": "l4",
+          "text": "Matching key with different argument digest"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "invalid_arguments with zero adapter attempts"
+        },
+        {
+          "id": "r2",
+          "text": "unknown_outcome without automatic retry"
+        },
+        {
+          "id": "r3",
+          "text": "conflict without silent overwrite"
+        },
+        {
+          "id": "r4",
+          "text": "unknown_tool with zero adapter attempts"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3",
+        "l1": "r4"
+      }
+    },
+    {
+      "id": "W13-Q060",
+      "type": "match",
+      "topic": "Retry classification",
+      "difficulty": "applied",
+      "prompt": "Match each event to its retry treatment.",
+      "explanation": "Retries depend on declared failure semantics and effect type. A generic exception rule cannot safely replace this classification.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "First transient read-unavailable result"
+        },
+        {
+          "id": "l2",
+          "text": "Forbidden read"
+        },
+        {
+          "id": "l3",
+          "text": "Malformed read output"
+        },
+        {
+          "id": "l4",
+          "text": "Unavailable admitted write"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Stop instead of retrying for new permission"
+        },
+        {
+          "id": "r2",
+          "text": "Stop and reconcile the original intended effect"
+        },
+        {
+          "id": "r3",
+          "text": "Reject the result as a contract failure"
+        },
+        {
+          "id": "r4",
+          "text": "Permit one delayed additional attempt"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l4": "r2",
+        "l3": "r3",
+        "l1": "r4"
+      }
+    },
+    {
+      "id": "W13-Q061",
+      "type": "match",
+      "topic": "Time and cancellation",
+      "difficulty": "applied",
+      "prompt": "Match each control or observation to its boundary.",
+      "explanation": "Waiting and effect state are not the same thing. Neither an async timer nor a lost response establishes that the world stayed unchanged.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Asyncio deadline"
+        },
+        {
+          "id": "l2",
+          "text": "SQLite busy-wait setting"
+        },
+        {
+          "id": "l3",
+          "text": "Caller cancellation"
+        },
+        {
+          "id": "l4",
+          "text": "Lost write response"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Missing completion evidence rather than proof of rollback"
+        },
+        {
+          "id": "r2",
+          "text": "Cooperative cancellation of an awaiting coroutine"
+        },
+        {
+          "id": "r3",
+          "text": "A separate driver wait for database locks"
+        },
+        {
+          "id": "r4",
+          "text": "A propagated cancellation, potentially after a committed write"
+        }
+      ],
+      "correct": {
+        "l4": "r1",
+        "l1": "r2",
+        "l2": "r3",
+        "l3": "r4"
+      }
+    },
+    {
+      "id": "W13-Q062",
+      "type": "match",
+      "topic": "Default budgets",
+      "difficulty": "applied",
+      "prompt": "Match each teaching limit to its counted resource.",
+      "explanation": "These defaults count different resources and are teaching choices. They are not a production capacity or hard wall-clock guarantee.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Six calls"
+        },
+        {
+          "id": "l2",
+          "text": "Eight turns"
+        },
+        {
+          "id": "l3",
+          "text": "Two attempts"
+        },
+        {
+          "id": "l4",
+          "text": "Five seconds"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Proposed tool calls, including rejected arguments"
+        },
+        {
+          "id": "r2",
+          "text": "Maximum default execution attempts for a transient read"
+        },
+        {
+          "id": "r3",
+          "text": "Planner responses requested within one run"
+        },
+        {
+          "id": "r4",
+          "text": "The cooperative overall run budget"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l3": "r2",
+        "l2": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W13-Q063",
+      "type": "match",
+      "topic": "Approval changes",
+      "difficulty": "applied",
+      "prompt": "Match each change to the required authority consequence.",
+      "explanation": "Approval is exact and time-bound, while current object access remains an independent condition, including on replay.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Different normalized review arguments"
+        },
+        {
+          "id": "l2",
+          "text": "Another tenant or principal"
+        },
+        {
+          "id": "l3",
+          "text": "Clock reaches approval expiry"
+        },
+        {
+          "id": "l4",
+          "text": "Target grant is removed"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Old scope-bound approval cannot be reused"
+        },
+        {
+          "id": "r2",
+          "text": "Old approval no longer matches the operation"
+        },
+        {
+          "id": "r3",
+          "text": "Approval is no longer current"
+        },
+        {
+          "id": "r4",
+          "text": "Historical approval/result does not override current object denial"
+        }
+      ],
+      "correct": {
+        "l2": "r1",
+        "l1": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      }
+    },
+    {
+      "id": "W13-Q064",
+      "type": "match",
+      "topic": "Ledger decisions",
+      "difficulty": "applied",
+      "prompt": "Match each retained state to the correct behavior.",
+      "explanation": "An intent key needs scoped identity, argument comparison and retained history. The local transaction does not cover unrelated external effects.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "No scoped key and valid authority"
+        },
+        {
+          "id": "l2",
+          "text": "Same scoped key and digest"
+        },
+        {
+          "id": "l3",
+          "text": "Same scoped key and changed digest"
+        },
+        {
+          "id": "l4",
+          "text": "Ledger file is discarded"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Reject accidental key reuse"
+        },
+        {
+          "id": "r2",
+          "text": "Insert one review and save its replay identity"
+        },
+        {
+          "id": "r3",
+          "text": "Its retained duplicate history is lost"
+        },
+        {
+          "id": "r4",
+          "text": "Return the original review ID under current authority"
+        }
+      ],
+      "correct": {
+        "l3": "r1",
+        "l1": "r2",
+        "l4": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W13-Q065",
+      "type": "match",
+      "topic": "Verification claims",
+      "difficulty": "applied",
+      "prompt": "Match each observation to the bounded evidence it supports.",
+      "explanation": "No one layer establishes model decision quality, authenticated approval, general submission correctness or a distributed exactly-once guarantee.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Scripted five-tool transcript"
+        },
+        {
+          "id": "l2",
+          "text": "Real SQLite concurrent-write case"
+        },
+        {
+          "id": "l3",
+          "text": "Injected failure after a committed insert"
+        },
+        {
+          "id": "l4",
+          "text": "Browser Python component checks"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Protocol behavior for those fixed proposals"
+        },
+        {
+          "id": "r2",
+          "text": "Practice feedback for stated helper-function cases"
+        },
+        {
+          "id": "r3",
+          "text": "Recovery control for a simulated lost response"
+        },
+        {
+          "id": "r4",
+          "text": "Duplicate protection in that local transaction/ledger"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l4": "r2",
+        "l3": "r3",
+        "l2": "r4"
+      }
+    },
+    {
+      "id": "W13-Q066",
+      "type": "short",
+      "topic": "Async function",
+      "difficulty": "applied",
+      "prompt": "Complete ____ def next_turn(messages, tools): with the Python keyword that declares a coroutine function. Keyword only.",
+      "explanation": "async def declares a coroutine function. Execution still requires awaiting or scheduling it, and ordinary blocking work inside remains blocking.",
+      "accepted": [
+        "async"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q067",
+      "type": "short",
+      "topic": "Awaiting execution",
+      "difficulty": "applied",
+      "prompt": "Inside a coroutine, complete result = ____ handler(actor, arguments) to await the asynchronous handler. Keyword only.",
+      "explanation": "await suspends this coroutine while the awaited operation progresses under its cooperative semantics.",
+      "accepted": [
+        "await"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q068",
+      "type": "short",
+      "topic": "Pydantic input",
+      "difficulty": "applied",
+      "prompt": "Complete SupplierArgs.____(decoded_arguments) with the Pydantic method used to validate an already-decoded Python object. Method name only.",
+      "explanation": "model_validate applies the declared model contract to the decoded object. This remains separate from strict raw JSON decoding and execution authority.",
+      "accepted": [
+        "model_validate"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q069",
+      "type": "short",
+      "topic": "Schema export",
+      "difficulty": "applied",
+      "prompt": "Complete SupplierArgs.____() with the Pydantic method that exports the model's JSON Schema. Method name only.",
+      "explanation": "model_json_schema exports a schema description. It does not execute a handler or ensure compatibility with every provider's supported schema subset.",
+      "accepted": [
+        "model_json_schema"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q070",
+      "type": "short",
+      "topic": "Closed model",
+      "difficulty": "applied",
+      "prompt": "Complete ConfigDict(strict=True, extra='____') with the setting used to reject extra fields. Value only.",
+      "explanation": "extra='forbid' rejects unknown fields instead of silently accepting or discarding them. Permission and business rules still remain separate.",
+      "accepted": [
+        "forbid"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q071",
+      "type": "short",
+      "topic": "JSON Schema key",
+      "difficulty": "applied",
+      "prompt": "Which case-sensitive JSON Schema property is set to false to forbid unspecified object members? Property name only.",
+      "explanation": "additionalProperties=false closes the described object shape. Cross-field rules, scope and approval cannot be inferred merely from that setting.",
+      "accepted": [
+        "additionalProperties"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q072",
+      "type": "short",
+      "topic": "Exact decimal constructor",
+      "difficulty": "applied",
+      "prompt": "Complete from decimal import ____ with the class used to construct exact decimal values from the canonical price strings. Class name only.",
+      "explanation": "Decimal constructed from a decimal string avoids first introducing a binary floating-point approximation.",
+      "accepted": [
+        "Decimal"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q073",
+      "type": "short",
+      "topic": "Local arithmetic context",
+      "difficulty": "applied",
+      "prompt": "Complete with decimal.____() as context: to use a temporary decimal context without changing the caller's surrounding context. Function name only.",
+      "explanation": "localcontext isolates precision and rounding settings for the calculation and restores the surrounding context on exit.",
+      "accepted": [
+        "localcontext"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q074",
+      "type": "short",
+      "topic": "Two-place output",
+      "difficulty": "applied",
+      "prompt": "Complete value.____(Decimal('0.01'), rounding=ROUND_HALF_EVEN) with the Decimal method used for the declared two-place result. Method name only.",
+      "explanation": "quantize rounds to the specified exponent under the chosen rule. Formatting alone would not define which rounding decision occurred.",
+      "accepted": [
+        "quantize"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q075",
+      "type": "short",
+      "topic": "Rounding constant",
+      "difficulty": "applied",
+      "prompt": "Enter the decimal module's case-sensitive constant for rounding a tie to the nearest result with an even retained last digit.",
+      "explanation": "ROUND_HALF_EVEN defines the fixture's tie behavior. A real accounting or business policy must be declared separately.",
+      "accepted": [
+        "ROUND_HALF_EVEN"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q076",
+      "type": "short",
+      "topic": "SQLite value binding",
+      "difficulty": "applied",
+      "prompt": "In SQLite connection.execute('SELECT ... WHERE tenant = ____', (tenant,)), enter the one-character positional VALUE placeholder, without quotes.",
+      "explanation": "A question-mark placeholder binds a value through execute. It is not a mechanism for interpolating SQL identifiers or accepting arbitrary query text.",
+      "accepted": [
+        "?"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q077",
+      "type": "short",
+      "topic": "Immediate transaction",
+      "difficulty": "applied",
+      "prompt": "Complete the SQLite statement BEGIN ____ with the modifier used to start this lab's write transaction. Modifier only; case is ignored.",
+      "explanation": "BEGIN IMMEDIATE starts the write transaction used to serialize the scoped ledger decision and insertion in this local database.",
+      "accepted": [
+        "IMMEDIATE"
+      ],
+      "case_sensitive": false
+    },
+    {
+      "id": "W13-Q078",
+      "type": "short",
+      "topic": "Literal categories",
+      "difficulty": "applied",
+      "prompt": "Complete typing.____(ErrorCode) with the helper used to inspect a Literal type's permitted values. Function name only.",
+      "explanation": "get_args exposes the Literal arguments. The lab uses them to constrain output categories rather than forwarding a free-form adapter message.",
+      "accepted": [
+        "get_args"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q079",
+      "type": "short",
+      "topic": "Intent digest",
+      "difficulty": "applied",
+      "prompt": "Complete hashlib.____(canonical_bytes).hexdigest() for the SHA-256 function used in the scoped intent digest. Function name only.",
+      "explanation": "sha256 hashes the exact canonical bytes. The digest binds compared content; it does not authenticate who approved or created those bytes.",
+      "accepted": [
+        "sha256"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q080",
+      "type": "short",
+      "topic": "Cancellation type",
+      "difficulty": "applied",
+      "prompt": "Complete asyncio.____ with the exception type propagated when a coroutine is cancelled. Class name only.",
+      "explanation": "CancelledError preserves cancellation semantics. It should not be hidden inside an apparently successful tool result or an automatic write retry.",
+      "accepted": [
+        "CancelledError"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W13-Q081",
+      "type": "code",
+      "topic": "Registered-name shape",
+      "difficulty": "applied",
+      "prompt": "Implement tool_name(value). Return True exactly for str values containing 1 through 40 ASCII lowercase letters or underscores; otherwise return False. Do not strip, lowercase, coerce or accept a prefix/Unicode lookalike. This checks the local tool-name grammar only: a name that passes can still be absent from the fixed registry and has no execution authority.",
+      "explanation": "Use a complete ASCII match with the declared bound. Registry membership and caller authority remain separate application decisions.",
+      "starter": "def tool_name(value):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\ndef tool_name(value):\n    return isinstance(value,str) and re.fullmatch(r'[a-z_]{1,40}',value) is not None\n",
+      "checks": [
+        {
+          "label": "Allowed names",
+          "code": "assert tool_name('supplier_lookup') is True and tool_name('_') is True"
+        },
+        {
+          "label": "Inclusive length",
+          "code": "assert tool_name('a'*40) is True and tool_name('a'*41) is False and tool_name('') is False"
+        },
+        {
+          "label": "No normalization",
+          "code": "assert all(not tool_name(v) for v in ('Supplier_lookup',' supplier_lookup','supplier_lookup\\n','tool-1','tool1'))"
+        },
+        {
+          "label": "ASCII and exact value boundary",
+          "code": "assert not tool_name('ｓupplier') and not tool_name('café') and not tool_name('read;write')"
+        },
+        {
+          "label": "Shape is not registry membership",
+          "code": "assert tool_name('__import__') is True and all(tool_name(v) is False for v in (None,True,12,[]))"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q082",
+      "type": "code",
+      "topic": "Closed named-query arguments",
+      "difficulty": "applied",
+      "prompt": "Implement sql_arguments(value). Accept only a dict with EXACTLY query_name, purchase_order_id and limit. query_name must be 'open_purchase_orders' or 'purchase_order_by_id'. limit must be an exact int (not bool), from 1 through 5. For open_purchase_orders the ID must be None; for purchase_order_by_id it must be a str fully matching 1–64 ASCII letters, digits, underscores or hyphens. Return a new dict with the original accepted values, without mutation. All failures raise ValueError('invalid_arguments'); do not coerce or accept arbitrary SQL, extra scope or extra fields. This parses a named operation, not a database connection or authorization decision.",
+      "explanation": "Validate the closed shape, exact scalar types and the chosen query's ID rule before an adapter can run. SQL binding and row scope are still required downstream.",
+      "starter": "def sql_arguments(value):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\ndef sql_arguments(value):\n    if not isinstance(value,dict) or set(value)!={'query_name','purchase_order_id','limit'}:\n        raise ValueError('invalid_arguments')\n    name=value['query_name'];key=value['purchase_order_id'];limit=value['limit']\n    if type(limit) is not int or not 1<=limit<=5:raise ValueError('invalid_arguments')\n    if name=='open_purchase_orders':\n        if key is not None:raise ValueError('invalid_arguments')\n    elif name=='purchase_order_by_id':\n        if not isinstance(key,str) or re.fullmatch(r'[A-Za-z0-9_-]{1,64}',key) is None:\n            raise ValueError('invalid_arguments')\n    else:raise ValueError('invalid_arguments')\n    return dict(value)\n",
+      "checks": [
+        {
+          "label": "Both named shapes",
+          "code": "a=dict(query_name='open_purchase_orders',purchase_order_id=None,limit=5);b=dict(query_name='purchase_order_by_id',purchase_order_id='PO-1001',limit=1);assert sql_arguments(a)==a and sql_arguments(b)==b and sql_arguments(a) is not a"
+        },
+        {
+          "label": "Strict inclusive limit",
+          "code": "a=dict(query_name='open_purchase_orders',purchase_order_id=None,limit=1);assert all(raises(ValueError,sql_arguments,dict(a,limit=x)) for x in ('5',True,0,6,1.0))"
+        },
+        {
+          "label": "Closed fields and input type",
+          "code": "a=dict(query_name='open_purchase_orders',purchase_order_id=None,limit=1);assert raises(ValueError,sql_arguments,dict(a,tenant='S')) and raises(ValueError,sql_arguments,{'limit':1}) and raises(ValueError,sql_arguments,[])"
+        },
+        {
+          "label": "Cross-field and ID validation",
+          "code": "a=dict(query_name='purchase_order_by_id',purchase_order_id='a'*64,limit=1);assert sql_arguments(a)==a and all(raises(ValueError,sql_arguments,dict(a,purchase_order_id=x)) for x in (None,'','a'*65,'PO\\n',\"' OR 1=1\",'ＰＯ'));assert raises(ValueError,sql_arguments,dict(a,query_name='open_purchase_orders'))"
+        },
+        {
+          "label": "No arbitrary query and no mutation",
+          "code": "a=dict(query_name='open_purchase_orders',purchase_order_id=None,limit=1);before=a.copy();assert raises(ValueError,sql_arguments,dict(a,query_name='SELECT * FROM grants'));sql_arguments(a);assert a==before"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q083",
+      "type": "code",
+      "topic": "Canonical price string",
+      "difficulty": "applied",
+      "prompt": "Implement money_value(value). Accept only a str fully matching a canonical two-place amount: integer part '0' or 1–6 ASCII digits starting with 1–9, one dot, then exactly two ASCII digits. Thus 0.00 through 999999.99 are allowed; leading zeros, signs, spaces, exponents, nonfinite spellings and other types are not. Return decimal.Decimal constructed directly from the accepted string. Otherwise raise ValueError('amount_invalid') without including value. Do not pass through float. Zero is valid here; a later variance calculation separately requires a positive baseline.",
+      "explanation": "A canonical decimal representation is a separate contract from financial provenance or comparability. Construct Decimal from the accepted string to preserve its value.",
+      "starter": "def money_value(value):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\nfrom decimal import Decimal\ndef money_value(value):\n    if not isinstance(value,str) or re.fullmatch(r'(0|[1-9][0-9]{0,5})\\.[0-9]{2}',value) is None:\n        raise ValueError('amount_invalid')\n    return Decimal(value)\n",
+      "checks": [
+        {
+          "label": "Exact type and value",
+          "code": "from decimal import Decimal\nout=money_value('2.20');assert isinstance(out,Decimal) and out==Decimal('2.20') and out.as_tuple().exponent==-2"
+        },
+        {
+          "label": "Inclusive domain",
+          "code": "from decimal import Decimal\nassert money_value('0.00')==Decimal('0.00') and money_value('999999.99')==Decimal('999999.99')"
+        },
+        {
+          "label": "Canonical spelling",
+          "code": "assert all(raises(ValueError,money_value,v) for v in ('00.00','01.20','1','1.2','1.200','+1.00','-0.00','1e2',' 1.00','1.00\\n'))"
+        },
+        {
+          "label": "No nonfinite, Unicode or coercion",
+          "code": "assert all(raises(ValueError,money_value,v) for v in ('NaN','Infinity','１.00','1000000.00',2.2,True,None))"
+        },
+        {
+          "label": "No binary-float detour or payload error",
+          "code": "from decimal import Decimal\nassert money_value('0.10')==Decimal('0.10')\ntry:money_value('SYNTHETIC_PRIVATE')\nexcept ValueError as e:assert str(e)=='amount_invalid'\nelse:raise AssertionError('accepted invalid amount')"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q084",
+      "type": "code",
+      "topic": "Comparable price change",
+      "difficulty": "applied",
+      "prompt": "Implement price_change(baseline, current, base_currency, new_currency, base_unit, new_unit). The amounts are trusted canonical two-place strings from 0.00 through 999999.99; currencies are trusted 'USD'/'INR' and units trusted 'kg'/'tonne'/'piece'. Reject a zero baseline or unequal currency/unit with ValueError('incomparable_prices'). Otherwise return (delta_string, percent_string), where delta=current-baseline and percent=delta/baseline*100. Calculate using Decimal in a local precision-28 context, quantizing both to Decimal('0.01') with ROUND_HALF_EVEN. Preserve signed rounded zero, including '-0.00', and do not alter the caller's decimal context. This computes declared values; it does not verify their source or convert units/currency.",
+      "explanation": "Keep the baseline denominator, units, decimal precision and display convention explicit. A local context prevents surrounding arithmetic settings from silently changing the calculation.",
+      "starter": "def price_change(baseline, current, base_currency, new_currency, base_unit, new_unit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from decimal import Decimal,localcontext,ROUND_HALF_EVEN\ndef price_change(baseline, current, base_currency, new_currency, base_unit, new_unit):\n    if Decimal(baseline)<=0 or base_currency!=new_currency or base_unit!=new_unit:\n        raise ValueError('incomparable_prices')\n    with localcontext() as context:\n        context.prec=28\n        delta=Decimal(current)-Decimal(baseline)\n        percent=delta/Decimal(baseline)*100\n        return tuple(str(v.quantize(Decimal('0.01'),rounding=ROUND_HALF_EVEN)) for v in (delta,percent))\n",
+      "checks": [
+        {
+          "label": "Baseline denominator",
+          "code": "assert price_change('2.00','2.20','USD','USD','kg','kg')==('0.20','10.00')"
+        },
+        {
+          "label": "Decrease, equality and zero current",
+          "code": "assert price_change('2.00','1.80','INR','INR','piece','piece')==('-0.20','-10.00') and price_change('2.00','2.00','USD','USD','kg','kg')==('0.00','0.00') and price_change('2.00','0.00','USD','USD','kg','kg')==('-2.00','-100.00')"
+        },
+        {
+          "label": "Exact half-even ties and signed zero",
+          "code": "assert price_change('200.00','200.01','USD','USD','kg','kg')==('0.01','0.00') and price_change('200.00','200.03','USD','USD','kg','kg')==('0.03','0.02') and price_change('200.00','199.99','USD','USD','kg','kg')==('-0.01','-0.00')"
+        },
+        {
+          "label": "Invalid comparisons",
+          "code": "assert raises(ValueError,price_change,'0.00','1.00','USD','USD','kg','kg') and raises(ValueError,price_change,'1.00','2.00','USD','INR','kg','kg') and raises(ValueError,price_change,'1.00','2.00','USD','USD','kg','tonne')"
+        },
+        {
+          "label": "Extremes and context isolation",
+          "code": "from decimal import localcontext,ROUND_UP\nwith localcontext() as ctx:\n    ctx.prec=4;ctx.rounding=ROUND_UP\n    assert price_change('0.01','999999.99','USD','USD','kg','kg')==('999999.98','9999999800.00') and ctx.prec==4 and ctx.rounding==ROUND_UP"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q085",
+      "type": "code",
+      "topic": "Closed local tool definition",
+      "difficulty": "applied",
+      "prompt": "Implement tool_definition(name, description, properties, required, effect). All inputs are trusted application definitions: name/description are str, effect is 'read' or 'write', properties is a finite JSON-compatible dict, and required is a list of unique property names present in properties (it may be empty). Return EXACTLY {'name':name,'description':description,'effect':effect,'parameters':{'type':'object','properties':deep_copy(properties),'required':copy_of_required,'additionalProperties':False}}. Preserve all nested definitions and input ordering without mutation or aliasing. This local catalogue object neither executes a function nor claims compatibility with a provider API.",
+      "explanation": "Export a precise deep-copied description of the local contract. The executable registry and authority checks remain separate from this catalogue data.",
+      "starter": "def tool_definition(name, description, properties, required, effect):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef tool_definition(name, description, properties, required, effect):\n    return dict(name=name,description=description,effect=effect,parameters={\n        'type':'object','properties':copy.deepcopy(properties),'required':list(required),'additionalProperties':False})\n",
+      "checks": [
+        {
+          "label": "Exact local definition",
+          "code": "out=tool_definition('read','Read records',{'limit':{'type':'integer'}},['limit'],'read');assert out==dict(name='read',description='Read records',effect='read',parameters=dict(type='object',properties={'limit':{'type':'integer'}},required=['limit'],additionalProperties=False))"
+        },
+        {
+          "label": "Nested definitions preserved independently",
+          "code": "p={'x':{'anyOf':[{'type':'string'},{'type':'null'}]}};out=tool_definition('t','d',p,['x'],'read');out['parameters']['properties']['x']['anyOf'][0]['type']='number';assert p['x']['anyOf'][0]['type']=='string'"
+        },
+        {
+          "label": "Required order and independence",
+          "code": "r=['b','a'];out=tool_definition('t','d',{'a':{},'b':{}},r,'write');assert out['parameters']['required']==r;r.append('extra');assert out['parameters']['required']==['b','a']"
+        },
+        {
+          "label": "Input mutation does not alter result",
+          "code": "p={'x':{'enum':['a','b']}};out=tool_definition('t','d',p,['x'],'read');p['x']['enum'].append('c');assert out['parameters']['properties']['x']['enum']==['a','b']"
+        },
+        {
+          "label": "Argumentless definition is still closed",
+          "code": "out=tool_definition('noop','d',{},[],'read');assert out['parameters']=={'type':'object','properties':{},'required':[],'additionalProperties':False} and set(out)=={'name','description','effect','parameters'}"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q086",
+      "type": "code",
+      "topic": "Catalogue visibility",
+      "difficulty": "applied",
+      "prompt": "Implement visible_tools(definitions, writable). definitions is an ordered list of trusted JSON-compatible tool-definition dicts with unique names and effect equal to 'read' or 'write'. writable may be any object: expose write definitions only if writable is the boolean True, and always expose read definitions. Return a NEW list of independent deep copies in original order, without changing definitions. This is catalogue visibility, not execution authorization; a hidden tool must still be checked independently if a call is proposed.",
+      "explanation": "Preserve ordering and copy ownership while using an exact capability boolean. Catalogue filtering helps the planner but cannot replace an execution-time permission gate.",
+      "starter": "def visible_tools(definitions, writable):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef visible_tools(definitions, writable):\n    return [copy.deepcopy(d) for d in definitions if d['effect']=='read' or writable is True]\n",
+      "checks": [
+        {
+          "label": "Read-only catalogue",
+          "code": "d=[{'name':'a','effect':'read'},{'name':'b','effect':'write'}];assert visible_tools(d,False)==[d[0]]"
+        },
+        {
+          "label": "Real capability includes writes in original order",
+          "code": "d=[{'name':'w','effect':'write'},{'name':'r','effect':'read'}];assert visible_tools(d,True)==d"
+        },
+        {
+          "label": "No truthy coercion",
+          "code": "d=[{'name':'w','effect':'write'}];assert all(visible_tools(d,v)==[] for v in ('true',1,{},None))"
+        },
+        {
+          "label": "Independent nested definitions",
+          "code": "d=[{'name':'r','effect':'read','parameters':{'enum':['a']}}];out=visible_tools(d,False);out[0]['parameters']['enum'].append('b');assert d[0]['parameters']['enum']==['a'] and out is not d"
+        },
+        {
+          "label": "Empty and no mutation",
+          "code": "d=[{'name':'w','effect':'write'},{'name':'r','effect':'read'}];before=[x.copy() for x in d];assert visible_tools([],True)==[];visible_tools(d,False);assert d==before"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q087",
+      "type": "code",
+      "topic": "Correlated result envelope",
+      "difficulty": "applied",
+      "prompt": "Implement correlated_reply(expected_call_id, reply). expected_call_id is a trusted validated str. reply must be a dict with EXACTLY call_id, name, status, data, error and attempts, and its call_id must equal expected_call_id. Otherwise raise ValueError('result_invalid'). The other five values are guaranteed already valid under the relevant result contracts and may contain nested JSON data. Return an independent deep copy of the full accepted envelope. Do not mutate input or infer authorization from a matching ID. This helper checks top-level fields/correlation; separate validators own data and status semantics.",
+      "explanation": "Correlation prevents a valid result from being associated with another call. Closed envelopes and independent copies preserve the boundary without pretending that an ID grants access.",
+      "starter": "def correlated_reply(expected_call_id, reply):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef correlated_reply(expected_call_id, reply):\n    if not isinstance(reply,dict) or set(reply)!={'call_id','name','status','data','error','attempts'} or reply['call_id']!=expected_call_id:\n        raise ValueError('result_invalid')\n    return copy.deepcopy(reply)\n",
+      "checks": [
+        {
+          "label": "Accepted envelope preserved",
+          "code": "r=dict(call_id='c1',name='read',status='ok',data={'rows':[]},error=None,attempts=1);assert correlated_reply('c1',r)==r and correlated_reply('c1',r) is not r"
+        },
+        {
+          "label": "Wrong correlation rejected",
+          "code": "r=dict(call_id='c2',name='read',status='ok',data={},error=None,attempts=1);assert raises(ValueError,correlated_reply,'c1',r)"
+        },
+        {
+          "label": "Missing and extra fields rejected",
+          "code": "r=dict(call_id='c',name='read',status='ok',data={},error=None,attempts=1);assert raises(ValueError,correlated_reply,'c',dict(r,tool_call={})) and raises(ValueError,correlated_reply,'c',{'call_id':'c'})"
+        },
+        {
+          "label": "No nested alias",
+          "code": "r=dict(call_id='c',name='read',status='ok',data={'rows':[{'x':1}]},error=None,attempts=1);out=correlated_reply('c',r);out['data']['rows'][0]['x']=2;assert r['data']['rows'][0]['x']==1"
+        },
+        {
+          "label": "Error envelopes and invalid top type",
+          "code": "r=dict(call_id='c',name='read',status='error',data=None,error='not_found',attempts=1);assert correlated_reply('c',r)==r and raises(ValueError,correlated_reply,'c',[])"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q088",
+      "type": "code",
+      "topic": "Bounded error projection",
+      "difficulty": "applied",
+      "prompt": "Implement error_reply(call_id, name, code, attempts). call_id and name are trusted validated str values. attempts must be an exact int from 0 through 2 or raise ValueError('attempts_invalid'). code may be any object. Keep it only if it is a str in this exact allowlist: invalid_arguments, unknown_tool, forbidden, not_found, approval_required, conflict, unavailable, timeout, unknown_outcome, result_invalid, tool_failed. All other objects become 'tool_failed', without coercion or payload copying. Return EXACTLY call_id, name, status, data, error, attempts, with data=None, error=the safe code, and status='unknown' only for unknown_outcome, otherwise 'error'. unknown_outcome requires attempts==1 or raises ValueError('attempts_invalid'). No exceptions or raw values are logged.",
+      "explanation": "Project a fixed envelope and allowlisted category rather than serializing an exception. Unknown outcome is a distinct execution state, not a free-form failure message.",
+      "starter": "def error_reply(call_id, name, code, attempts):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def error_reply(call_id, name, code, attempts):\n    allowed=('invalid_arguments','unknown_tool','forbidden','not_found','approval_required','conflict','unavailable','timeout','unknown_outcome','result_invalid','tool_failed')\n    if type(attempts) is not int or not 0<=attempts<=2:raise ValueError('attempts_invalid')\n    safe=code if isinstance(code,str) and code in allowed else 'tool_failed'\n    if safe=='unknown_outcome' and attempts!=1:raise ValueError('attempts_invalid')\n    return dict(call_id=call_id,name=name,status='unknown' if safe=='unknown_outcome' else 'error',data=None,error=safe,attempts=attempts)\n",
+      "checks": [
+        {
+          "label": "Exact error envelope",
+          "code": "assert error_reply('c','read','not_found',1)==dict(call_id='c',name='read',status='error',data=None,error='not_found',attempts=1)"
+        },
+        {
+          "label": "Unknown effect and zero-attempt rejection",
+          "code": "assert error_reply('c','write','unknown_outcome',1)['status']=='unknown' and error_reply('c','read','invalid_arguments',0)['attempts']==0 and raises(ValueError,error_reply,'c','write','unknown_outcome',0)"
+        },
+        {
+          "label": "No free-form error payload",
+          "code": "for value in ('SYNTHETIC_PRIVATE',{'message':'SYNTHETIC_PRIVATE'},None,12):\n    out=error_reply('c','read',value,1);assert out['error']=='tool_failed' and set(out)=={'call_id','name','status','data','error','attempts'}"
+        },
+        {
+          "label": "Exact attempt domain",
+          "code": "assert all(raises(ValueError,error_reply,'c','read','timeout',v) for v in (True,-1,3,1.0,'1'))"
+        },
+        {
+          "label": "All declared categories retained",
+          "code": "codes=('unknown_tool','forbidden','approval_required','conflict','unavailable','timeout','result_invalid','tool_failed');assert all(error_reply('c','t',v,1)['error']==v for v in codes) and error_reply('c','t','timeout',2)['attempts']==2"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q089",
+      "type": "code",
+      "topic": "Successful final evidence",
+      "difficulty": "applied",
+      "prompt": "Implement evidence_ok(references, outcomes). outcomes is a trusted list of validated dicts with unique str call_id values and status equal to ok, error or unknown. Other fields are irrelevant. references may be any object. Return True only when it is a list of at most six UNIQUE str IDs and every ID belongs to an outcome whose status is 'ok'. Empty references are valid. Otherwise return False without mutation or exceptions on unhashable reference elements. This checks membership only, not whether a final summary is entailed, complete or true.",
+      "explanation": "Only distinct successful IDs from the current run can be cited under this check. A passing reference list supplies no semantic proof about the text that cites it.",
+      "starter": "def evidence_ok(references, outcomes):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def evidence_ok(references, outcomes):\n    if not isinstance(references,list) or len(references)>6 or not all(isinstance(x,str) for x in references):\n        return False\n    if len(set(references))!=len(references):return False\n    successful={r['call_id'] for r in outcomes if r['status']=='ok'}\n    return set(references)<=successful\n",
+      "checks": [
+        {
+          "label": "Successful and empty references",
+          "code": "out=[dict(call_id='a',status='ok'),dict(call_id='b',status='ok')];assert evidence_ok(['b','a'],out) is True and evidence_ok([],[]) is True"
+        },
+        {
+          "label": "Failed and unknown calls are not success",
+          "code": "out=[dict(call_id='a',status='error'),dict(call_id='b',status='unknown')];assert not evidence_ok(['a'],out) and not evidence_ok(['b'],out) and not evidence_ok(['missing'],out)"
+        },
+        {
+          "label": "Duplicate references rejected",
+          "code": "assert not evidence_ok(['a','a'],[dict(call_id='a',status='ok')])"
+        },
+        {
+          "label": "Length bound",
+          "code": "out=[dict(call_id=str(i),status='ok') for i in range(7)];assert evidence_ok([str(i) for i in range(6)],out) and not evidence_ok([str(i) for i in range(7)],out)"
+        },
+        {
+          "label": "Safe types and no mutation",
+          "code": "out=[dict(call_id='a',status='ok')];r=['a'];assert all(evidence_ok(x,out) is False for x in (None,'a',('a',),[{}],[1]));evidence_ok(r,out);assert r==['a'] and out==[dict(call_id='a',status='ok')]"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q090",
+      "type": "code",
+      "topic": "Canonical scoped intent",
+      "difficulty": "applied",
+      "prompt": "Implement operation_digest(tenant, principal, key, arguments). All inputs are trusted validated values: tenant/principal/key are str identifiers and arguments is a finite JSON-compatible dict with the normalized review purchase_order_id and reason. Build EXACTLY {'schema':'create_review/1','tenant':tenant,'principal':principal,'operation_key':key,'arguments':arguments}; serialize with sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False, encode UTF-8 and return lowercase SHA-256 hex. Preserve inputs. Do not include a conversation call ID, drop scope fields or normalize strings further. This digest compares intent content; it is not a signature or proof of authenticated approval.",
+      "explanation": "Bind tool/version, caller scope, stable operation key and complete normalized arguments to deterministic bytes. Key equality without argument equality is not sufficient for safe replay.",
+      "starter": "def operation_digest(tenant, principal, key, arguments):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import hashlib,json\ndef operation_digest(tenant, principal, key, arguments):\n    body={'schema':'create_review/1','tenant':tenant,'principal':principal,'operation_key':key,'arguments':arguments}\n    raw=json.dumps(body,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode('utf-8')\n    return hashlib.sha256(raw).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Exact canonical bytes",
+          "code": "import hashlib\nraw=b'{\"arguments\":{\"purchase_order_id\":\"P\",\"reason\":\"price_variance\"},\"operation_key\":\"k\",\"principal\":\"a\",\"schema\":\"create_review/1\",\"tenant\":\"N\"}';assert operation_digest('N','a','k',dict(purchase_order_id='P',reason='price_variance'))==hashlib.sha256(raw).hexdigest()"
+        },
+        {
+          "label": "Scope is not collapsed",
+          "code": "a=dict(purchase_order_id='P',reason='price_variance');x=operation_digest('N','a','k',a);assert x!=operation_digest('S','a','k',a) and x!=operation_digest('N','b','k',a) and x!=operation_digest('N','a','other',a)"
+        },
+        {
+          "label": "Every argument remains covered",
+          "code": "a=dict(purchase_order_id='P',reason='price_variance');x=operation_digest('N','a','k',a);assert x!=operation_digest('N','a','k',dict(a,purchase_order_id='Q')) and x!=operation_digest('N','a','k',dict(a,reason='supplier_change'))"
+        },
+        {
+          "label": "Dictionary order is normalized",
+          "code": "a={'reason':'price_variance','purchase_order_id':'P'};b={'purchase_order_id':'P','reason':'price_variance'};assert operation_digest('N','a','k',a)==operation_digest('N','a','k',b)"
+        },
+        {
+          "label": "Input preserved and reproducible digest",
+          "code": "a=dict(purchase_order_id='P',reason='price_variance');before=a.copy();x=operation_digest('N','a','k',a);assert a==before and len(x)==64 and all(c in '0123456789abcdef' for c in x) and x==operation_digest('N','a','k',a)"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q091",
+      "type": "code",
+      "topic": "Exact unexpired approval",
+      "difficulty": "applied",
+      "prompt": "Implement approval_allows(writable, expected_digest, approval, now). writable may be any object; only the boolean True is a write capability. expected_digest is a trusted computed str. approval is None or a trusted normalized dict containing digest (str) and expires (finite monotonic number). now is a trusted finite monotonic number >=0. Return a bool that is True exactly when writable is True, approval exists, its digest equals expected_digest and now < expires. At the expiry instant it is False. Preserve inputs. This validates the binding/expiry of an already trusted approval fixture; it does not authenticate its origin or check the current target grant.",
+      "explanation": "Require exact capability, exact intent binding and a strictly future expiry. Passing this local check still relies on trusted approval origin and a separate current resource-access check.",
+      "starter": "def approval_allows(writable, expected_digest, approval, now):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def approval_allows(writable, expected_digest, approval, now):\n    return (writable is True and approval is not None\n            and approval['digest']==expected_digest and now<approval['expires'])\n",
+      "checks": [
+        {
+          "label": "Current exact approval",
+          "code": "assert approval_allows(True,'d',{'digest':'d','expires':2},1) is True"
+        },
+        {
+          "label": "Expiry equality is denied",
+          "code": "a={'digest':'d','expires':2};assert approval_allows(True,'d',a,2) is False and approval_allows(True,'d',a,3) is False"
+        },
+        {
+          "label": "Wrong or missing approval",
+          "code": "assert not approval_allows(True,'d',None,0) and not approval_allows(True,'d',{'digest':'other','expires':2},0)"
+        },
+        {
+          "label": "Exact capability, not truthiness",
+          "code": "a={'digest':'d','expires':2};assert all(approval_allows(v,'d',a,0) is False for v in (False,1,'true',None,{}))"
+        },
+        {
+          "label": "Zero time and no mutation",
+          "code": "a={'digest':'d','expires':1};before=a.copy();assert approval_allows(True,'d',a,0) is True and a==before"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q092",
+      "type": "code",
+      "topic": "Retained intent classification",
+      "difficulty": "applied",
+      "prompt": "Implement intent_state(ledger, scope, digest). ledger is a trusted dict keyed by (tenant, principal, operation_key) tuples; each value is a normalized record containing digest and a saved review result. scope is one complete trusted tuple, and digest is the new normalized operation's str digest. Return 'new' when scope is absent, 'replay' when the saved digest equals digest, otherwise 'conflict'. Do not mutate or insert anything. Do not collapse the scope to operation_key alone. This is a decision helper; it does not acquire a transaction, authenticate callers or make concurrent writes atomic.",
+      "explanation": "A stable scoped key identifies the intent namespace, while the digest distinguishes its arguments. Classification alone is not the atomic ledger/effect transaction.",
+      "starter": "def intent_state(ledger, scope, digest):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def intent_state(ledger, scope, digest):\n    if scope not in ledger:return 'new'\n    return 'replay' if ledger[scope]['digest']==digest else 'conflict'\n",
+      "checks": [
+        {
+          "label": "Missing intent",
+          "code": "assert intent_state({},('N','a','k'),'d')=='new'"
+        },
+        {
+          "label": "Matching retained digest",
+          "code": "l={('N','a','k'):{'digest':'d','result':{'review_id':'r'}}};assert intent_state(l,('N','a','k'),'d')=='replay'"
+        },
+        {
+          "label": "Same key with changed arguments conflicts",
+          "code": "l={('N','a','k'):{'digest':'old','result':{'review_id':'r'}}};assert intent_state(l,('N','a','k'),'new')=='conflict'"
+        },
+        {
+          "label": "Every scope component distinguishes intents",
+          "code": "l={('N','a','k'):{'digest':'d','result':{}}};assert all(intent_state(l,s,'d')=='new' for s in (('S','a','k'),('N','b','k'),('N','a','other')))"
+        },
+        {
+          "label": "Classification never changes retained state",
+          "code": "import copy\nl={('N','a','k'):{'digest':'d','result':{'review_id':'r'}}};before=copy.deepcopy(l);intent_state(l,('N','a','k'),'other');intent_state(l,('S','a','k'),'d');assert l==before"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q093",
+      "type": "code",
+      "topic": "Authority before replay lookup",
+      "difficulty": "applied",
+      "prompt": "Implement read_saved(lookup, authorized, approved, digest). All three callbacks are trusted synchronous zero-argument functions. Call authorized() exactly once FIRST; if False, raise PermissionError('forbidden') without calling either later callback. Then call approved() exactly once; if False, raise PermissionError('approval_required') without lookup. Otherwise call lookup() exactly once. It returns None or a trusted normalized {'digest':str,'result':JSON_compatible_dict} record. Return None when missing; raise ValueError('conflict') when its digest differs; otherwise return an independent deep copy of result. Preserve original exceptions, do not retry and do not mutate the saved record. This tests ordering/current authority, not an atomic database transaction or authentication.",
+      "explanation": "Historical success never bypasses current authority. Check access and exact approval before reading/replaying retained data, preserving explicit conflict and failure semantics.",
+      "starter": "def read_saved(lookup, authorized, approved, digest):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef read_saved(lookup, authorized, approved, digest):\n    if not authorized():raise PermissionError('forbidden')\n    if not approved():raise PermissionError('approval_required')\n    row=lookup()\n    if row is None:return None\n    if row['digest']!=digest:raise ValueError('conflict')\n    return copy.deepcopy(row['result'])\n",
+      "checks": [
+        {
+          "label": "Correct order and one invocation",
+          "code": "seen=[]\ndef gate():seen.append('access');return True\ndef approve():seen.append('approval');return True\ndef lookup():seen.append('lookup');return {'digest':'d','result':{'review_id':'r'}}\nassert read_saved(lookup,gate,approve,'d')=={'review_id':'r'} and seen==['access','approval','lookup']"
+        },
+        {
+          "label": "Denied access does not inspect retained state",
+          "code": "seen=[]\ndef denied():seen.append('access');return False\ndef later():seen.append('LATER');return True\ntry:read_saved(later,denied,later,'d')\nexcept PermissionError as e:assert str(e)=='forbidden' and seen==['access']\nelse:raise AssertionError('access bypass')"
+        },
+        {
+          "label": "Missing approval does not look up",
+          "code": "seen=[]\ndef lookup():seen.append('lookup');return None\nassert raises(PermissionError,read_saved,lookup,lambda:True,lambda:False,'d') and seen==[]"
+        },
+        {
+          "label": "Missing and conflicting retained state",
+          "code": "assert read_saved(lambda:None,lambda:True,lambda:True,'d') is None and raises(ValueError,read_saved,lambda:{'digest':'old','result':{}},lambda:True,lambda:True,'d')"
+        },
+        {
+          "label": "Copy ownership and original failure",
+          "code": "row={'digest':'d','result':{'rows':[{'id':'r'}]}};out=read_saved(lambda:row,lambda:True,lambda:True,'d');out['rows'][0]['id']='other';assert row['result']['rows'][0]['id']=='r'\nerror=RuntimeError('fixture')\ndef broken():raise error\ntry:read_saved(broken,lambda:True,lambda:True,'d')\nexcept RuntimeError as e:assert e is error\nelse:raise AssertionError('failure hidden')"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q094",
+      "type": "code",
+      "topic": "Single-threaded replay component",
+      "difficulty": "applied",
+      "prompt": "Implement store_once(ledger, scope, digest, make). ledger is a trusted in-memory dict keyed by complete (tenant, principal, operation_key) tuples, with normalized values {'digest':str,'result':JSON_compatible_dict}. Inputs are validated and authority has ALREADY been checked. For an existing key, reject a different digest with ValueError('conflict'); otherwise return (deep_copy(saved_result), True) without invoking make. For a missing key, call the trusted synchronous make() exactly once, store an independent deep copy of its returned JSON dict with digest, then return (a separate deep copy, False). If make raises, propagate its original exception without inserting a key. Preserve unrelated entries. This single-threaded helper is NOT concurrency-safe, a database transaction, or rollback of external effects a callback may have performed.",
+      "explanation": "Separate intent identity, conflict detection and copy ownership. The real lab adds current authority and a database transaction; an in-memory check cannot claim those guarantees.",
+      "starter": "def store_once(ledger, scope, digest, make):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\ndef store_once(ledger, scope, digest, make):\n    if scope in ledger:\n        row=ledger[scope]\n        if row['digest']!=digest:raise ValueError('conflict')\n        return copy.deepcopy(row['result']),True\n    value=make()\n    ledger[scope]={'digest':digest,'result':copy.deepcopy(value)}\n    return copy.deepcopy(value),False\n",
+      "checks": [
+        {
+          "label": "One creation followed by replay",
+          "code": "l={};calls=[]\ndef make():calls.append(1);return {'review_id':'r'}\na=store_once(l,('N','a','k'),'d',make);b=store_once(l,('N','a','k'),'d',make);assert a==({'review_id':'r'},False) and b==({'review_id':'r'},True) and calls==[1]"
+        },
+        {
+          "label": "Conflicting intent does not call or overwrite",
+          "code": "l={('N','a','k'):{'digest':'old','result':{'review_id':'r'}}};calls=[]\ndef make():calls.append(1);return {}\nassert raises(ValueError,store_once,l,('N','a','k'),'new',make) and calls==[] and l[('N','a','k')]['digest']=='old'"
+        },
+        {
+          "label": "Returned, original and retained objects independent",
+          "code": "l={};original={'rows':[{'id':'r'}]};out,replayed=store_once(l,('N','a','k'),'d',lambda:original);out['rows'][0]['id']='out';original['rows'][0]['id']='original';again,_=store_once(l,('N','a','k'),'d',lambda:{});again['rows'].append({});assert l[('N','a','k')]['result']=={'rows':[{'id':'r'}]}"
+        },
+        {
+          "label": "Failure preserves ledger and original exception",
+          "code": "l={('N','a','old'):{'digest':'x','result':{}}};error=RuntimeError('fixture')\ndef broken():raise error\ntry:store_once(l,('N','a','new'),'d',broken)\nexcept RuntimeError as e:assert e is error and list(l)==[('N','a','old')]\nelse:raise AssertionError('failure hidden')"
+        },
+        {
+          "label": "Full scope and unrelated state",
+          "code": "l={};store_once(l,('N','a','k'),'d',lambda:{'review_id':'n'});r,flag=store_once(l,('S','a','k'),'d',lambda:{'review_id':'s'});assert r=={'review_id':'s'} and flag is False and len(l)==2"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q095",
+      "type": "code",
+      "topic": "Effect-aware retry decision",
+      "difficulty": "applied",
+      "prompt": "Implement retry_action(effect, code, attempt). effect must be 'read' or 'write'; attempt must be an exact int from 1 through 2. Other effect/attempt values raise ValueError('policy_invalid'); write with attempt=2 is also invalid because this policy never retries writes. code is a trusted controlled error-category str. For reads, return 'retry' only for code unavailable/timeout on attempt 1, otherwise 'stop'. For writes, return 'stop' for forbidden, not_found, approval_required, conflict or invalid_arguments; return 'unknown' for every other controlled code, including result_invalid/tool_failed. Never return 'retry' for a write. This is classification only; authority, actual execution, delay and run budgets are separate.",
+      "explanation": "A transient read can be repeated within a bound, whereas an uncertain admitted write needs reconciliation. A known rejection before the effect is a different execution state.",
+      "starter": "def retry_action(effect, code, attempt):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def retry_action(effect, code, attempt):\n    if effect not in ('read','write') or type(attempt) is not int or not 1<=attempt<=2 or (effect=='write' and attempt!=1):\n        raise ValueError('policy_invalid')\n    if effect=='read':\n        return 'retry' if code in ('unavailable','timeout') and attempt==1 else 'stop'\n    return 'stop' if code in ('forbidden','not_found','approval_required','conflict','invalid_arguments') else 'unknown'\n",
+      "checks": [
+        {
+          "label": "Only first transient read gets another attempt",
+          "code": "assert retry_action('read','unavailable',1)=='retry' and retry_action('read','timeout',1)=='retry' and retry_action('read','timeout',2)=='stop'"
+        },
+        {
+          "label": "Permanent read errors stop",
+          "code": "assert all(retry_action('read',c,1)=='stop' for c in ('forbidden','not_found','result_invalid','tool_failed','conflict','invalid_arguments'))"
+        },
+        {
+          "label": "Known pre-effect write rejection stops",
+          "code": "assert all(retry_action('write',c,1)=='stop' for c in ('forbidden','not_found','approval_required','conflict','invalid_arguments'))"
+        },
+        {
+          "label": "Uncertain admitted write is never retried",
+          "code": "assert all(retry_action('write',c,1)=='unknown' for c in ('timeout','unavailable','result_invalid','tool_failed','unknown_outcome'))"
+        },
+        {
+          "label": "Exact policy domain",
+          "code": "assert all(raises(ValueError,retry_action,'read','timeout',a) for a in (True,0,3,1.0)) and raises(ValueError,retry_action,'write','timeout',2) and raises(ValueError,retry_action,'other','timeout',1)"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q096",
+      "type": "code",
+      "topic": "Two-attempt asynchronous read",
+      "difficulty": "applied",
+      "prompt": "Implement async retry_read(send, delay). Both are trusted async callbacks: send() attempts a READ with no intended write effect, and delay(seconds) waits as directed. Await send once and return its ORIGINAL result, including falsy values. Only TimeoutError or ConnectionError from the first send call permits one retry: await delay(0.05) once, then await send once more and return its result or propagate its original failure. Do not catch other errors, suppress asyncio.CancelledError, retry delay failures, or make a third attempt. Checks support top-level await. This teaching helper models declared transient read exceptions, not the complete lab's ToolError/transaction implementation or an automatic write policy.",
+      "explanation": "Retry only the stated transient read exceptions and only once. Keep the wait, result identity and original failure/cancellation semantics explicit.",
+      "starter": "async def retry_read(send, delay):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "async def retry_read(send, delay):\n    try:\n        return await send()\n    except (TimeoutError,ConnectionError):\n        await delay(0.05)\n    return await send()\n",
+      "checks": [
+        {
+          "label": "Immediate original success, no delay",
+          "code": "events=[];value=[]\nasync def send():events.append('send');return value\nasync def delay(s):events.append(s)\nassert await retry_read(send,delay) is value and events==['send']"
+        },
+        {
+          "label": "One transient failure then success",
+          "code": "events=[]\nasync def send():\n    events.append('send')\n    if len(events)==1:raise ConnectionError('temporary')\n    return False\nasync def delay(s):events.append(s)\nassert await retry_read(send,delay) is False and events==['send',0.05,'send']"
+        },
+        {
+          "label": "Second failure is original and terminal",
+          "code": "calls=[];error=TimeoutError('second')\nasync def send():calls.append(1);raise error\nasync def delay(s):assert s==0.05\ntry:await retry_read(send,delay)\nexcept TimeoutError as e:assert e is error and calls==[1,1]\nelse:raise AssertionError('failure hidden')"
+        },
+        {
+          "label": "Permanent error and cancellation are not retried",
+          "code": "import asyncio\nfor error in (ValueError('bad'),asyncio.CancelledError()):\n    calls=[]\n    async def send():calls.append('send');raise error\n    async def delay(s):calls.append('delay')\n    try:await retry_read(send,delay)\n    except BaseException as e:assert e is error and calls==['send']\n    else:raise AssertionError('failure hidden')"
+        },
+        {
+          "label": "A failed delay does not execute another read",
+          "code": "calls=[];error=RuntimeError('delay')\nasync def send():calls.append('send');raise ConnectionError()\nasync def delay(s):calls.append('delay');raise error\ntry:await retry_read(send,delay)\nexcept RuntimeError as e:assert e is error and calls==['send','delay']\nelse:raise AssertionError('delay failure hidden')"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q097",
+      "type": "code",
+      "topic": "Validate, execute and project",
+      "difficulty": "applied",
+      "prompt": "Implement async checked_read(validate, execute, project, raw). All callbacks are trusted: validate(raw) is synchronous and returns a normalized argument object; execute(arguments) is async and returns an adapter value; project(value) is synchronous and validates/projects that returned data. Call them exactly once in that order and return project's ORIGINAL output. If a stage raises, propagate its original exception/cancellation, perform no later stage and do not retry. Pass original object identities between stages; the helper itself does not mutate them. Checks support top-level await. The callbacks own actual schemas and authorization; merely composing them does not prove those checks are correct.",
+      "explanation": "Keep the execution boundary after successful validation, then validate returned data before forwarding. Each stage owns one responsibility and preserves failure semantics.",
+      "starter": "async def checked_read(validate, execute, project, raw):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "async def checked_read(validate, execute, project, raw):\n    arguments=validate(raw)\n    value=await execute(arguments)\n    return project(value)\n",
+      "checks": [
+        {
+          "label": "Ordering and identity",
+          "code": "events=[];raw={};args={};value=[];final={}\ndef validate(x):assert x is raw;events.append('validate');return args\nasync def execute(x):assert x is args;events.append('execute');return value\ndef project(x):assert x is value;events.append('project');return final\nassert await checked_read(validate,execute,project,raw) is final and events==['validate','execute','project']"
+        },
+        {
+          "label": "Invalid arguments skip adapter and output stage",
+          "code": "events=[];error=ValueError('invalid')\ndef validate(x):events.append('validate');raise error\nasync def execute(x):events.append('execute');return {}\ndef project(x):events.append('project');return x\ntry:await checked_read(validate,execute,project,{})\nexcept ValueError as e:assert e is error and events==['validate']\nelse:raise AssertionError('invalid input executed')"
+        },
+        {
+          "label": "Adapter failure skips projection",
+          "code": "events=[];error=RuntimeError('adapter')\ndef validate(x):return x\nasync def execute(x):events.append('execute');raise error\ndef project(x):events.append('project');return x\ntry:await checked_read(validate,execute,project,{})\nexcept RuntimeError as e:assert e is error and events==['execute']\nelse:raise AssertionError('adapter failure hidden')"
+        },
+        {
+          "label": "Invalid output is not a success",
+          "code": "error=ValueError('result_invalid')\ndef validate(x):return x\nasync def execute(x):return {'extra':'bad'}\ndef project(x):raise error\ntry:await checked_read(validate,execute,project,{})\nexcept ValueError as e:assert e is error\nelse:raise AssertionError('invalid result forwarded')"
+        },
+        {
+          "label": "Cancellation propagates without projection",
+          "code": "import asyncio\nseen=[];error=asyncio.CancelledError()\ndef validate(x):return x\nasync def execute(x):raise error\ndef project(x):seen.append(1);return x\ntry:await checked_read(validate,execute,project,{})\nexcept asyncio.CancelledError as e:assert e is error and seen==[]\nelse:raise AssertionError('cancellation hidden')"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q098",
+      "type": "code",
+      "topic": "Cooperative single-attempt deadline",
+      "difficulty": "applied",
+      "prompt": "Implement async timed_read(operation, seconds). operation is a trusted async zero-argument READ callback that cooperates with cancellation; seconds is a trusted finite positive duration. Use asyncio.timeout(seconds) around exactly one awaited operation() and return its ORIGINAL result. Propagate timeout, ordinary exceptions and asyncio.CancelledError without retry or fabricated success. Let callback finally cleanup run under cancellation. Checks support top-level await and include a real brief cooperative timeout. This cannot preempt synchronous blocking code or prove that a write rolled back; do not use it to assert a hard external-effect guarantee.",
+      "explanation": "Use a cooperative asynchronous deadline without changing the operation's outcome into a success or an implicit retry. Cleanup and effect reconciliation remain separate responsibilities.",
+      "starter": "async def timed_read(operation, seconds):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import asyncio\nasync def timed_read(operation, seconds):\n    async with asyncio.timeout(seconds):\n        return await operation()\n",
+      "checks": [
+        {
+          "label": "Original result once",
+          "code": "calls=[];value=[]\nasync def operation():calls.append(1);return value\nassert await timed_read(operation,1) is value and calls==[1]"
+        },
+        {
+          "label": "Actual cooperative timeout and cleanup",
+          "code": "import asyncio\ncalls=[]\nasync def operation():\n    calls.append('start')\n    try:await asyncio.Event().wait()\n    finally:calls.append('cleanup')\ntry:await timed_read(operation,0.01)\nexcept TimeoutError:assert calls==['start','cleanup']\nelse:raise AssertionError('deadline not enforced')"
+        },
+        {
+          "label": "Ordinary original failure",
+          "code": "error=ValueError('bad')\nasync def operation():raise error\ntry:await timed_read(operation,1)\nexcept ValueError as e:assert e is error\nelse:raise AssertionError('failure hidden')"
+        },
+        {
+          "label": "Original cancellation",
+          "code": "import asyncio\nerror=asyncio.CancelledError()\nasync def operation():raise error\ntry:await timed_read(operation,1)\nexcept asyncio.CancelledError as e:assert e is error\nelse:raise AssertionError('cancellation hidden')"
+        },
+        {
+          "label": "Falsy result after yielding",
+          "code": "import asyncio\nasync def operation():await asyncio.sleep(0);return False\nassert await timed_read(operation,1) is False"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q099",
+      "type": "code",
+      "topic": "Complete transcript-byte budget",
+      "difficulty": "applied",
+      "prompt": "Implement append_message(messages, message, limit). messages is a list of trusted finite JSON-compatible message dicts; message is another such dict. All strings have valid Unicode. limit is a trusted nonnegative exact int. Build the candidate list including the new message; serialize it with sort_keys=True, ensure_ascii=False, separators=(',', ':'), allow_nan=False, and measure UTF-8 bytes. If length exceeds limit, raise ValueError('transcript_budget') without changing either input. Otherwise return an independent deep copy of the complete candidate list. Do not truncate or count only content fields. This bounds the stated serialized representation, not model tokens, process memory or provider cost.",
+      "explanation": "Budget the complete representation including envelope keys, correlation and Unicode bytes. Returning an independent accepted list prevents later mutations from changing retained state.",
+      "starter": "def append_message(messages, message, limit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy,json\ndef append_message(messages, message, limit):\n    candidate=[*messages,message]\n    raw=json.dumps(candidate,sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False)\n    if len(raw.encode('utf-8'))>limit:raise ValueError('transcript_budget')\n    return copy.deepcopy(candidate)\n",
+      "checks": [
+        {
+          "label": "Complete new list and exact boundary",
+          "code": "import json\nm=[{'role':'user','content':'q'}];n={'role':'tool','content':'a','call_id':'c'};raw=json.dumps(m+[n],sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode();out=append_message(m,n,len(raw));assert out==m+[n] and out is not m and raises(ValueError,append_message,m,n,len(raw)-1)"
+        },
+        {
+          "label": "Metadata and punctuation count too",
+          "code": "m=[];n={'role':'tool','content':'x','call_id':'long-id'};assert raises(ValueError,append_message,m,n,1)"
+        },
+        {
+          "label": "UTF-8 bytes, not character count",
+          "code": "import json\nn={'content':'😀'};raw=json.dumps([n],sort_keys=True,ensure_ascii=False,separators=(',',':'));assert raises(ValueError,append_message,[],n,len(raw)) and append_message([],n,len(raw.encode()))==[n]"
+        },
+        {
+          "label": "No mutation after overflow",
+          "code": "m=[{'content':'a'}];n={'content':'b'};assert raises(ValueError,append_message,m,n,0) and m==[{'content':'a'}] and n=={'content':'b'}"
+        },
+        {
+          "label": "Independent nested messages",
+          "code": "m=[{'data':{'rows':[1]}}];n={'data':{'rows':[2]}};out=append_message(m,n,1000);out[0]['data']['rows'].append(3);out[1]['data']['rows'].append(4);assert m==[{'data':{'rows':[1]}}] and n=={'data':{'rows':[2]}}"
+        }
+      ]
+    },
+    {
+      "id": "W13-Q100",
+      "type": "code",
+      "topic": "Scoped purchase-order projection",
+      "difficulty": "applied",
+      "prompt": "Implement purchase_rows(records, tenant, principal, limit). Inputs are trusted normalized records: a list of dicts with tenant, readers (a collection of principal strings), and these seven public str fields: purchase_order_id, supplier_id, commodity_id, baseline, current, currency, unit. Purchase-order IDs are unique within a tenant. tenant/principal are trusted caller strings and limit an exact int from 1 through 5. FIRST retain records whose tenant matches and whose readers contains principal. Sort those by purchase_order_id, take at most limit, and return NEW dicts containing EXACTLY the seven public fields in original values. Preserve inputs; do not expose tenant/readers or fall back to denied rows. This models query scope/projection only, not SQL execution or independent caller authentication.",
+      "explanation": "Filter trusted caller scope before ordering/truncating, then project only the public row fields. A closer, earlier or same-ID denied record is never an alternative authorized result.",
+      "starter": "def purchase_rows(records, tenant, principal, limit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def purchase_rows(records, tenant, principal, limit):\n    fields=('purchase_order_id','supplier_id','commodity_id','baseline','current','currency','unit')\n    eligible=[r for r in records if r['tenant']==tenant and principal in r['readers']]\n    return [{key:r[key] for key in fields} for r in sorted(eligible,key=lambda r:r['purchase_order_id'])[:limit]]\n",
+      "checks": [
+        {
+          "label": "Public projection from allowed scope",
+          "code": "r=dict(tenant='N',readers=['a'],purchase_order_id='P',supplier_id='S',commodity_id='C',baseline='2.00',current='2.20',currency='USD',unit='kg');out=purchase_rows([r],'N','a',1);assert out==[{k:v for k,v in r.items() if k not in ('tenant','readers')}] and out[0] is not r"
+        },
+        {
+          "label": "Colliding ID in another tenant",
+          "code": "base=dict(readers=['a'],purchase_order_id='P',supplier_id='S',commodity_id='C',baseline='2.00',current='2.20',currency='USD',unit='kg');rows=[dict(base,tenant='S',current='9.00'),dict(base,tenant='N')];assert purchase_rows(rows,'N','a',1)[0]['current']=='2.20'"
+        },
+        {
+          "label": "Filter before sorting and limit",
+          "code": "base=dict(tenant='N',supplier_id='S',commodity_id='C',baseline='2.00',current='2.20',currency='USD',unit='kg');rows=[dict(base,purchase_order_id='A',readers=['other']),dict(base,purchase_order_id='B',readers=['a'])];assert [r['purchase_order_id'] for r in purchase_rows(rows,'N','a',1)]==['B']"
+        },
+        {
+          "label": "Stable order, cap and no fallback",
+          "code": "base=dict(tenant='N',readers=['a'],supplier_id='S',commodity_id='C',baseline='2.00',current='2.20',currency='USD',unit='kg');rows=[dict(base,purchase_order_id=p) for p in ('C','A','B')];assert [r['purchase_order_id'] for r in purchase_rows(rows,'N','a',2)]==['A','B'] and purchase_rows(rows,'N','other',5)==[]"
+        },
+        {
+          "label": "Inputs and scope metadata stay intact",
+          "code": "import copy\nr=dict(tenant='N',readers=['a'],purchase_order_id='P',supplier_id='S',commodity_id='C',baseline='2.00',current='2.20',currency='USD',unit='kg');rows=[r];before=copy.deepcopy(rows);out=purchase_rows(rows,'N','a',5);out[0]['current']='0.00';assert rows==before and set(out[0])=={'purchase_order_id','supplier_id','commodity_id','baseline','current','currency','unit'}"
+        }
+      ]
+    }
+  ]
+}

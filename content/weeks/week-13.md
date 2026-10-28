@@ -3,8 +3,8 @@ layout: week
 week: 13
 phase: 4
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-26
+version: 1.0.1
+last_reviewed: 2026-10-28
 estimated_hours: 8
 permalink: /weeks/week-13/
 title: "Let the assistant propose a tool call"
@@ -39,6 +39,8 @@ The runnable lab uses a scripted planner, actual SQLite records and the existing
 | Hour 8 | Change one boundary and explain it | A short demonstration and interview notes |
 
 Use the lab as a reference you can run and modify. The eight-hour route does not require retyping the implementation.
+
+The [Week 13 assessment]({{ '/assessments/week-13/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
 ## Begin with a function that has a narrow job
 
@@ -307,7 +309,7 @@ Try three independent changes. Add a new named read query with a closed argument
 | What did the timeout prove? | The wait crossed a deadline; it did not prove rollback of an external or committed effect |
 | What remains before a real model/provider? | A provider adapter, representative selection/argument/answer evaluation, actual identity/approval and remote failure contracts |
 
-You finish with a runnable tool boundary and an honest explanation of its guarantees. Week 14 compares deterministic workflows with agent-driven control. Week 13's question bank is a separate next step.
+You finish with a runnable tool boundary and an honest explanation of its guarantees. Week 14 compares deterministic workflows with agent-driven control. Use the [Week 13 assessment]({{ '/assessments/week-13/' | relative_url }}) to check tool-calling concepts and Python syntax before presenting the build.
 
 ## Sources and further reading
 
