@@ -275,10 +275,11 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–12 assessment tests and Week 10–12 labs'
+requires Node 20+, checks the Week 7–12 assessment tests and Week 10–13 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
-application tests and Week 1 service regressions. A second required job builds
+application/Week 13 tool-calling tests and Week 1 service regressions. A second
+required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
 The candidate commit must pass before its branch is promoted to
@@ -380,3 +381,33 @@ Run the bank and local service regression checks from the repository root:
 These cover the shared scorer, reference/starter/wrong-solution checks and local
 service behavior. Required CI additionally runs the real database/container
 checks described above before promotion.
+
+## Week 13 content and tool-calling lab
+
+[Week 13 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-13/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-13/beginner/)
+follow a proposed operation through closed schemas, trusted caller scope,
+validated results, a bounded serial loop, retries and cooperative deadlines.
+The [lab](labs/week_13/README.md) implements named SQL, price variance, supplier
+lookup, dated synthetic commodity lookup and the existing guarded document search.
+
+An optional local review-record tool demonstrates exact approval, stable
+application-supplied intent keys, atomic SQLite replay/conflict protection and
+recovery after a deliberately lost write response. It has no external action
+capability. SQLite is a separate fixture/ledger; the Week 12 PostgreSQL/API
+contracts and data remain unchanged.
+
+~~~shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_13.demo init
+python -m labs.week_13.demo run --scenario read
+python -m labs.week_13.demo smoke
+python -m pytest tests/test_week13_tools.py -q
+~~~
+
+Initialize only a fresh .runtime/week13.sqlite3, then reuse it; init refuses
+existing files. The planner and approval are explicit synthetic fixtures,
+not a real-model benchmark or authenticated human approval flow. No provider,
+paid service, new dependency or public backend is introduced. CI requires the
+tool tests and actual CLI smoke alongside the existing database/container gates.
+Week 13 assessment questions are a separate next step.
