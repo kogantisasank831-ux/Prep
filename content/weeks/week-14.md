@@ -3,7 +3,7 @@ layout: week
 week: 14
 phase: 4
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-11-01
 estimated_hours: 8
 permalink: /weeks/week-14/
@@ -477,3 +477,11 @@ Be prepared to give a hybrid example. “A deterministic lifecycle with one boun
 You are done when you can point to every routing decision and say whether code, a model or a human owns it. You should be able to reproduce a valid workflow, a valid agent route, a loop termination, an unsupported-action rejection and an approval mismatch. You should also be able to explain why the supplied metrics prove the harness behavior but not real-model quality.
 
 Week 15 will express explicit state, nodes, edges, conditional routes, checkpointing and interrupts with LangGraph. The concepts in this week remain the test: a graph library can make control flow visible, but it cannot decide which transitions should be deterministic or where human authority belongs.
+
+## Sources and further reading
+
+- [Anthropic: Building effective AI agents](https://www.anthropic.com/research/building-effective-agents) distinguishes predefined workflows from model-directed agents and describes routing, orchestrator–worker and evaluator–optimizer patterns. Treat its examples as design guidance, not evidence for this lab's metrics.
+- [OpenAI Agents SDK: Running agents](https://openai.github.io/openai-agents-python/running_agents/) documents a tool-using agent loop, structured termination and finite `max_turns`. The Week 14 lab implements its own provider-neutral teaching loop and does not import the SDK.
+- [OpenAI Agents SDK: Human-in-the-loop](https://openai.github.io/openai-agents-python/human_in_the_loop/) shows pause, approve/reject and resume concepts. Its documentation also notes that serialized run state does not authenticate itself; a real application must protect identity, integrity and ownership separately.
+- [Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/research/demystifying-evals-for-ai-agents) defines tasks, trials, graders, transcripts and outcomes for multi-turn evaluations. Use those distinctions when replacing the scripted control set with a labelled real-model evaluation.
+- [LangGraph: Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api) explains state, nodes and edges for explicit stateful workflows. Week 15 will apply that framework; Week 14 deliberately keeps the controller in ordinary Python so the design remains visible.

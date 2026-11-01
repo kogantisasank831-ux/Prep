@@ -11,7 +11,7 @@ Published artifacts:
 - `labs/week_14/`
 - `tests/test_week14_workflows.py`
 
-Version 1.0.0 is approved for the static learning site. The project owner asked
+Version 1.0.1 is approved for the static learning site. The project owner asked
 to start Week 14 content after approving and publishing Week 13. This pass follows
 the established one-week content/build/test/publish workflow. No separate claim
 is made that the owner performed a line-by-line editorial review before release.
@@ -70,6 +70,12 @@ No unresolved actionable finding remains within the declared local teaching
 scope. Real provider evaluation, authenticated approval, persistent state,
 external effects and production operating controls remain future design work.
 
+- Patch 1.0.1 adds verified primary-source reading sections to both lesson depths.
+  The links cover the workflow/agent distinction, the named orchestration patterns,
+  bounded agent loops, human-in-the-loop execution, agent evaluation terminology
+  and the state/node/edge model that bridges into Week 15. No learning outcome,
+  executable contract or comparison value changed.
+
 ## Executed local checks
 
 Local environment: Python 3.12.14 with the repository virtual environment.
@@ -87,6 +93,10 @@ Local environment: Python 3.12.14 with the repository virtual environment.
   routes, and 0% versus 50% failure in the selected four-run control set.
 - Front matter, balanced code fences, UTF-8 reads, heading presence, absent Week
   14 assessment links, JavaScript syntax and whitespace checks pass.
+- The five primary-source URLs added in 1.0.1 each resolved with HTTP 200 on
+  2026-11-01. Their linked pages support the adjacent pattern, loop, approval,
+  evaluation and graph concepts; none is used to justify the lab's synthetic
+  metrics.
 
 The local runtime is Python 3.12 rather than the declared CI Python 3.13.12.
 Exact-candidate CI on Python 3.13.12, the existing real PostgreSQL/container job,

@@ -3,7 +3,7 @@ layout: week
 week: 14
 phase: 4
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-11-01
 estimated_hours: 8
 permalink: /weeks/week-14/beginner/
@@ -322,3 +322,12 @@ python -m pytest tests/test_week14_workflows.py -q
 10. Give one task where you would refuse to use an agent and explain why.
 
 You are ready when you can follow both traces, explain every rejected proposal and choose the simpler controller for a new task. Week 15 will place these same ideas into a graph with explicit nodes, edges, conditional routing, persistence and interrupts.
+
+## Read alongside the lab
+
+- [Anthropic: Building effective AI agents](https://www.anthropic.com/research/building-effective-agents) introduces the workflow/agent distinction and the routing, orchestrator–worker and evaluator–optimizer patterns used in this lesson.
+- [OpenAI Agents SDK: Running agents](https://openai.github.io/openai-agents-python/running_agents/) provides a concrete example of a tool-using loop with a maximum-turn limit.
+- [OpenAI Agents SDK: Human-in-the-loop](https://openai.github.io/openai-agents-python/human_in_the_loop/) explains how an agent run can pause for approval or rejection and later resume.
+- [LangGraph: Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api) introduces state, nodes and edges, which are the focus of Week 15.
+
+These are framework and pattern references. The Week 14 code remains a local scripted comparison, so its assumed cost, latency and failure values must not be attributed to any of these sources.
