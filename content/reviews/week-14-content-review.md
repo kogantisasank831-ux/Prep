@@ -99,6 +99,16 @@ Local environment: Python 3.12.14 with the repository virtual environment.
   metrics.
 
 The local runtime is Python 3.12 rather than the declared CI Python 3.13.12.
-Exact-candidate CI on Python 3.13.12, the existing real PostgreSQL/container job,
-GitHub Pages build and live-route checks remain release gates and must be recorded
-after publication. GitHub Pages hosts only the lessons; Python runs locally.
+Publication verification completed on 2026-11-01 for implementation commit
+`e19103db0945f048f54cf9af75c145a9855ff959`:
+
+- Branch CI run `41299674687` passed the Python 3.13 checks and the real
+  PostgreSQL/pgvector container job before promotion.
+- Main CI run `41299846788` passed both jobs after promotion, including lint,
+  formatting, strict typing, 1,315 regressions, both CLI smokes, permissions,
+  revocation and named-volume restart checks.
+- GitHub Pages run `41299846532` built and deployed successfully.
+- Both live routes rendered the expected titles and lesson structure:
+  `/Prep/weeks/week-14/` and `/Prep/weeks/week-14/beginner/`.
+
+GitHub Pages hosts only the lessons; Python runs locally.
