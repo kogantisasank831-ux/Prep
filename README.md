@@ -426,3 +426,32 @@ Run the bank and local tool regression checks from the repository root:
 The shared browser worker and scoring rules are unchanged. The assessment runs
 on GitHub Pages without a hosted Python service or database. Required CI keeps
 the actual SQLite CLI smoke and PostgreSQL/container gates described above.
+
+## Week 14 content and controller-comparison lab
+
+The [Week 14 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-14/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-14/beginner/)
+compare a deterministic state-machine workflow with a bounded planner–executor
+agent over the same synthetic procurement investigation. Both routes share the
+same typed facts, five tools, exact variance rule, deterministic report and
+report-bound human approval.
+
+The [lab](labs/week_14/README.md) uses four fixed planner scripts to demonstrate
+a valid route, a valid detour, repeated-action termination and rejection of an
+unsupported action. Model token prices and latency are explicit assumptions;
+the comparison is a reproducible control-flow test, not a provider or real-model
+benchmark. No API key, model download, network, database, paid service, external
+action or new dependency is introduced.
+
+~~~shell
+python -m labs.week_14.demo workflow --case price-spike
+python -m labs.week_14.demo agent --case price-spike --script happy
+python -m labs.week_14.demo compare
+python -m labs.week_14.demo smoke
+python -m pytest tests/test_week14_workflows.py -q
+~~~
+
+Both successful routes stop at `awaiting_approval`; the optional CLI approval is
+a synthetic host-side reviewer fixture bound to the exact report digest. The lab
+cannot approve a purchase order, contact a supplier, make a payment or perform an
+external write. The Week 14 assessment will be added separately.
