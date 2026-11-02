@@ -275,10 +275,10 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–14 assessment tests and Week 10–14 labs'
+requires Node 20+, checks the Week 7–14 assessment tests and Week 10–15 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
-application/Week 13 tool-calling/Week 14 controller tests and Week 1 service
+application/Week 13 tool-calling/Week 14 controller/Week 15 graph tests and Week 1 service
 regressions. A second
 required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
@@ -471,3 +471,35 @@ Run the bank and controller regression checks from the repository root:
 
 The shared browser worker and scoring rules are unchanged. Required CI keeps the
 Week 14 CLI smoke and the existing real PostgreSQL/container gates.
+
+## Week 15 content and checkpointed LangGraph lab
+
+The [Week 15 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-15/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-15/beginner/)
+turn the procurement investigation into a real LangGraph `StateGraph`. The graph
+has explicit query classification, local document retrieval, parameterized
+SQLite analysis, exact price calculation, recommendation, fail-closed report
+validation and a typed human-approval interrupt.
+
+The [lab](labs/week_15/README.md) pins LangGraph 1.2.19 and uses its actual state,
+reducer, conditional-edge, checkpoint, interrupt and resume APIs. `evidence` and
+`trace` are additive reducer channels. Three fictional cases cover
+`review_required`, `no_review` and `needs_human`; every supported result still
+stops at `awaiting_approval`.
+
+~~~shell
+python -m pip install -r requirements-dev.txt -r labs/week_15/requirements.txt
+python -m labs.week_15.demo run --case price-spike --thread week15-run
+python -m labs.week_15.demo resume-demo --case price-spike --decision approve
+python -m labs.week_15.demo smoke
+python -m pytest tests/test_week15_langgraph.py -q
+~~~
+
+`InMemorySaver` keeps checkpoints only inside one Python process, so
+`resume-demo` performs pause and resume together. A `thread_id` selects state but
+does not authenticate a user. The report digest detects a changed snapshot but is
+not a signature. All SQL and document facts are local synthetic fixtures; there
+is no model, provider call, API key, external write or hosted Python service.
+Required CI adds the pinned dependency, strict lint/format/type checks, the graph
+regressions and Week 15 CLI smoke while preserving the existing real
+PostgreSQL/pgvector container gate.
