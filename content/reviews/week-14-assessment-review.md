@@ -108,6 +108,21 @@ browser results are not authenticated exam records. Runtime unavailability
 leaves coding marks pending. Save/restore, print, result download and scoring
 behavior use the unchanged shared engine.
 
-Exact-candidate Python 3.13 CI, the existing real PostgreSQL/pgvector container
-job, GitHub Pages deployment and live assessment route remain publication gates
-and will be recorded after release.
+## Publication verification
+
+Publication verification completed on 2026-11-02 for implementation commit
+`cd00c913d2d17e6344e984135b90bb2b41edf2a8`:
+
+- Candidate CI run `41455476959` passed the Python 3.13 lint, format, strict
+  typing, 1,379-test regression and both CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `41455931354` passed both jobs after fast-forward promotion.
+- GitHub Pages run `41455930166` built and deployed successfully.
+- The live assessment loaded bank version 1.0.0 with the status “100 questions
+  ready,” created a 10-question paper with exactly two questions of every type,
+  exposed two Python-run controls and one scoring submission control, and logged
+  no page-origin console error.
+
+GitHub Pages hosts the static assessment and downloads the pinned browser Python
+runtime only when a learner runs a coding solution. No public Python service or
+database was deployed.
