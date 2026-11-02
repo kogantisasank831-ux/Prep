@@ -1,0 +1,3204 @@
+{
+  "schema_version": 1,
+  "week": 14,
+  "version": "1.0.0",
+  "title": "Workflows versus agents",
+  "source_lesson": "/weeks/week-14/",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "id": "W14-Q001",
+      "type": "single",
+      "topic": "Controller choice",
+      "difficulty": "foundation",
+      "prompt": "A procurement investigation always follows the same five validated operations and deterministic decision rule. Which controller is the strongest default?",
+      "explanation": "When the route and branches are known, application-owned transitions are cheaper, easier to test and easier to audit than rediscovering the route with a model.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A deterministic workflow with explicit transitions"
+        },
+        {
+          "id": "o2",
+          "text": "An unbounded autonomous agent"
+        },
+        {
+          "id": "o3",
+          "text": "A model that rewrites the decision rule each run"
+        },
+        {
+          "id": "o4",
+          "text": "A worker swarm with model-selected fan-out"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q002",
+      "type": "single",
+      "topic": "Execution authority",
+      "difficulty": "foundation",
+      "prompt": "In the Week 14 planner–executor design, what makes a planner proposal eligible to execute?",
+      "explanation": "The proposal is untrusted data. The application owns the action allowlist, dependency checks, duplicate policy and actual invocation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The planner emits the action name twice"
+        },
+        {
+          "id": "o2",
+          "text": "The proposal appears inside valid-looking prose"
+        },
+        {
+          "id": "o3",
+          "text": "The model reports high confidence"
+        },
+        {
+          "id": "o4",
+          "text": "Application code parses it, checks policy and prerequisites, then invokes the shared tool"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q003",
+      "type": "single",
+      "topic": "Business state",
+      "difficulty": "foundation",
+      "prompt": "What is the reliable basis for InvestigationState.ready_for_report()?",
+      "explanation": "Readiness is derived from observed business facts rather than model prose, call count or exhaustion of a control-flow budget.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "At least five trace strings exist"
+        },
+        {
+          "id": "o2",
+          "text": "The maximum step budget has been consumed"
+        },
+        {
+          "id": "o3",
+          "text": "All five required typed facts are present"
+        },
+        {
+          "id": "o4",
+          "text": "The planner says the report is ready"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q004",
+      "type": "single",
+      "topic": "Premature finish",
+      "difficulty": "applied",
+      "prompt": "An agent proposes finish after only the purchase order is loaded. What should the executor do?",
+      "explanation": "Finish is a terminal proposal, not proof of completeness. The executor checks report readiness before accepting it.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Execute finish as an external write"
+        },
+        {
+          "id": "o2",
+          "text": "Reject finish as incomplete evidence and continue within the remaining step budget"
+        },
+        {
+          "id": "o3",
+          "text": "Build a report from the missing fields"
+        },
+        {
+          "id": "o4",
+          "text": "Treat finish as automatic human approval"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q005",
+      "type": "single",
+      "topic": "Duplicate action",
+      "difficulty": "applied",
+      "prompt": "After load_order succeeds, the planner proposes load_order again. What happens in the supplied agent loop?",
+      "explanation": "Completed actions are tracked by the application. Repetition consumes a planner step but does not repeat the completed tool call.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The duplicate is rejected without a second tool execution"
+        },
+        {
+          "id": "o2",
+          "text": "The order tool executes and overwrites state"
+        },
+        {
+          "id": "o3",
+          "text": "The report is automatically approved"
+        },
+        {
+          "id": "o4",
+          "text": "The duplicate resets the model-call counter"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q006",
+      "type": "single",
+      "topic": "Unsupported action",
+      "difficulty": "applied",
+      "prompt": "The planner proposes send_supplier_email, which is absent from the Action enum. What is the correct outcome?",
+      "explanation": "A generated string cannot expand the executor's capability set. Unsupported actions remain rejected proposals with no tool authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Run it because it is syntactically valid text"
+        },
+        {
+          "id": "o2",
+          "text": "Add it to the enum at runtime"
+        },
+        {
+          "id": "o3",
+          "text": "Interpret it as finish"
+        },
+        {
+          "id": "o4",
+          "text": "Record unsupported_action and never pass it to FixtureTools"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q007",
+      "type": "single",
+      "topic": "Termination",
+      "difficulty": "foundation",
+      "prompt": "Why is max_steps enforced by the run_agent loop instead of written only in a prompt?",
+      "explanation": "A prompt is not a resource control. The application loop must enforce the finite proposal budget on every path.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It prevents every tool error"
+        },
+        {
+          "id": "o2",
+          "text": "It proves the planner is a real language model"
+        },
+        {
+          "id": "o3",
+          "text": "Code enforcement gives a deterministic upper bound even when the planner ignores instructions"
+        },
+        {
+          "id": "o4",
+          "text": "It guarantees every task succeeds"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q008",
+      "type": "single",
+      "topic": "Fair comparison",
+      "difficulty": "applied",
+      "prompt": "Why do the workflow and agent share tools, facts, report logic and approval boundary?",
+      "explanation": "Holding business inputs and decisions constant makes controller behavior comparable and avoids attributing data or rule differences to orchestration.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "So one route may use different business rules"
+        },
+        {
+          "id": "o2",
+          "text": "So control flow is the main changed variable"
+        },
+        {
+          "id": "o3",
+          "text": "So the agent can bypass prerequisites"
+        },
+        {
+          "id": "o4",
+          "text": "So model latency becomes wall-clock latency"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q009",
+      "type": "single",
+      "topic": "Missing evidence",
+      "difficulty": "foundation",
+      "prompt": "The contract lookup completes but reports that the applicable threshold was not found. Which recommendation follows?",
+      "explanation": "Missing contract evidence is not a safe negative result. The deterministic report routes the uncertainty to a human.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "needs_human"
+        },
+        {
+          "id": "o2",
+          "text": "no_review"
+        },
+        {
+          "id": "o3",
+          "text": "approved"
+        },
+        {
+          "id": "o4",
+          "text": "review_required because the threshold is assumed to be zero"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q010",
+      "type": "single",
+      "topic": "Supplier status",
+      "difficulty": "applied",
+      "prompt": "All facts exist, contract terms are found and variance is within threshold, but the supplier status is inactive. Which recommendation has priority?",
+      "explanation": "An inactive supplier is a deterministic review condition after evidence completeness is established, independent of the variance being within threshold.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "no_review"
+        },
+        {
+          "id": "o2",
+          "text": "needs_human"
+        },
+        {
+          "id": "o3",
+          "text": "approved"
+        },
+        {
+          "id": "o4",
+          "text": "review_required"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q011",
+      "type": "single",
+      "topic": "Threshold rule",
+      "difficulty": "foundation",
+      "prompt": "A comparable price variance is 10.00% and the retrieved contract threshold is 5.00%. What does the shared report rule return?",
+      "explanation": "A variance strictly above the found threshold produces review_required; the same rule is used by both controllers.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "needs_human"
+        },
+        {
+          "id": "o2",
+          "text": "approved"
+        },
+        {
+          "id": "o3",
+          "text": "review_required"
+        },
+        {
+          "id": "o4",
+          "text": "no_review"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q012",
+      "type": "single",
+      "topic": "Boundary rule",
+      "difficulty": "applied",
+      "prompt": "A comparable variance is exactly 5.00% and the contract says changes above 5.00% require review. What is the deterministic recommendation?",
+      "explanation": "The implemented condition is strictly greater than the threshold. Equality remains within the declared boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "failed"
+        },
+        {
+          "id": "o2",
+          "text": "no_review"
+        },
+        {
+          "id": "o3",
+          "text": "review_required"
+        },
+        {
+          "id": "o4",
+          "text": "needs_human"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q013",
+      "type": "single",
+      "topic": "Workflow metrics",
+      "difficulty": "foundation",
+      "prompt": "How many model calls does the supplied deterministic workflow make?",
+      "explanation": "The workflow route, decision rule and report formatter are ordinary code, so the local workflow requires no planner call.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Zero"
+        },
+        {
+          "id": "o2",
+          "text": "One for each tool"
+        },
+        {
+          "id": "o3",
+          "text": "One for report formatting"
+        },
+        {
+          "id": "o4",
+          "text": "One for human approval"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q014",
+      "type": "single",
+      "topic": "Agent metrics",
+      "difficulty": "applied",
+      "prompt": "Why does the happy agent record six model calls while executing five tools?",
+      "explanation": "Each scripted proposal counts as one assumed model call. Five tool proposals are followed by a separate terminal finish proposal.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Approval is counted as a model tool"
+        },
+        {
+          "id": "o2",
+          "text": "The first tool is always retried"
+        },
+        {
+          "id": "o3",
+          "text": "The report digest makes a model call"
+        },
+        {
+          "id": "o4",
+          "text": "The sixth planner call proposes finish"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q015",
+      "type": "single",
+      "topic": "Modeled measurements",
+      "difficulty": "foundation",
+      "prompt": "What does modeled_latency_ms represent in the Week 14 lab?",
+      "explanation": "The planner and tools add fixed illustrative latency values. No wall-clock provider measurement is performed.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A production service-level objective"
+        },
+        {
+          "id": "o2",
+          "text": "The learner's CPU benchmark"
+        },
+        {
+          "id": "o3",
+          "text": "A configurable teaching assumption accumulated by the fixtures"
+        },
+        {
+          "id": "o4",
+          "text": "Measured network latency from a provider"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q016",
+      "type": "single",
+      "topic": "Failure-rate scope",
+      "difficulty": "applied",
+      "prompt": "The four selected planner scripts yield a 50.0% agent failure rate. What may you conclude?",
+      "explanation": "The denominator was deliberately selected for a control-flow demonstration. It is not a representative model or production benchmark.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Workflows are universally twice as reliable"
+        },
+        {
+          "id": "o2",
+          "text": "Two of those four controlled scripts fail under the implemented rules"
+        },
+        {
+          "id": "o3",
+          "text": "All agents fail half of production tasks"
+        },
+        {
+          "id": "o4",
+          "text": "The planner model has 50% accuracy"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q017",
+      "type": "single",
+      "topic": "Valid detour",
+      "difficulty": "applied",
+      "prompt": "Why can the detour script search contract terms before looking up the supplier?",
+      "explanation": "A route may differ from the workflow while still respecting the actual dependency graph. The order supplies the purchase-order identifier needed by contract search.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Contract search needs the loaded order but does not depend on the supplier fact"
+        },
+        {
+          "id": "o2",
+          "text": "The executor ignores all dependencies"
+        },
+        {
+          "id": "o3",
+          "text": "The planner becomes trusted after one success"
+        },
+        {
+          "id": "o4",
+          "text": "Contract search is the same operation as supplier lookup"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q018",
+      "type": "single",
+      "topic": "Report binding",
+      "difficulty": "foundation",
+      "prompt": "What does the SHA-256 report digest bind the human decision to?",
+      "explanation": "Changing a bound field changes the digest, so an old decision cannot be reused for a modified report snapshot.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every future report for the supplier"
+        },
+        {
+          "id": "o2",
+          "text": "The reviewer's login session"
+        },
+        {
+          "id": "o3",
+          "text": "Permission to perform any procurement write"
+        },
+        {
+          "id": "o4",
+          "text": "The exact canonical report snapshot that was reviewed"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q019",
+      "type": "single",
+      "topic": "Approval scope",
+      "difficulty": "foundation",
+      "prompt": "What does an approved Week 14 report authorize?",
+      "explanation": "The lab has no external action capability. Report approval must not be confused with procurement, communication or payment authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Approving the purchase order"
+        },
+        {
+          "id": "o2",
+          "text": "Making a payment"
+        },
+        {
+          "id": "o3",
+          "text": "Acceptance of that local report only"
+        },
+        {
+          "id": "o4",
+          "text": "Sending a supplier email"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q020",
+      "type": "single",
+      "topic": "Evaluator–optimizer",
+      "difficulty": "applied",
+      "prompt": "Which report check belongs in deterministic code before any model evaluator?",
+      "explanation": "Schema, allowlist and numeric invariants are exact rules. A model evaluator is reserved for genuinely semantic criteria and remains bounded.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether the narrative style is elegant"
+        },
+        {
+          "id": "o2",
+          "text": "Required fields and permitted recommendation values"
+        },
+        {
+          "id": "o3",
+          "text": "Whether the prose is tactful"
+        },
+        {
+          "id": "o4",
+          "text": "Whether an explanation is persuasive"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q021",
+      "type": "single",
+      "topic": "Orchestrator–worker",
+      "difficulty": "foundation",
+      "prompt": "When does an orchestrator–worker pattern earn its complexity?",
+      "explanation": "Dynamic, input-dependent decomposition is the main reason to introduce a model-directed orchestrator rather than fixed branches.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When the number or type of subtasks depends on the request"
+        },
+        {
+          "id": "o2",
+          "text": "Whenever exactly five known steps always run"
+        },
+        {
+          "id": "o3",
+          "text": "Whenever one arithmetic rule exists"
+        },
+        {
+          "id": "o4",
+          "text": "Whenever a tuple could hold the route"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q022",
+      "type": "single",
+      "topic": "Known fan-out",
+      "difficulty": "applied",
+      "prompt": "Supplier, reference-price and contract reads are always known after loading an order. What is the simplest way to parallelize them?",
+      "explanation": "Known branches do not require dynamic orchestration. Ordinary bounded concurrency can preserve the explicit dependency graph.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Ask a model to rediscover the same branches every run"
+        },
+        {
+          "id": "o2",
+          "text": "Remove correlation identifiers"
+        },
+        {
+          "id": "o3",
+          "text": "Allow unbounded worker creation"
+        },
+        {
+          "id": "o4",
+          "text": "Express fixed concurrency inside a deterministic workflow"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q023",
+      "type": "single",
+      "topic": "Routing uncertainty",
+      "difficulty": "foundation",
+      "prompt": "Where is model-based routing most defensible?",
+      "explanation": "Model routing is useful when semantic, input-dependent uncertainty remains after deterministic rules and constraints are identified.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A five-step route with no branches"
+        },
+        {
+          "id": "o2",
+          "text": "A strict approval digest comparison"
+        },
+        {
+          "id": "o3",
+          "text": "A request whose useful sources and next step vary with observed evidence"
+        },
+        {
+          "id": "o4",
+          "text": "A fixed tax formula"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q024",
+      "type": "single",
+      "topic": "Lifecycle state",
+      "difficulty": "foundation",
+      "prompt": "What is the terminal state of a successful investigation before a person decides?",
+      "explanation": "Both controllers stop at awaiting_approval. Investigation success and human acceptance remain separate transitions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "paid"
+        },
+        {
+          "id": "o2",
+          "text": "awaiting_approval"
+        },
+        {
+          "id": "o3",
+          "text": "approved"
+        },
+        {
+          "id": "o4",
+          "text": "executed"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q025",
+      "type": "single",
+      "topic": "Traceability",
+      "difficulty": "applied",
+      "prompt": "What extra evidence does the agent trace retain beyond the final recommendation?",
+      "explanation": "The trace explains the controller path without claiming access to private reasoning or production identity and timing systems.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Ordered planner proposals, executor completions and rejection reasons"
+        },
+        {
+          "id": "o2",
+          "text": "Hidden model reasoning"
+        },
+        {
+          "id": "o3",
+          "text": "Authenticated reviewer identity"
+        },
+        {
+          "id": "o4",
+          "text": "A real provider latency trace"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q026",
+      "type": "single",
+      "topic": "Human-in-the-loop",
+      "difficulty": "foundation",
+      "prompt": "Why should human approval be represented as an explicit state transition?",
+      "explanation": "An explicit state makes the reviewed artifact, decision and subsequent transition inspectable instead of burying authority in prose.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "So a prompt sentence can grant permission"
+        },
+        {
+          "id": "o2",
+          "text": "So every failure is renamed approved"
+        },
+        {
+          "id": "o3",
+          "text": "So the planner can impersonate a reviewer"
+        },
+        {
+          "id": "o4",
+          "text": "So the system can pause with a specific report and apply only a later matching decision"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q027",
+      "type": "single",
+      "topic": "Scripted planner",
+      "difficulty": "foundation",
+      "prompt": "What does ScriptedPlanner establish?",
+      "explanation": "The script is a deterministic stand-in that exercises the planner boundary; it cannot validate a provider or model.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Current provider pricing"
+        },
+        {
+          "id": "o2",
+          "text": "Production reliability under load"
+        },
+        {
+          "id": "o3",
+          "text": "Reproducible orchestration behavior for fixed proposal sequences"
+        },
+        {
+          "id": "o4",
+          "text": "Real-model routing quality"
+        }
+      ],
+      "correct": [
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q028",
+      "type": "single",
+      "topic": "State-machine form",
+      "difficulty": "foundation",
+      "prompt": "Does a deterministic state machine require a graph framework?",
+      "explanation": "A graph library can improve representation and persistence, but ordinary code can still implement a valid explicit state machine.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No; because state machines have no state"
+        },
+        {
+          "id": "o2",
+          "text": "No; explicit states and transition code are sufficient"
+        },
+        {
+          "id": "o3",
+          "text": "Yes; only graph libraries can enforce transitions"
+        },
+        {
+          "id": "o4",
+          "text": "Yes; every state must be an LLM message"
+        }
+      ],
+      "correct": [
+        "o2"
+      ]
+    },
+    {
+      "id": "W14-Q029",
+      "type": "single",
+      "topic": "When not to use an agent",
+      "difficulty": "applied",
+      "prompt": "Which interview answer best demonstrates engineering judgement?",
+      "explanation": "The controller should be justified by uncertainty and measured task outcomes, not by novelty or the mere presence of tools.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep stable sequences and deterministic rules in a workflow unless agent routing measurably improves the required outcome"
+        },
+        {
+          "id": "o2",
+          "text": "Always use an agent for modern applications"
+        },
+        {
+          "id": "o3",
+          "text": "Use an agent whenever a tool exists"
+        },
+        {
+          "id": "o4",
+          "text": "Avoid tests because agent routes vary"
+        }
+      ],
+      "correct": [
+        "o1"
+      ]
+    },
+    {
+      "id": "W14-Q030",
+      "type": "single",
+      "topic": "Hybrid control",
+      "difficulty": "applied",
+      "prompt": "Which design is a sensible hybrid?",
+      "explanation": "Hybrid designs place model judgement only at uncertain decisions while retaining application-owned lifecycle, authority and budgets.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A model controls permissions and payment"
+        },
+        {
+          "id": "o2",
+          "text": "Every deterministic check is converted to prose"
+        },
+        {
+          "id": "o3",
+          "text": "An unbounded loop chooses and executes arbitrary code"
+        },
+        {
+          "id": "o4",
+          "text": "A deterministic lifecycle with one bounded model-routing node for an uncertain classification"
+        }
+      ],
+      "correct": [
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q031",
+      "type": "multiple",
+      "topic": "Application ownership",
+      "difficulty": "foundation",
+      "prompt": "Which controls remain owned by application code in the bounded agent?",
+      "explanation": "Routing proposals do not transfer authority. The host application retains capabilities, state invariants, resource bounds and consequential transitions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The action allowlist"
+        },
+        {
+          "id": "o2",
+          "text": "Prerequisite and duplicate checks"
+        },
+        {
+          "id": "o3",
+          "text": "The maximum proposal budget"
+        },
+        {
+          "id": "o4",
+          "text": "The human-approval transition"
+        },
+        {
+          "id": "o5",
+          "text": "The planner's prose grants new permissions"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q032",
+      "type": "multiple",
+      "topic": "Controlled comparison",
+      "difficulty": "applied",
+      "prompt": "Which elements must remain equal when comparing workflow and agent control flow in this lab?",
+      "explanation": "The control mechanism is intentionally different; the business task, tools, rules and success definition are held constant.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Tool implementations"
+        },
+        {
+          "id": "o2",
+          "text": "Recommendation rule"
+        },
+        {
+          "id": "o3",
+          "text": "Success criteria and approval boundary"
+        },
+        {
+          "id": "o4",
+          "text": "The controller's route-selection mechanism"
+        },
+        {
+          "id": "o5",
+          "text": "Synthetic case facts"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q033",
+      "type": "multiple",
+      "topic": "Bounded loops",
+      "difficulty": "foundation",
+      "prompt": "Which finite limits are relevant to a real agent loop?",
+      "explanation": "Multiple resource dimensions need code-enforced limits. A natural-language instruction is not a reliable budget.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Token or spending budget"
+        },
+        {
+          "id": "o2",
+          "text": "Result and trace size"
+        },
+        {
+          "id": "o3",
+          "text": "A prompt-only request not to loop"
+        },
+        {
+          "id": "o4",
+          "text": "Maximum planner steps"
+        },
+        {
+          "id": "o5",
+          "text": "Tool retries and timeouts"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q034",
+      "type": "multiple",
+      "topic": "Report readiness",
+      "difficulty": "foundation",
+      "prompt": "Which facts are required before the supplied investigation can build a report?",
+      "explanation": "The report rule consumes five typed observations. Missing terms are represented as a fact rather than silently skipped.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Calculated variance"
+        },
+        {
+          "id": "o2",
+          "text": "Contract terms, including an explicit missing result"
+        },
+        {
+          "id": "o3",
+          "text": "A model confidence score"
+        },
+        {
+          "id": "o4",
+          "text": "Purchase order"
+        },
+        {
+          "id": "o5",
+          "text": "Supplier"
+        },
+        {
+          "id": "o6",
+          "text": "Dated reference price"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5",
+        "o6"
+      ]
+    },
+    {
+      "id": "W14-Q035",
+      "type": "multiple",
+      "topic": "Deterministic evaluation gates",
+      "difficulty": "applied",
+      "prompt": "Which evaluator checks should be deterministic?",
+      "explanation": "Exact schemas, enums and numeric invariants should not be delegated to a probabilistic evaluator.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The prose is sufficiently persuasive"
+        },
+        {
+          "id": "o2",
+          "text": "Required fields are present"
+        },
+        {
+          "id": "o3",
+          "text": "Recommendation is from the allowed enum"
+        },
+        {
+          "id": "o4",
+          "text": "Numeric values satisfy exact bounds"
+        },
+        {
+          "id": "o5",
+          "text": "Evidence identifiers follow the declared schema"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q036",
+      "type": "multiple",
+      "topic": "Semantic evaluation",
+      "difficulty": "applied",
+      "prompt": "Which criteria may justify a bounded model evaluator after hard gates pass?",
+      "explanation": "Semantic support, conflict handling and clarity may need judgement; schema presence and fixed arithmetic remain code checks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether the summary faithfully explains the supplied evidence"
+        },
+        {
+          "id": "o2",
+          "text": "Whether conflicting evidence is acknowledged"
+        },
+        {
+          "id": "o3",
+          "text": "Whether the explanation is clear for the intended reviewer"
+        },
+        {
+          "id": "o4",
+          "text": "Whether a required field exists"
+        },
+        {
+          "id": "o5",
+          "text": "Whether a percentage exceeds a fixed threshold"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ]
+    },
+    {
+      "id": "W14-Q037",
+      "type": "multiple",
+      "topic": "Worker orchestration",
+      "difficulty": "applied",
+      "prompt": "What must a bounded orchestrator define?",
+      "explanation": "Dynamic decomposition still needs deterministic authority, limits, result ownership and conflict handling.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Correlation and provenance for every result"
+        },
+        {
+          "id": "o2",
+          "text": "Cancellation and timeout behavior"
+        },
+        {
+          "id": "o3",
+          "text": "Merge and conflict rules"
+        },
+        {
+          "id": "o4",
+          "text": "Permission for workers to expand their own authority"
+        },
+        {
+          "id": "o5",
+          "text": "A worker allowlist and fan-out limit"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q038",
+      "type": "multiple",
+      "topic": "Approval validation",
+      "difficulty": "applied",
+      "prompt": "Which checks are necessary before applying a report decision in the local contract?",
+      "explanation": "The host validates lifecycle, artifact identity, reviewer shape and decision value independently of planner output.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The report exists"
+        },
+        {
+          "id": "o2",
+          "text": "The digest is valid lowercase hexadecimal and matches the current report"
+        },
+        {
+          "id": "o3",
+          "text": "The reviewer is a non-empty bounded string"
+        },
+        {
+          "id": "o4",
+          "text": "The decision is an allowed enum value"
+        },
+        {
+          "id": "o5",
+          "text": "The planner repeats the approval in its next message"
+        },
+        {
+          "id": "o6",
+          "text": "The run is awaiting approval"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o6"
+      ]
+    },
+    {
+      "id": "W14-Q039",
+      "type": "multiple",
+      "topic": "Unsupported proposals",
+      "difficulty": "foundation",
+      "prompt": "What is true when send_supplier_email is proposed?",
+      "explanation": "The proposal is observable but remains outside the fixed capability set and never reaches a tool implementation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It produces no FixtureTools call"
+        },
+        {
+          "id": "o2",
+          "text": "It sends a message because the string looks actionable"
+        },
+        {
+          "id": "o3",
+          "text": "It counts as a planner proposal"
+        },
+        {
+          "id": "o4",
+          "text": "It is recorded in the trace"
+        },
+        {
+          "id": "o5",
+          "text": "It is rejected by the executor"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q040",
+      "type": "multiple",
+      "topic": "Duplicate proposals",
+      "difficulty": "applied",
+      "prompt": "What is true when load_order is repeatedly proposed after one success?",
+      "explanation": "Duplicate rejection prevents repeated execution but still consumes the bounded planner budget and remains visible in the trace.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every repetition overwrites the stored order"
+        },
+        {
+          "id": "o2",
+          "text": "Each repetition consumes a proposal step"
+        },
+        {
+          "id": "o3",
+          "text": "Only the first accepted load increments the tool-call count"
+        },
+        {
+          "id": "o4",
+          "text": "duplicate_action becomes the latest error"
+        },
+        {
+          "id": "o5",
+          "text": "The finite budget eventually terminates the loop"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q041",
+      "type": "multiple",
+      "topic": "Recommendation rules",
+      "difficulty": "applied",
+      "prompt": "Which statements match the shared report decision order?",
+      "explanation": "The deterministic ordering distinguishes missing evidence, supplier status, strict threshold exceedance and the remaining within-threshold case.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Missing terms produce needs_human"
+        },
+        {
+          "id": "o2",
+          "text": "An inactive supplier produces review_required when terms exist"
+        },
+        {
+          "id": "o3",
+          "text": "Variance strictly above the threshold produces review_required"
+        },
+        {
+          "id": "o4",
+          "text": "Otherwise the result is no_review"
+        },
+        {
+          "id": "o5",
+          "text": "Equality with the threshold always produces review_required"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ]
+    },
+    {
+      "id": "W14-Q042",
+      "type": "multiple",
+      "topic": "Metric interpretation",
+      "difficulty": "applied",
+      "prompt": "Which statements describe the lab metrics honestly?",
+      "explanation": "The metrics make the control harness reproducible without converting fixtures into claims about a provider or deployed service.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Token prices are configurable assumptions"
+        },
+        {
+          "id": "o2",
+          "text": "Modeled latency is not wall-clock latency"
+        },
+        {
+          "id": "o3",
+          "text": "Tool-call counts reflect the local FixtureTools executor"
+        },
+        {
+          "id": "o4",
+          "text": "The values establish a production service-level objective"
+        },
+        {
+          "id": "o5",
+          "text": "Model-call counts come from scripted proposals"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q043",
+      "type": "multiple",
+      "topic": "Agent evaluation",
+      "difficulty": "applied",
+      "prompt": "What is needed before claiming a real agent improves on the workflow?",
+      "explanation": "A real comparison needs representative tasks, repeated trials, governed graders, versioned inputs and measurements under the same success contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Representative labelled tasks"
+        },
+        {
+          "id": "o2",
+          "text": "Repeated trials for stochastic behavior"
+        },
+        {
+          "id": "o3",
+          "text": "Stable success and failure graders"
+        },
+        {
+          "id": "o4",
+          "text": "Model, prompt and tool versions"
+        },
+        {
+          "id": "o5",
+          "text": "Comparable cost and latency measurement"
+        },
+        {
+          "id": "o6",
+          "text": "Only one successful demonstration"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q044",
+      "type": "multiple",
+      "topic": "Workflow preference",
+      "difficulty": "foundation",
+      "prompt": "Which conditions favour a deterministic workflow?",
+      "explanation": "Known routing and strict operating constraints make application-owned transitions the stronger default.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Latency and cost budgets are tight"
+        },
+        {
+          "id": "o2",
+          "text": "The useful route is genuinely unknown and changes by case"
+        },
+        {
+          "id": "o3",
+          "text": "The valid sequence is stable"
+        },
+        {
+          "id": "o4",
+          "text": "Branches can be expressed as rules"
+        },
+        {
+          "id": "o5",
+          "text": "Auditability and reproducibility are strict"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q045",
+      "type": "multiple",
+      "topic": "Agent justification",
+      "difficulty": "applied",
+      "prompt": "Which conditions can justify a bounded agent or model-routing node?",
+      "explanation": "Uncertainty and measured benefit justify model-directed control only when deterministic safety and resource boundaries remain intact.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The team wants the word agent in the architecture"
+        },
+        {
+          "id": "o2",
+          "text": "The next useful source depends on semantic observations"
+        },
+        {
+          "id": "o3",
+          "text": "The task decomposition varies by request"
+        },
+        {
+          "id": "o4",
+          "text": "A labelled evaluation shows outcome improvement"
+        },
+        {
+          "id": "o5",
+          "text": "Application code still enforces tools, authority and budgets"
+        }
+      ],
+      "correct": [
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q046",
+      "type": "multiple",
+      "topic": "Failure evidence",
+      "difficulty": "applied",
+      "prompt": "Which are explicit failure or rejection signals in the Week 14 traces?",
+      "explanation": "The executor records controlled reasons rather than inventing missing facts or hiding invalid routing.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "order_required"
+        },
+        {
+          "id": "o2",
+          "text": "step-budget exhaustion with the latest retained error"
+        },
+        {
+          "id": "o3",
+          "text": "A silently fabricated supplier record"
+        },
+        {
+          "id": "o4",
+          "text": "unsupported_action"
+        },
+        {
+          "id": "o5",
+          "text": "duplicate_action"
+        },
+        {
+          "id": "o6",
+          "text": "incomplete_evidence"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5",
+        "o6"
+      ]
+    },
+    {
+      "id": "W14-Q047",
+      "type": "multiple",
+      "topic": "Merge safety",
+      "difficulty": "applied",
+      "prompt": "Which data should survive an orchestrator–worker merge?",
+      "explanation": "The merge needs enough provenance and identity to detect duplicates, omissions and contradictions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Source provenance"
+        },
+        {
+          "id": "o2",
+          "text": "Correlation to the parent task"
+        },
+        {
+          "id": "o3",
+          "text": "Conflicting values instead of silent overwrite"
+        },
+        {
+          "id": "o4",
+          "text": "Only the last worker's unlabelled prose"
+        },
+        {
+          "id": "o5",
+          "text": "Worker identity"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q048",
+      "type": "multiple",
+      "topic": "Planner–executor separation",
+      "difficulty": "foundation",
+      "prompt": "Which statements correctly separate planner and executor responsibilities?",
+      "explanation": "Proposal and execution are distinct trust boundaries. Structured planner output remains untrusted until admitted by the executor.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The executor checks current state and policy"
+        },
+        {
+          "id": "o2",
+          "text": "The executor invokes only registered tools"
+        },
+        {
+          "id": "o3",
+          "text": "The planner's output directly performs the side effect"
+        },
+        {
+          "id": "o4",
+          "text": "The planner proposes a next action"
+        },
+        {
+          "id": "o5",
+          "text": "The executor parses the proposed action"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q049",
+      "type": "multiple",
+      "topic": "Evidence limits",
+      "difficulty": "applied",
+      "prompt": "Which claims are not established by the local scripted comparison?",
+      "explanation": "The harness verifies its own deterministic contracts, while provider, identity and production behavior remain outside its evidence.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Real-model routing accuracy"
+        },
+        {
+          "id": "o2",
+          "text": "Current provider cost"
+        },
+        {
+          "id": "o3",
+          "text": "Wall-clock production latency"
+        },
+        {
+          "id": "o4",
+          "text": "Authenticated human identity"
+        },
+        {
+          "id": "o5",
+          "text": "Reliability under live workload"
+        },
+        {
+          "id": "o6",
+          "text": "The fixed scripts follow the implemented termination rules"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ]
+    },
+    {
+      "id": "W14-Q050",
+      "type": "multiple",
+      "topic": "Production gaps",
+      "difficulty": "applied",
+      "prompt": "Which additions would be needed before treating the pattern as a production approval workflow?",
+      "explanation": "The teaching lab deliberately omits production identity, durability, model governance, operations and external-effect controls.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Durable state with concurrency rules"
+        },
+        {
+          "id": "o2",
+          "text": "Versioned model/prompt evaluation"
+        },
+        {
+          "id": "o3",
+          "text": "Audit, monitoring and recovery"
+        },
+        {
+          "id": "o4",
+          "text": "Explicit external-effect authority and idempotency if writes are later added"
+        },
+        {
+          "id": "o5",
+          "text": "Removing the report digest"
+        },
+        {
+          "id": "o6",
+          "text": "Authenticated reviewer identity and authorization"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o6"
+      ]
+    },
+    {
+      "id": "W14-Q051",
+      "type": "match",
+      "topic": "Control ownership",
+      "difficulty": "foundation",
+      "prompt": "Match each controller to who selects its next step.",
+      "explanation": "The patterns differ primarily in who selects a transition; authority and validation remain explicit application concerns.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Deterministic workflow"
+        },
+        {
+          "id": "l2",
+          "text": "Bounded agent"
+        },
+        {
+          "id": "l3",
+          "text": "Hybrid workflow"
+        },
+        {
+          "id": "l4",
+          "text": "Human review"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Planner proposal checked by an executor"
+        },
+        {
+          "id": "r2",
+          "text": "Application lifecycle with selected model-directed nodes"
+        },
+        {
+          "id": "r3",
+          "text": "Trusted reviewer decides on a bound report"
+        },
+        {
+          "id": "r4",
+          "text": "Application transition code"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q052",
+      "type": "match",
+      "topic": "Dependencies",
+      "difficulty": "applied",
+      "prompt": "Match each operation to its minimum prerequisite in the supplied lab.",
+      "explanation": "Different actions have different data dependencies, and finish requires complete report evidence rather than only a valid action name.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "load_order"
+        },
+        {
+          "id": "l2",
+          "text": "lookup_supplier"
+        },
+        {
+          "id": "l3",
+          "text": "calculate_variance"
+        },
+        {
+          "id": "l4",
+          "text": "finish"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A loaded order with supplier ID"
+        },
+        {
+          "id": "r2",
+          "text": "Loaded order and reference price"
+        },
+        {
+          "id": "r3",
+          "text": "All five required investigation facts"
+        },
+        {
+          "id": "r4",
+          "text": "The procurement case and purchase-order ID"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q053",
+      "type": "match",
+      "topic": "Recommendation branches",
+      "difficulty": "applied",
+      "prompt": "Match each observed condition to the report recommendation.",
+      "explanation": "The shared deterministic rule preserves missing-evidence, review and within-policy outcomes across both controllers.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Contract term missing"
+        },
+        {
+          "id": "l2",
+          "text": "Supplier inactive"
+        },
+        {
+          "id": "l3",
+          "text": "Variance above found threshold"
+        },
+        {
+          "id": "l4",
+          "text": "Active supplier within threshold"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "review_required from the supplier-status branch"
+        },
+        {
+          "id": "r2",
+          "text": "review_required from the variance-threshold branch"
+        },
+        {
+          "id": "r3",
+          "text": "no_review"
+        },
+        {
+          "id": "r4",
+          "text": "needs_human"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q054",
+      "type": "match",
+      "topic": "Planner scripts",
+      "difficulty": "foundation",
+      "prompt": "Match each fixed planner script to its demonstrated route behavior.",
+      "explanation": "The four scripts are controlled fixtures for success, detour, repetition and capability rejection, not samples from a real model.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "happy"
+        },
+        {
+          "id": "l2",
+          "text": "detour"
+        },
+        {
+          "id": "l3",
+          "text": "loop"
+        },
+        {
+          "id": "l4",
+          "text": "unsafe"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A valid alternative order that respects dependencies"
+        },
+        {
+          "id": "r2",
+          "text": "Repeated completed action until the step limit"
+        },
+        {
+          "id": "r3",
+          "text": "Unsupported action proposals rejected by the executor"
+        },
+        {
+          "id": "r4",
+          "text": "Five workflow-order tools followed by finish"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q055",
+      "type": "match",
+      "topic": "Metrics",
+      "difficulty": "foundation",
+      "prompt": "Match each metric to what it counts in this lab.",
+      "explanation": "Every metric has a local definition; none should be relabelled as an unmeasured provider or production value.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "model_calls"
+        },
+        {
+          "id": "l2",
+          "text": "tool_calls"
+        },
+        {
+          "id": "l3",
+          "text": "estimated_model_cost_usd"
+        },
+        {
+          "id": "l4",
+          "text": "modeled_latency_ms"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "FixtureTools execute attempts"
+        },
+        {
+          "id": "r2",
+          "text": "Assumed token prices applied to assumed token counts"
+        },
+        {
+          "id": "r3",
+          "text": "Configured planner and tool latency values"
+        },
+        {
+          "id": "r4",
+          "text": "Scripted planner proposals"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q056",
+      "type": "match",
+      "topic": "State categories",
+      "difficulty": "foundation",
+      "prompt": "Match each item to its specific business-state or control-state description.",
+      "explanation": "Business facts describe the investigation, while completed actions and errors describe orchestration progress.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "PurchaseOrder"
+        },
+        {
+          "id": "l2",
+          "text": "PriceVariance"
+        },
+        {
+          "id": "l3",
+          "text": "completed action set"
+        },
+        {
+          "id": "l4",
+          "text": "last_error"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Business state: purchase-order fact"
+        },
+        {
+          "id": "r2",
+          "text": "Control state: completed-transition history"
+        },
+        {
+          "id": "r3",
+          "text": "Control state: latest rejection"
+        },
+        {
+          "id": "r4",
+          "text": "Business state: calculated variance fact"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r4",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q057",
+      "type": "match",
+      "topic": "Agent patterns",
+      "difficulty": "applied",
+      "prompt": "Match each pattern to its best-fitting purpose.",
+      "explanation": "Each pattern addresses a different kind of uncertainty and still needs deterministic authority, schemas and termination.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Routing"
+        },
+        {
+          "id": "l2",
+          "text": "Planner–executor"
+        },
+        {
+          "id": "l3",
+          "text": "Evaluator–optimizer"
+        },
+        {
+          "id": "l4",
+          "text": "Orchestrator–worker"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Propose actions while code validates and executes"
+        },
+        {
+          "id": "r2",
+          "text": "Critique and revise within a finite iteration budget"
+        },
+        {
+          "id": "r3",
+          "text": "Create and merge an input-dependent set of subtasks"
+        },
+        {
+          "id": "r4",
+          "text": "Select one bounded path from semantic input"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q058",
+      "type": "match",
+      "topic": "Component responsibilities",
+      "difficulty": "applied",
+      "prompt": "Match each component to its primary responsibility.",
+      "explanation": "Separating planner, executor, state and approval makes ownership and test boundaries visible.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "ScriptedPlanner"
+        },
+        {
+          "id": "l2",
+          "text": "FixtureTools"
+        },
+        {
+          "id": "l3",
+          "text": "InvestigationState"
+        },
+        {
+          "id": "l4",
+          "text": "finalize"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Execute the shared synthetic operations"
+        },
+        {
+          "id": "r2",
+          "text": "Hold typed facts and control observations"
+        },
+        {
+          "id": "r3",
+          "text": "Apply a matching human decision to an awaiting report"
+        },
+        {
+          "id": "r4",
+          "text": "Return reproducible proposed actions and assumed usage"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q059",
+      "type": "match",
+      "topic": "Controlled errors",
+      "difficulty": "applied",
+      "prompt": "Match each error to the condition that produces it.",
+      "explanation": "Named errors preserve the actual rejected condition instead of collapsing failures into an ambiguous generic result.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "order_required"
+        },
+        {
+          "id": "l2",
+          "text": "order_and_reference_required"
+        },
+        {
+          "id": "l3",
+          "text": "duplicate_action"
+        },
+        {
+          "id": "l4",
+          "text": "approval_report_mismatch"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Variance runs before both price facts exist"
+        },
+        {
+          "id": "r2",
+          "text": "The planner repeats a completed operation"
+        },
+        {
+          "id": "r3",
+          "text": "The decision digest differs from the current report"
+        },
+        {
+          "id": "r4",
+          "text": "A dependent tool runs before the order exists"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q060",
+      "type": "match",
+      "topic": "Approval concepts",
+      "difficulty": "foundation",
+      "prompt": "Match each approval element to its role.",
+      "explanation": "Artifact binding, reviewer data, allowed decisions and lifecycle state are separate checks in the local approval contract.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "report digest"
+        },
+        {
+          "id": "l2",
+          "text": "reviewer"
+        },
+        {
+          "id": "l3",
+          "text": "decision enum"
+        },
+        {
+          "id": "l4",
+          "text": "awaiting_approval"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Records the supplied human identity label"
+        },
+        {
+          "id": "r2",
+          "text": "Restricts the transition to approve or reject"
+        },
+        {
+          "id": "r3",
+          "text": "Requires a successful investigation before decision"
+        },
+        {
+          "id": "r4",
+          "text": "Identifies the exact reviewed snapshot"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q061",
+      "type": "match",
+      "topic": "Trace actors",
+      "difficulty": "foundation",
+      "prompt": "Match each trace prefix to the actor or stage it represents.",
+      "explanation": "Trace prefixes identify which boundary produced an event without exposing private model reasoning.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "planner:proposed"
+        },
+        {
+          "id": "l2",
+          "text": "executor:completed"
+        },
+        {
+          "id": "l3",
+          "text": "executor:rejected"
+        },
+        {
+          "id": "l4",
+          "text": "human:approve"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Validated tool completion"
+        },
+        {
+          "id": "r2",
+          "text": "Application policy or dependency rejection"
+        },
+        {
+          "id": "r3",
+          "text": "Applied reviewer decision"
+        },
+        {
+          "id": "r4",
+          "text": "Planner boundary"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q062",
+      "type": "match",
+      "topic": "Python constructs",
+      "difficulty": "foundation",
+      "prompt": "Match each Python construct to its use in the lab.",
+      "explanation": "The language constructs make contracts explicit while keeping the teaching implementation in the standard library.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "StrEnum"
+        },
+        {
+          "id": "l2",
+          "text": "Protocol"
+        },
+        {
+          "id": "l3",
+          "text": "frozenset"
+        },
+        {
+          "id": "l4",
+          "text": "dataclasses.replace"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Planner interface without a provider dependency"
+        },
+        {
+          "id": "r2",
+          "text": "Immutable set of tool actions"
+        },
+        {
+          "id": "r3",
+          "text": "Create an updated frozen result or metrics value"
+        },
+        {
+          "id": "r4",
+          "text": "Closed string-valued action and status categories"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q063",
+      "type": "match",
+      "topic": "Evaluation vocabulary",
+      "difficulty": "applied",
+      "prompt": "Match each evaluation term to its meaning.",
+      "explanation": "Separating tasks, trials, transcripts and graders prevents one demonstration from being mistaken for a representative evaluation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Task"
+        },
+        {
+          "id": "l2",
+          "text": "Trial"
+        },
+        {
+          "id": "l3",
+          "text": "Transcript"
+        },
+        {
+          "id": "l4",
+          "text": "Grader"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "One controller run on a task"
+        },
+        {
+          "id": "r2",
+          "text": "Ordered proposals, tool results and decisions"
+        },
+        {
+          "id": "r3",
+          "text": "A rule that scores an outcome or trace property"
+        },
+        {
+          "id": "r4",
+          "text": "A labelled investigation case and expected outcome"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q064",
+      "type": "match",
+      "topic": "Controller selection",
+      "difficulty": "applied",
+      "prompt": "Match each scenario to the simplest defensible controller.",
+      "explanation": "Controller choice follows uncertainty in routing, not a hierarchy where more autonomy is automatically more advanced.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Fixed five-step investigation"
+        },
+        {
+          "id": "l2",
+          "text": "Stable lifecycle with one uncertain intent route"
+        },
+        {
+          "id": "l3",
+          "text": "Input-dependent research plan with labelled evaluation"
+        },
+        {
+          "id": "l4",
+          "text": "Known independent reads"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Hybrid workflow"
+        },
+        {
+          "id": "r2",
+          "text": "Bounded agent candidate"
+        },
+        {
+          "id": "r3",
+          "text": "Fixed workflow concurrency"
+        },
+        {
+          "id": "r4",
+          "text": "Deterministic workflow"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q065",
+      "type": "match",
+      "topic": "Lab limitations",
+      "difficulty": "applied",
+      "prompt": "Match each absent production claim to the missing evidence or control.",
+      "explanation": "The lab states its evidence boundary explicitly so deterministic tests are not overstated as production validation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Real-model quality"
+        },
+        {
+          "id": "l2",
+          "text": "Actual latency"
+        },
+        {
+          "id": "l3",
+          "text": "Authenticated approval"
+        },
+        {
+          "id": "l4",
+          "text": "Durable recovery"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Only configured modeled timings"
+        },
+        {
+          "id": "r2",
+          "text": "Reviewer is a synthetic trusted host input"
+        },
+        {
+          "id": "r3",
+          "text": "The Week 14 controller state is in memory"
+        },
+        {
+          "id": "r4",
+          "text": "No provider or representative labelled model trials"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      }
+    },
+    {
+      "id": "W14-Q066",
+      "type": "short",
+      "topic": "Dataclass syntax",
+      "difficulty": "foundation",
+      "prompt": "Write the Python decorator used to generate dataclass methods for InvestigationState. Include the @ symbol.",
+      "explanation": "The @dataclass decorator generates standard data-container methods while field definitions remain explicit.",
+      "accepted": [
+        "@dataclass"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q067",
+      "type": "short",
+      "topic": "Mutable defaults",
+      "difficulty": "applied",
+      "prompt": "Complete completed: set[Action] = ____ so each InvestigationState gets its own empty set. Expression only.",
+      "explanation": "A default factory creates a separate mutable set per instance and avoids sharing one set across states.",
+      "accepted": [
+        "field(default_factory=set)"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q068",
+      "type": "short",
+      "topic": "Enum identity",
+      "difficulty": "foundation",
+      "prompt": "Complete action ____ Action.FINISH using the Python identity operator used for enum members. Operator only.",
+      "explanation": "Enum members are singletons, so the lab uses identity checks such as action is Action.FINISH.",
+      "accepted": [
+        "is"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q069",
+      "type": "short",
+      "topic": "Immutable set",
+      "difficulty": "foundation",
+      "prompt": "Name the built-in used for TOOL_ACTIONS so callers cannot mutate the action set. Name only.",
+      "explanation": "frozenset provides set membership while preventing mutation of the shared capability collection.",
+      "accepted": [
+        "frozenset"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q070",
+      "type": "short",
+      "topic": "Planner interface",
+      "difficulty": "foundation",
+      "prompt": "Name the typing construct used to describe the planner boundary without inheriting from a concrete provider class. Name only.",
+      "explanation": "typing.Protocol supports structural typing for provider adapters that expose the required fields and choose method.",
+      "accepted": [
+        "Protocol"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q071",
+      "type": "short",
+      "topic": "Exact arithmetic",
+      "difficulty": "foundation",
+      "prompt": "Name the standard-library numeric type used for prices, percentages and assumed model cost. Name only.",
+      "explanation": "Decimal preserves explicit decimal values and rounding behavior needed for the deterministic calculation.",
+      "accepted": [
+        "Decimal"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q072",
+      "type": "short",
+      "topic": "Rounding mode",
+      "difficulty": "applied",
+      "prompt": "Name the decimal rounding constant used for two-place variance and six-place estimated cost. Constant only.",
+      "explanation": "ROUND_HALF_EVEN provides the explicit tie-breaking rule used by the lab instead of relying on an implicit context default.",
+      "accepted": [
+        "ROUND_HALF_EVEN"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q073",
+      "type": "short",
+      "topic": "Digest function",
+      "difficulty": "foundation",
+      "prompt": "Name the hashlib function used to digest the canonical report payload. Function name only.",
+      "explanation": "sha256 produces the hexadecimal report identifier after the exact canonical JSON bytes are constructed.",
+      "accepted": [
+        "sha256"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q074",
+      "type": "short",
+      "topic": "Canonical JSON",
+      "difficulty": "applied",
+      "prompt": "Complete json.dumps(..., ____=True, separators=(\",\", \":\")) so dictionary key order is canonical. Keyword name only.",
+      "explanation": "sort_keys makes the serialized object independent of insertion order when the remaining serialization settings also stay fixed.",
+      "accepted": [
+        "sort_keys"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q075",
+      "type": "short",
+      "topic": "Finite loop",
+      "difficulty": "foundation",
+      "prompt": "Complete for _ in ____(max_steps): with the built-in that creates the finite iteration sequence. Name only.",
+      "explanation": "range(max_steps) makes the proposal loop terminate after the application-enforced number of iterations.",
+      "accepted": [
+        "range"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q076",
+      "type": "short",
+      "topic": "Rejected proposal",
+      "difficulty": "foundation",
+      "prompt": "Which Python keyword skips the rest of the current loop iteration after recording a rejected proposal? Keyword only.",
+      "explanation": "continue advances to the next bounded proposal without executing the rejected action.",
+      "accepted": [
+        "continue"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q077",
+      "type": "short",
+      "topic": "Enum parsing",
+      "difficulty": "applied",
+      "prompt": "Action(raw_action) raises which built-in exception when the string is not a declared Action value? Exception class only.",
+      "explanation": "Enum value construction raises ValueError for an unsupported string, which the executor catches and records.",
+      "accepted": [
+        "ValueError"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q078",
+      "type": "short",
+      "topic": "Frozen update",
+      "difficulty": "foundation",
+      "prompt": "Name the dataclasses helper used to return an updated frozen RunResult without mutating it. Name only.",
+      "explanation": "dataclasses.replace constructs a new instance with selected fields changed while retaining the other values.",
+      "accepted": [
+        "replace"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q079",
+      "type": "short",
+      "topic": "Metric aggregation",
+      "difficulty": "foundation",
+      "prompt": "Name the built-in used to total model calls, tool calls or costs across controlled runs. Name only.",
+      "explanation": "sum combines per-run measurements before averages or totals are calculated.",
+      "accepted": [
+        "sum"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q080",
+      "type": "short",
+      "topic": "Lifecycle value",
+      "difficulty": "foundation",
+      "prompt": "Give the exact RunStatus string for a successful investigation that is waiting for a person. Lowercase value only.",
+      "explanation": "awaiting_approval keeps investigation completion separate from a later approve or reject decision.",
+      "accepted": [
+        "awaiting_approval"
+      ],
+      "case_sensitive": true
+    },
+    {
+      "id": "W14-Q081",
+      "type": "code",
+      "topic": "Strict action parsing",
+      "difficulty": "applied",
+      "prompt": "Implement parse_action(value). Return value unchanged only when its exact built-in str value is one of load_order, lookup_supplier, get_reference_price, calculate_variance, search_contract_terms or finish. Return None for every other value. Do not trim, lowercase, coerce or execute anything; membership is only proposal validation, not authority.",
+      "explanation": "A strict closed action vocabulary prevents normalization from turning a different proposal into an allowed operation. Execution policy remains a separate step.",
+      "starter": "def parse_action(value):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "ACTIONS = frozenset({\n    'load_order', 'lookup_supplier', 'get_reference_price',\n    'calculate_variance', 'search_contract_terms', 'finish',\n})\n\ndef parse_action(value):\n    return value if type(value) is str and value in ACTIONS else None\n",
+      "checks": [
+        {
+          "label": "All declared actions",
+          "code": "assert all(parse_action(value) == value for value in (\n    'load_order', 'lookup_supplier', 'get_reference_price',\n    'calculate_variance', 'search_contract_terms', 'finish'))\n"
+        },
+        {
+          "label": "Unsupported capability",
+          "code": "assert parse_action('send_supplier_email') is None\nassert parse_action('__import__') is None\n"
+        },
+        {
+          "label": "No normalization",
+          "code": "assert all(parse_action(value) is None for value in (\n    ' Load_order', 'load_order ', 'LOAD_ORDER', 'load-order', 'finish\\n'))\n"
+        },
+        {
+          "label": "Strict scalar type",
+          "code": "class Text(str):\n    pass\nassert all(parse_action(value) is None for value in (None, True, 1, [], Text('finish')))\n"
+        },
+        {
+          "label": "No prefix acceptance",
+          "code": "assert parse_action('finish_now') is None\nassert parse_action('load_order_extra') is None\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q082",
+      "type": "code",
+      "topic": "Deterministic transition",
+      "difficulty": "applied",
+      "prompt": "Implement workflow_next(completed). completed must be an exact set of action strings forming a prefix of the fixed five-action workflow. Return the first remaining action, or finish when all five are complete. Raise TypeError for a non-set or non-string member and ValueError for unknown actions or a gap such as calculate_variance completed before lookup_supplier. Do not mutate completed.",
+      "explanation": "A workflow transition table accepts only reachable prefix states. Rejecting gaps prevents an apparently valid set from hiding an impossible route.",
+      "starter": "def workflow_next(completed):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "ROUTE = (\n    'load_order', 'lookup_supplier', 'get_reference_price',\n    'calculate_variance', 'search_contract_terms',\n)\n\ndef workflow_next(completed):\n    if type(completed) is not set or any(type(value) is not str for value in completed):\n        raise TypeError('completed_invalid')\n    if not completed <= set(ROUTE):\n        raise ValueError('unknown_action')\n    prefix_length = 0\n    while prefix_length < len(ROUTE) and ROUTE[prefix_length] in completed:\n        prefix_length += 1\n    if completed != set(ROUTE[:prefix_length]):\n        raise ValueError('unreachable_state')\n    return ROUTE[prefix_length] if prefix_length < len(ROUTE) else 'finish'\n",
+      "checks": [
+        {
+          "label": "Start and prefixes",
+          "code": "assert workflow_next(set()) == 'load_order'\nassert workflow_next({'load_order'}) == 'lookup_supplier'\nassert workflow_next({'load_order', 'lookup_supplier'}) == 'get_reference_price'\n"
+        },
+        {
+          "label": "Complete route",
+          "code": "completed = set(ROUTE)\nassert workflow_next(completed) == 'finish'\nassert completed == set(ROUTE)\n"
+        },
+        {
+          "label": "Gap rejection",
+          "code": "assert raises(ValueError, workflow_next, {'load_order', 'get_reference_price'})\nassert raises(ValueError, workflow_next, {'calculate_variance'})\n"
+        },
+        {
+          "label": "Unknown rejection",
+          "code": "assert raises(ValueError, workflow_next, {'load_order', 'send_supplier_email'})\n"
+        },
+        {
+          "label": "Strict container and members",
+          "code": "assert raises(TypeError, workflow_next, ('load_order',))\nassert raises(TypeError, workflow_next, {1})\nassert raises(TypeError, workflow_next, {True})\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q083",
+      "type": "code",
+      "topic": "Proposal classification",
+      "difficulty": "applied",
+      "prompt": "Implement proposal_decision(raw_action, completed, ready). completed must be a frozenset of declared tool actions and ready must be an exact bool. Return unsupported for a non-exact or unknown action; return incomplete or finish for finish according to ready; return duplicate for a completed tool action; otherwise return execute. Raise TypeError for malformed completed or ready values. This function classifies only and performs no tool call.",
+      "explanation": "Proposal admission separates unsupported, premature terminal, duplicate and executable states before any operation is invoked.",
+      "starter": "def proposal_decision(raw_action, completed, ready):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "TOOL_ACTIONS = frozenset({\n    'load_order', 'lookup_supplier', 'get_reference_price',\n    'calculate_variance', 'search_contract_terms',\n})\n\ndef proposal_decision(raw_action, completed, ready):\n    if type(completed) is not frozenset or any(\n        type(value) is not str or value not in TOOL_ACTIONS for value in completed\n    ):\n        raise TypeError('completed_invalid')\n    if type(ready) is not bool:\n        raise TypeError('ready_invalid')\n    if type(raw_action) is not str or raw_action not in TOOL_ACTIONS | {'finish'}:\n        return 'unsupported'\n    if raw_action == 'finish':\n        return 'finish' if ready else 'incomplete'\n    if raw_action in completed:\n        return 'duplicate'\n    return 'execute'\n",
+      "checks": [
+        {
+          "label": "Executable proposal",
+          "code": "assert proposal_decision('load_order', frozenset(), False) == 'execute'\nassert proposal_decision('lookup_supplier', frozenset({'load_order'}), False) == 'execute'\n"
+        },
+        {
+          "label": "Finish readiness",
+          "code": "assert proposal_decision('finish', frozenset(), False) == 'incomplete'\nassert proposal_decision('finish', frozenset(TOOL_ACTIONS), True) == 'finish'\n"
+        },
+        {
+          "label": "Duplicate proposal",
+          "code": "assert proposal_decision('load_order', frozenset({'load_order'}), False) == 'duplicate'\n"
+        },
+        {
+          "label": "Unsupported remains data",
+          "code": "assert proposal_decision('send_supplier_email', frozenset(), False) == 'unsupported'\nassert proposal_decision(None, frozenset(), False) == 'unsupported'\n"
+        },
+        {
+          "label": "Strict control state",
+          "code": "assert raises(TypeError, proposal_decision, 'load_order', set(), False)\nassert raises(TypeError, proposal_decision, 'load_order', frozenset({'unknown'}), False)\nassert raises(TypeError, proposal_decision, 'load_order', frozenset(), 1)\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q084",
+      "type": "code",
+      "topic": "Action prerequisites",
+      "difficulty": "applied",
+      "prompt": "Implement prerequisite_ok(action, state). state must be an exact dict containing exactly order, supplier, reference, variance and contract with exact bool values that indicate fact presence. Return whether the action's data prerequisites are met: load_order needs none; lookup_supplier, get_reference_price and search_contract_terms need order; calculate_variance needs order and reference; finish needs every fact. Raise TypeError for malformed state and ValueError for an unknown action. Do not mutate state.",
+      "explanation": "Action membership does not prove that its required business facts exist. Explicit prerequisites keep dependency enforcement deterministic.",
+      "starter": "def prerequisite_ok(action, state):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "STATE_KEYS = frozenset({'order', 'supplier', 'reference', 'variance', 'contract'})\n\ndef prerequisite_ok(action, state):\n    if type(state) is not dict or set(state) != STATE_KEYS or any(\n        type(value) is not bool for value in state.values()\n    ):\n        raise TypeError('state_invalid')\n    requirements = {\n        'load_order': (),\n        'lookup_supplier': ('order',),\n        'get_reference_price': ('order',),\n        'calculate_variance': ('order', 'reference'),\n        'search_contract_terms': ('order',),\n        'finish': ('order', 'supplier', 'reference', 'variance', 'contract'),\n    }\n    if type(action) is not str or action not in requirements:\n        raise ValueError('unknown_action')\n    return all(state[key] for key in requirements[action])\n",
+      "checks": [
+        {
+          "label": "Initial action",
+          "code": "empty = {key: False for key in STATE_KEYS}\nassert prerequisite_ok('load_order', empty) is True\nassert prerequisite_ok('lookup_supplier', empty) is False\n"
+        },
+        {
+          "label": "Order-dependent reads",
+          "code": "state = {key: False for key in STATE_KEYS}; state['order'] = True\nassert prerequisite_ok('lookup_supplier', state)\nassert prerequisite_ok('get_reference_price', state)\nassert prerequisite_ok('search_contract_terms', state)\n"
+        },
+        {
+          "label": "Variance dependency",
+          "code": "state = {key: False for key in STATE_KEYS}; state['order'] = True\nassert not prerequisite_ok('calculate_variance', state)\nstate['reference'] = True\nassert prerequisite_ok('calculate_variance', state)\n"
+        },
+        {
+          "label": "Finish needs every fact",
+          "code": "state = {key: True for key in STATE_KEYS}\nassert prerequisite_ok('finish', state)\nstate['contract'] = False\nassert not prerequisite_ok('finish', state)\n"
+        },
+        {
+          "label": "Strict state and action",
+          "code": "valid = {key: False for key in STATE_KEYS}\nassert raises(ValueError, prerequisite_ok, 'email', valid)\nassert raises(TypeError, prerequisite_ok, 'load_order', dict(valid, extra=False))\nassert raises(TypeError, prerequisite_ok, 'load_order', {**valid, 'order': 1})\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q085",
+      "type": "code",
+      "topic": "Typed fact application",
+      "difficulty": "applied",
+      "prompt": "Implement apply_observation(state, action, fact). Return a deep-independent new state with fact['value'] assigned to the action's matching slot and action added to the completed frozenset. state must contain order, supplier, reference, variance, contract and completed; fact must contain exactly kind and value; kind must match the action. Raise TypeError for malformed containers and ValueError for an unknown action or kind mismatch. Never mutate or retain an alias to either input.",
+      "explanation": "The executor must assign a validated result to the correct business-state slot and preserve ownership instead of trusting an arbitrary result label.",
+      "starter": "def apply_observation(state, action, fact):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\n\nACTION_SLOT = {\n    'load_order': ('order', 'order'),\n    'lookup_supplier': ('supplier', 'supplier'),\n    'get_reference_price': ('reference', 'reference'),\n    'calculate_variance': ('variance', 'variance'),\n    'search_contract_terms': ('contract', 'contract'),\n}\nSTATE_KEYS = frozenset({'order', 'supplier', 'reference', 'variance', 'contract', 'completed'})\n\ndef apply_observation(state, action, fact):\n    if type(state) is not dict or set(state) != STATE_KEYS or type(state['completed']) is not frozenset:\n        raise TypeError('state_invalid')\n    if type(fact) is not dict or set(fact) != {'kind', 'value'} or type(fact['kind']) is not str:\n        raise TypeError('fact_invalid')\n    if type(action) is not str or action not in ACTION_SLOT:\n        raise ValueError('unknown_action')\n    slot, expected_kind = ACTION_SLOT[action]\n    if fact['kind'] != expected_kind:\n        raise ValueError('tool_result_mismatch')\n    result = copy.deepcopy(state)\n    result[slot] = copy.deepcopy(fact['value'])\n    result['completed'] = frozenset((*state['completed'], action))\n    return result\n",
+      "checks": [
+        {
+          "label": "Correct slot and completion",
+          "code": "state = dict(order=None, supplier=None, reference=None, variance=None, contract=None, completed=frozenset())\nresult = apply_observation(state, 'load_order', {'kind':'order','value':{'id':'PO-1'}})\nassert result['order'] == {'id':'PO-1'} and result['completed'] == frozenset({'load_order'})\n"
+        },
+        {
+          "label": "All action mappings",
+          "code": "state = dict(order=None, supplier=None, reference=None, variance=None, contract=None, completed=frozenset())\nfor action, (slot, kind) in ACTION_SLOT.items():\n    out = apply_observation(state, action, {'kind':kind,'value':action})\n    assert out[slot] == action and out['completed'] == frozenset({action})\n"
+        },
+        {
+          "label": "Kind mismatch",
+          "code": "state = dict(order=None, supplier=None, reference=None, variance=None, contract=None, completed=frozenset())\nassert raises(ValueError, apply_observation, state, 'lookup_supplier', {'kind':'order','value':{}})\n"
+        },
+        {
+          "label": "No mutation or alias",
+          "code": "state = dict(order=None, supplier=None, reference=None, variance=None, contract=None, completed=frozenset())\nfact = {'kind':'supplier','value':{'notes':[]}}\nout = apply_observation(state, 'lookup_supplier', fact)\nout['supplier']['notes'].append('out'); fact['value']['notes'].append('input')\nassert state['supplier'] is None and out['supplier']['notes'] == ['out'] and fact['value']['notes'] == ['input']\n"
+        },
+        {
+          "label": "Strict containers",
+          "code": "state = dict(order=None, supplier=None, reference=None, variance=None, contract=None, completed=frozenset())\nassert raises(ValueError, apply_observation, state, 'finish', {'kind':'finish','value':None})\nassert raises(TypeError, apply_observation, dict(state, extra=None), 'load_order', {'kind':'order','value':{}})\nassert raises(TypeError, apply_observation, state, 'load_order', {'kind':'order','value':{},'extra':1})\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q086",
+      "type": "code",
+      "topic": "Report readiness",
+      "difficulty": "foundation",
+      "prompt": "Implement ready_for_report(state). state must be an exact dict. Return True only when it contains order, supplier, reference, variance and contract and none of those five values is None. Extra keys are allowed and falsey-but-present fact values such as {} still count as observed. Raise TypeError for a non-dict. Do not inspect planner prose, completed actions or call counts.",
+      "explanation": "Readiness follows required business observations. Checking for None avoids confusing a falsey fact representation with missing evidence.",
+      "starter": "def ready_for_report(state):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "REQUIRED_FACTS = ('order', 'supplier', 'reference', 'variance', 'contract')\n\ndef ready_for_report(state):\n    if type(state) is not dict:\n        raise TypeError('state_invalid')\n    return all(key in state and state[key] is not None for key in REQUIRED_FACTS)\n",
+      "checks": [
+        {
+          "label": "Complete facts",
+          "code": "state = {key: {'observed': key} for key in REQUIRED_FACTS}\nassert ready_for_report(state) is True\n"
+        },
+        {
+          "label": "Missing key",
+          "code": "state = {key: key for key in REQUIRED_FACTS if key != 'contract'}\nassert ready_for_report(state) is False\n"
+        },
+        {
+          "label": "Explicit None",
+          "code": "state = {key: key for key in REQUIRED_FACTS}; state['variance'] = None\nassert ready_for_report(state) is False\n"
+        },
+        {
+          "label": "Falsey observed facts",
+          "code": "state = {key: {} for key in REQUIRED_FACTS}; state['trace'] = None\nassert ready_for_report(state) is True\n"
+        },
+        {
+          "label": "Strict mapping",
+          "code": "assert raises(TypeError, ready_for_report, [('order', {})])\nassert raises(TypeError, ready_for_report, None)\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q087",
+      "type": "code",
+      "topic": "Recommendation decision",
+      "difficulty": "applied",
+      "prompt": "Implement recommendation(supplier_status, variance_percent, terms_found, max_variance_percent). Numeric inputs are canonical ASCII decimal strings without plus signs, exponents, leading zeros or surrounding spaces; variance may be negative. terms_found must be an exact bool. When false, max_variance_percent must be None and return needs_human. When true, require a non-negative canonical threshold; return review_required for a non-active supplier or variance strictly above threshold, otherwise no_review. Raise TypeError for wrong scalar types and ValueError for invalid values.",
+      "explanation": "The deterministic recommendation keeps missing evidence, supplier status and strict threshold comparison in application code with exact decimal parsing.",
+      "starter": "def recommendation(supplier_status, variance_percent, terms_found, max_variance_percent):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\nfrom decimal import Decimal\n\nDECIMAL = re.compile(r'-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?')\n\ndef _number(value):\n    if type(value) is not str:\n        raise TypeError('decimal_type')\n    if DECIMAL.fullmatch(value) is None:\n        raise ValueError('decimal_invalid')\n    return Decimal(value)\n\ndef recommendation(supplier_status, variance_percent, terms_found, max_variance_percent):\n    if type(supplier_status) is not str:\n        raise TypeError('supplier_status_type')\n    if not supplier_status or supplier_status != supplier_status.strip() or len(supplier_status) > 40:\n        raise ValueError('supplier_status_invalid')\n    if type(terms_found) is not bool:\n        raise TypeError('terms_found_type')\n    variance = _number(variance_percent)\n    if not terms_found:\n        if max_variance_percent is not None:\n            raise ValueError('unexpected_threshold')\n        return 'needs_human'\n    threshold = _number(max_variance_percent)\n    if threshold < 0:\n        raise ValueError('threshold_invalid')\n    if supplier_status != 'active' or variance > threshold:\n        return 'review_required'\n    return 'no_review'\n",
+      "checks": [
+        {
+          "label": "Missing terms",
+          "code": "assert recommendation('active', '10.00', False, None) == 'needs_human'\nassert recommendation('inactive', '1.00', False, None) == 'needs_human'\n"
+        },
+        {
+          "label": "Supplier status",
+          "code": "assert recommendation('inactive', '1.00', True, '5.00') == 'review_required'\nassert recommendation('suspended', '-1.00', True, '5.00') == 'review_required'\n"
+        },
+        {
+          "label": "Strict threshold boundary",
+          "code": "assert recommendation('active', '5.01', True, '5.00') == 'review_required'\nassert recommendation('active', '5.00', True, '5.00') == 'no_review'\nassert recommendation('active', '-2.00', True, '5.00') == 'no_review'\n"
+        },
+        {
+          "label": "Canonical decimals",
+          "code": "for value in ('+1', '01.0', '.5', '1e2', ' 1', '１.０'):\n    assert raises(ValueError, recommendation, 'active', value, True, '5.00')\nassert raises(TypeError, recommendation, 'active', 5.0, True, '5.00')\n"
+        },
+        {
+          "label": "Consistent term payload",
+          "code": "assert raises(ValueError, recommendation, 'active', '1.00', False, '5.00')\nassert raises(ValueError, recommendation, 'active', '1.00', True, '-1.00')\nassert raises(TypeError, recommendation, 'active', '1.00', 1, '5.00')\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q088",
+      "type": "code",
+      "topic": "Exact shared variance",
+      "difficulty": "applied",
+      "prompt": "Implement price_variance(reference, current, reference_currency, current_currency, reference_unit, current_unit). Amounts must be canonical non-negative ASCII decimal strings without signs, exponents, leading zeros or spaces. Require matching non-empty exact str currency and unit and a positive reference. Return (absolute, percent) as two-place strings using Decimal, precision 28, reference as denominator and ROUND_HALF_EVEN; normalize any zero to 0.00. Raise TypeError for wrong scalar types and ValueError for invalid or incomparable inputs.",
+      "explanation": "Keeping exact comparable-price arithmetic in shared deterministic code prevents controller choice from changing the business calculation.",
+      "starter": "def price_variance(reference, current, reference_currency, current_currency, reference_unit, current_unit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\nfrom decimal import Decimal, ROUND_HALF_EVEN, localcontext\n\nAMOUNT = re.compile(r'(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?')\n\ndef _amount(value):\n    if type(value) is not str:\n        raise TypeError('amount_type')\n    if AMOUNT.fullmatch(value) is None:\n        raise ValueError('amount_invalid')\n    return Decimal(value)\n\ndef price_variance(reference, current, reference_currency, current_currency, reference_unit, current_unit):\n    labels = (reference_currency, current_currency, reference_unit, current_unit)\n    if any(type(value) is not str for value in labels):\n        raise TypeError('label_type')\n    if any(not value or value != value.strip() for value in labels):\n        raise ValueError('label_invalid')\n    if reference_currency != current_currency or reference_unit != current_unit:\n        raise ValueError('prices_not_comparable')\n    baseline = _amount(reference)\n    observed = _amount(current)\n    if baseline <= 0:\n        raise ValueError('reference_price_invalid')\n    with localcontext() as context:\n        context.prec = 28\n        absolute = observed - baseline\n        percent = (absolute / baseline) * Decimal('100')\n        quantum = Decimal('0.01')\n        absolute = absolute.quantize(quantum, rounding=ROUND_HALF_EVEN)\n        percent = percent.quantize(quantum, rounding=ROUND_HALF_EVEN)\n    if absolute == 0:\n        absolute = abs(absolute)\n    if percent == 0:\n        percent = abs(percent)\n    return format(absolute, '.2f'), format(percent, '.2f')\n",
+      "checks": [
+        {
+          "label": "Price-spike case",
+          "code": "assert price_variance('2.00','2.20','USD','USD','kg','kg') == ('0.20','10.00')\n"
+        },
+        {
+          "label": "Stable case and denominator",
+          "code": "assert price_variance('2.00','2.04','USD','USD','kg','kg') == ('0.04','2.00')\nassert price_variance('200.00','200.01','USD','USD','kg','kg') == ('0.01','0.00')\n"
+        },
+        {
+          "label": "Decrease and zero normalization",
+          "code": "assert price_variance('4.00','3.00','USD','USD','kg','kg') == ('-1.00','-25.00')\nassert price_variance('2.000','2.000','USD','USD','kg','kg') == ('0.00','0.00')\n"
+        },
+        {
+          "label": "Comparability and baseline",
+          "code": "assert raises(ValueError, price_variance, '2.00','2.20','USD','EUR','kg','kg')\nassert raises(ValueError, price_variance, '0','2.20','USD','USD','kg','kg')\n"
+        },
+        {
+          "label": "Strict canonical inputs",
+          "code": "for value in ('+2.00','02.00','2e0',' 2.00','２.００'):\n    assert raises(ValueError, price_variance, value,'2.20','USD','USD','kg','kg')\nassert raises(TypeError, price_variance, 2.0,'2.20','USD','USD','kg','kg')\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q089",
+      "type": "code",
+      "topic": "Bounded planner loop",
+      "difficulty": "applied",
+      "prompt": "Implement bounded_agent(choices, max_steps=8). choices must be an exact tuple of exact str proposals; after it is exhausted, the planner proposes finish. Enforce max_steps as an exact int from 1 through 20. Track the five tool actions, actual lab prerequisites, duplicate and unsupported rejections. Every proposal increments model_calls; each new allowed tool attempt increments tool_calls before its dependency check; duplicate and unsupported proposals do not. Return a dict with status, model_calls, tool_calls, completed (fixed-route tuple) and failure_reason. Success status is awaiting_approval with failure_reason None; exhaustion status is failed with the latest error or step_budget_exhausted. Do not mutate choices.",
+      "explanation": "A bounded loop makes proposal, execution-attempt and terminal accounting observable across valid, repeated, unsupported and premature routes.",
+      "starter": "def bounded_agent(choices, max_steps=8):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "ROUTE = (\n    'load_order', 'lookup_supplier', 'get_reference_price',\n    'calculate_variance', 'search_contract_terms',\n)\nTOOLS = frozenset(ROUTE)\n\ndef bounded_agent(choices, max_steps=8):\n    if type(choices) is not tuple or any(type(value) is not str for value in choices):\n        raise TypeError('choices_invalid')\n    if type(max_steps) is not int:\n        raise TypeError('max_steps_type')\n    if not 1 <= max_steps <= 20:\n        raise ValueError('max_steps_out_of_range')\n    completed = set()\n    model_calls = 0\n    tool_calls = 0\n    last_error = None\n    for position in range(max_steps):\n        raw = choices[position] if position < len(choices) else 'finish'\n        model_calls += 1\n        if raw not in TOOLS | {'finish'}:\n            last_error = 'unsupported_action'\n            continue\n        if raw == 'finish':\n            if completed == set(ROUTE):\n                return {\n                    'status':'awaiting_approval', 'model_calls':model_calls,\n                    'tool_calls':tool_calls, 'completed':tuple(ROUTE),\n                    'failure_reason':None,\n                }\n            last_error = 'incomplete_evidence'\n            continue\n        if raw in completed:\n            last_error = 'duplicate_action'\n            continue\n        tool_calls += 1\n        if raw != 'load_order' and 'load_order' not in completed:\n            last_error = 'order_required'\n            continue\n        if raw == 'calculate_variance' and 'get_reference_price' not in completed:\n            last_error = 'order_and_reference_required'\n            continue\n        completed.add(raw)\n        last_error = None\n    return {\n        'status':'failed', 'model_calls':model_calls, 'tool_calls':tool_calls,\n        'completed':tuple(action for action in ROUTE if action in completed),\n        'failure_reason':last_error or 'step_budget_exhausted',\n    }\n",
+      "checks": [
+        {
+          "label": "Happy route",
+          "code": "happy = (*ROUTE, 'finish')\nassert bounded_agent(happy) == {\n    'status':'awaiting_approval','model_calls':6,'tool_calls':5,\n    'completed':ROUTE,'failure_reason':None}\n"
+        },
+        {
+          "label": "Duplicate loop",
+          "code": "result = bounded_agent(('load_order',) * 8)\nassert result['status'] == 'failed' and result['model_calls'] == 8\nassert result['tool_calls'] == 1 and result['failure_reason'] == 'duplicate_action'\n"
+        },
+        {
+          "label": "Unsupported route",
+          "code": "result = bounded_agent(('load_order',) + ('send_supplier_email',) * 7)\nassert result['status'] == 'failed' and result['tool_calls'] == 1\nassert result['failure_reason'] == 'unsupported_action'\n"
+        },
+        {
+          "label": "Dependency attempt accounting",
+          "code": "route = ('calculate_variance', *ROUTE, 'finish')\nresult = bounded_agent(route)\nassert result['status'] == 'awaiting_approval'\nassert result['model_calls'] == 7 and result['tool_calls'] == 6\n"
+        },
+        {
+          "label": "Strict inputs and bounds",
+          "code": "assert raises(TypeError, bounded_agent, list(ROUTE), 8)\nassert raises(TypeError, bounded_agent, ROUTE, True)\nassert raises(ValueError, bounded_agent, ROUTE, 0)\nassert raises(ValueError, bounded_agent, ROUTE, 21)\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q090",
+      "type": "code",
+      "topic": "Planner usage accounting",
+      "difficulty": "applied",
+      "prompt": "Implement planner_usage(observed_counts, had_errors, input_price_per_million='1.00', output_price_per_million='3.00'). The first two inputs must be non-empty exact tuples of equal length; observed counts are exact non-negative ints and error flags exact bools. Prices are canonical non-negative ASCII decimal strings. For each call compute input tokens as 120 + 35*observed + 20 when the prior state has an error, output tokens as 12 and modeled latency as 70 + 8*observed. Return calls, input_tokens, output_tokens, modeled_latency_ms and estimated_cost_usd quantized to six places with ROUND_HALF_EVEN. Raise TypeError or ValueError for invalid input and do not mutate tuples.",
+      "explanation": "Explicit assumed usage formulas keep the teaching cost and latency values reproducible without presenting them as provider measurements.",
+      "starter": "def planner_usage(observed_counts, had_errors, input_price_per_million='1.00', output_price_per_million='3.00'):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\nfrom decimal import Decimal, ROUND_HALF_EVEN\n\nPRICE = re.compile(r'(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?')\n\ndef _price(value):\n    if type(value) is not str:\n        raise TypeError('price_type')\n    if PRICE.fullmatch(value) is None:\n        raise ValueError('price_invalid')\n    return Decimal(value)\n\ndef planner_usage(observed_counts, had_errors, input_price_per_million='1.00', output_price_per_million='3.00'):\n    if type(observed_counts) is not tuple or type(had_errors) is not tuple:\n        raise TypeError('series_type')\n    if not observed_counts or len(observed_counts) != len(had_errors):\n        raise ValueError('series_length')\n    if any(type(value) is not int or value < 0 for value in observed_counts):\n        raise TypeError('observed_count_invalid')\n    if any(type(value) is not bool for value in had_errors):\n        raise TypeError('error_flag_invalid')\n    input_price = _price(input_price_per_million)\n    output_price = _price(output_price_per_million)\n    input_tokens = sum(120 + 35 * observed + (20 if error else 0) for observed, error in zip(observed_counts, had_errors))\n    output_tokens = 12 * len(observed_counts)\n    latency = sum(70 + 8 * observed for observed in observed_counts)\n    cost = (\n        (Decimal(input_tokens) * input_price + Decimal(output_tokens) * output_price)\n        / Decimal('1000000')\n    ).quantize(Decimal('0.000001'), rounding=ROUND_HALF_EVEN)\n    return {\n        'calls':len(observed_counts), 'input_tokens':input_tokens,\n        'output_tokens':output_tokens, 'modeled_latency_ms':latency,\n        'estimated_cost_usd':format(cost, '.6f'),\n    }\n",
+      "checks": [
+        {
+          "label": "Happy planner assumptions",
+          "code": "result = planner_usage((0,1,2,3,4,5), (False,)*6)\nassert result == {'calls':6,'input_tokens':1245,'output_tokens':72,\n                  'modeled_latency_ms':540,'estimated_cost_usd':'0.001461'}\n"
+        },
+        {
+          "label": "Prior error token allowance",
+          "code": "base = planner_usage((0,1), (False,False))\nerror = planner_usage((0,1), (False,True))\nassert error['input_tokens'] == base['input_tokens'] + 20\nassert error['modeled_latency_ms'] == base['modeled_latency_ms']\n"
+        },
+        {
+          "label": "Configurable teaching prices",
+          "code": "zero = planner_usage((0,), (False,), '0', '0')\nassert zero['estimated_cost_usd'] == '0.000000'\nassert planner_usage((0,), (False,), '2.00', '4.00')['estimated_cost_usd'] == '0.000288'\n"
+        },
+        {
+          "label": "Strict aligned series",
+          "code": "assert raises(TypeError, planner_usage, [0], (False,))\nassert raises(ValueError, planner_usage, (), ())\nassert raises(ValueError, planner_usage, (0,1), (False,))\nassert raises(TypeError, planner_usage, (True,), (False,))\n"
+        },
+        {
+          "label": "Canonical non-negative prices",
+          "code": "for value in ('+1','01.0','1e0',' 1','-1'):\n    assert raises(ValueError, planner_usage, (0,), (False,), value, '3.00')\nassert raises(TypeError, planner_usage, (0,), (False,), 1.0, '3.00')\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q091",
+      "type": "code",
+      "topic": "Canonical report digest",
+      "difficulty": "applied",
+      "prompt": "Implement report_digest(report). report must be an exact dict with case_id, purchase_order_id, recommendation, summary and evidence. Text fields must be exact non-empty strs; recommendation must be no_review, review_required or needs_human; evidence must be a non-empty exact tuple of non-empty strs. Serialize exactly those fields with json.dumps ensure_ascii=True, sort_keys=True and separators=(',', ':'), then return the lowercase SHA-256 hex digest. Raise TypeError for wrong container/scalar types and ValueError for missing, extra or invalid values. Do not mutate report.",
+      "explanation": "A canonical payload makes the same report snapshot produce one digest and makes any bound-field change invalidate the approval identity.",
+      "starter": "def report_digest(report):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from hashlib import sha256\nimport json\n\nREPORT_KEYS = frozenset({'case_id','purchase_order_id','recommendation','summary','evidence'})\nRECOMMENDATIONS = frozenset({'no_review','review_required','needs_human'})\n\ndef report_digest(report):\n    if type(report) is not dict:\n        raise TypeError('report_type')\n    if set(report) != REPORT_KEYS:\n        raise ValueError('report_keys')\n    for key in ('case_id','purchase_order_id','recommendation','summary'):\n        if type(report[key]) is not str:\n            raise TypeError('report_scalar_type')\n        if not report[key]:\n            raise ValueError('report_scalar_empty')\n    if report['recommendation'] not in RECOMMENDATIONS:\n        raise ValueError('recommendation_invalid')\n    if type(report['evidence']) is not tuple or not report['evidence'] or any(\n        type(value) is not str or not value for value in report['evidence']\n    ):\n        raise TypeError('evidence_invalid')\n    payload = json.dumps(\n        report, ensure_ascii=True, sort_keys=True, separators=(',', ':')\n    )\n    return sha256(payload.encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Stable canonical order",
+          "code": "first = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a','b')}\nsecond = {'evidence':('a','b'),'summary':'ok','recommendation':'no_review','purchase_order_id':'p','case_id':'c'}\nassert report_digest(first) == report_digest(second)\nassert len(report_digest(first)) == 64 and report_digest(first).isalnum()\n"
+        },
+        {
+          "label": "Bound-field changes",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a','b')}\nassert report_digest(base) != report_digest({**base,'summary':'changed'})\nassert report_digest(base) != report_digest({**base,'recommendation':'review_required'})\n"
+        },
+        {
+          "label": "Evidence order is part of snapshot",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a','b')}\nassert report_digest(base) != report_digest({**base,'evidence':('b','a')})\n"
+        },
+        {
+          "label": "Unicode canonicalization",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'needs_human','summary':'café','evidence':('é',)}\nassert report_digest(base) == report_digest(dict(reversed(tuple(base.items()))))\n"
+        },
+        {
+          "label": "Closed strict report",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a',)}\nassert raises(ValueError, report_digest, {**base,'extra':1})\nassert raises(ValueError, report_digest, {key:value for key,value in base.items() if key!='summary'})\nassert raises(TypeError, report_digest, {**base,'evidence':['a']})\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q092",
+      "type": "code",
+      "topic": "Exact approval transition",
+      "difficulty": "applied",
+      "prompt": "Implement approval_transition(result_status, current_report_digest, approval). approval must be an exact dict with report_digest, reviewer and decision. Require result_status awaiting_approval, current_report_digest and approval digest to be exact 64-character lowercase hexadecimal strs, a non-blank reviewer str of at most 80 characters, and decision exactly approve or reject. Require the two digests to match. Return (approved, human:approve:<reviewer>) or (rejected, human:reject:<reviewer>). Raise TypeError for malformed containers/scalars and ValueError with a descriptive condition for invalid lifecycle, digest, reviewer, decision or mismatch. This accepts only the local report and grants no external action.",
+      "explanation": "The transition validates lifecycle, artifact identity, reviewer data and decision independently before changing status.",
+      "starter": "def approval_transition(result_status, current_report_digest, approval):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "HEX = frozenset('0123456789abcdef')\n\ndef _digest(value):\n    if type(value) is not str:\n        raise TypeError('digest_type')\n    if len(value) != 64 or any(character not in HEX for character in value):\n        raise ValueError('digest_invalid')\n    return value\n\ndef approval_transition(result_status, current_report_digest, approval):\n    if type(result_status) is not str:\n        raise TypeError('status_type')\n    if result_status != 'awaiting_approval':\n        raise ValueError('result_not_awaiting_approval')\n    current = _digest(current_report_digest)\n    if type(approval) is not dict:\n        raise TypeError('approval_type')\n    if set(approval) != {'report_digest','reviewer','decision'}:\n        raise ValueError('approval_keys')\n    supplied = _digest(approval['report_digest'])\n    reviewer = approval['reviewer']\n    decision = approval['decision']\n    if type(reviewer) is not str or not reviewer.strip() or len(reviewer) > 80:\n        raise ValueError('reviewer_required')\n    if type(decision) is not str or decision not in {'approve','reject'}:\n        raise ValueError('approval_invalid')\n    if supplied != current:\n        raise ValueError('approval_report_mismatch')\n    status = 'approved' if decision == 'approve' else 'rejected'\n    return status, f'human:{decision}:{reviewer}'\n",
+      "checks": [
+        {
+          "label": "Approve exact report",
+          "code": "digest = 'a' * 64\napproval = {'report_digest':digest,'reviewer':'reviewer-1','decision':'approve'}\nassert approval_transition('awaiting_approval', digest, approval) == ('approved','human:approve:reviewer-1')\n"
+        },
+        {
+          "label": "Reject exact report",
+          "code": "digest = '0' * 64\napproval = {'report_digest':digest,'reviewer':'human','decision':'reject'}\nassert approval_transition('awaiting_approval', digest, approval) == ('rejected','human:reject:human')\n"
+        },
+        {
+          "label": "Snapshot mismatch",
+          "code": "approval = {'report_digest':'a'*64,'reviewer':'r','decision':'approve'}\nassert raises(ValueError, approval_transition, 'awaiting_approval', 'b'*64, approval)\n"
+        },
+        {
+          "label": "Reviewer and digest validation",
+          "code": "base = {'report_digest':'a'*64,'reviewer':' ','decision':'approve'}\nassert raises(ValueError, approval_transition, 'awaiting_approval', 'a'*64, base)\nassert raises(ValueError, approval_transition, 'awaiting_approval', 'A'*64, {**base,'reviewer':'r','report_digest':'A'*64})\nassert raises(TypeError, approval_transition, 'awaiting_approval', 'a'*64, None)\n"
+        },
+        {
+          "label": "Lifecycle and decision",
+          "code": "base = {'report_digest':'a'*64,'reviewer':'r','decision':'approve'}\nassert raises(ValueError, approval_transition, 'approved', 'a'*64, base)\nassert raises(ValueError, approval_transition, 'awaiting_approval', 'a'*64, {**base,'decision':'APPROVE'})\nassert raises(ValueError, approval_transition, 'awaiting_approval', 'a'*64, {**base,'extra':1})\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q093",
+      "type": "code",
+      "topic": "Report parity",
+      "difficulty": "applied",
+      "prompt": "Implement same_report(left, right). Each input must be an exact dict with case_id, purchase_order_id, recommendation, summary and evidence; the first four values must be exact strs and evidence an exact tuple of exact strs. Raise TypeError or ValueError for malformed reports. Return True only when every bound field and evidence order are equal. Do not compare controller route, model calls or trace data and do not mutate inputs.",
+      "explanation": "Route parity compares the complete shared business report, not only the recommendation and not controller-specific metrics.",
+      "starter": "def same_report(left, right):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "KEYS = frozenset({'case_id','purchase_order_id','recommendation','summary','evidence'})\n\ndef _report(value):\n    if type(value) is not dict:\n        raise TypeError('report_type')\n    if set(value) != KEYS:\n        raise ValueError('report_keys')\n    if any(type(value[key]) is not str for key in ('case_id','purchase_order_id','recommendation','summary')):\n        raise TypeError('report_scalar_type')\n    if type(value['evidence']) is not tuple or any(type(item) is not str for item in value['evidence']):\n        raise TypeError('evidence_type')\n    return value\n\ndef same_report(left, right):\n    first = _report(left)\n    second = _report(right)\n    return all(first[key] == second[key] for key in KEYS)\n",
+      "checks": [
+        {
+          "label": "Independent equal reports",
+          "code": "left = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a','b')}\nright = dict(left)\nassert same_report(left, right) is True and left is not right\n"
+        },
+        {
+          "label": "Dictionary order irrelevant",
+          "code": "left = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a',)}\nright = dict(reversed(tuple(left.items())))\nassert same_report(left, right) is True\n"
+        },
+        {
+          "label": "Recommendation is insufficient",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a',)}\nassert same_report(base, {**base,'summary':'different'}) is False\nassert same_report(base, {**base,'purchase_order_id':'other'}) is False\n"
+        },
+        {
+          "label": "Evidence order matters",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a','b')}\nassert same_report(base, {**base,'evidence':('b','a')}) is False\n"
+        },
+        {
+          "label": "Closed strict reports",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('a',)}\nassert raises(ValueError, same_report, base, {**base,'route':'agent'})\nassert raises(TypeError, same_report, base, {**base,'evidence':['a']})\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q094",
+      "type": "code",
+      "topic": "Controlled comparison aggregation",
+      "difficulty": "applied",
+      "prompt": "Implement aggregate_runs(results). results must be a non-empty exact list of exact dicts containing exactly status, model_calls, tool_calls, estimated_model_cost_usd and modeled_latency_ms. Status is awaiting_approval or failed; counts and latency are exact non-negative ints; cost is a canonical non-negative decimal string. Return runs, successful_investigations, failures, one-place failure_rate, two-place numeric averages for model/tool calls and latency, and six-place total_estimated_model_cost_usd using Decimal. Raise TypeError or ValueError for invalid data and do not mutate results.",
+      "explanation": "Aggregation reports only the supplied trial set and preserves exact cost arithmetic instead of inflating selected fixtures into a broader benchmark.",
+      "starter": "def aggregate_runs(results):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\nfrom decimal import Decimal, ROUND_HALF_EVEN\n\nCOST = re.compile(r'(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?')\nKEYS = frozenset({'status','model_calls','tool_calls','estimated_model_cost_usd','modeled_latency_ms'})\n\ndef aggregate_runs(results):\n    if type(results) is not list:\n        raise TypeError('results_type')\n    if not results:\n        raise ValueError('results_empty')\n    costs = []\n    for row in results:\n        if type(row) is not dict or set(row) != KEYS:\n            raise ValueError('result_shape')\n        if type(row['status']) is not str or row['status'] not in {'awaiting_approval','failed'}:\n            raise ValueError('status_invalid')\n        for key in ('model_calls','tool_calls','modeled_latency_ms'):\n            if type(row[key]) is not int or row[key] < 0:\n                raise TypeError('metric_invalid')\n        value = row['estimated_model_cost_usd']\n        if type(value) is not str:\n            raise TypeError('cost_type')\n        if COST.fullmatch(value) is None:\n            raise ValueError('cost_invalid')\n        costs.append(Decimal(value))\n    runs = len(results)\n    failures = sum(row['status'] == 'failed' for row in results)\n    total_cost = sum(costs, start=Decimal('0')).quantize(Decimal('0.000001'), rounding=ROUND_HALF_EVEN)\n    return {\n        'runs':runs,\n        'successful_investigations':runs-failures,\n        'failures':failures,\n        'failure_rate':f'{(failures/runs)*100:.1f}%',\n        'average_model_calls':round(sum(row['model_calls'] for row in results)/runs, 2),\n        'average_tool_calls':round(sum(row['tool_calls'] for row in results)/runs, 2),\n        'total_estimated_model_cost_usd':format(total_cost, '.6f'),\n        'average_modeled_latency_ms':round(sum(row['modeled_latency_ms'] for row in results)/runs, 2),\n    }\n",
+      "checks": [
+        {
+          "label": "Selected four-run set",
+          "code": "rows = [\n {'status':'awaiting_approval','model_calls':6,'tool_calls':5,'estimated_model_cost_usd':'0.001461','modeled_latency_ms':560},\n {'status':'awaiting_approval','model_calls':6,'tool_calls':5,'estimated_model_cost_usd':'0.001461','modeled_latency_ms':560},\n {'status':'failed','model_calls':8,'tool_calls':1,'estimated_model_cost_usd':'0.001600','modeled_latency_ms':600},\n {'status':'failed','model_calls':8,'tool_calls':1,'estimated_model_cost_usd':'0.001626','modeled_latency_ms':642},\n]\nresult = aggregate_runs(rows)\nassert result['runs'] == 4 and result['failures'] == 2 and result['failure_rate'] == '50.0%'\nassert result['average_model_calls'] == 7.0 and result['average_tool_calls'] == 3.0\nassert result['total_estimated_model_cost_usd'] == '0.006148'\n"
+        },
+        {
+          "label": "All successful workflow",
+          "code": "rows = [{'status':'awaiting_approval','model_calls':0,'tool_calls':5,'estimated_model_cost_usd':'0','modeled_latency_ms':20} for _ in range(4)]\nresult = aggregate_runs(rows)\nassert result['failure_rate'] == '0.0%' and result['successful_investigations'] == 4\nassert result['total_estimated_model_cost_usd'] == '0.000000'\n"
+        },
+        {
+          "label": "Exact decimal total",
+          "code": "rows = [\n {'status':'failed','model_calls':1,'tool_calls':0,'estimated_model_cost_usd':'0.0000005','modeled_latency_ms':1},\n {'status':'failed','model_calls':1,'tool_calls':0,'estimated_model_cost_usd':'0.0000005','modeled_latency_ms':3},\n]\nassert aggregate_runs(rows)['total_estimated_model_cost_usd'] == '0.000001'\nassert aggregate_runs(rows)['average_modeled_latency_ms'] == 2.0\n"
+        },
+        {
+          "label": "Strict result shape",
+          "code": "valid = {'status':'failed','model_calls':1,'tool_calls':0,'estimated_model_cost_usd':'0','modeled_latency_ms':1}\nassert raises(TypeError, aggregate_runs, (valid,))\nassert raises(ValueError, aggregate_runs, [])\nassert raises(ValueError, aggregate_runs, [{**valid,'extra':1}])\n"
+        },
+        {
+          "label": "Strict metric values",
+          "code": "valid = {'status':'failed','model_calls':1,'tool_calls':0,'estimated_model_cost_usd':'0','modeled_latency_ms':1}\nassert raises(TypeError, aggregate_runs, [{**valid,'model_calls':True}])\nassert raises(ValueError, aggregate_runs, [{**valid,'estimated_model_cost_usd':'1e-3'}])\nassert raises(ValueError, aggregate_runs, [{**valid,'status':'approved'}])\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q095",
+      "type": "code",
+      "topic": "Controller selection rubric",
+      "difficulty": "applied",
+      "prompt": "Implement choose_controller(stable_sequence, deterministic_rules, route_uncertainty, evaluation_ready). All inputs must be exact bools. Return workflow when the route is stable with deterministic rules and no route uncertainty. When route_uncertainty is true and evaluation_ready is true, return hybrid if deterministic_rules is true, otherwise agent_candidate. In every other case return workflow until stronger evidence exists. Raise TypeError for non-bools. This is the exercise's explicit conservative rubric, not a universal law.",
+      "explanation": "A conservative controller rubric keeps known decisions deterministic and treats evaluation evidence as a prerequisite for broader model-directed routing.",
+      "starter": "def choose_controller(stable_sequence, deterministic_rules, route_uncertainty, evaluation_ready):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def choose_controller(stable_sequence, deterministic_rules, route_uncertainty, evaluation_ready):\n    values = (stable_sequence, deterministic_rules, route_uncertainty, evaluation_ready)\n    if any(type(value) is not bool for value in values):\n        raise TypeError('flag_invalid')\n    if stable_sequence and deterministic_rules and not route_uncertainty:\n        return 'workflow'\n    if route_uncertainty and evaluation_ready:\n        return 'hybrid' if deterministic_rules else 'agent_candidate'\n    return 'workflow'\n",
+      "checks": [
+        {
+          "label": "Known route",
+          "code": "assert choose_controller(True, True, False, False) == 'workflow'\nassert choose_controller(True, True, False, True) == 'workflow'\n"
+        },
+        {
+          "label": "Uncertain node in deterministic lifecycle",
+          "code": "assert choose_controller(False, True, True, True) == 'hybrid'\nassert choose_controller(True, True, True, True) == 'hybrid'\n"
+        },
+        {
+          "label": "Broader agent candidate",
+          "code": "assert choose_controller(False, False, True, True) == 'agent_candidate'\n"
+        },
+        {
+          "label": "Evaluation not ready",
+          "code": "assert choose_controller(False, False, True, False) == 'workflow'\nassert choose_controller(False, True, True, False) == 'workflow'\n"
+        },
+        {
+          "label": "Strict flags",
+          "code": "assert raises(TypeError, choose_controller, 1, True, False, False)\nassert raises(TypeError, choose_controller, True, True, 'no', False)\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q096",
+      "type": "code",
+      "topic": "Deterministic evaluator gate",
+      "difficulty": "applied",
+      "prompt": "Implement report_gate(report, max_summary_chars). report must be an exact dict; max_summary_chars an exact int from 1 through 1000. The expected fields are case_id, purchase_order_id, recommendation, summary and evidence. Return {'ok': bool, 'errors': tuple} with deterministic errors in this order: missing:<field> for expected fields in the listed order, unexpected:<field> for sorted extras, then invalid:case_id, invalid:purchase_order_id, invalid:recommendation, invalid:summary, invalid:evidence as applicable for present fields. Identifiers and summary are non-blank exact strs, recommendation is one of three allowed values, and evidence is a non-empty exact tuple of unique non-blank exact strs. Do not mutate report.",
+      "explanation": "Hard report gates provide precise schema and invariant feedback before any optional semantic evaluator is asked to judge prose quality.",
+      "starter": "def report_gate(report, max_summary_chars):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "FIELDS = ('case_id','purchase_order_id','recommendation','summary','evidence')\nRECOMMENDATIONS = frozenset({'no_review','review_required','needs_human'})\n\ndef report_gate(report, max_summary_chars):\n    if type(report) is not dict:\n        raise TypeError('report_type')\n    if type(max_summary_chars) is not int:\n        raise TypeError('summary_limit_type')\n    if not 1 <= max_summary_chars <= 1000:\n        raise ValueError('summary_limit_range')\n    errors = []\n    for field in FIELDS:\n        if field not in report:\n            errors.append(f'missing:{field}')\n    for field in sorted(set(report) - set(FIELDS)):\n        errors.append(f'unexpected:{field}')\n    for field in ('case_id','purchase_order_id'):\n        if field in report and (\n            type(report[field]) is not str or not report[field].strip()\n        ):\n            errors.append(f'invalid:{field}')\n    if 'recommendation' in report and (\n        type(report['recommendation']) is not str\n        or report['recommendation'] not in RECOMMENDATIONS\n    ):\n        errors.append('invalid:recommendation')\n    if 'summary' in report and (\n        type(report['summary']) is not str\n        or not report['summary'].strip()\n        or len(report['summary']) > max_summary_chars\n    ):\n        errors.append('invalid:summary')\n    if 'evidence' in report:\n        evidence = report['evidence']\n        if (\n            type(evidence) is not tuple or not evidence\n            or any(type(value) is not str or not value.strip() for value in evidence)\n            or len(set(evidence)) != len(evidence)\n        ):\n            errors.append('invalid:evidence')\n    return {'ok':not errors, 'errors':tuple(errors)}\n",
+      "checks": [
+        {
+          "label": "Valid report",
+          "code": "report = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'Within threshold.','evidence':('order:p','contract:p:found')}\nassert report_gate(report, 100) == {'ok':True,'errors':()}\n"
+        },
+        {
+          "label": "Missing and unexpected order",
+          "code": "report = {'case_id':'c','recommendation':'no_review','summary':'ok','evidence':('e',),'z':1,'a':2}\nassert report_gate(report, 100)['errors'][:3] == ('missing:purchase_order_id','unexpected:a','unexpected:z')\n"
+        },
+        {
+          "label": "Closed recommendation",
+          "code": "report = {'case_id':'c','purchase_order_id':'p','recommendation':'approved','summary':'ok','evidence':('e',)}\nassert report_gate(report, 100)['errors'] == ('invalid:recommendation',)\n"
+        },
+        {
+          "label": "Summary and evidence rules",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'toolong','evidence':('e','e')}\nassert report_gate(base, 3)['errors'] == ('invalid:summary','invalid:evidence')\n"
+        },
+        {
+          "label": "Strict limit and ownership",
+          "code": "report = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review','summary':'ok','evidence':('e',)}\ncopy = dict(report)\nassert raises(TypeError, report_gate, report, True)\nassert raises(ValueError, report_gate, report, 0)\nassert report_gate(report, 10)['ok'] and report == copy\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q097",
+      "type": "code",
+      "topic": "Bounded worker plan",
+      "difficulty": "applied",
+      "prompt": "Implement worker_plan(requested, allowed, max_workers). requested must be an exact tuple and allowed an exact frozenset of non-empty exact str worker names; max_workers an exact int from 1 through 8. Process requested in order. Schedule the first occurrence of an allowed worker while capacity remains. Record later occurrences as duplicate:<name>, unsupported names as unsupported:<name>, and otherwise allowed unique names beyond capacity as capacity:<name>. Return {'scheduled': tuple, 'rejected': tuple}; do not mutate inputs or execute workers.",
+      "explanation": "An orchestrator needs an application-owned worker catalogue, duplicate policy and fan-out limit before dynamic decomposition reaches execution.",
+      "starter": "def worker_plan(requested, allowed, max_workers):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def worker_plan(requested, allowed, max_workers):\n    if type(requested) is not tuple or type(allowed) is not frozenset:\n        raise TypeError('worker_collection_type')\n    if any(type(value) is not str or not value for value in (*requested, *allowed)):\n        raise TypeError('worker_name_invalid')\n    if type(max_workers) is not int:\n        raise TypeError('max_workers_type')\n    if not 1 <= max_workers <= 8:\n        raise ValueError('max_workers_range')\n    scheduled = []\n    rejected = []\n    seen = set()\n    for name in requested:\n        if name in seen:\n            rejected.append(f'duplicate:{name}')\n            continue\n        seen.add(name)\n        if name not in allowed:\n            rejected.append(f'unsupported:{name}')\n        elif len(scheduled) >= max_workers:\n            rejected.append(f'capacity:{name}')\n        else:\n            scheduled.append(name)\n    return {'scheduled':tuple(scheduled), 'rejected':tuple(rejected)}\n",
+      "checks": [
+        {
+          "label": "Allowed ordered plan",
+          "code": "allowed = frozenset({'contract','delivery','quality'})\nassert worker_plan(('delivery','contract'), allowed, 3) == {'scheduled':('delivery','contract'),'rejected':()}\n"
+        },
+        {
+          "label": "Duplicate handling",
+          "code": "allowed = frozenset({'contract','delivery'})\nassert worker_plan(('contract','contract','delivery'), allowed, 3) == {\n    'scheduled':('contract','delivery'),'rejected':('duplicate:contract',)}\n"
+        },
+        {
+          "label": "Unsupported handling",
+          "code": "allowed = frozenset({'contract'})\nassert worker_plan(('email','contract'), allowed, 2) == {\n    'scheduled':('contract',),'rejected':('unsupported:email',)}\n"
+        },
+        {
+          "label": "Capacity handling",
+          "code": "allowed = frozenset({'contract','delivery','quality'})\nassert worker_plan(('contract','delivery','quality'), allowed, 2) == {\n    'scheduled':('contract','delivery'),'rejected':('capacity:quality',)}\n"
+        },
+        {
+          "label": "Strict inputs and bounds",
+          "code": "assert raises(TypeError, worker_plan, ['contract'], frozenset({'contract'}), 1)\nassert raises(TypeError, worker_plan, ('contract',), {'contract'}, 1)\nassert raises(TypeError, worker_plan, ('contract',), frozenset({'contract'}), True)\nassert raises(ValueError, worker_plan, ('contract',), frozenset({'contract'}), 0)\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q098",
+      "type": "code",
+      "topic": "Worker-result merge",
+      "difficulty": "applied",
+      "prompt": "Implement merge_results(expected, results). expected must be a non-empty exact tuple of unique non-empty exact str worker names. results must be an exact list containing exactly one exact dict per expected worker with exactly worker, value and source, all non-empty exact strs. Reject unknown, duplicate or missing workers with ValueError and malformed values with TypeError. Return values ordered by expected, sources as worker:source strings in the same order, and conflict True when workers returned more than one distinct value. Do not mutate or retain result dictionaries.",
+      "explanation": "A deterministic merge preserves worker identity and provenance, rejects incomplete or duplicated results and surfaces contradictions instead of silently overwriting them.",
+      "starter": "def merge_results(expected, results):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def merge_results(expected, results):\n    if type(expected) is not tuple or not expected or any(\n        type(value) is not str or not value for value in expected\n    ):\n        raise TypeError('expected_invalid')\n    if len(set(expected)) != len(expected):\n        raise ValueError('expected_duplicate')\n    if type(results) is not list:\n        raise TypeError('results_type')\n    indexed = {}\n    for row in results:\n        if type(row) is not dict or set(row) != {'worker','value','source'}:\n            raise TypeError('result_shape')\n        if any(type(row[key]) is not str or not row[key] for key in ('worker','value','source')):\n            raise TypeError('result_value')\n        worker = row['worker']\n        if worker not in expected:\n            raise ValueError('worker_unknown')\n        if worker in indexed:\n            raise ValueError('worker_duplicate')\n        indexed[worker] = (row['value'], row['source'])\n    if set(indexed) != set(expected):\n        raise ValueError('worker_missing')\n    values = tuple(indexed[worker][0] for worker in expected)\n    sources = tuple(f'{worker}:{indexed[worker][1]}' for worker in expected)\n    return {'values':values, 'sources':sources, 'conflict':len(set(values)) > 1}\n",
+      "checks": [
+        {
+          "label": "Expected-order merge",
+          "code": "rows = [\n {'worker':'quality','value':'ok','source':'q1'},\n {'worker':'contract','value':'ok','source':'c1'},\n]\nassert merge_results(('contract','quality'), rows) == {\n 'values':('ok','ok'),'sources':('contract:c1','quality:q1'),'conflict':False}\n"
+        },
+        {
+          "label": "Conflict surfaced",
+          "code": "rows = [\n {'worker':'contract','value':'review','source':'c1'},\n {'worker':'quality','value':'clear','source':'q1'},\n]\nassert merge_results(('contract','quality'), rows)['conflict'] is True\n"
+        },
+        {
+          "label": "Duplicate rejected",
+          "code": "rows = [\n {'worker':'contract','value':'a','source':'c1'},\n {'worker':'contract','value':'b','source':'c2'},\n]\nassert raises(ValueError, merge_results, ('contract',), rows)\n"
+        },
+        {
+          "label": "Missing and unknown rejected",
+          "code": "assert raises(ValueError, merge_results, ('contract','quality'), [{'worker':'contract','value':'a','source':'c'}])\nassert raises(ValueError, merge_results, ('contract',), [{'worker':'email','value':'a','source':'e'}])\n"
+        },
+        {
+          "label": "Strict shape and no alias",
+          "code": "rows = [{'worker':'contract','value':'a','source':'c'}]\nout = merge_results(('contract',), rows); rows[0]['value'] = 'changed'\nassert out['values'] == ('a',)\nassert raises(TypeError, merge_results, ('contract',), [{'worker':'contract','value':'a','source':'c','extra':1}])\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q099",
+      "type": "code",
+      "topic": "Bounded trace append",
+      "difficulty": "applied",
+      "prompt": "Implement append_trace(trace, event, max_events, max_bytes). trace must be an exact tuple of non-empty exact str events and event a non-empty exact str. Limits must be exact positive ints. Form the candidate tuple, then raise ValueError if its event count exceeds max_events or the UTF-8 byte length of events joined with a single newline exceeds max_bytes. Otherwise return the new tuple. Do not mutate the input and do not count Unicode characters as bytes.",
+      "explanation": "Trace bounds need explicit event and serialized-byte accounting so explainability data cannot grow without an application limit.",
+      "starter": "def append_trace(trace, event, max_events, max_bytes):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def append_trace(trace, event, max_events, max_bytes):\n    if type(trace) is not tuple or any(type(value) is not str or not value for value in trace):\n        raise TypeError('trace_invalid')\n    if type(event) is not str or not event:\n        raise TypeError('event_invalid')\n    if type(max_events) is not int or type(max_bytes) is not int:\n        raise TypeError('limit_type')\n    if max_events <= 0 or max_bytes <= 0:\n        raise ValueError('limit_range')\n    candidate = (*trace, event)\n    if len(candidate) > max_events:\n        raise ValueError('trace_event_budget')\n    if len('\\n'.join(candidate).encode('utf-8')) > max_bytes:\n        raise ValueError('trace_byte_budget')\n    return candidate\n",
+      "checks": [
+        {
+          "label": "Append without mutation",
+          "code": "trace = ('agent:start',)\nout = append_trace(trace, 'planner:proposed:load_order', 2, 100)\nassert out == ('agent:start','planner:proposed:load_order') and trace == ('agent:start',)\n"
+        },
+        {
+          "label": "Inclusive limits",
+          "code": "assert append_trace(('a',), 'b', 2, 3) == ('a','b')\n"
+        },
+        {
+          "label": "Event-count budget",
+          "code": "assert raises(ValueError, append_trace, ('a','b'), 'c', 2, 100)\n"
+        },
+        {
+          "label": "UTF-8 byte budget",
+          "code": "assert append_trace((), 'é', 1, 2) == ('é',)\nassert raises(ValueError, append_trace, (), 'é', 1, 1)\n"
+        },
+        {
+          "label": "Strict values and limits",
+          "code": "assert raises(TypeError, append_trace, ['a'], 'b', 2, 10)\nassert raises(TypeError, append_trace, (), '', 1, 1)\nassert raises(TypeError, append_trace, (), 'a', True, 1)\nassert raises(ValueError, append_trace, (), 'a', 0, 1)\n"
+        }
+      ]
+    },
+    {
+      "id": "W14-Q100",
+      "type": "code",
+      "topic": "Trial outcome summary",
+      "difficulty": "applied",
+      "prompt": "Implement summarize_trials(trials). trials must be a non-empty exact list of exact dicts containing exactly task_id, success and terminal_reason. task_id is a unique non-empty exact str; success an exact bool; terminal_reason one of awaiting_approval, duplicate_action, unsupported_action, incomplete_evidence or step_budget_exhausted. A successful trial must use awaiting_approval and a failed trial must not. Return total, successes, failures, one-place failure_rate and failure_reasons as an alphabetically sorted tuple of (reason, count). Raise TypeError or ValueError for malformed or inconsistent data and do not mutate trials.",
+      "explanation": "Task success and terminal failure categories should be graded explicitly so loop and policy failures are not hidden inside one average.",
+      "starter": "def summarize_trials(trials):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "REASONS = frozenset({\n    'awaiting_approval', 'duplicate_action', 'unsupported_action',\n    'incomplete_evidence', 'step_budget_exhausted',\n})\n\ndef summarize_trials(trials):\n    if type(trials) is not list:\n        raise TypeError('trials_type')\n    if not trials:\n        raise ValueError('trials_empty')\n    seen = set()\n    failures = {}\n    successes = 0\n    for row in trials:\n        if type(row) is not dict or set(row) != {'task_id','success','terminal_reason'}:\n            raise TypeError('trial_shape')\n        task_id = row['task_id']\n        success = row['success']\n        reason = row['terminal_reason']\n        if type(task_id) is not str or not task_id:\n            raise TypeError('task_id_invalid')\n        if task_id in seen:\n            raise ValueError('task_id_duplicate')\n        seen.add(task_id)\n        if type(success) is not bool:\n            raise TypeError('success_invalid')\n        if type(reason) is not str or reason not in REASONS:\n            raise ValueError('terminal_reason_invalid')\n        if success != (reason == 'awaiting_approval'):\n            raise ValueError('outcome_inconsistent')\n        if success:\n            successes += 1\n        else:\n            failures[reason] = failures.get(reason, 0) + 1\n    total = len(trials)\n    failed = total - successes\n    return {\n        'total':total, 'successes':successes, 'failures':failed,\n        'failure_rate':f'{(failed/total)*100:.1f}%',\n        'failure_reasons':tuple(sorted(failures.items())),\n    }\n",
+      "checks": [
+        {
+          "label": "Controlled script outcomes",
+          "code": "trials = [\n {'task_id':'happy','success':True,'terminal_reason':'awaiting_approval'},\n {'task_id':'detour','success':True,'terminal_reason':'awaiting_approval'},\n {'task_id':'loop','success':False,'terminal_reason':'duplicate_action'},\n {'task_id':'unsafe','success':False,'terminal_reason':'unsupported_action'},\n]\nassert summarize_trials(trials) == {\n 'total':4,'successes':2,'failures':2,'failure_rate':'50.0%',\n 'failure_reasons':(('duplicate_action',1),('unsupported_action',1))}\n"
+        },
+        {
+          "label": "Repeated failure category",
+          "code": "trials = [\n {'task_id':'a','success':False,'terminal_reason':'incomplete_evidence'},\n {'task_id':'b','success':False,'terminal_reason':'incomplete_evidence'},\n]\nassert summarize_trials(trials)['failure_reasons'] == (('incomplete_evidence',2),)\n"
+        },
+        {
+          "label": "Duplicate task rejected",
+          "code": "row = {'task_id':'a','success':True,'terminal_reason':'awaiting_approval'}\nassert raises(ValueError, summarize_trials, [row, dict(row)])\n"
+        },
+        {
+          "label": "Outcome consistency",
+          "code": "assert raises(ValueError, summarize_trials, [{'task_id':'a','success':True,'terminal_reason':'duplicate_action'}])\nassert raises(ValueError, summarize_trials, [{'task_id':'a','success':False,'terminal_reason':'awaiting_approval'}])\n"
+        },
+        {
+          "label": "Strict bank and values",
+          "code": "valid = {'task_id':'a','success':True,'terminal_reason':'awaiting_approval'}\nassert raises(TypeError, summarize_trials, (valid,))\nassert raises(ValueError, summarize_trials, [])\nassert raises(TypeError, summarize_trials, [{**valid,'success':1}])\nassert raises(ValueError, summarize_trials, [{**valid,'terminal_reason':'timeout'}])\n"
+        }
+      ]
+    }
+  ]
+}

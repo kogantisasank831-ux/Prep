@@ -3,8 +3,8 @@ layout: week
 week: 14
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-01
+version: 1.0.2
+last_reviewed: 2026-11-02
 estimated_hours: 8
 permalink: /weeks/week-14/
 title: "Choose the controller before you build the agent"
@@ -40,6 +40,8 @@ The important design question is therefore not “How do I add an agent?” It i
 Both versions use the same tools, facts, price calculation, recommendation rule and approval boundary. Keeping those parts equal makes control flow the independent variable. The runnable lab uses a scripted planner so every route and failure is reproducible without a provider key. It tests orchestration behavior; it does not measure a real model.
 
 If agent terminology is new, use the [beginner version]({{ '/weeks/week-14/beginner/' | relative_url }}) first. Week 13’s tool contracts remain the boundary underneath this lesson: a model can propose an operation, but application code still owns authority and execution.
+
+The [Week 14 assessment]({{ '/assessments/week-14/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -477,6 +479,8 @@ Be prepared to give a hybrid example. “A deterministic lifecycle with one boun
 You are done when you can point to every routing decision and say whether code, a model or a human owns it. You should be able to reproduce a valid workflow, a valid agent route, a loop termination, an unsupported-action rejection and an approval mismatch. You should also be able to explain why the supplied metrics prove the harness behavior but not real-model quality.
 
 Week 15 will express explicit state, nodes, edges, conditional routes, checkpointing and interrupts with LangGraph. The concepts in this week remain the test: a graph library can make control flow visible, but it cannot decide which transitions should be deterministic or where human authority belongs.
+
+Use the [Week 14 assessment]({{ '/assessments/week-14/' | relative_url }}) to practise controller selection, bounded loops, approval binding, orchestration patterns and evaluation contracts before moving to the graph implementation.
 
 ## Sources and further reading
 

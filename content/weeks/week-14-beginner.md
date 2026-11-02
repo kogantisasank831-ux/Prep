@@ -3,8 +3,8 @@ layout: week
 week: 14
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-01
+version: 1.0.2
+last_reviewed: 2026-11-02
 estimated_hours: 8
 permalink: /weeks/week-14/beginner/
 title: "Workflows and agents, one step at a time"
@@ -42,6 +42,8 @@ The key difference is simple:
 This week builds both versions over the same fictional data. There is no model download or API key. A scripted planner stands in for a model so you can see correct routes, wrong routes and loops every time.
 
 The [production version]({{ '/weeks/week-14/' | relative_url }}) adds deeper design and evaluation guidance. Use this version to build the mental model first.
+
+The [Week 14 assessment]({{ '/assessments/week-14/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
 ## Know the shared task
 
@@ -322,6 +324,8 @@ python -m pytest tests/test_week14_workflows.py -q
 10. Give one task where you would refuse to use an agent and explain why.
 
 You are ready when you can follow both traces, explain every rejected proposal and choose the simpler controller for a new task. Week 15 will place these same ideas into a graph with explicit nodes, edges, conditional routing, persistence and interrupts.
+
+Try the [Week 14 assessment]({{ '/assessments/week-14/' | relative_url }}) for a random paper covering workflows, bounded agents, human approval and orchestration patterns.
 
 ## Read alongside the lab
 

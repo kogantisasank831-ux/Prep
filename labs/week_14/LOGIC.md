@@ -1,4 +1,4 @@
-# Week 14 workflow-versus-agent contracts — revision 1
+# Week 14 workflow-versus-agent contracts — revision 2
 
 Source: `Path.md` Week 14, the established Week 13 tool-boundary lesson, and the
 request to create Week 14 content before its assessment. These rules describe a
@@ -15,8 +15,9 @@ local synthetic teaching lab, not a production procurement system.
 | W14-DR1 | Use three small in-memory synthetic cases and dated fictional reference prices. Use `Decimal` with `ROUND_HALF_EVEN` for displayed two-place variance. Require matching currency/unit and a positive reference price. No network, market source, personal data or prior lab store is used. |
 | W14-NFR1 | Record model calls, tool calls, assumed tokens, estimated model cost, modeled latency and ordered trace events. Prices and latency are configurable teaching assumptions, not current provider prices, wall-clock measurements or service-level objectives. |
 | W14-NFR2 | The comparison runs four controlled scripts against the same case. Failure rate is the observed result of those selected scripts and must be labelled as a control-flow demonstration, never a benchmark or proof that workflows are universally more reliable. |
-| W14-ENG1 | Use the standard library and existing repository environment. Keep controllers, models, tools and CLI separately testable. Add no provider, framework, paid service, public API, database migration or assessment. |
-| W14-ER1 | Test route parity on a successful case, all three recommendation branches, dependency checks, unsupported/duplicate action rejection, finite loop termination, exact approval binding, deterministic metrics, comparison aggregation and CLI smoke. Run Ruff, strict mypy, pytest, Markdown/front-matter/link checks, CI and live Pages verification before publication. |
+| W14-ENG1 | Use the standard library and existing repository environment. Keep controllers, models, tools and CLI separately testable. Add no provider, framework, paid service, public API or database migration. The static assessment remains separate from the runnable lab and uses the existing shared browser engine. |
+| W14-AS1 | Publish 100 distinct assessment items using the established 30 single-choice, 20 multiple-correct, 15 matching, 15 short-syntax and 20 Python-coding distribution. Each random paper draws two of every format. Coding tasks are independent, standard-library only and have five executable checks. Public client-side scores are practice feedback, not authenticated exam records. |
+| W14-ER1 | Test route parity on a successful case, all three recommendation branches, dependency checks, unsupported/duplicate action rejection, finite loop termination, exact approval binding, deterministic metrics, comparison aggregation and CLI smoke. Validate all assessment references, starters, wrong solutions, objective keys, balanced seeded papers and composed controller contracts. Run Ruff, strict mypy, pytest, Markdown/front-matter/link checks, CI and live Pages verification before publication. |
 
 Accepted engineering choices: the workflow uses no model calls because this
 investigation has a known sequence and deterministic decision rule. The agent

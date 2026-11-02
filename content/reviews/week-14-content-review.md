@@ -11,7 +11,7 @@ Published artifacts:
 - `labs/week_14/`
 - `tests/test_week14_workflows.py`
 
-Version 1.0.1 is approved for the static learning site. The project owner asked
+Version 1.0.2 is approved for the static learning site. The project owner asked
 to start Week 14 content after approving and publishing Week 13. This pass follows
 the established one-week content/build/test/publish workflow. No separate claim
 is made that the owner performed a line-by-line editorial review before release.
@@ -31,9 +31,9 @@ is made that the owner performed a line-by-line editorial review before release.
 | Reliability, calls, cost, latency, failure, explainability | Same-case comparison with explicit assumptions and denominator warning | Four-script comparison aggregation |
 | “When should you not use an agent?” | Selection table, failure modes and interview response | Both lesson depths |
 
-The assessment is intentionally absent. `PUBLISHED_WEEKS` includes Week 14 while
-`ASSESSMENT_WEEKS` remains through Week 13, so the roadmap cannot expose a broken
-Week 14 assessment link.
+Patch 1.0.2 adds only reviewed links to the separately tested Week 14 assessment.
+`ASSESSMENT_WEEKS` is extended to Week 14 in the same change that adds the bank,
+page and regression module, so navigation cannot expose a missing route.
 
 ## Technical boundaries
 
@@ -75,24 +75,27 @@ external effects and production operating controls remain future design work.
   bounded agent loops, human-in-the-loop execution, agent evaluation terminology
   and the state/node/edge model that bridges into Week 15. No learning outcome,
   executable contract or comparison value changed.
+- Patch 1.0.2 adds the assessment links and does not change the lesson's technical
+  claims, lab behavior or comparison values. Assessment verification is recorded
+  in `content/reviews/week-14-assessment-review.md`.
 
 ## Executed local checks
 
 Local environment: Python 3.12.14 with the repository virtual environment.
 
-- Ruff lint passes for the 40 files in the configured CI scope.
-- Ruff format check reports all 40 files already formatted.
-- Strict mypy passes for all 40 configured files.
-- The configured regression suite passes: 1,315 tests, including 12 Week 14
-  workflow/agent tests.
+- Ruff lint passes for the 41 files in the configured CI scope.
+- Ruff format check reports all 41 files already formatted.
+- Strict mypy passes for all 41 configured files.
+- The configured regression suite passes: 1,379 tests, including 64 Week 14
+  assessment cases and 12 Week 14 workflow/agent tests.
 - Week 13 actual-SQLite smoke passes all 12 observations, preserving the prior
   gate after the CI edit.
 - Week 14 CLI smoke passes eight observations.
 - Workflow, happy-agent and comparison commands produce the values reproduced in
   the lesson: identical report digest, 0 versus 6 model calls for successful
   routes, and 0% versus 50% failure in the selected four-run control set.
-- Front matter, balanced code fences, UTF-8 reads, heading presence, absent Week
-  14 assessment links, JavaScript syntax and whitespace checks pass.
+- Front matter, balanced code fences, UTF-8 reads, heading presence, resolved
+  Week 14 assessment links, JavaScript syntax and whitespace checks pass.
 - The five primary-source URLs added in 1.0.1 each resolved with HTTP 200 on
   2026-11-01. Their linked pages support the adjacent pattern, loop, approval,
   evaluation and graph concepts; none is used to justify the lab's synthetic

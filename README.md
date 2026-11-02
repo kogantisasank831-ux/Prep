@@ -227,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1, 2, 3, 4, 5, 6, 7, 8 and 9 use the shared engine. Future weeks need their own
+Weeks 1 through 14 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -275,10 +275,11 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–13 assessment tests and Week 10–13 labs'
+requires Node 20+, checks the Week 7–14 assessment tests and Week 10–14 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
-application/Week 13 tool-calling tests and Week 1 service regressions. A second
+application/Week 13 tool-calling/Week 14 controller tests and Week 1 service
+regressions. A second
 required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
@@ -454,4 +455,19 @@ python -m pytest tests/test_week14_workflows.py -q
 Both successful routes stop at `awaiting_approval`; the optional CLI approval is
 a synthetic host-side reviewer fixture bound to the exact report digest. The lab
 cannot approve a purchase order, contact a supplier, make a payment or perform an
-external write. The Week 14 assessment will be added separately.
+external write. The [Week 14 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-14/)
+adds 100 reviewed questions with balanced random 10-question papers, explanations
+and scoring out of 100. Twenty independent standard-library Python exercises
+cover strict action parsing, reachable workflow transitions, proposal and
+prerequisite checks, immutable state updates, exact recommendations and variance,
+bounded loops, assumed usage accounting, canonical report digests, exact approval,
+controller selection, hard report gates, bounded workers, conflict-preserving
+merges, trace budgets and labelled trial summaries. Each exercise has five
+executable checks; no provider, model, database or hosted Python service is added.
+
+Run the bank and controller regression checks from the repository root:
+
+    python -m pytest tests/test_week14_assessment.py tests/test_week14_workflows.py -q
+
+The shared browser worker and scoring rules are unchanged. Required CI keeps the
+Week 14 CLI smoke and the existing real PostgreSQL/container gates.
