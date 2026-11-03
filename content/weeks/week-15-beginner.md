@@ -3,8 +3,8 @@ layout: week
 week: 15
 phase: 4
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-02
+version: 1.0.1
+last_reviewed: 2026-11-03
 estimated_hours: 8
 permalink: /weeks/week-15/beginner/
 title: "Build your first stateful graph"
@@ -44,6 +44,10 @@ That is the mental model for this week’s graph.
 
 The [production version]({{ '/weeks/week-15/' | relative_url }}) adds deeper
 design, persistence and testing guidance. Start here if the vocabulary is new.
+
+The [Week 15 assessment]({{ '/assessments/week-15/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 ## See the route before reading code
 
@@ -296,6 +300,10 @@ Testing only the final sentence would miss most graph failures.
 You are ready when you can draw the route, explain each state update, show the
 pause and resume the same thread without confusing a checkpoint with identity or
 permanent storage.
+
+Try the [Week 15 assessment]({{ '/assessments/week-15/' | relative_url }}) for a
+random paper covering graph state, routes, reducers, checkpoints, interrupts and
+safe resumption.
 
 ## Read alongside the lab
 

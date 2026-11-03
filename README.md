@@ -227,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 through 14 use the shared engine. Future weeks need their own
+Weeks 1 through 15 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -275,12 +275,11 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–14 assessment tests and Week 10–15 labs'
+requires Node 20+, checks the Week 7–15 assessment tests and Week 10–15 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
-application/Week 13 tool-calling/Week 14 controller/Week 15 graph tests and Week 1 service
-regressions. A second
-required job builds
+application/Week 13 tool-calling/Week 14 controller/Week 15 graph tests and Week
+1 service regressions. A second required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
 The candidate commit must pass before its branch is promoted to
@@ -502,4 +501,19 @@ not a signature. All SQL and document facts are local synthetic fixtures; there
 is no model, provider call, API key, external write or hosted Python service.
 Required CI adds the pinned dependency, strict lint/format/type checks, the graph
 regressions and Week 15 CLI smoke while preserving the existing real
-PostgreSQL/pgvector container gate.
+PostgreSQL/pgvector container gate. The [Week 15 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-15/)
+adds 100 reviewed questions with balanced random 10-question papers,
+explanations and scoring out of 100. Twenty independent standard-library Python
+exercises cover reducers, partial state updates, closed routes, deterministic
+classification, exact price policy, fail-closed report validation, canonical
+digests, exact approval, thread admission, checkpoint projections,
+interrupt/resume contracts, bounded traces, topology, idempotent post-approval
+effects and run audits. Each exercise has five executable checks; the browser
+assessment adds no provider, model, database or hosted Python service.
+
+Run the bank and graph regression checks from the repository root:
+
+    python -m pytest tests/test_week15_assessment.py tests/test_week15_langgraph.py -q
+
+The shared browser worker and scoring rules are unchanged. Required CI keeps the
+Week 15 CLI smoke and the existing real PostgreSQL/container gates.

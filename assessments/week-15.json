@@ -1,0 +1,3195 @@
+{
+  "schema_version": 1,
+  "week": 15,
+  "title": "LangGraph fundamentals",
+  "version": "1.0.0",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "type": "single",
+      "topic": "Graph purpose",
+      "difficulty": "foundation",
+      "prompt": "What does a LangGraph StateGraph make explicit in the Week 15 investigation?",
+      "explanation": "The graph declares shared state, named units of work and the allowed transitions between them, making control flow inspectable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Shared state, named nodes and allowed transitions"
+        },
+        {
+          "id": "o2",
+          "text": "A model's hidden chain of thought"
+        },
+        {
+          "id": "o3",
+          "text": "Database permissions inferred from prompts"
+        },
+        {
+          "id": "o4",
+          "text": "Automatic production durability"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q001"
+    },
+    {
+      "type": "single",
+      "topic": "State",
+      "difficulty": "foundation",
+      "prompt": "In this lesson, what is graph state?",
+      "explanation": "State is the current application snapshot that nodes read and update through the graph's declared channel semantics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The current application snapshot"
+        },
+        {
+          "id": "o2",
+          "text": "Only the latest model message"
+        },
+        {
+          "id": "o3",
+          "text": "A permanent audit database"
+        },
+        {
+          "id": "o4",
+          "text": "The Python call stack"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q002"
+    },
+    {
+      "type": "single",
+      "topic": "Nodes",
+      "difficulty": "foundation",
+      "prompt": "What should a graph node normally return?",
+      "explanation": "A node returns a partial state update; the runtime combines it with current state according to each channel's reducer.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A partial state update"
+        },
+        {
+          "id": "o2",
+          "text": "An arbitrary next-node name hidden in prose"
+        },
+        {
+          "id": "o3",
+          "text": "The entire checkpoint database"
+        },
+        {
+          "id": "o4",
+          "text": "A new graph definition"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q003"
+    },
+    {
+      "type": "single",
+      "topic": "Edges",
+      "difficulty": "foundation",
+      "prompt": "Which graph element declares an unconditional dependency between two named steps?",
+      "explanation": "A normal edge connects a source node to a fixed next node, so the dependency is visible in the graph topology.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A fixed edge"
+        },
+        {
+          "id": "o2",
+          "text": "A reducer"
+        },
+        {
+          "id": "o3",
+          "text": "A report digest"
+        },
+        {
+          "id": "o4",
+          "text": "A thread identifier"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q004"
+    },
+    {
+      "type": "single",
+      "topic": "Conditional routing",
+      "difficulty": "foundation",
+      "prompt": "What is the safest role of a conditional routing function?",
+      "explanation": "It should inspect validated state and return one value from a small, declared destination set rather than inventing executable work.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Choose among declared destination names"
+        },
+        {
+          "id": "o2",
+          "text": "Execute any tool named by retrieved text"
+        },
+        {
+          "id": "o3",
+          "text": "Create nodes dynamically from a prompt"
+        },
+        {
+          "id": "o4",
+          "text": "Grant permissions to the selected branch"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q005"
+    },
+    {
+      "type": "single",
+      "topic": "Reducers",
+      "difficulty": "foundation",
+      "prompt": "What does a reducer define for a state channel?",
+      "explanation": "A reducer defines how a new node update combines with the existing channel value; it does not validate the truth of that value.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "How old and new channel values combine"
+        },
+        {
+          "id": "o2",
+          "text": "Whether evidence is factually correct"
+        },
+        {
+          "id": "o3",
+          "text": "Who is authorized to resume a thread"
+        },
+        {
+          "id": "o4",
+          "text": "How long a database retains checkpoints"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q006"
+    },
+    {
+      "type": "single",
+      "topic": "Additive state",
+      "difficulty": "foundation",
+      "prompt": "Why do the evidence and trace channels use an additive reducer?",
+      "explanation": "Appending preserves source identities and ordered node outcomes contributed by different steps instead of replacing earlier entries.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To retain every ordered contribution"
+        },
+        {
+          "id": "o2",
+          "text": "To authenticate each source"
+        },
+        {
+          "id": "o3",
+          "text": "To remove duplicate evidence automatically"
+        },
+        {
+          "id": "o4",
+          "text": "To make the list immutable"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q007"
+    },
+    {
+      "type": "single",
+      "topic": "Replacement state",
+      "difficulty": "foundation",
+      "prompt": "Why does recommendation use replacement semantics rather than list addition?",
+      "explanation": "The application has one current recommendation, so a later validated value replaces the earlier scalar instead of accumulating alternatives.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "There is one current decision value"
+        },
+        {
+          "id": "o2",
+          "text": "Reducers cannot work with strings"
+        },
+        {
+          "id": "o3",
+          "text": "Replacement encrypts the value"
+        },
+        {
+          "id": "o4",
+          "text": "LangGraph requires every scalar to be replaced"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q008"
+    },
+    {
+      "type": "single",
+      "topic": "Compilation",
+      "difficulty": "foundation",
+      "prompt": "What does compiling a StateGraph primarily establish?",
+      "explanation": "Compilation turns the declared builder into a runnable graph and can catch structural issues such as references to missing nodes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A runnable graph with structurally valid references"
+        },
+        {
+          "id": "o2",
+          "text": "Correct procurement policy in every case"
+        },
+        {
+          "id": "o3",
+          "text": "Authenticated reviewer identities"
+        },
+        {
+          "id": "o4",
+          "text": "A durable business record"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q009"
+    },
+    {
+      "type": "single",
+      "topic": "Validation",
+      "difficulty": "applied",
+      "prompt": "The graph compiles successfully, but the report lacks SQL evidence. What should happen?",
+      "explanation": "Graph compilation is structural, not a business proof. Application validation must fail closed and prevent the approval node from running.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Route to validation_failed without approval"
+        },
+        {
+          "id": "o2",
+          "text": "Assume the SQL result was empty"
+        },
+        {
+          "id": "o3",
+          "text": "Pause for approval anyway"
+        },
+        {
+          "id": "o4",
+          "text": "Add a fabricated SQL evidence marker"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q010"
+    },
+    {
+      "type": "single",
+      "topic": "Checkpointing",
+      "difficulty": "foundation",
+      "prompt": "What problem does a graph checkpointer solve?",
+      "explanation": "A checkpointer records thread-scoped execution snapshots so a graph can inspect or resume progress at the correct point.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Preserving execution progress by thread"
+        },
+        {
+          "id": "o2",
+          "text": "Authenticating the user"
+        },
+        {
+          "id": "o3",
+          "text": "Replacing the system of record"
+        },
+        {
+          "id": "o4",
+          "text": "Guaranteeing exactly-once external effects"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q011"
+    },
+    {
+      "type": "single",
+      "topic": "Thread identity",
+      "difficulty": "foundation",
+      "prompt": "What does thread_id mean in the Week 15 lab?",
+      "explanation": "The thread identifier selects checkpoint state. It is a cursor-like execution key, not proof of the caller's identity or authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A key selecting checkpoint state"
+        },
+        {
+          "id": "o2",
+          "text": "A user authentication credential"
+        },
+        {
+          "id": "o3",
+          "text": "A cryptographic signature"
+        },
+        {
+          "id": "o4",
+          "text": "A purchase-order authorization"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q012"
+    },
+    {
+      "type": "single",
+      "topic": "In-memory persistence",
+      "difficulty": "foundation",
+      "prompt": "What happens to checkpoints stored by InMemorySaver when the Python process exits?",
+      "explanation": "The saver is process memory only, so its checkpoint data disappears when that process ends.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They are lost"
+        },
+        {
+          "id": "o2",
+          "text": "They are copied to SQLite"
+        },
+        {
+          "id": "o3",
+          "text": "They become GitHub artifacts"
+        },
+        {
+          "id": "o4",
+          "text": "They remain until a retention job deletes them"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q013"
+    },
+    {
+      "type": "single",
+      "topic": "Persistence boundaries",
+      "difficulty": "applied",
+      "prompt": "Which statement best distinguishes a graph checkpoint from a business record?",
+      "explanation": "A checkpoint supports execution recovery, while a business record captures accepted domain history under separate durability and audit rules.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They serve different lifecycle and ownership purposes"
+        },
+        {
+          "id": "o2",
+          "text": "Every checkpoint is automatically the legal system of record"
+        },
+        {
+          "id": "o3",
+          "text": "A business record can always resume a node"
+        },
+        {
+          "id": "o4",
+          "text": "There is no meaningful difference"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q014"
+    },
+    {
+      "type": "single",
+      "topic": "Interrupts",
+      "difficulty": "foundation",
+      "prompt": "What does interrupt() do at the human-review boundary?",
+      "explanation": "It pauses graph execution, exposes a JSON-safe review payload and relies on the checkpointer to preserve where the thread stopped.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pause and expose review data"
+        },
+        {
+          "id": "o2",
+          "text": "Approve the report automatically"
+        },
+        {
+          "id": "o3",
+          "text": "Authenticate the reviewer"
+        },
+        {
+          "id": "o4",
+          "text": "Commit an external transaction"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q015"
+    },
+    {
+      "type": "single",
+      "topic": "Resume",
+      "difficulty": "foundation",
+      "prompt": "How should a paused graph be resumed?",
+      "explanation": "The host supplies a Command containing resume data while using the same thread configuration that owns the interrupted checkpoint.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "With Command(resume=...) on the same thread"
+        },
+        {
+          "id": "o2",
+          "text": "By starting a new thread with copied state"
+        },
+        {
+          "id": "o3",
+          "text": "By calling the approval node directly"
+        },
+        {
+          "id": "o4",
+          "text": "By editing the checkpoint file manually"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q016"
+    },
+    {
+      "type": "single",
+      "topic": "Replay behavior",
+      "difficulty": "applied",
+      "prompt": "What happens to an interrupted node when its thread resumes?",
+      "explanation": "LangGraph restarts that node from its beginning, so code before the interrupt can execute more than once.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The node restarts from its beginning"
+        },
+        {
+          "id": "o2",
+          "text": "Execution always continues at the next Python statement"
+        },
+        {
+          "id": "o3",
+          "text": "The full graph starts with empty state"
+        },
+        {
+          "id": "o4",
+          "text": "Only the reducer runs again"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q017"
+    },
+    {
+      "type": "single",
+      "topic": "Side effects",
+      "difficulty": "applied",
+      "prompt": "Where should an irreversible external effect be placed relative to a human interrupt?",
+      "explanation": "Proposal, approval and effect execution should be separated, with the post-approval effect idempotent because pre-interrupt code may replay.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "After validated approval in an idempotent step"
+        },
+        {
+          "id": "o2",
+          "text": "Before interrupt so the reviewer sees the outcome"
+        },
+        {
+          "id": "o3",
+          "text": "Inside the reducer"
+        },
+        {
+          "id": "o4",
+          "text": "Inside query classification"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q018"
+    },
+    {
+      "type": "single",
+      "topic": "Fail-closed routing",
+      "difficulty": "applied",
+      "prompt": "Which state is allowed to route from validate_report to human_approval?",
+      "explanation": "Only a state that passed the complete deterministic report gate may reach the approval interrupt; invalid states terminate as validation failures.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A state with valid set to true after all required checks"
+        },
+        {
+          "id": "o2",
+          "text": "Any state with a recommendation string"
+        },
+        {
+          "id": "o3",
+          "text": "Any state with at least one evidence item"
+        },
+        {
+          "id": "o4",
+          "text": "A state selected by the model"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q019"
+    },
+    {
+      "type": "single",
+      "topic": "Report identity",
+      "difficulty": "foundation",
+      "prompt": "What does the report SHA-256 digest prove in this lab?",
+      "explanation": "It detects whether the report snapshot supplied at resume differs from the reviewed snapshot; it is not identity, authorization or a signature.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Snapshot equality for the reviewed report"
+        },
+        {
+          "id": "o2",
+          "text": "The reviewer's legal identity"
+        },
+        {
+          "id": "o3",
+          "text": "Authorization to approve an order"
+        },
+        {
+          "id": "o4",
+          "text": "Truth of every evidence item"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q020"
+    },
+    {
+      "type": "single",
+      "topic": "Unsupported requests",
+      "difficulty": "applied",
+      "prompt": "A query asks the graph to write a poem instead of investigating procurement price. What is the expected route?",
+      "explanation": "The classifier returns unsupported and the graph ends through the no-tool terminal node without document retrieval, SQL or an interrupt.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "End through unsupported_query without tools"
+        },
+        {
+          "id": "o2",
+          "text": "Run retrieval and let validation decide"
+        },
+        {
+          "id": "o3",
+          "text": "Ask the language model to invent a route"
+        },
+        {
+          "id": "o4",
+          "text": "Pause for procurement approval"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q021"
+    },
+    {
+      "type": "single",
+      "topic": "Missing evidence",
+      "difficulty": "applied",
+      "prompt": "The contract lookup finds no applicable variance term. How should that result be represented?",
+      "explanation": "The missing lookup remains an explicit document observation and leads to needs_human; it is not converted into a zero threshold.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Explicit missing evidence with needs_human"
+        },
+        {
+          "id": "o2",
+          "text": "A threshold of zero percent"
+        },
+        {
+          "id": "o3",
+          "text": "Proof that no contract exists"
+        },
+        {
+          "id": "o4",
+          "text": "A successful no_review recommendation"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q022"
+    },
+    {
+      "type": "single",
+      "topic": "SQL safety",
+      "difficulty": "foundation",
+      "prompt": "How does the lab query the in-memory SQLite table?",
+      "explanation": "It uses a bound parameter for the purchase-order identifier rather than interpolating untrusted text into SQL.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "With a parameterized query"
+        },
+        {
+          "id": "o2",
+          "text": "With string concatenation"
+        },
+        {
+          "id": "o3",
+          "text": "With model-generated SQL executed unchanged"
+        },
+        {
+          "id": "o4",
+          "text": "With a shell command"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q023"
+    },
+    {
+      "type": "single",
+      "topic": "Exact arithmetic",
+      "difficulty": "applied",
+      "prompt": "Which denominator is used for percentage price variance in the Week 15 lab?",
+      "explanation": "The calculation divides current minus reference by the positive reference price, then multiplies by 100 and rounds explicitly.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The reference price"
+        },
+        {
+          "id": "o2",
+          "text": "The current price"
+        },
+        {
+          "id": "o3",
+          "text": "The larger of the two prices"
+        },
+        {
+          "id": "o4",
+          "text": "The contract threshold"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q024"
+    },
+    {
+      "type": "single",
+      "topic": "Business boundary",
+      "difficulty": "applied",
+      "prompt": "A variance equals the contract threshold exactly. Which recommendation follows the lesson's strict policy when the supplier is active?",
+      "explanation": "The rule uses greater-than, not greater-than-or-equal. Equality remains within the threshold and produces no_review.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "no_review"
+        },
+        {
+          "id": "o2",
+          "text": "review_required"
+        },
+        {
+          "id": "o3",
+          "text": "needs_human"
+        },
+        {
+          "id": "o4",
+          "text": "validation_failed"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q025"
+    },
+    {
+      "type": "single",
+      "topic": "Human authority",
+      "difficulty": "foundation",
+      "prompt": "The stable-price case produces no_review. What does the graph do next?",
+      "explanation": "Every supported result still pauses at the human-review boundary; no_review is a recommendation, not execution authority.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pause for human review"
+        },
+        {
+          "id": "o2",
+          "text": "Approve the purchase order"
+        },
+        {
+          "id": "o3",
+          "text": "End as approved"
+        },
+        {
+          "id": "o4",
+          "text": "Contact the supplier"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q026"
+    },
+    {
+      "type": "single",
+      "topic": "Reliability",
+      "difficulty": "applied",
+      "prompt": "When can graph orchestration be more reliable than an unrestricted agent loop?",
+      "explanation": "Reliability improves when valid lifecycles are encoded as finite reviewed transitions with typed state, validation, checkpoints and bounded destinations.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When the lifecycle has explicit testable transitions"
+        },
+        {
+          "id": "o2",
+          "text": "Whenever any framework is installed"
+        },
+        {
+          "id": "o3",
+          "text": "When every decision is delegated to a model"
+        },
+        {
+          "id": "o4",
+          "text": "When state validation is removed"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q027"
+    },
+    {
+      "type": "single",
+      "topic": "Cycles",
+      "difficulty": "applied",
+      "prompt": "What must be added if conditional edges create a retry cycle?",
+      "explanation": "Cycles need explicit retry or step bounds, terminal failure reasons and tests for exhaustion so they cannot run indefinitely.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A bounded retry policy and terminal failure"
+        },
+        {
+          "id": "o2",
+          "text": "A larger context window only"
+        },
+        {
+          "id": "o3",
+          "text": "An append reducer on every field"
+        },
+        {
+          "id": "o4",
+          "text": "A new thread for every step"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q028"
+    },
+    {
+      "type": "single",
+      "topic": "Observability",
+      "difficulty": "foundation",
+      "prompt": "Do named graph nodes eliminate the need for production observability?",
+      "explanation": "Named nodes improve trace structure, but production still needs correlated logs, metrics, redaction, failure categories and alert ownership.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No, operational telemetry is still required"
+        },
+        {
+          "id": "o2",
+          "text": "Yes, the topology is a complete monitoring system"
+        },
+        {
+          "id": "o3",
+          "text": "Yes, checkpoints replace logs and metrics"
+        },
+        {
+          "id": "o4",
+          "text": "No, because graph nodes cannot be logged"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q029"
+    },
+    {
+      "type": "single",
+      "topic": "Memory boundaries",
+      "difficulty": "foundation",
+      "prompt": "Which concern is intentionally deferred to Week 16?",
+      "explanation": "Long-term and case-level memory across future interactions is separate from the Week 15 thread checkpoint used to resume execution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Long-term case memory and context selection"
+        },
+        {
+          "id": "o2",
+          "text": "Fixed graph edges"
+        },
+        {
+          "id": "o3",
+          "text": "Report validation"
+        },
+        {
+          "id": "o4",
+          "text": "Human interrupts"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W15-Q030"
+    },
+    {
+      "type": "multiple",
+      "topic": "Graph benefits",
+      "difficulty": "foundation",
+      "prompt": "Which properties make the Week 15 control flow easier to inspect and test?",
+      "explanation": "Named nodes, typed channels, declared edges and constrained routes make the lifecycle visible and support state-transition assertions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Named nodes"
+        },
+        {
+          "id": "o2",
+          "text": "Typed state channels"
+        },
+        {
+          "id": "o3",
+          "text": "Declared edges"
+        },
+        {
+          "id": "o4",
+          "text": "Constrained conditional destinations"
+        },
+        {
+          "id": "o5",
+          "text": "Hidden free-form transitions"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q031"
+    },
+    {
+      "type": "multiple",
+      "topic": "State contracts",
+      "difficulty": "foundation",
+      "prompt": "Which statements describe a sound graph-state contract?",
+      "explanation": "A sound contract names required channels, defines update semantics and separates execution state from authority or business-record claims.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Channel meanings are explicit"
+        },
+        {
+          "id": "o2",
+          "text": "Reducer behavior is declared"
+        },
+        {
+          "id": "o3",
+          "text": "Nodes return only their updates"
+        },
+        {
+          "id": "o4",
+          "text": "A thread ID is treated as authentication"
+        },
+        {
+          "id": "o5",
+          "text": "Every field is appended automatically"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W15-Q032"
+    },
+    {
+      "type": "multiple",
+      "topic": "Reducer caveats",
+      "difficulty": "applied",
+      "prompt": "Which statements about additive reducers are correct?",
+      "explanation": "An additive reducer retains contributions in order, does not clear on an empty update and can preserve semantic conflicts that still need policy.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An empty list update leaves prior items present"
+        },
+        {
+          "id": "o2",
+          "text": "Order of appended contributions can matter"
+        },
+        {
+          "id": "o3",
+          "text": "Duplicates may still require handling"
+        },
+        {
+          "id": "o4",
+          "text": "The reducer proves evidence is trustworthy"
+        },
+        {
+          "id": "o5",
+          "text": "The reducer authenticates each writer"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W15-Q033"
+    },
+    {
+      "type": "multiple",
+      "topic": "Route ownership",
+      "difficulty": "foundation",
+      "prompt": "Which decisions remain application-owned in the graph?",
+      "explanation": "The application owns topology, route allowlists, validation, permissions and consequential transitions even when a model is later added inside a node.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The set of node destinations"
+        },
+        {
+          "id": "o2",
+          "text": "Report validation"
+        },
+        {
+          "id": "o3",
+          "text": "Permission checks"
+        },
+        {
+          "id": "o4",
+          "text": "Human-approval semantics"
+        },
+        {
+          "id": "o5",
+          "text": "Permissions inferred from model confidence"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q034"
+    },
+    {
+      "type": "multiple",
+      "topic": "Conditional safety",
+      "difficulty": "applied",
+      "prompt": "Which controls make a conditional route safer?",
+      "explanation": "Routing should consume validated state, return from a closed destination set, fail explicitly on unknown values and remain separately testable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A closed destination vocabulary"
+        },
+        {
+          "id": "o2",
+          "text": "Validated state inputs"
+        },
+        {
+          "id": "o3",
+          "text": "Explicit handling of unknown states"
+        },
+        {
+          "id": "o4",
+          "text": "Unit tests for every branch"
+        },
+        {
+          "id": "o5",
+          "text": "Executing a destination copied from retrieved text"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q035"
+    },
+    {
+      "type": "multiple",
+      "topic": "Report gate",
+      "difficulty": "applied",
+      "prompt": "Which facts does the Week 15 report gate require before approval?",
+      "explanation": "The reviewed gate requires both domain results and source-category evidence rather than accepting a recommendation alone.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A SQL analysis record"
+        },
+        {
+          "id": "o2",
+          "text": "A contract-search result, including explicit missing"
+        },
+        {
+          "id": "o3",
+          "text": "A known recommendation"
+        },
+        {
+          "id": "o4",
+          "text": "A calculated variance"
+        },
+        {
+          "id": "o5",
+          "text": "Both SQL and document evidence markers"
+        },
+        {
+          "id": "o6",
+          "text": "A model confidence score granting approval authority"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ],
+      "id": "W15-Q036"
+    },
+    {
+      "type": "multiple",
+      "topic": "Durable checkpoints",
+      "difficulty": "applied",
+      "prompt": "Which concerns must be designed before replacing InMemorySaver with production persistence?",
+      "explanation": "A durable checkpointer still needs migration, retention, encryption, backup, concurrency and ownership decisions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Schema migration"
+        },
+        {
+          "id": "o2",
+          "text": "Retention and deletion"
+        },
+        {
+          "id": "o3",
+          "text": "Encryption and access control"
+        },
+        {
+          "id": "o4",
+          "text": "Backup and recovery"
+        },
+        {
+          "id": "o5",
+          "text": "Concurrency behavior"
+        },
+        {
+          "id": "o6",
+          "text": "A larger prompt as the only recovery mechanism"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ],
+      "id": "W15-Q037"
+    },
+    {
+      "type": "multiple",
+      "topic": "Interrupt payload",
+      "difficulty": "foundation",
+      "prompt": "Which values belong in the human-approval interrupt payload?",
+      "explanation": "The payload should contain the exact report, its digest, a clear review kind and the allowed decisions, all represented as JSON-safe data.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The exact report snapshot"
+        },
+        {
+          "id": "o2",
+          "text": "The report digest"
+        },
+        {
+          "id": "o3",
+          "text": "Allowed decisions"
+        },
+        {
+          "id": "o4",
+          "text": "A clear interrupt kind"
+        },
+        {
+          "id": "o5",
+          "text": "A live database connection"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q038"
+    },
+    {
+      "type": "multiple",
+      "topic": "Resume validation",
+      "difficulty": "applied",
+      "prompt": "Which resume inputs must be validated by the approval node?",
+      "explanation": "Host input crosses a trust boundary, so the node validates decision, reviewer, digest shape and equality with the paused report.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Decision is approve or reject"
+        },
+        {
+          "id": "o2",
+          "text": "Reviewer is nonblank and bounded"
+        },
+        {
+          "id": "o3",
+          "text": "Digest is lowercase hexadecimal of the expected length"
+        },
+        {
+          "id": "o4",
+          "text": "Digest equals the paused report digest"
+        },
+        {
+          "id": "o5",
+          "text": "Thread ID alone proves the reviewer is authorized"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q039"
+    },
+    {
+      "type": "multiple",
+      "topic": "Thread isolation",
+      "difficulty": "applied",
+      "prompt": "Which tests demonstrate thread isolation?",
+      "explanation": "Isolation is shown by distinct state and digests, rejection of duplicate starts and refusal to resume a thread that is not actually waiting.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Two thread IDs retain different case state"
+        },
+        {
+          "id": "o2",
+          "text": "Each paused report has its own digest"
+        },
+        {
+          "id": "o3",
+          "text": "A duplicate start is rejected"
+        },
+        {
+          "id": "o4",
+          "text": "A different non-paused thread cannot resume the interrupt"
+        },
+        {
+          "id": "o5",
+          "text": "Knowing a thread ID authenticates its owner"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q040"
+    },
+    {
+      "type": "multiple",
+      "topic": "Replay-safe design",
+      "difficulty": "applied",
+      "prompt": "Which practices reduce harm when an interrupted node restarts?",
+      "explanation": "Keep pre-interrupt logic deterministic and side-effect free, then perform approved effects in a separate idempotent operation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep code before interrupt deterministic"
+        },
+        {
+          "id": "o2",
+          "text": "Avoid external writes before interrupt"
+        },
+        {
+          "id": "o3",
+          "text": "Separate approval from effect execution"
+        },
+        {
+          "id": "o4",
+          "text": "Use an idempotency key for post-approval effects"
+        },
+        {
+          "id": "o5",
+          "text": "Assume the node resumes at the next source line"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q041"
+    },
+    {
+      "type": "multiple",
+      "topic": "Persistence layers",
+      "difficulty": "foundation",
+      "prompt": "Which persistence concerns are separate in the lesson?",
+      "explanation": "Execution checkpoints, accepted business records and cross-thread memory have different lifecycles and should not be conflated.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Graph execution checkpoints"
+        },
+        {
+          "id": "o2",
+          "text": "Business audit records"
+        },
+        {
+          "id": "o3",
+          "text": "Long-term cross-thread memory"
+        },
+        {
+          "id": "o4",
+          "text": "CSS state for the lesson page"
+        },
+        {
+          "id": "o5",
+          "text": "A prompt's hidden reasoning"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W15-Q042"
+    },
+    {
+      "type": "multiple",
+      "topic": "Graph tests",
+      "difficulty": "applied",
+      "prompt": "Which behaviors should a graph regression suite assert?",
+      "explanation": "Meaningful tests cover topology, routes, reducer order, state snapshots, interrupt contracts, resume behavior and failure boundaries.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Expected nodes and important edges"
+        },
+        {
+          "id": "o2",
+          "text": "All conditional branches"
+        },
+        {
+          "id": "o3",
+          "text": "Reducer ordering"
+        },
+        {
+          "id": "o4",
+          "text": "Interrupt and checkpoint state"
+        },
+        {
+          "id": "o5",
+          "text": "Wrong-thread and wrong-digest rejection"
+        },
+        {
+          "id": "o6",
+          "text": "Only a screenshot of one successful run"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ],
+      "id": "W15-Q043"
+    },
+    {
+      "type": "multiple",
+      "topic": "Unsupported route",
+      "difficulty": "applied",
+      "prompt": "Which outcomes are correct for an unsupported query?",
+      "explanation": "The unsupported path records its classification and terminal trace while avoiding business tools, approval and fabricated results.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No document retrieval"
+        },
+        {
+          "id": "o2",
+          "text": "No SQL analysis"
+        },
+        {
+          "id": "o3",
+          "text": "No approval interrupt"
+        },
+        {
+          "id": "o4",
+          "text": "A terminal unsupported status"
+        },
+        {
+          "id": "o5",
+          "text": "A fabricated recommendation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q044"
+    },
+    {
+      "type": "multiple",
+      "topic": "Price calculation",
+      "difficulty": "applied",
+      "prompt": "Which controls belong in the exact price-calculation node?",
+      "explanation": "The node parses decimal strings, rejects an invalid reference, uses the reference denominator and applies explicit two-place rounding.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Decimal arithmetic"
+        },
+        {
+          "id": "o2",
+          "text": "A positive reference-price check"
+        },
+        {
+          "id": "o3",
+          "text": "Reference-price denominator"
+        },
+        {
+          "id": "o4",
+          "text": "Explicit ROUND_HALF_EVEN quantization"
+        },
+        {
+          "id": "o5",
+          "text": "Binary floating-point persistence"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q045"
+    },
+    {
+      "type": "multiple",
+      "topic": "Evidence provenance",
+      "difficulty": "foundation",
+      "prompt": "Which statements preserve evidence provenance?",
+      "explanation": "The state retains a document source identity and a SQL analysis identity, including an explicit marker when the contract search found nothing.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep the contract document identifier"
+        },
+        {
+          "id": "o2",
+          "text": "Keep the purchase-order SQL source marker"
+        },
+        {
+          "id": "o3",
+          "text": "Represent a missing document search explicitly"
+        },
+        {
+          "id": "o4",
+          "text": "Treat missing terms as a zero threshold"
+        },
+        {
+          "id": "o5",
+          "text": "Replace earlier evidence with the latest item"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W15-Q046"
+    },
+    {
+      "type": "multiple",
+      "topic": "Framework limits",
+      "difficulty": "applied",
+      "prompt": "Which properties are not guaranteed merely by compiling a graph?",
+      "explanation": "Compilation does not prove business correctness, authorization, durable persistence, conflict resolution or operational observability.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Correct business policy"
+        },
+        {
+          "id": "o2",
+          "text": "Caller authorization"
+        },
+        {
+          "id": "o3",
+          "text": "Production durability"
+        },
+        {
+          "id": "o4",
+          "text": "Semantic conflict resolution"
+        },
+        {
+          "id": "o5",
+          "text": "Complete monitoring"
+        },
+        {
+          "id": "o6",
+          "text": "References to registered node names"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ],
+      "id": "W15-Q047"
+    },
+    {
+      "type": "multiple",
+      "topic": "Production controls",
+      "difficulty": "applied",
+      "prompt": "Which controls remain necessary around a production graph?",
+      "explanation": "A production service still needs authenticated access, object authorization, bounded resources, idempotency and auditable effects.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Authentication and object authorization"
+        },
+        {
+          "id": "o2",
+          "text": "Timeout and retry bounds"
+        },
+        {
+          "id": "o3",
+          "text": "Idempotent external effects"
+        },
+        {
+          "id": "o4",
+          "text": "Retention and audit policy"
+        },
+        {
+          "id": "o5",
+          "text": "A publicly guessable thread ID as the only access control"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q048"
+    },
+    {
+      "type": "multiple",
+      "topic": "Reliability mechanism",
+      "difficulty": "applied",
+      "prompt": "Which mechanisms can make a graph lifecycle more reliable?",
+      "explanation": "Finite topology, typed updates, deterministic validation, checkpointed progress and explicit human boundaries make invariants testable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Finite reviewed topology"
+        },
+        {
+          "id": "o2",
+          "text": "Typed state updates"
+        },
+        {
+          "id": "o3",
+          "text": "Deterministic validation"
+        },
+        {
+          "id": "o4",
+          "text": "Checkpointed progress"
+        },
+        {
+          "id": "o5",
+          "text": "Explicit human-review boundary"
+        },
+        {
+          "id": "o6",
+          "text": "Unbounded model-selected destinations"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4",
+        "o5"
+      ],
+      "id": "W15-Q049"
+    },
+    {
+      "type": "multiple",
+      "topic": "Lab scope",
+      "difficulty": "foundation",
+      "prompt": "Which statements correctly describe the Week 15 lab's scope?",
+      "explanation": "The lab uses synthetic local data and real graph mechanics, but it intentionally omits a model, durable backend, authenticated reviewer and external effects.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It uses the real pinned LangGraph package"
+        },
+        {
+          "id": "o2",
+          "text": "SQL and documents are local fixtures"
+        },
+        {
+          "id": "o3",
+          "text": "It makes no provider call"
+        },
+        {
+          "id": "o4",
+          "text": "InMemorySaver is not durable"
+        },
+        {
+          "id": "o5",
+          "text": "It deploys an authenticated procurement service"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W15-Q050"
+    },
+    {
+      "type": "match",
+      "topic": "Graph vocabulary",
+      "difficulty": "foundation",
+      "prompt": "Match each graph term to its role.",
+      "explanation": "The core terms separate data, work, transitions and update-combination rules.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "State"
+        },
+        {
+          "id": "l2",
+          "text": "Node"
+        },
+        {
+          "id": "l3",
+          "text": "Edge"
+        },
+        {
+          "id": "l4",
+          "text": "Reducer"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Combines an old channel value with an update"
+        },
+        {
+          "id": "r2",
+          "text": "Current application snapshot"
+        },
+        {
+          "id": "r3",
+          "text": "Named unit of work"
+        },
+        {
+          "id": "r4",
+          "text": "Declared transition between steps"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r3",
+        "l3": "r4",
+        "l4": "r1"
+      },
+      "id": "W15-Q051"
+    },
+    {
+      "type": "match",
+      "topic": "Graph construction",
+      "difficulty": "foundation",
+      "prompt": "Match each construction element to what it establishes.",
+      "explanation": "Building and compiling are distinct from runtime checkpointing and resumption.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "StateGraph"
+        },
+        {
+          "id": "l2",
+          "text": "add_node"
+        },
+        {
+          "id": "l3",
+          "text": "add_edge"
+        },
+        {
+          "id": "l4",
+          "text": "compile"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Registers a named callable"
+        },
+        {
+          "id": "r2",
+          "text": "Creates the typed graph builder"
+        },
+        {
+          "id": "r3",
+          "text": "Produces a runnable graph"
+        },
+        {
+          "id": "r4",
+          "text": "Declares a dependency"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r1",
+        "l3": "r4",
+        "l4": "r3"
+      },
+      "id": "W15-Q052"
+    },
+    {
+      "type": "match",
+      "topic": "Investigation nodes",
+      "difficulty": "applied",
+      "prompt": "Match each node to its primary output.",
+      "explanation": "Each node has a narrow responsibility and returns only the state fields it owns.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "classify_query"
+        },
+        {
+          "id": "l2",
+          "text": "retrieve_documents"
+        },
+        {
+          "id": "l3",
+          "text": "analyze_sql"
+        },
+        {
+          "id": "l4",
+          "text": "calculate_price"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "SQL analysis and SQL evidence"
+        },
+        {
+          "id": "r2",
+          "text": "Intent and purchase-order ID"
+        },
+        {
+          "id": "r3",
+          "text": "Exact price variance"
+        },
+        {
+          "id": "r4",
+          "text": "Contract result and document evidence"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W15-Q053"
+    },
+    {
+      "type": "match",
+      "topic": "Decision nodes",
+      "difficulty": "applied",
+      "prompt": "Match each later node to its primary responsibility.",
+      "explanation": "Recommendation, validation, approval and unsupported handling remain distinct lifecycle steps.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "generate_recommendation"
+        },
+        {
+          "id": "l2",
+          "text": "validate_report"
+        },
+        {
+          "id": "l3",
+          "text": "human_approval"
+        },
+        {
+          "id": "l4",
+          "text": "unsupported_query"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "End without business tools"
+        },
+        {
+          "id": "r2",
+          "text": "Build and check the exact report"
+        },
+        {
+          "id": "r3",
+          "text": "Apply the deterministic policy"
+        },
+        {
+          "id": "r4",
+          "text": "Pause and accept trusted review input"
+        }
+      ],
+      "correct": {
+        "l1": "r3",
+        "l2": "r2",
+        "l3": "r4",
+        "l4": "r1"
+      },
+      "id": "W15-Q054"
+    },
+    {
+      "type": "match",
+      "topic": "Route outcomes",
+      "difficulty": "applied",
+      "prompt": "Match each state condition to its next destination.",
+      "explanation": "Conditional routes choose only declared destinations and invalid reports never reach approval.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Supported classification"
+        },
+        {
+          "id": "l2",
+          "text": "Unsupported classification"
+        },
+        {
+          "id": "l3",
+          "text": "Valid report"
+        },
+        {
+          "id": "l4",
+          "text": "Invalid report"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "__end__ after validation failure"
+        },
+        {
+          "id": "r2",
+          "text": "retrieve_documents"
+        },
+        {
+          "id": "r3",
+          "text": "human_approval"
+        },
+        {
+          "id": "r4",
+          "text": "unsupported_query"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r3",
+        "l4": "r1"
+      },
+      "id": "W15-Q055"
+    },
+    {
+      "type": "match",
+      "topic": "Channel semantics",
+      "difficulty": "foundation",
+      "prompt": "Match each channel to its update behavior.",
+      "explanation": "Lists retain contributions while current scalar decisions and identities use replacement semantics.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "evidence"
+        },
+        {
+          "id": "l2",
+          "text": "trace"
+        },
+        {
+          "id": "l3",
+          "text": "recommendation"
+        },
+        {
+          "id": "l4",
+          "text": "report_digest"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Replace with current digest"
+        },
+        {
+          "id": "r2",
+          "text": "Append ordered node event"
+        },
+        {
+          "id": "r3",
+          "text": "Append source identity"
+        },
+        {
+          "id": "r4",
+          "text": "Replace current decision"
+        }
+      ],
+      "correct": {
+        "l1": "r3",
+        "l2": "r2",
+        "l3": "r4",
+        "l4": "r1"
+      },
+      "id": "W15-Q056"
+    },
+    {
+      "type": "match",
+      "topic": "Persistence concepts",
+      "difficulty": "foundation",
+      "prompt": "Match each persistence concept to its scope.",
+      "explanation": "Execution recovery, domain history, shared memory and temporary process storage solve different problems.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Checkpoint"
+        },
+        {
+          "id": "l2",
+          "text": "Business record"
+        },
+        {
+          "id": "l3",
+          "text": "Long-term memory"
+        },
+        {
+          "id": "l4",
+          "text": "InMemorySaver"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Accepted domain history"
+        },
+        {
+          "id": "r2",
+          "text": "Cross-thread retained facts"
+        },
+        {
+          "id": "r3",
+          "text": "Process-lifetime checkpoint implementation"
+        },
+        {
+          "id": "r4",
+          "text": "Execution state for one thread"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r1",
+        "l3": "r2",
+        "l4": "r3"
+      },
+      "id": "W15-Q057"
+    },
+    {
+      "type": "match",
+      "topic": "Approval fields",
+      "difficulty": "applied",
+      "prompt": "Match each approval field to its validation purpose.",
+      "explanation": "A resume request must be constrained and bound to the exact paused report, while identity authorization remains external.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "decision"
+        },
+        {
+          "id": "l2",
+          "text": "reviewer"
+        },
+        {
+          "id": "l3",
+          "text": "report_digest"
+        },
+        {
+          "id": "l4",
+          "text": "thread_id"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Selects the paused checkpoint"
+        },
+        {
+          "id": "r2",
+          "text": "Binds input to the reviewed snapshot"
+        },
+        {
+          "id": "r3",
+          "text": "Names the submitted reviewer value"
+        },
+        {
+          "id": "r4",
+          "text": "Restricts the transition to approve or reject"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r3",
+        "l3": "r2",
+        "l4": "r1"
+      },
+      "id": "W15-Q058"
+    },
+    {
+      "type": "match",
+      "topic": "Recommendation cases",
+      "difficulty": "applied",
+      "prompt": "Match each case condition to the deterministic recommendation.",
+      "explanation": "Missing terms fail toward a person, while active suppliers are compared with a strict threshold.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Terms missing"
+        },
+        {
+          "id": "l2",
+          "text": "Supplier inactive"
+        },
+        {
+          "id": "l3",
+          "text": "Variance above threshold"
+        },
+        {
+          "id": "l4",
+          "text": "Active and within threshold"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "no_review"
+        },
+        {
+          "id": "r2",
+          "text": "review_required because of price"
+        },
+        {
+          "id": "r3",
+          "text": "needs_human"
+        },
+        {
+          "id": "r4",
+          "text": "review_required because of status"
+        }
+      ],
+      "correct": {
+        "l1": "r3",
+        "l2": "r4",
+        "l3": "r2",
+        "l4": "r1"
+      },
+      "id": "W15-Q059"
+    },
+    {
+      "type": "match",
+      "topic": "Validation failures",
+      "difficulty": "applied",
+      "prompt": "Match each missing fact to its validation error.",
+      "explanation": "The gate reports explicit missing categories rather than manufacturing defaults.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "SQL result absent"
+        },
+        {
+          "id": "l2",
+          "text": "Contract result absent"
+        },
+        {
+          "id": "l3",
+          "text": "Variance absent"
+        },
+        {
+          "id": "l4",
+          "text": "Document evidence absent"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "document_evidence_required"
+        },
+        {
+          "id": "r2",
+          "text": "variance_required"
+        },
+        {
+          "id": "r3",
+          "text": "sql_analysis_required"
+        },
+        {
+          "id": "r4",
+          "text": "contract_result_required"
+        }
+      ],
+      "correct": {
+        "l1": "r3",
+        "l2": "r4",
+        "l3": "r2",
+        "l4": "r1"
+      },
+      "id": "W15-Q060"
+    },
+    {
+      "type": "match",
+      "topic": "Testing evidence",
+      "difficulty": "applied",
+      "prompt": "Match each claim to the strongest test evidence.",
+      "explanation": "Graph behavior needs direct observable checks rather than assumptions from successful compilation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Topology is reviewed"
+        },
+        {
+          "id": "l2",
+          "text": "Reducers preserve order"
+        },
+        {
+          "id": "l3",
+          "text": "Thread isolation works"
+        },
+        {
+          "id": "l4",
+          "text": "Resume is report-bound"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Wrong-digest rejection"
+        },
+        {
+          "id": "r2",
+          "text": "Exact node and edge assertions"
+        },
+        {
+          "id": "r3",
+          "text": "Two independent thread snapshots"
+        },
+        {
+          "id": "r4",
+          "text": "Ordered evidence assertion"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r3",
+        "l4": "r1"
+      },
+      "id": "W15-Q061"
+    },
+    {
+      "type": "match",
+      "topic": "LangGraph APIs",
+      "difficulty": "foundation",
+      "prompt": "Match each LangGraph API to its Week 15 use.",
+      "explanation": "The lab exercises the real builder, saver, pause and resume primitives.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "StateGraph"
+        },
+        {
+          "id": "l2",
+          "text": "InMemorySaver"
+        },
+        {
+          "id": "l3",
+          "text": "interrupt"
+        },
+        {
+          "id": "l4",
+          "text": "Command"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Carry resume input"
+        },
+        {
+          "id": "r2",
+          "text": "Create the typed topology"
+        },
+        {
+          "id": "r3",
+          "text": "Pause for external input"
+        },
+        {
+          "id": "r4",
+          "text": "Store process-local checkpoints"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r3",
+        "l4": "r1"
+      },
+      "id": "W15-Q062"
+    },
+    {
+      "type": "match",
+      "topic": "Security boundaries",
+      "difficulty": "applied",
+      "prompt": "Match each value to what it does not prove.",
+      "explanation": "Execution keys and integrity checks must not be promoted into identity, authorization or source-truth controls.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "thread_id"
+        },
+        {
+          "id": "l2",
+          "text": "report digest"
+        },
+        {
+          "id": "l3",
+          "text": "evidence marker"
+        },
+        {
+          "id": "l4",
+          "text": "recommendation"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Truth of the source"
+        },
+        {
+          "id": "r2",
+          "text": "Permission to act"
+        },
+        {
+          "id": "r3",
+          "text": "Reviewer identity"
+        },
+        {
+          "id": "r4",
+          "text": "Authorization to access checkpoint state"
+        }
+      ],
+      "correct": {
+        "l1": "r4",
+        "l2": "r3",
+        "l3": "r1",
+        "l4": "r2"
+      },
+      "id": "W15-Q063"
+    },
+    {
+      "type": "match",
+      "topic": "Failure outcomes",
+      "difficulty": "applied",
+      "prompt": "Match each failure or boundary to its status or error.",
+      "explanation": "The lab uses explicit outcomes for unsupported requests, invalid reports, mismatched review and reused threads.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Unsupported request"
+        },
+        {
+          "id": "l2",
+          "text": "Missing report facts"
+        },
+        {
+          "id": "l3",
+          "text": "Changed report digest"
+        },
+        {
+          "id": "l4",
+          "text": "Duplicate start"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "approval_report_mismatch"
+        },
+        {
+          "id": "r2",
+          "text": "unsupported"
+        },
+        {
+          "id": "r3",
+          "text": "thread_already_exists"
+        },
+        {
+          "id": "r4",
+          "text": "validation_failed"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W15-Q064"
+    },
+    {
+      "type": "match",
+      "topic": "Operational concerns",
+      "difficulty": "applied",
+      "prompt": "Match each production concern to the question it answers.",
+      "explanation": "Durable graph operation requires explicit lifecycle, concurrency, observability and effect-safety decisions.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Retention"
+        },
+        {
+          "id": "l2",
+          "text": "Concurrency"
+        },
+        {
+          "id": "l3",
+          "text": "Observability"
+        },
+        {
+          "id": "l4",
+          "text": "Idempotency"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Can a replay duplicate an external write?"
+        },
+        {
+          "id": "r2",
+          "text": "How long are checkpoints kept?"
+        },
+        {
+          "id": "r3",
+          "text": "What happens when two workers resume together?"
+        },
+        {
+          "id": "r4",
+          "text": "Can operators detect and diagnose failures?"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r3",
+        "l3": "r4",
+        "l4": "r1"
+      },
+      "id": "W15-Q065"
+    },
+    {
+      "type": "short",
+      "topic": "Graph entry",
+      "difficulty": "foundation",
+      "prompt": "Write the LangGraph constant used as the graph's entry sentinel.",
+      "explanation": "START is the special graph constant connected to the first executable node.",
+      "accepted": [
+        "START"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q066"
+    },
+    {
+      "type": "short",
+      "topic": "Graph exit",
+      "difficulty": "foundation",
+      "prompt": "Write the LangGraph constant used as the graph's terminal sentinel.",
+      "explanation": "END is the special graph constant used to terminate a route.",
+      "accepted": [
+        "END"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q067"
+    },
+    {
+      "type": "short",
+      "topic": "Graph builder",
+      "difficulty": "foundation",
+      "prompt": "Write the Python class name used to create the typed graph builder.",
+      "explanation": "StateGraph is the LangGraph builder used to register nodes, state and edges.",
+      "accepted": [
+        "StateGraph"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q068"
+    },
+    {
+      "type": "short",
+      "topic": "Reducer syntax",
+      "difficulty": "applied",
+      "prompt": "Write the Annotated type expression used by the lesson for an additive list-of-string channel, without spaces.",
+      "explanation": "Annotated combines the list type with operator.add so updates append rather than replace.",
+      "accepted": [
+        "Annotated[list[str],add]"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q069"
+    },
+    {
+      "type": "short",
+      "topic": "Compilation",
+      "difficulty": "foundation",
+      "prompt": "Write the builder method name that turns a declared graph into a runnable graph, including parentheses.",
+      "explanation": "The compile() method validates structure and produces the runnable graph object.",
+      "accepted": [
+        "compile()"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q070"
+    },
+    {
+      "type": "short",
+      "topic": "Thread configuration",
+      "difficulty": "foundation",
+      "prompt": "Write the exact configuration key used to select checkpoint state.",
+      "explanation": "LangGraph receives thread_id inside configurable runtime data to identify a checkpoint thread.",
+      "accepted": [
+        "thread_id"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q071"
+    },
+    {
+      "type": "short",
+      "topic": "Process-local saver",
+      "difficulty": "foundation",
+      "prompt": "Write the class name of the process-memory checkpointer used in the lab.",
+      "explanation": "InMemorySaver stores checkpoints only for the lifetime of the current Python process.",
+      "accepted": [
+        "InMemorySaver"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q072"
+    },
+    {
+      "type": "short",
+      "topic": "Pause API",
+      "difficulty": "foundation",
+      "prompt": "Write the function call name used to pause a graph for external input, including parentheses.",
+      "explanation": "interrupt() pauses the current node and exposes a resumable payload.",
+      "accepted": [
+        "interrupt()"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q073"
+    },
+    {
+      "type": "short",
+      "topic": "Resume API",
+      "difficulty": "applied",
+      "prompt": "Write the LangGraph expression that wraps resume data named response.",
+      "explanation": "Command(resume=response) carries host-supplied resume data back into the interrupted node.",
+      "accepted": [
+        "Command(resume=response)"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q074"
+    },
+    {
+      "type": "short",
+      "topic": "State typing",
+      "difficulty": "foundation",
+      "prompt": "Write the Python type used by the lesson to declare the shared state mapping.",
+      "explanation": "TypedDict gives the graph a visible mapping contract while allowing partial node updates.",
+      "accepted": [
+        "TypedDict"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q075"
+    },
+    {
+      "type": "short",
+      "topic": "Exact price type",
+      "difficulty": "foundation",
+      "prompt": "Write the Python standard-library class used for exact decimal price arithmetic.",
+      "explanation": "Decimal avoids binary floating-point representation error in the price calculation.",
+      "accepted": [
+        "Decimal"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q076"
+    },
+    {
+      "type": "short",
+      "topic": "Rounding mode",
+      "difficulty": "foundation",
+      "prompt": "Write the decimal rounding constant used for two-place display in the lab.",
+      "explanation": "ROUND_HALF_EVEN provides the lesson's explicit and reproducible rounding rule.",
+      "accepted": [
+        "ROUND_HALF_EVEN"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q077"
+    },
+    {
+      "type": "short",
+      "topic": "Digest function",
+      "difficulty": "foundation",
+      "prompt": "Write the hashlib function name used to bind approval to the report snapshot.",
+      "explanation": "sha256 hashes the canonical report bytes to detect a changed snapshot.",
+      "accepted": [
+        "sha256"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q078"
+    },
+    {
+      "type": "short",
+      "topic": "Approval status",
+      "difficulty": "foundation",
+      "prompt": "Write the exact status stored immediately before the human-review interrupt.",
+      "explanation": "awaiting_approval means the report passed validation and is paused for a reviewer.",
+      "accepted": [
+        "awaiting_approval"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q079"
+    },
+    {
+      "type": "short",
+      "topic": "Validation status",
+      "difficulty": "foundation",
+      "prompt": "Write the exact terminal status used when required report facts are missing.",
+      "explanation": "validation_failed is the fail-closed outcome for an incomplete report.",
+      "accepted": [
+        "validation_failed"
+      ],
+      "case_sensitive": true,
+      "id": "W15-Q080"
+    },
+    {
+      "type": "code",
+      "topic": "Additive reducer",
+      "difficulty": "applied",
+      "prompt": "Implement append_channel(current, update). Both arguments must be exact lists whose members are exact strings. Return a new list containing current followed by update. Raise TypeError for any invalid container or member. Do not mutate or alias either input.",
+      "explanation": "This isolates the observable behavior of an additive evidence or trace reducer: ordered accumulation with strict input validation and no caller mutation.",
+      "starter": "def append_channel(current, update):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def append_channel(current, update):\n    if type(current) is not list or type(update) is not list:\n        raise TypeError('channel_not_list')\n    if any(type(item) is not str for item in current + update):\n        raise TypeError('channel_item_not_string')\n    return [*current, *update]\n",
+      "checks": [
+        {
+          "label": "Ordered append",
+          "code": "assert append_channel(['document:a'], ['sql:b']) == ['document:a', 'sql:b']\n"
+        },
+        {
+          "label": "Empty updates",
+          "code": "assert append_channel([], []) == []\nassert append_channel(['a'], []) == ['a']\nassert append_channel([], ['b']) == ['b']\n"
+        },
+        {
+          "label": "No mutation or aliasing",
+          "code": "left = ['a']; right = ['b']; result = append_channel(left, right)\nresult.append('c')\nassert left == ['a'] and right == ['b'] and result == ['a', 'b', 'c']\n"
+        },
+        {
+          "label": "Strict containers",
+          "code": "assert raises(TypeError, append_channel, ('a',), ['b'])\nassert raises(TypeError, append_channel, ['a'], ('b',))\nassert raises(TypeError, append_channel, None, [])\n"
+        },
+        {
+          "label": "Strict members",
+          "code": "class Text(str):\n    pass\nassert raises(TypeError, append_channel, ['a', 1], [])\nassert raises(TypeError, append_channel, [], [Text('b')])\nassert raises(TypeError, append_channel, [True], [])\n"
+        }
+      ],
+      "id": "W15-Q081"
+    },
+    {
+      "type": "code",
+      "topic": "Partial state updates",
+      "difficulty": "applied",
+      "prompt": "Implement apply_state_update(state, update). Both inputs must be exact dicts using only evidence, trace, recommendation and valid. evidence and trace are strict list[str] additive channels; recommendation and valid replace their previous values. Return a deep independent result and never mutate either input. Raise TypeError for invalid containers/channel values and ValueError for unknown keys.",
+      "explanation": "Graph nodes return partial updates. This exercise keeps additive and replacement semantics explicit while preventing accidental input mutation.",
+      "starter": "def apply_state_update(state, update):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from copy import deepcopy\n\n_ADDITIVE_CHANNELS = frozenset({'evidence', 'trace'})\n_REPLACEMENT_CHANNELS = frozenset({'recommendation', 'valid'})\n_ALLOWED_CHANNELS = _ADDITIVE_CHANNELS | _REPLACEMENT_CHANNELS\n\ndef apply_state_update(state, update):\n    if type(state) is not dict or type(update) is not dict:\n        raise TypeError('state_or_update_not_dict')\n    if not set(state) <= _ALLOWED_CHANNELS or not set(update) <= _ALLOWED_CHANNELS:\n        raise ValueError('unknown_channel')\n    result = deepcopy(state)\n    for channel in _ADDITIVE_CHANNELS:\n        current = result.get(channel, [])\n        incoming = update.get(channel, [])\n        if type(current) is not list or type(incoming) is not list:\n            raise TypeError('additive_channel_not_list')\n        if any(type(item) is not str for item in current + incoming):\n            raise TypeError('additive_item_not_string')\n        if channel in update:\n            result[channel] = [*current, *incoming]\n    for channel in _REPLACEMENT_CHANNELS:\n        if channel in update:\n            result[channel] = deepcopy(update[channel])\n    return result\n",
+      "checks": [
+        {
+          "label": "Additive channels accumulate",
+          "code": "state = {'evidence': ['document:a'], 'trace': ['classify:supported']}\nupdate = {'evidence': ['sql:b'], 'trace': ['analyze:complete']}\nassert apply_state_update(state, update) == {\n    'evidence': ['document:a', 'sql:b'],\n    'trace': ['classify:supported', 'analyze:complete'],\n}\n"
+        },
+        {
+          "label": "Scalars replace",
+          "code": "assert apply_state_update(\n    {'recommendation': 'needs_human', 'valid': False},\n    {'recommendation': 'review_required', 'valid': True},\n) == {'recommendation': 'review_required', 'valid': True}\n"
+        },
+        {
+          "label": "Partial and empty updates",
+          "code": "assert apply_state_update({'evidence': ['a']}, {}) == {'evidence': ['a']}\nassert apply_state_update({}, {'trace': ['start']}) == {'trace': ['start']}\n"
+        },
+        {
+          "label": "Inputs stay independent",
+          "code": "state = {'evidence': ['a']}; update = {'evidence': ['b']}\nresult = apply_state_update(state, update)\nresult['evidence'].append('c')\nassert state == {'evidence': ['a']} and update == {'evidence': ['b']}\n"
+        },
+        {
+          "label": "Invalid channels fail",
+          "code": "assert raises(ValueError, apply_state_update, {'secret': 'x'}, {})\nassert raises(ValueError, apply_state_update, {}, {'unknown': 1})\nassert raises(TypeError, apply_state_update, [], {})\nassert raises(TypeError, apply_state_update, {}, {'evidence': ('a',)})\n"
+        }
+      ],
+      "id": "W15-Q082"
+    },
+    {
+      "type": "code",
+      "topic": "Classification route",
+      "difficulty": "applied",
+      "prompt": "Implement route_after_classification(state). state must be an exact dict containing intent. Return retrieve_documents for procurement_price_investigation and unsupported_query for unsupported. Raise TypeError when intent is not an exact string and ValueError when intent is missing or unknown. Do not mutate state.",
+      "explanation": "A conditional edge should map validated state to a closed destination set and reject states outside that contract.",
+      "starter": "def route_after_classification(state):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def route_after_classification(state):\n    if type(state) is not dict:\n        raise TypeError('state_not_dict')\n    if 'intent' not in state:\n        raise ValueError('intent_missing')\n    intent = state['intent']\n    if type(intent) is not str:\n        raise TypeError('intent_not_string')\n    routes = {\n        'procurement_price_investigation': 'retrieve_documents',\n        'unsupported': 'unsupported_query',\n    }\n    if intent not in routes:\n        raise ValueError('intent_unknown')\n    return routes[intent]\n",
+      "checks": [
+        {
+          "label": "Supported destination",
+          "code": "state = {'intent': 'procurement_price_investigation'}\nassert route_after_classification(state) == 'retrieve_documents'\nassert state == {'intent': 'procurement_price_investigation'}\n"
+        },
+        {
+          "label": "Unsupported destination",
+          "code": "assert route_after_classification({'intent': 'unsupported'}) == 'unsupported_query'\n"
+        },
+        {
+          "label": "Missing intent",
+          "code": "assert raises(ValueError, route_after_classification, {})\n"
+        },
+        {
+          "label": "Unknown intent",
+          "code": "assert raises(ValueError, route_after_classification, {'intent': 'admin'})\nassert raises(ValueError, route_after_classification, {'intent': ''})\n"
+        },
+        {
+          "label": "Strict types",
+          "code": "class Text(str):\n    pass\nassert raises(TypeError, route_after_classification, [])\nassert raises(TypeError, route_after_classification, {'intent': None})\nassert raises(TypeError, route_after_classification, {'intent': Text('unsupported')})\n"
+        }
+      ],
+      "id": "W15-Q083"
+    },
+    {
+      "type": "code",
+      "topic": "Validation route",
+      "difficulty": "applied",
+      "prompt": "Implement route_after_validation(state). state must be an exact dict containing valid as an exact bool. Return human_approval only for True and __end__ for False. Raise TypeError for invalid types and ValueError when valid is absent. Do not use truthiness.",
+      "explanation": "Fail-closed routing depends on a validated boolean, not on the truthiness of arbitrary values such as non-empty strings.",
+      "starter": "def route_after_validation(state):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def route_after_validation(state):\n    if type(state) is not dict:\n        raise TypeError('state_not_dict')\n    if 'valid' not in state:\n        raise ValueError('valid_missing')\n    valid = state['valid']\n    if type(valid) is not bool:\n        raise TypeError('valid_not_bool')\n    return 'human_approval' if valid else '__end__'\n",
+      "checks": [
+        {
+          "label": "Valid reaches approval",
+          "code": "assert route_after_validation({'valid': True}) == 'human_approval'\n"
+        },
+        {
+          "label": "Invalid terminates",
+          "code": "assert route_after_validation({'valid': False}) == '__end__'\n"
+        },
+        {
+          "label": "Missing value fails",
+          "code": "assert raises(ValueError, route_after_validation, {})\n"
+        },
+        {
+          "label": "No truthiness coercion",
+          "code": "for value in (1, 0, 'true', [], None):\n    assert raises(TypeError, route_after_validation, {'valid': value})\n"
+        },
+        {
+          "label": "Strict state container",
+          "code": "assert raises(TypeError, route_after_validation, [('valid', True)])\nassert raises(TypeError, route_after_validation, None)\n"
+        }
+      ],
+      "id": "W15-Q084"
+    },
+    {
+      "type": "code",
+      "topic": "Deterministic classification",
+      "difficulty": "applied",
+      "prompt": "Implement classify_query(case_orders, case_id, query). case_orders must be an exact dict of exact str keys and values; case_id and query must be exact strings. Normalize query with casefold and collapsed whitespace. A request is supported only when case_id exists, the query contains price or cost, and it contains either purchase order or that case's purchase-order ID. Return {'intent':'unsupported'} otherwise; for support also return purchase_order_id. Do not mutate inputs.",
+      "explanation": "This reproduces the transparent Week 15 teaching classifier so graph mechanics can be tested independently of model quality.",
+      "starter": "def classify_query(case_orders, case_id, query):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def classify_query(case_orders, case_id, query):\n    if type(case_orders) is not dict:\n        raise TypeError('case_orders_not_dict')\n    if any(type(key) is not str or type(value) is not str for key, value in case_orders.items()):\n        raise TypeError('case_orders_invalid')\n    if type(case_id) is not str or type(query) is not str:\n        raise TypeError('case_or_query_invalid')\n    purchase_order_id = case_orders.get(case_id)\n    normalized = ' '.join(query.casefold().split())\n    supported = bool(\n        purchase_order_id\n        and ('price' in normalized or 'cost' in normalized)\n        and ('purchase order' in normalized or purchase_order_id.casefold() in normalized)\n    )\n    if not supported:\n        return {'intent': 'unsupported'}\n    return {\n        'intent': 'procurement_price_investigation',\n        'purchase_order_id': purchase_order_id,\n    }\n",
+      "checks": [
+        {
+          "label": "Known case and identifier",
+          "code": "cases = {'price-spike': 'PO-1501'}\nassert classify_query(cases, 'price-spike', 'Check PRICE for po-1501') == {\n    'intent': 'procurement_price_investigation',\n    'purchase_order_id': 'PO-1501',\n}\n"
+        },
+        {
+          "label": "Phrase and whitespace normalization",
+          "code": "cases = {'stable': 'PO-1502'}\nassert classify_query(cases, 'stable', '  Investigate   purchase ORDER   cost  ')['intent'] == 'procurement_price_investigation'\n"
+        },
+        {
+          "label": "Unknown or unrelated is unsupported",
+          "code": "cases = {'price-spike': 'PO-1501'}\nassert classify_query(cases, 'missing', 'Check purchase order price') == {'intent': 'unsupported'}\nassert classify_query(cases, 'price-spike', 'Write a poem about steel') == {'intent': 'unsupported'}\n"
+        },
+        {
+          "label": "Required query pieces",
+          "code": "cases = {'price-spike': 'PO-1501'}\nassert classify_query(cases, 'price-spike', 'Check price') == {'intent': 'unsupported'}\nassert classify_query(cases, 'price-spike', 'Inspect PO-1501') == {'intent': 'unsupported'}\n"
+        },
+        {
+          "label": "Strict inputs and no mutation",
+          "code": "cases = {'price-spike': 'PO-1501'}; before = dict(cases)\nassert raises(TypeError, classify_query, [('price-spike', 'PO-1501')], 'price-spike', 'price PO-1501')\nassert raises(TypeError, classify_query, {1: 'PO-1501'}, 'price-spike', 'price PO-1501')\nassert raises(TypeError, classify_query, cases, True, 'price PO-1501')\nassert cases == before\n"
+        }
+      ],
+      "id": "W15-Q085"
+    },
+    {
+      "type": "code",
+      "topic": "Exact price variance",
+      "difficulty": "applied",
+      "prompt": "Implement price_variance(reference, current, reference_currency, current_currency, reference_unit, current_unit). All inputs must be exact strings. Prices must use unsigned plain decimal syntax, currencies and units must be nonblank and match exactly, and reference must be positive. Return (absolute, percent) as two-place strings using Decimal precision 28, reference as denominator and ROUND_HALF_EVEN. Raise TypeError for non-strings and ValueError for invalid values.",
+      "explanation": "Exact parsing, a positive reference denominator, dimension equality and explicit rounding keep the price node deterministic.",
+      "starter": "def price_variance(reference, current, reference_currency, current_currency, reference_unit, current_unit):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from decimal import Decimal, ROUND_HALF_EVEN, localcontext\nimport re\n\n_PRICE_PATTERN = re.compile(r'(?:0|[1-9]\\d*)(?:\\.\\d+)?\\Z')\n\ndef price_variance(reference, current, reference_currency, current_currency, reference_unit, current_unit):\n    values = (reference, current, reference_currency, current_currency, reference_unit, current_unit)\n    if any(type(value) is not str for value in values):\n        raise TypeError('input_not_string')\n    if not _PRICE_PATTERN.fullmatch(reference) or not _PRICE_PATTERN.fullmatch(current):\n        raise ValueError('price_invalid')\n    if not reference_currency or not current_currency or not reference_unit or not current_unit:\n        raise ValueError('dimension_blank')\n    if reference_currency != current_currency or reference_unit != current_unit:\n        raise ValueError('dimension_mismatch')\n    reference_value = Decimal(reference)\n    current_value = Decimal(current)\n    if reference_value <= 0:\n        raise ValueError('reference_not_positive')\n    with localcontext() as context:\n        context.prec = 28\n        absolute = current_value - reference_value\n        percent = absolute / reference_value * Decimal('100')\n        quantum = Decimal('0.01')\n        return (\n            str(absolute.quantize(quantum, rounding=ROUND_HALF_EVEN)),\n            str(percent.quantize(quantum, rounding=ROUND_HALF_EVEN)),\n        )\n",
+      "checks": [
+        {
+          "label": "Price-spike example",
+          "code": "assert price_variance('2.00', '2.20', 'USD', 'USD', 'kg', 'kg') == ('0.20', '10.00')\n"
+        },
+        {
+          "label": "Decrease uses reference denominator",
+          "code": "assert price_variance('2.00', '1.90', 'INR', 'INR', 'tonne', 'tonne') == ('-0.10', '-5.00')\n"
+        },
+        {
+          "label": "Half-even two-place output",
+          "code": "assert price_variance('3.00', '3.005', 'USD', 'USD', 'kg', 'kg') == ('0.00', '0.17')\n"
+        },
+        {
+          "label": "Dimensions and reference validation",
+          "code": "assert raises(ValueError, price_variance, '0', '1', 'USD', 'USD', 'kg', 'kg')\nassert raises(ValueError, price_variance, '2', '3', 'USD', 'INR', 'kg', 'kg')\nassert raises(ValueError, price_variance, '2', '3', 'USD', 'USD', 'kg', 'tonne')\n"
+        },
+        {
+          "label": "Strict decimal syntax and types",
+          "code": "for bad in (' 2.00', '+2.00', '02.00', '2e0', '-2.00', ''):\n    assert raises(ValueError, price_variance, bad, '2.20', 'USD', 'USD', 'kg', 'kg')\nassert raises(TypeError, price_variance, 2.0, '2.20', 'USD', 'USD', 'kg', 'kg')\n"
+        }
+      ],
+      "id": "W15-Q086"
+    },
+    {
+      "type": "code",
+      "topic": "Recommendation policy",
+      "difficulty": "applied",
+      "prompt": "Implement recommendation(supplier_status, variance_percent, terms_found, max_variance_percent). supplier_status and variance_percent must be exact strings; terms_found must be exact bool. Decimal inputs use unsigned plain syntax. If terms are missing, max_variance_percent must be None and return needs_human. If terms are found, require a valid threshold. Return review_required for an inactive supplier or variance strictly above threshold; otherwise return no_review. Raise TypeError or ValueError for invalid inputs.",
+      "explanation": "The deterministic policy preserves the missing-evidence branch and the strict greater-than threshold used by the graph.",
+      "starter": "def recommendation(supplier_status, variance_percent, terms_found, max_variance_percent):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from decimal import Decimal\nimport re\n\n_DECIMAL_PATTERN = re.compile(r'(?:0|[1-9]\\d*)(?:\\.\\d+)?\\Z')\n\ndef recommendation(supplier_status, variance_percent, terms_found, max_variance_percent):\n    if type(supplier_status) is not str or type(variance_percent) is not str or type(terms_found) is not bool:\n        raise TypeError('input_type_invalid')\n    if not supplier_status or not _DECIMAL_PATTERN.fullmatch(variance_percent):\n        raise ValueError('input_value_invalid')\n    if not terms_found:\n        if max_variance_percent is not None:\n            raise ValueError('missing_terms_must_not_have_threshold')\n        return 'needs_human'\n    if type(max_variance_percent) is not str:\n        raise TypeError('threshold_not_string')\n    if not _DECIMAL_PATTERN.fullmatch(max_variance_percent):\n        raise ValueError('threshold_invalid')\n    if supplier_status != 'active' or Decimal(variance_percent) > Decimal(max_variance_percent):\n        return 'review_required'\n    return 'no_review'\n",
+      "checks": [
+        {
+          "label": "Missing terms need a person",
+          "code": "assert recommendation('active', '10.00', False, None) == 'needs_human'\nassert recommendation('inactive', '1.00', False, None) == 'needs_human'\n"
+        },
+        {
+          "label": "Supplier status forces review",
+          "code": "assert recommendation('inactive', '1.00', True, '5.00') == 'review_required'\n"
+        },
+        {
+          "label": "Strict threshold boundary",
+          "code": "assert recommendation('active', '5.01', True, '5.00') == 'review_required'\nassert recommendation('active', '5.00', True, '5.00') == 'no_review'\nassert recommendation('active', '4.99', True, '5.00') == 'no_review'\n"
+        },
+        {
+          "label": "Missing-term shape is explicit",
+          "code": "assert raises(ValueError, recommendation, 'active', '1.00', False, '5.00')\nassert raises(TypeError, recommendation, 'active', '1.00', True, None)\n"
+        },
+        {
+          "label": "Strict values and types",
+          "code": "assert raises(TypeError, recommendation, 'active', '1.00', 1, '5.00')\nassert raises(TypeError, recommendation, 'active', 1.0, True, '5.00')\nassert raises(ValueError, recommendation, '', '1.00', True, '5.00')\nassert raises(ValueError, recommendation, 'active', ' 1.00', True, '5.00')\n"
+        }
+      ],
+      "id": "W15-Q087"
+    },
+    {
+      "type": "code",
+      "topic": "Fail-closed report validation",
+      "difficulty": "applied",
+      "prompt": "Implement validation_errors(state). state must be an exact dict. Return a tuple of errors in this order: sql_analysis_required, contract_result_required, recommendation_required, variance_required, sql_evidence_required, document_evidence_required. A present SQL/contract value must be a dict; recommendation must be one of no_review, review_required, needs_human; variance_percent must be an exact string; evidence must be a list of exact strings containing both sql: and document: prefixes. Raise TypeError for malformed present values. Do not mutate state.",
+      "explanation": "The report gate distinguishes missing facts from malformed facts and never manufactures evidence to reach approval.",
+      "starter": "def validation_errors(state):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def validation_errors(state):\n    if type(state) is not dict:\n        raise TypeError('state_not_dict')\n    errors = []\n    sql = state.get('sql_analysis')\n    contract = state.get('contract')\n    recommendation_value = state.get('recommendation')\n    variance = state.get('variance_percent')\n    evidence = state.get('evidence', [])\n    if sql is None:\n        errors.append('sql_analysis_required')\n    elif type(sql) is not dict:\n        raise TypeError('sql_analysis_not_dict')\n    if contract is None:\n        errors.append('contract_result_required')\n    elif type(contract) is not dict:\n        raise TypeError('contract_not_dict')\n    if recommendation_value not in {'no_review', 'review_required', 'needs_human'}:\n        errors.append('recommendation_required')\n    if variance is None:\n        errors.append('variance_required')\n    elif type(variance) is not str:\n        raise TypeError('variance_not_string')\n    if type(evidence) is not list or any(type(item) is not str for item in evidence):\n        raise TypeError('evidence_invalid')\n    if not any(item.startswith('sql:') for item in evidence):\n        errors.append('sql_evidence_required')\n    if not any(item.startswith('document:') for item in evidence):\n        errors.append('document_evidence_required')\n    return tuple(errors)\n",
+      "checks": [
+        {
+          "label": "Complete state passes",
+          "code": "state = {\n    'sql_analysis': {'purchase_order_id': 'PO-1501'},\n    'contract': {'found': True},\n    'recommendation': 'review_required',\n    'variance_percent': '10.00',\n    'evidence': ['document:contract-1501:found', 'sql:price_analysis:PO-1501'],\n}\nassert validation_errors(state) == ()\n"
+        },
+        {
+          "label": "All missing errors stay ordered",
+          "code": "assert validation_errors({}) == (\n    'sql_analysis_required',\n    'contract_result_required',\n    'recommendation_required',\n    'variance_required',\n    'sql_evidence_required',\n    'document_evidence_required',\n)\n"
+        },
+        {
+          "label": "Explicit missing contract result counts",
+          "code": "state = {\n    'sql_analysis': {}, 'contract': {'found': False},\n    'recommendation': 'needs_human', 'variance_percent': '10.00',\n    'evidence': ['document:contract-1503:missing', 'sql:price_analysis:PO-1503'],\n}\nassert validation_errors(state) == ()\n"
+        },
+        {
+          "label": "Invalid recommendation fails closed",
+          "code": "state = {'sql_analysis': {}, 'contract': {}, 'recommendation': 'approved',\n         'variance_percent': '1.00', 'evidence': ['sql:x', 'document:y']}\nassert validation_errors(state) == ('recommendation_required',)\n"
+        },
+        {
+          "label": "Malformed present values are rejected",
+          "code": "assert raises(TypeError, validation_errors, [])\nassert raises(TypeError, validation_errors, {'sql_analysis': []})\nassert raises(TypeError, validation_errors, {'contract': []})\nassert raises(TypeError, validation_errors, {'variance_percent': 1})\nassert raises(TypeError, validation_errors, {'evidence': ['sql:x', 1]})\n"
+        }
+      ],
+      "id": "W15-Q088"
+    },
+    {
+      "type": "code",
+      "topic": "Canonical report digest",
+      "difficulty": "applied",
+      "prompt": "Implement report_digest(report). report must be an exact dict with exactly case_id, purchase_order_id, recommendation, reason, variance_percent, reference_as_of and evidence. The six scalar values must be exact strings and evidence must be a list of exact strings. Serialize with ensure_ascii=True, sort_keys=True and separators=(',', ':'); return the lowercase SHA-256 hex digest. Raise TypeError or ValueError for invalid reports.",
+      "explanation": "Canonical serialization makes key insertion order irrelevant while preserving meaningful list order and report content.",
+      "starter": "def report_digest(report):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from hashlib import sha256\nimport json\n\n_REPORT_FIELDS = frozenset({\n    'case_id', 'purchase_order_id', 'recommendation', 'reason',\n    'variance_percent', 'reference_as_of', 'evidence',\n})\n\ndef report_digest(report):\n    if type(report) is not dict:\n        raise TypeError('report_not_dict')\n    if set(report) != _REPORT_FIELDS:\n        raise ValueError('report_fields_invalid')\n    for field in _REPORT_FIELDS - {'evidence'}:\n        if type(report[field]) is not str:\n            raise TypeError('report_scalar_not_string')\n    evidence = report['evidence']\n    if type(evidence) is not list or any(type(item) is not str for item in evidence):\n        raise TypeError('report_evidence_invalid')\n    payload = json.dumps(report, ensure_ascii=True, sort_keys=True, separators=(',', ':'))\n    return sha256(payload.encode('utf-8')).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Key order is canonical",
+          "code": "report = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review',\n          'reason':'ok','variance_percent':'1.00','reference_as_of':'2026-01-01',\n          'evidence':['document:a','sql:b']}\nreordered = dict(reversed(list(report.items())))\nassert report_digest(report) == report_digest(reordered)\n"
+        },
+        {
+          "label": "Matches canonical JSON",
+          "code": "report = {'case_id':'café','purchase_order_id':'p','recommendation':'no_review',\n          'reason':'ok','variance_percent':'1.00','reference_as_of':'2026-01-01',\n          'evidence':['document:a','sql:b']}\nexpected = sha256(json.dumps(report, ensure_ascii=True, sort_keys=True, separators=(',', ':')).encode('utf-8')).hexdigest()\nassert report_digest(report) == expected and len(expected) == 64\n"
+        },
+        {
+          "label": "Content changes the digest",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review',\n        'reason':'ok','variance_percent':'1.00','reference_as_of':'2026-01-01',\n        'evidence':['document:a','sql:b']}\nassert report_digest(base) != report_digest({**base, 'reason':'changed'})\n"
+        },
+        {
+          "label": "Evidence order is significant",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review',\n        'reason':'ok','variance_percent':'1.00','reference_as_of':'2026-01-01',\n        'evidence':['document:a','sql:b']}\nassert report_digest(base) != report_digest({**base, 'evidence':['sql:b','document:a']})\n"
+        },
+        {
+          "label": "Closed strict schema",
+          "code": "base = {'case_id':'c','purchase_order_id':'p','recommendation':'no_review',\n        'reason':'ok','variance_percent':'1.00','reference_as_of':'2026-01-01',\n        'evidence':['document:a','sql:b']}\nassert raises(ValueError, report_digest, {**base, 'extra': True})\nassert raises(ValueError, report_digest, {key:value for key,value in base.items() if key != 'reason'})\nassert raises(TypeError, report_digest, {**base, 'evidence':('document:a','sql:b')})\n"
+        }
+      ],
+      "id": "W15-Q089"
+    },
+    {
+      "type": "code",
+      "topic": "Approval validation",
+      "difficulty": "applied",
+      "prompt": "Implement validate_approval(current_digest, response). current_digest must be exactly 64 lowercase hexadecimal characters. response must be an exact dict with exactly decision, reviewer and report_digest. decision is exact approve or reject; reviewer is an exact string that becomes nonblank after strip and is at most 80 stripped characters; response digest must have the same shape and equal current_digest. Return (status, stripped_reviewer, trace_event). Raise TypeError or ValueError for all invalid input.",
+      "explanation": "Resume data crosses a trust boundary and must be shape-validated and bound to the exact paused report before the lifecycle changes.",
+      "starter": "def validate_approval(current_digest, response):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\n\n_DIGEST_PATTERN = re.compile(r'[0-9a-f]{64}\\Z')\n\ndef validate_approval(current_digest, response):\n    if type(current_digest) is not str or type(response) is not dict:\n        raise TypeError('approval_input_type_invalid')\n    if not _DIGEST_PATTERN.fullmatch(current_digest):\n        raise ValueError('current_digest_invalid')\n    if set(response) != {'decision', 'reviewer', 'report_digest'}:\n        raise ValueError('approval_fields_invalid')\n    decision = response['decision']\n    reviewer = response['reviewer']\n    reviewed_digest = response['report_digest']\n    if type(decision) is not str or type(reviewer) is not str or type(reviewed_digest) is not str:\n        raise TypeError('approval_field_type_invalid')\n    if decision not in {'approve', 'reject'}:\n        raise ValueError('approval_decision_invalid')\n    clean_reviewer = reviewer.strip()\n    if not clean_reviewer or len(clean_reviewer) > 80:\n        raise ValueError('approval_reviewer_invalid')\n    if not _DIGEST_PATTERN.fullmatch(reviewed_digest):\n        raise ValueError('approval_digest_invalid')\n    if reviewed_digest != current_digest:\n        raise ValueError('approval_report_mismatch')\n    status = 'approved' if decision == 'approve' else 'rejected'\n    return status, clean_reviewer, f'human_approval:{decision}:{clean_reviewer}'\n",
+      "checks": [
+        {
+          "label": "Approve transition",
+          "code": "digest = 'a' * 64\nresponse = {'decision':'approve','reviewer':'reviewer-15','report_digest':digest}\nassert validate_approval(digest, response) == ('approved','reviewer-15','human_approval:approve:reviewer-15')\n"
+        },
+        {
+          "label": "Reject and normalize reviewer",
+          "code": "digest = 'b' * 64\nresponse = {'decision':'reject','reviewer':'  reviewer-2  ','report_digest':digest}\nassert validate_approval(digest, response) == ('rejected','reviewer-2','human_approval:reject:reviewer-2')\n"
+        },
+        {
+          "label": "Digest mismatch is rejected",
+          "code": "assert raises(ValueError, validate_approval, 'a'*64, {\n    'decision':'approve','reviewer':'r','report_digest':'b'*64})\n"
+        },
+        {
+          "label": "Decision and digest shape are strict",
+          "code": "assert raises(ValueError, validate_approval, 'A'*64, {\n    'decision':'approve','reviewer':'r','report_digest':'A'*64})\nassert raises(ValueError, validate_approval, 'a'*64, {\n    'decision':'APPROVE','reviewer':'r','report_digest':'a'*64})\n"
+        },
+        {
+          "label": "Reviewer and fields are strict",
+          "code": "digest = 'a'*64\nassert raises(ValueError, validate_approval, digest, {\n    'decision':'approve','reviewer':'   ','report_digest':digest})\nassert raises(ValueError, validate_approval, digest, {\n    'decision':'approve','reviewer':'r','report_digest':digest,'role':'admin'})\nassert raises(TypeError, validate_approval, digest, {\n    'decision':'approve','reviewer':1,'report_digest':digest})\n"
+        }
+      ],
+      "id": "W15-Q090"
+    },
+    {
+      "type": "code",
+      "topic": "Thread configuration",
+      "difficulty": "applied",
+      "prompt": "Implement thread_config(thread_id). thread_id must be an exact string, nonblank after strip and no more than 200 characters in its supplied form. Return {'configurable': {'thread_id': thread_id}} without trimming or otherwise normalizing it. Raise TypeError for non-strings and ValueError for blank or oversized values.",
+      "explanation": "A thread identifier is an opaque checkpoint selector. Preserving it exactly avoids silently switching to a different stored thread.",
+      "starter": "def thread_config(thread_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def thread_config(thread_id):\n    if type(thread_id) is not str:\n        raise TypeError('thread_id_not_string')\n    if not thread_id.strip():\n        raise ValueError('thread_id_required')\n    if len(thread_id) > 200:\n        raise ValueError('thread_id_too_long')\n    return {'configurable': {'thread_id': thread_id}}\n",
+      "checks": [
+        {
+          "label": "Normal identifier",
+          "code": "assert thread_config('case-15') == {'configurable': {'thread_id': 'case-15'}}\n"
+        },
+        {
+          "label": "Opaque value is preserved",
+          "code": "assert thread_config(' thread-15 ') == {'configurable': {'thread_id': ' thread-15 '}}\n"
+        },
+        {
+          "label": "Blank values fail",
+          "code": "assert raises(ValueError, thread_config, '')\nassert raises(ValueError, thread_config, '   ')\nassert raises(ValueError, thread_config, '\\n\\t')\n"
+        },
+        {
+          "label": "Length boundary",
+          "code": "assert thread_config('x'*200)['configurable']['thread_id'] == 'x'*200\nassert raises(ValueError, thread_config, 'x'*201)\n"
+        },
+        {
+          "label": "Strict type",
+          "code": "class Text(str):\n    pass\nassert raises(TypeError, thread_config, None)\nassert raises(TypeError, thread_config, 15)\nassert raises(TypeError, thread_config, Text('thread'))\n"
+        }
+      ],
+      "id": "W15-Q091"
+    },
+    {
+      "type": "code",
+      "topic": "Duplicate thread admission",
+      "difficulty": "applied",
+      "prompt": "Implement admit_start(existing_threads, thread_id). existing_threads must be an exact set of exact strings. thread_id must be an exact nonblank string of at most 200 characters and must not already exist. Return a new set containing the admitted thread. Raise TypeError for invalid types and ValueError for blank, oversized or duplicate IDs. Do not mutate existing_threads.",
+      "explanation": "Rejecting duplicate starts prevents a new initial state from silently overwriting an existing checkpoint thread.",
+      "starter": "def admit_start(existing_threads, thread_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def admit_start(existing_threads, thread_id):\n    if type(existing_threads) is not set or any(type(item) is not str for item in existing_threads):\n        raise TypeError('existing_threads_invalid')\n    if type(thread_id) is not str:\n        raise TypeError('thread_id_not_string')\n    if not thread_id.strip():\n        raise ValueError('thread_id_required')\n    if len(thread_id) > 200:\n        raise ValueError('thread_id_too_long')\n    if thread_id in existing_threads:\n        raise ValueError('thread_already_exists')\n    result = set(existing_threads)\n    result.add(thread_id)\n    return result\n",
+      "checks": [
+        {
+          "label": "Admit a new thread",
+          "code": "assert admit_start({'a'}, 'b') == {'a','b'}\n"
+        },
+        {
+          "label": "Input is not mutated",
+          "code": "existing = {'a'}\nresult = admit_start(existing, 'b')\nresult.add('c')\nassert existing == {'a'} and result == {'a','b','c'}\n"
+        },
+        {
+          "label": "Duplicate is rejected",
+          "code": "assert raises(ValueError, admit_start, {'a'}, 'a')\n"
+        },
+        {
+          "label": "Identifier boundaries",
+          "code": "assert raises(ValueError, admit_start, set(), ' ')\nassert admit_start(set(), 'x'*200) == {'x'*200}\nassert raises(ValueError, admit_start, set(), 'x'*201)\n"
+        },
+        {
+          "label": "Strict containers and members",
+          "code": "assert raises(TypeError, admit_start, ('a',), 'b')\nassert raises(TypeError, admit_start, {1}, 'b')\nassert raises(TypeError, admit_start, set(), True)\n"
+        }
+      ],
+      "id": "W15-Q092"
+    },
+    {
+      "type": "code",
+      "topic": "Checkpoint projection",
+      "difficulty": "applied",
+      "prompt": "Implement checkpoint_summary(thread_id, snapshot, checkpoint_count). thread_id must be an exact nonblank string of at most 200 characters. snapshot must be an exact dict containing approval_status as an exact allowed string and next as an exact tuple of exact node-name strings. checkpoint_count must be an exact positive int. Return only thread_id, status, next, checkpoint_count and interrupted, where interrupted is true exactly when human_approval is in next. Do not leak or mutate other snapshot fields.",
+      "explanation": "A bounded diagnostic projection can expose lifecycle information without returning the full report, query or evidence payload.",
+      "starter": "def checkpoint_summary(thread_id, snapshot, checkpoint_count):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "_ALLOWED_STATUSES = frozenset({\n    'unsupported', 'validation_failed', 'awaiting_approval', 'approved', 'rejected',\n})\n\ndef checkpoint_summary(thread_id, snapshot, checkpoint_count):\n    if type(thread_id) is not str:\n        raise TypeError('thread_id_not_string')\n    if not thread_id.strip() or len(thread_id) > 200:\n        raise ValueError('thread_id_invalid')\n    if type(snapshot) is not dict:\n        raise TypeError('snapshot_not_dict')\n    if 'approval_status' not in snapshot or 'next' not in snapshot:\n        raise ValueError('snapshot_fields_missing')\n    status = snapshot['approval_status']\n    next_nodes = snapshot['next']\n    if type(status) is not str or status not in _ALLOWED_STATUSES:\n        raise ValueError('snapshot_status_invalid')\n    if type(next_nodes) is not tuple or any(type(item) is not str for item in next_nodes):\n        raise TypeError('snapshot_next_invalid')\n    if type(checkpoint_count) is not int:\n        raise TypeError('checkpoint_count_not_int')\n    if checkpoint_count < 1:\n        raise ValueError('checkpoint_count_invalid')\n    return {\n        'thread_id': thread_id,\n        'status': status,\n        'next': tuple(next_nodes),\n        'checkpoint_count': checkpoint_count,\n        'interrupted': 'human_approval' in next_nodes,\n    }\n",
+      "checks": [
+        {
+          "label": "Paused summary",
+          "code": "snapshot = {'approval_status':'awaiting_approval','next':('human_approval',),\n            'report':{'secret':'not projected'},'evidence':['document:a']}\nassert checkpoint_summary('t1', snapshot, 8) == {\n    'thread_id':'t1','status':'awaiting_approval','next':('human_approval',),\n    'checkpoint_count':8,'interrupted':True,\n}\n"
+        },
+        {
+          "label": "Terminal summary",
+          "code": "assert checkpoint_summary('t2', {'approval_status':'approved','next':()}, 9)['interrupted'] is False\n"
+        },
+        {
+          "label": "No payload leakage or mutation",
+          "code": "snapshot = {'approval_status':'rejected','next':(),'query':'private','report':{'x':1}}\nbefore = {'approval_status':'rejected','next':(),'query':'private','report':{'x':1}}\nsummary = checkpoint_summary('t3', snapshot, 2)\nassert set(summary) == {'thread_id','status','next','checkpoint_count','interrupted'}\nassert snapshot == before\n"
+        },
+        {
+          "label": "Invalid lifecycle values",
+          "code": "assert raises(ValueError, checkpoint_summary, 't', {'next':()}, 1)\nassert raises(ValueError, checkpoint_summary, 't', {'approval_status':'running','next':()}, 1)\nassert raises(TypeError, checkpoint_summary, 't', {'approval_status':'approved','next':[]}, 1)\n"
+        },
+        {
+          "label": "Strict count and thread",
+          "code": "assert raises(TypeError, checkpoint_summary, 't', {'approval_status':'approved','next':()}, True)\nassert raises(ValueError, checkpoint_summary, 't', {'approval_status':'approved','next':()}, 0)\nassert raises(ValueError, checkpoint_summary, ' ', {'approval_status':'approved','next':()}, 1)\n"
+        }
+      ],
+      "id": "W15-Q093"
+    },
+    {
+      "type": "code",
+      "topic": "Interrupt payload",
+      "difficulty": "applied",
+      "prompt": "Implement build_interrupt_payload(report, digest). report must be an exact non-empty dict. digest must be an exact 64-character lowercase hexadecimal string. Return a new deep-independent dict with kind='human_approval', report, report_digest and allowed_decisions=['approve','reject']. Raise TypeError or ValueError for invalid inputs. Mutating the result must not alter report.",
+      "explanation": "The interrupt exposes a JSON-shaped review request while preserving the exact report snapshot supplied by the application.",
+      "starter": "def build_interrupt_payload(report, digest):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from copy import deepcopy\nimport re\n\n_INTERRUPT_DIGEST = re.compile(r'[0-9a-f]{64}\\Z')\n\ndef build_interrupt_payload(report, digest):\n    if type(report) is not dict or type(digest) is not str:\n        raise TypeError('interrupt_input_type_invalid')\n    if not report:\n        raise ValueError('report_required')\n    if not _INTERRUPT_DIGEST.fullmatch(digest):\n        raise ValueError('digest_invalid')\n    return {\n        'kind': 'human_approval',\n        'report': deepcopy(report),\n        'report_digest': digest,\n        'allowed_decisions': ['approve', 'reject'],\n    }\n",
+      "checks": [
+        {
+          "label": "Complete payload",
+          "code": "report = {'case_id':'c','evidence':['document:a']}\ndigest = 'a'*64\nassert build_interrupt_payload(report, digest) == {\n    'kind':'human_approval','report':report,'report_digest':digest,\n    'allowed_decisions':['approve','reject'],\n}\n"
+        },
+        {
+          "label": "Report is deep independent",
+          "code": "report = {'case_id':'c','evidence':['document:a']}\npayload = build_interrupt_payload(report, 'b'*64)\npayload['report']['evidence'].append('sql:b')\nassert report == {'case_id':'c','evidence':['document:a']}\n"
+        },
+        {
+          "label": "Decision vocabulary is closed",
+          "code": "payload = build_interrupt_payload({'case_id':'c'}, 'c'*64)\nassert payload['allowed_decisions'] == ['approve','reject']\nassert len(payload['allowed_decisions']) == 2\n"
+        },
+        {
+          "label": "Digest is strict",
+          "code": "assert raises(ValueError, build_interrupt_payload, {'case_id':'c'}, 'C'*64)\nassert raises(ValueError, build_interrupt_payload, {'case_id':'c'}, 'a'*63)\nassert raises(ValueError, build_interrupt_payload, {'case_id':'c'}, 'g'*64)\n"
+        },
+        {
+          "label": "Report shape is strict",
+          "code": "assert raises(ValueError, build_interrupt_payload, {}, 'a'*64)\nassert raises(TypeError, build_interrupt_payload, [], 'a'*64)\nassert raises(TypeError, build_interrupt_payload, {'case_id':'c'}, 1)\n"
+        }
+      ],
+      "id": "W15-Q094"
+    },
+    {
+      "type": "code",
+      "topic": "Resume preparation",
+      "difficulty": "applied",
+      "prompt": "Implement prepare_resume(paused_thread, requested_thread, current_digest, response). Thread IDs, digest and response fields must be exact strings. Both IDs must be nonblank, at most 200 characters and equal. current_digest and response.report_digest must be 64 lowercase hexadecimal characters and equal. response must contain exactly decision, reviewer and report_digest; decision is approve or reject and stripped reviewer is nonblank and at most 80 characters. Return (config, command) where config is {'configurable':{'thread_id':requested_thread}} and command is {'resume': normalized_response}. Raise TypeError or ValueError for invalid input.",
+      "explanation": "Safe resumption binds both execution location and host input to the paused thread and exact report snapshot.",
+      "starter": "def prepare_resume(paused_thread, requested_thread, current_digest, response):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\n\n_RESUME_DIGEST = re.compile(r'[0-9a-f]{64}\\Z')\n\ndef prepare_resume(paused_thread, requested_thread, current_digest, response):\n    if any(type(value) is not str for value in (paused_thread, requested_thread, current_digest)):\n        raise TypeError('resume_scalar_type_invalid')\n    if type(response) is not dict:\n        raise TypeError('response_not_dict')\n    if not paused_thread.strip() or not requested_thread.strip():\n        raise ValueError('thread_id_required')\n    if len(paused_thread) > 200 or len(requested_thread) > 200:\n        raise ValueError('thread_id_too_long')\n    if paused_thread != requested_thread:\n        raise ValueError('thread_mismatch')\n    if not _RESUME_DIGEST.fullmatch(current_digest):\n        raise ValueError('current_digest_invalid')\n    if set(response) != {'decision','reviewer','report_digest'}:\n        raise ValueError('response_fields_invalid')\n    decision = response['decision']; reviewer = response['reviewer']; digest = response['report_digest']\n    if any(type(value) is not str for value in (decision, reviewer, digest)):\n        raise TypeError('response_field_type_invalid')\n    if decision not in {'approve','reject'}:\n        raise ValueError('decision_invalid')\n    clean_reviewer = reviewer.strip()\n    if not clean_reviewer or len(clean_reviewer) > 80:\n        raise ValueError('reviewer_invalid')\n    if not _RESUME_DIGEST.fullmatch(digest) or digest != current_digest:\n        raise ValueError('report_mismatch')\n    normalized = {'decision':decision,'reviewer':clean_reviewer,'report_digest':digest}\n    return (\n        {'configurable': {'thread_id': requested_thread}},\n        {'resume': normalized},\n    )\n",
+      "checks": [
+        {
+          "label": "Matching resume",
+          "code": "digest = 'a'*64\nresponse = {'decision':'approve','reviewer':' r1 ','report_digest':digest}\nconfig, command = prepare_resume('t1','t1',digest,response)\nassert config == {'configurable':{'thread_id':'t1'}}\nassert command == {'resume':{'decision':'approve','reviewer':'r1','report_digest':digest}}\n"
+        },
+        {
+          "label": "Wrong thread is rejected",
+          "code": "digest = 'a'*64\nresponse = {'decision':'approve','reviewer':'r','report_digest':digest}\nassert raises(ValueError, prepare_resume, 'paused','other',digest,response)\n"
+        },
+        {
+          "label": "Wrong report is rejected",
+          "code": "response = {'decision':'approve','reviewer':'r','report_digest':'b'*64}\nassert raises(ValueError, prepare_resume, 't','t','a'*64,response)\n"
+        },
+        {
+          "label": "Closed decision and fields",
+          "code": "digest = 'a'*64\nassert raises(ValueError, prepare_resume, 't','t',digest, {\n    'decision':'retry','reviewer':'r','report_digest':digest})\nassert raises(ValueError, prepare_resume, 't','t',digest, {\n    'decision':'approve','reviewer':'r','report_digest':digest,'role':'admin'})\n"
+        },
+        {
+          "label": "Strict thread, reviewer and digest",
+          "code": "digest = 'a'*64\nassert raises(ValueError, prepare_resume, ' ',' ',digest, {\n    'decision':'approve','reviewer':'r','report_digest':digest})\nassert raises(ValueError, prepare_resume, 't','t','A'*64, {\n    'decision':'approve','reviewer':'r','report_digest':'A'*64})\nassert raises(TypeError, prepare_resume, 't','t',digest, {\n    'decision':'approve','reviewer':1,'report_digest':digest})\n"
+        }
+      ],
+      "id": "W15-Q095"
+    },
+    {
+      "type": "code",
+      "topic": "Bounded trace",
+      "difficulty": "applied",
+      "prompt": "Implement append_trace(trace, event, max_events, max_bytes). trace must be an exact list of exact strings; event must be an exact nonblank string. max_events and max_bytes must be exact positive ints. Return a new list with event appended only when its length is at most max_events and the UTF-8 byte length of entries joined by a newline is at most max_bytes. Raise TypeError or ValueError on invalid input or budget overflow. Do not mutate trace.",
+      "explanation": "Bounded trace retention prevents state from growing without limit and measures bytes rather than assuming every character has one byte.",
+      "starter": "def append_trace(trace, event, max_events, max_bytes):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def append_trace(trace, event, max_events, max_bytes):\n    if type(trace) is not list or any(type(item) is not str for item in trace):\n        raise TypeError('trace_invalid')\n    if type(event) is not str:\n        raise TypeError('event_not_string')\n    if not event:\n        raise ValueError('event_blank')\n    if type(max_events) is not int or type(max_bytes) is not int:\n        raise TypeError('budget_not_int')\n    if max_events < 1 or max_bytes < 1:\n        raise ValueError('budget_not_positive')\n    result = [*trace, event]\n    if len(result) > max_events:\n        raise ValueError('event_budget_exceeded')\n    if len('\\n'.join(result).encode('utf-8')) > max_bytes:\n        raise ValueError('byte_budget_exceeded')\n    return result\n",
+      "checks": [
+        {
+          "label": "Append within budget",
+          "code": "assert append_trace(['classify:supported'],'retrieve:found',3,100) == [\n    'classify:supported','retrieve:found']\n"
+        },
+        {
+          "label": "No mutation",
+          "code": "trace = ['a']; result = append_trace(trace,'b',2,3)\nresult.append('c')\nassert trace == ['a'] and result == ['a','b','c']\n"
+        },
+        {
+          "label": "Event-count bound",
+          "code": "assert raises(ValueError, append_trace, ['a','b'],'c',2,100)\n"
+        },
+        {
+          "label": "UTF-8 byte bound",
+          "code": "assert append_trace([], 'é', 1, 2) == ['é']\nassert raises(ValueError, append_trace, [], 'é', 1, 1)\n"
+        },
+        {
+          "label": "Strict input and budgets",
+          "code": "assert raises(TypeError, append_trace, ('a',),'b',2,10)\nassert raises(TypeError, append_trace, ['a',1],'b',2,10)\nassert raises(TypeError, append_trace, [],'b',True,10)\nassert raises(ValueError, append_trace, [],'',1,10)\nassert raises(ValueError, append_trace, [],'b',0,10)\n"
+        }
+      ],
+      "id": "W15-Q096"
+    },
+    {
+      "type": "code",
+      "topic": "Checkpoint history metrics",
+      "difficulty": "applied",
+      "prompt": "Implement checkpoint_metrics(history). history must be an exact non-empty list of exact dicts, each containing exactly thread_id, step and status. thread_id and status must be exact nonblank strings; step must be an exact non-negative int. Every row must use the same thread and steps must be strictly increasing in supplied order. Return thread_id, checkpoint count, latest_step and latest_status. Raise TypeError or ValueError for invalid history and do not mutate it.",
+      "explanation": "A history summary should preserve thread scope and ordering instead of silently sorting or merging incompatible snapshots.",
+      "starter": "def checkpoint_metrics(history):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def checkpoint_metrics(history):\n    if type(history) is not list:\n        raise TypeError('history_not_list')\n    if not history:\n        raise ValueError('history_empty')\n    thread_id = None\n    previous_step = -1\n    for row in history:\n        if type(row) is not dict:\n            raise TypeError('history_row_not_dict')\n        if set(row) != {'thread_id','step','status'}:\n            raise ValueError('history_fields_invalid')\n        if type(row['thread_id']) is not str or type(row['status']) is not str:\n            raise TypeError('history_text_invalid')\n        if not row['thread_id'] or not row['status']:\n            raise ValueError('history_text_blank')\n        if type(row['step']) is not int:\n            raise TypeError('history_step_not_int')\n        if row['step'] < 0:\n            raise ValueError('history_step_negative')\n        if thread_id is None:\n            thread_id = row['thread_id']\n        elif row['thread_id'] != thread_id:\n            raise ValueError('history_thread_mismatch')\n        if row['step'] <= previous_step:\n            raise ValueError('history_steps_not_increasing')\n        previous_step = row['step']\n    return {\n        'thread_id': thread_id,\n        'checkpoints': len(history),\n        'latest_step': history[-1]['step'],\n        'latest_status': history[-1]['status'],\n    }\n",
+      "checks": [
+        {
+          "label": "Ordered history summary",
+          "code": "history = [\n    {'thread_id':'t1','step':0,'status':'running'},\n    {'thread_id':'t1','step':2,'status':'awaiting_approval'},\n]\nassert checkpoint_metrics(history) == {\n    'thread_id':'t1','checkpoints':2,'latest_step':2,\n    'latest_status':'awaiting_approval',\n}\n"
+        },
+        {
+          "label": "Single checkpoint",
+          "code": "assert checkpoint_metrics([{'thread_id':'t','step':0,'status':'unsupported'}])['checkpoints'] == 1\n"
+        },
+        {
+          "label": "Thread mismatch fails",
+          "code": "rows = [{'thread_id':'a','step':0,'status':'running'},\n        {'thread_id':'b','step':1,'status':'approved'}]\nassert raises(ValueError, checkpoint_metrics, rows)\n"
+        },
+        {
+          "label": "Order and duplicate steps fail",
+          "code": "assert raises(ValueError, checkpoint_metrics, [\n    {'thread_id':'t','step':1,'status':'running'},\n    {'thread_id':'t','step':0,'status':'approved'}])\nassert raises(ValueError, checkpoint_metrics, [\n    {'thread_id':'t','step':1,'status':'running'},\n    {'thread_id':'t','step':1,'status':'approved'}])\n"
+        },
+        {
+          "label": "Strict rows and no mutation",
+          "code": "rows = [{'thread_id':'t','step':0,'status':'running'}]\nbefore = [dict(rows[0])]\nassert checkpoint_metrics(rows)['latest_step'] == 0 and rows == before\nassert raises(ValueError, checkpoint_metrics, [])\nassert raises(TypeError, checkpoint_metrics, [{'thread_id':'t','step':True,'status':'x'}])\nassert raises(ValueError, checkpoint_metrics, [{'thread_id':'t','step':0,'status':'x','extra':1}])\n"
+        }
+      ],
+      "id": "W15-Q097"
+    },
+    {
+      "type": "code",
+      "topic": "Topology contract",
+      "difficulty": "applied",
+      "prompt": "Implement validate_topology(nodes, edges). nodes must be an exact set of exact strings and edges an exact set of exact two-string tuples. Accept only the complete Week 15 topology declared in the reference constants, including both conditional outcomes. Return True for the exact topology; raise TypeError for malformed inputs and ValueError for any missing or extra node or edge. Do not mutate inputs.",
+      "explanation": "An exact topology regression catches deleted branches as well as accidental new destinations that a subset-only check would miss.",
+      "starter": "def validate_topology(nodes, edges):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "_EXPECTED_NODES = frozenset({\n    '__start__','classify_query','unsupported_query','retrieve_documents',\n    'analyze_sql','calculate_price','generate_recommendation','validate_report',\n    'human_approval','__end__',\n})\n_EXPECTED_EDGES = frozenset({\n    ('__start__','classify_query'),\n    ('classify_query','unsupported_query'),\n    ('classify_query','retrieve_documents'),\n    ('unsupported_query','__end__'),\n    ('retrieve_documents','analyze_sql'),\n    ('analyze_sql','calculate_price'),\n    ('calculate_price','generate_recommendation'),\n    ('generate_recommendation','validate_report'),\n    ('validate_report','human_approval'),\n    ('validate_report','__end__'),\n    ('human_approval','__end__'),\n})\n\ndef validate_topology(nodes, edges):\n    if type(nodes) is not set or any(type(node) is not str for node in nodes):\n        raise TypeError('nodes_invalid')\n    if type(edges) is not set:\n        raise TypeError('edges_not_set')\n    if any(type(edge) is not tuple or len(edge) != 2 or\n           any(type(node) is not str for node in edge) for edge in edges):\n        raise TypeError('edge_invalid')\n    if nodes != set(_EXPECTED_NODES):\n        raise ValueError('node_set_mismatch')\n    if edges != set(_EXPECTED_EDGES):\n        raise ValueError('edge_set_mismatch')\n    return True\n",
+      "checks": [
+        {
+          "label": "Exact topology passes",
+          "code": "assert validate_topology(set(_EXPECTED_NODES), set(_EXPECTED_EDGES)) is True\n"
+        },
+        {
+          "label": "Missing branch fails",
+          "code": "edges = set(_EXPECTED_EDGES)\nedges.remove(('validate_report','__end__'))\nassert raises(ValueError, validate_topology, set(_EXPECTED_NODES), edges)\n"
+        },
+        {
+          "label": "Extra destination fails",
+          "code": "nodes = set(_EXPECTED_NODES) | {'send_email'}\nedges = set(_EXPECTED_EDGES) | {('human_approval','send_email')}\nassert raises(ValueError, validate_topology, nodes, edges)\n"
+        },
+        {
+          "label": "Malformed inputs fail",
+          "code": "assert raises(TypeError, validate_topology, tuple(_EXPECTED_NODES), set(_EXPECTED_EDGES))\nassert raises(TypeError, validate_topology, set(_EXPECTED_NODES), list(_EXPECTED_EDGES))\nassert raises(TypeError, validate_topology, set(_EXPECTED_NODES), {('a','b','c')})\n"
+        },
+        {
+          "label": "Inputs are unchanged",
+          "code": "nodes = set(_EXPECTED_NODES); edges = set(_EXPECTED_EDGES)\nnodes_before = set(nodes); edges_before = set(edges)\nassert validate_topology(nodes, edges)\nassert nodes == nodes_before and edges == edges_before\n"
+        }
+      ],
+      "id": "W15-Q098"
+    },
+    {
+      "type": "code",
+      "topic": "Idempotent post-approval effect",
+      "difficulty": "applied",
+      "prompt": "Implement effect_decision(approval_status, report_digest, recorded_keys). approval_status and report_digest must be exact strings; recorded_keys must be an exact set of exact strings. Accept statuses awaiting_approval, approved and rejected and require a 64-character lowercase hexadecimal digest. Build key as report_digest + ':record'. Return {'action':'blocked',...} unless approved; return duplicate when an approved key already exists; otherwise return execute and a new set containing the key. Always return key and recorded. Raise TypeError or ValueError for invalid inputs and never mutate recorded_keys.",
+      "explanation": "Separating an idempotent post-approval effect from the interrupt prevents replay from duplicating a durable write.",
+      "starter": "def effect_decision(approval_status, report_digest, recorded_keys):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\n\n_EFFECT_DIGEST = re.compile(r'[0-9a-f]{64}\\Z')\n_EFFECT_STATUSES = frozenset({'awaiting_approval','approved','rejected'})\n\ndef effect_decision(approval_status, report_digest, recorded_keys):\n    if type(approval_status) is not str or type(report_digest) is not str:\n        raise TypeError('effect_scalar_type_invalid')\n    if type(recorded_keys) is not set or any(type(item) is not str for item in recorded_keys):\n        raise TypeError('recorded_keys_invalid')\n    if approval_status not in _EFFECT_STATUSES:\n        raise ValueError('approval_status_invalid')\n    if not _EFFECT_DIGEST.fullmatch(report_digest):\n        raise ValueError('report_digest_invalid')\n    key = report_digest + ':record'\n    result_keys = set(recorded_keys)\n    if approval_status != 'approved':\n        action = 'blocked'\n    elif key in recorded_keys:\n        action = 'duplicate'\n    else:\n        action = 'execute'\n        result_keys.add(key)\n    return {'action':action,'key':key,'recorded':result_keys}\n",
+      "checks": [
+        {
+          "label": "First approved effect executes",
+          "code": "digest = 'a'*64\nresult = effect_decision('approved', digest, set())\nassert result == {'action':'execute','key':digest+':record','recorded':{digest+':record'}}\n"
+        },
+        {
+          "label": "Replay is duplicate",
+          "code": "digest = 'b'*64; key = digest+':record'\nassert effect_decision('approved', digest, {key}) == {\n    'action':'duplicate','key':key,'recorded':{key}}\n"
+        },
+        {
+          "label": "Pre-approval and rejection are blocked",
+          "code": "digest = 'c'*64\nassert effect_decision('awaiting_approval', digest, set())['action'] == 'blocked'\nassert effect_decision('rejected', digest, set())['action'] == 'blocked'\n"
+        },
+        {
+          "label": "Input set is not mutated",
+          "code": "digest = 'd'*64; recorded = {'existing'}\nresult = effect_decision('approved', digest, recorded)\nresult['recorded'].add('later')\nassert recorded == {'existing'}\n"
+        },
+        {
+          "label": "Strict lifecycle and digest",
+          "code": "assert raises(ValueError, effect_decision, 'pending', 'a'*64, set())\nassert raises(ValueError, effect_decision, 'approved', 'A'*64, set())\nassert raises(TypeError, effect_decision, 'approved', 'a'*64, [])\nassert raises(TypeError, effect_decision, 'approved', 'a'*64, {1})\n"
+        }
+      ],
+      "id": "W15-Q099"
+    },
+    {
+      "type": "code",
+      "topic": "Run audit",
+      "difficulty": "applied",
+      "prompt": "Implement audit_run(status, trace, evidence). status must be an exact allowed string; trace and evidence must be exact lists of exact strings. unsupported requires exactly ['classify_query:unsupported','unsupported_query:end'] and no evidence. validation_failed requires validate_report:failed as the final trace event and must not contain validate_report:passed. awaiting_approval, approved and rejected require both document: and sql: evidence plus validate_report:passed; approved/rejected also require a final human_approval event matching the decision. Return status, node_events, has_document, has_sql and review_boundary. Raise TypeError or ValueError for inconsistent runs and do not mutate inputs.",
+      "explanation": "A result audit checks state-transition evidence appropriate to each terminal or paused outcome instead of trusting a status label alone.",
+      "starter": "def audit_run(status, trace, evidence):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "_ALLOWED_RUN_STATUSES = frozenset({\n    'unsupported','validation_failed','awaiting_approval','approved','rejected',\n})\n\ndef audit_run(status, trace, evidence):\n    if type(status) is not str:\n        raise TypeError('status_not_string')\n    if status not in _ALLOWED_RUN_STATUSES:\n        raise ValueError('status_unknown')\n    if type(trace) is not list or type(evidence) is not list:\n        raise TypeError('trace_or_evidence_not_list')\n    if any(type(item) is not str for item in trace + evidence):\n        raise TypeError('trace_or_evidence_item_invalid')\n    has_document = any(item.startswith('document:') for item in evidence)\n    has_sql = any(item.startswith('sql:') for item in evidence)\n    review_boundary = 'validate_report:passed' in trace\n    if status == 'unsupported':\n        if trace != ['classify_query:unsupported','unsupported_query:end'] or evidence:\n            raise ValueError('unsupported_run_inconsistent')\n    elif status == 'validation_failed':\n        if not trace or trace[-1] != 'validate_report:failed' or review_boundary:\n            raise ValueError('validation_failure_inconsistent')\n    else:\n        if not has_document or not has_sql or not review_boundary:\n            raise ValueError('review_run_incomplete')\n        if status in {'approved','rejected'}:\n            decision = 'approve' if status == 'approved' else 'reject'\n            if not trace or not trace[-1].startswith(f'human_approval:{decision}:'):\n                raise ValueError('human_transition_inconsistent')\n    return {\n        'status': status,\n        'node_events': len(trace),\n        'has_document': has_document,\n        'has_sql': has_sql,\n        'review_boundary': review_boundary,\n    }\n",
+      "checks": [
+        {
+          "label": "Unsupported audit",
+          "code": "trace = ['classify_query:unsupported','unsupported_query:end']\nassert audit_run('unsupported', trace, []) == {\n    'status':'unsupported','node_events':2,'has_document':False,\n    'has_sql':False,'review_boundary':False,\n}\n"
+        },
+        {
+          "label": "Validation failure audit",
+          "code": "trace = ['classify_query:procurement_price_investigation','validate_report:failed']\nassert audit_run('validation_failed', trace, ['document:x'])['review_boundary'] is False\n"
+        },
+        {
+          "label": "Paused review audit",
+          "code": "trace = ['classify_query:procurement_price_investigation','validate_report:passed']\nevidence = ['document:a','sql:b']\nassert audit_run('awaiting_approval', trace, evidence)['review_boundary'] is True\n"
+        },
+        {
+          "label": "Completed human transitions",
+          "code": "base = ['classify_query:procurement_price_investigation','validate_report:passed']\nevidence = ['document:a','sql:b']\nassert audit_run('approved', base+['human_approval:approve:r1'], evidence)['status'] == 'approved'\nassert audit_run('rejected', base+['human_approval:reject:r2'], evidence)['status'] == 'rejected'\n"
+        },
+        {
+          "label": "Inconsistent or malformed runs fail",
+          "code": "assert raises(ValueError, audit_run, 'unsupported',\n              ['classify_query:unsupported','unsupported_query:end'], ['sql:x'])\nassert raises(ValueError, audit_run, 'awaiting_approval',\n              ['validate_report:passed'], ['document:x'])\nassert raises(ValueError, audit_run, 'approved',\n              ['validate_report:passed','human_approval:reject:r'], ['document:x','sql:y'])\nassert raises(TypeError, audit_run, 'unsupported', ('a',), [])\n"
+        }
+      ],
+      "id": "W15-Q100"
+    }
+  ]
+}

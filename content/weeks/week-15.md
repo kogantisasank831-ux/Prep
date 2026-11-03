@@ -3,8 +3,8 @@ layout: week
 week: 15
 phase: 4
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-02
+version: 1.0.1
+last_reviewed: 2026-11-03
 estimated_hours: 8
 permalink: /weeks/week-15/
 title: "Make the control flow visible with LangGraph"
@@ -46,6 +46,10 @@ provider availability.
 
 If graphs are new, start with the [beginner version]({{ '/weeks/week-15/beginner/' | relative_url }}).
 Read Week 14 first if the workflow-versus-agent distinction is not yet clear.
+
+The [Week 15 assessment]({{ '/assessments/week-15/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -401,6 +405,10 @@ report and explain why in-memory persistence is not production durability.
 
 Week 16 will separate working graph state from longer-lived case memory, context
 selection, summarisation, expiry and incorrect-memory prevention.
+
+Use the [Week 15 assessment]({{ '/assessments/week-15/' | relative_url }}) to
+practise state contracts, routes, reducers, checkpoint boundaries, interrupts
+and report-bound resumption before moving to memory engineering.
 
 ## Sources and further reading
 

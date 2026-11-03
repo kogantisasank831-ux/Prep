@@ -11,10 +11,12 @@ Candidate artifacts:
 - `labs/week_15/`
 - `tests/test_week15_langgraph.py`
 
-Version 1.0.0 is approved for the static learning site after local review. The
+Version 1.0.1 is approved for the static learning site after local review. The
 owner requested Week 15 content after Week 14 content and its questionnaire were
-published. This pass covers content and the runnable lab only. It does not add or
-expose a Week 15 questionnaire; `ASSESSMENT_WEEKS` remains through Week 14.
+published. Patch 1.0.1 adds only reviewed links to the separately tested Week 15
+assessment. `ASSESSMENT_WEEKS` is extended to Week 15 in the same change that
+adds the bank, page and regression module, so navigation cannot expose a missing
+route.
 
 ## Coverage mapping
 
@@ -74,8 +76,12 @@ work.
   the host boundary for decision, reviewer and exact digest.
 - The node before `interrupt()` constructs only a JSON-safe payload. It performs
   no external side effect that resume could duplicate when the node restarts.
-- Navigation adds Week 15 to `PUBLISHED_WEEKS` while intentionally leaving
-  `ASSESSMENT_WEEKS` unchanged.
+- The content-only publication added Week 15 to `PUBLISHED_WEEKS` while leaving
+  `ASSESSMENT_WEEKS` unchanged. Patch 1.0.1 adds assessment links only after the
+  complete bank, page and regression module exist.
+- Patch 1.0.1 does not change the lesson's technical claims, lab behavior or
+  procurement values. Assessment verification is recorded in
+  `content/reviews/week-15-assessment-review.md`.
 
 No unresolved actionable finding remains within the declared local teaching
 scope.
@@ -101,16 +107,16 @@ readiness.
 
 Local environment: Python 3.12.14. The declared CI environment is Python 3.13.12.
 
-- Ruff lint passes for all 47 files in the configured CI scope.
-- Ruff format reports all 47 files already formatted.
-- Strict mypy passes for all 47 configured files.
-- The configured regression suite passes: 1,392 tests, including 13 focused
-  Week 15 graph cases.
+- Ruff lint passes for all 48 files in the configured CI scope.
+- Ruff format reports all 48 files already formatted.
+- Strict mypy passes for all 48 configured files.
+- The configured regression suite passes: 1,456 tests, including 64 Week 15
+  assessment cases and 13 focused Week 15 graph cases.
 - Week 13 actual-SQLite smoke passes all 12 observations.
 - Week 14 controller smoke passes all eight observations.
 - Week 15 graph smoke passes all ten observations.
 - Front matter, code-fence balance, YAML parsing, JavaScript syntax, UTF-8 reads,
-  whitespace and changed-link checks pass locally.
+  whitespace and resolved Week 15 assessment-link checks pass locally.
 
 ## Publication verification
 
@@ -125,10 +131,11 @@ Publication verification completed on 2026-11-03 for implementation commit
 - The production route rendered “Make the control flow visible with LangGraph,”
   the beginner route rendered “Build your first stateful graph,” and both depth
   links resolved to one another.
-- Live navigation exposes Week 15 as a lesson and leaves Week 16 as a roadmap
-  item. Neither page exposes a nonexistent Week 15 questionnaire, and neither
-  logged a page-origin console error.
+- At that content-only implementation commit, live navigation exposed Week 15 as
+  a lesson, left Week 16 as a roadmap item and correctly exposed no questionnaire.
+  Neither lesson logged a page-origin console error. Assessment publication is
+  recorded separately in `content/reviews/week-15-assessment-review.md`.
 
-GitHub Pages hosts only the static lessons. The LangGraph runtime, in-memory
-SQLite fixture and checkpoints run locally after the learner installs the pinned
-lab requirement.
+GitHub Pages hosts only static lesson and assessment assets. The LangGraph
+runtime, in-memory SQLite fixture and checkpoints run locally after the learner
+installs the pinned lab requirement.

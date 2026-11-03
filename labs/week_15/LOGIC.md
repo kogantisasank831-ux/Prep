@@ -1,4 +1,4 @@
-# Week 15 LangGraph fundamentals contracts — revision 1
+# Week 15 LangGraph fundamentals contracts — revision 2
 
 Source: `Path.md` Week 15, the Week 14 controller/approval contracts and the
 request to create Week 15 content before its questionnaire. These rules describe
@@ -16,8 +16,9 @@ a local synthetic teaching graph, not a production procurement service.
 | W15-DR2 | Preserve source identities in evidence: one document search record and one SQL analysis record. Missing contract evidence remains an explicit observation and never becomes proof that no threshold exists. |
 | W15-NFR1 | Keep nodes deterministic, separately testable and safe to re-execute. In particular, code before `interrupt()` has no external side effect because LangGraph restarts that node when the thread resumes. |
 | W15-NFR2 | A `thread_id` selects checkpoint state; it is not user authentication or authorization. A report digest detects snapshot mismatch; it is not a signature. Production persistence, identity, concurrency, retention, encryption and audit ownership remain deployment work. |
-| W15-ENG1 | Pin `langgraph==1.2.19` in the lab requirement file and exercise its real `StateGraph`, reducer, `InMemorySaver`, `interrupt` and `Command(resume=...)` APIs. Keep framework-specific code behind `GraphRuntime`; add no model, prompt, API key, paid service or hosted backend. |
-| W15-ER1 | Test topology, all three recommendation branches, reducer order, typed interrupt metadata, checkpoint presence, approve/reject resume, digest mismatch, wrong-thread resume, thread isolation, duplicate starts, fail-closed validation, parameterized SQL and CLI smoke. Run Ruff, format, strict mypy, pytest, CI and live lesson-route verification before publication. |
+| W15-ENG1 | Pin `langgraph==1.2.19` in the lab requirement file and exercise its real `StateGraph`, reducer, `InMemorySaver`, `interrupt` and `Command(resume=...)` APIs. Keep framework-specific code behind `GraphRuntime`; add no model, prompt, API key, paid service or hosted backend. The static assessment remains separate from the runnable lab and uses the existing shared browser engine. |
+| W15-AS1 | Publish 100 distinct assessment items using the established 30 single-choice, 20 multiple-correct, 15 matching, 15 short-syntax and 20 Python-coding distribution. Each random paper draws two of every format. Coding tasks use self-contained standard-library functions with five executable checks so the browser does not need LangGraph. Public client-side scores are practice feedback, not authenticated exam records. |
+| W15-ER1 | Test topology, all three recommendation branches, reducer order, typed interrupt metadata, checkpoint presence, approve/reject resume, digest mismatch, wrong-thread resume, thread isolation, duplicate starts, fail-closed validation, parameterized SQL and CLI smoke. Validate all assessment references, starters, wrong solutions, objective keys, balanced seeded papers and composed graph contracts. Run Ruff, format, strict mypy, pytest, CI and live lesson/assessment-route verification before publication. |
 
 Accepted engineering choices: classification is a transparent keyword-and-case
 rule because this week teaches graph mechanics, not model routing quality. SQL is
