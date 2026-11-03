@@ -114,3 +114,21 @@ browser results are not authenticated exam records. Runtime unavailability
 leaves coding marks pending. Save/restore, print, result download and scoring
 behavior use the unchanged shared engine.
 
+## Publication verification
+
+Publication verification completed on 2026-11-03 for implementation commit
+`beee2889fcd9b2c02654afb71fc53ce295e636e7`:
+
+- Candidate CI run `41578218517` passed the Python 3.13 lint, format, strict
+  typing, 1,456-test regression, CLI smoke and Week 12 stack gates.
+- Main CI run `41578462353` passed both jobs after fast-forward promotion.
+- GitHub Pages run `41578461771` built and deployed successfully.
+- The live assessment loaded bank version 1.0.0 with the status “100 questions
+  ready,” created a 10-question paper with exactly two questions of every type,
+  exposed two Python-run controls, ten question-navigation links and one scoring
+  submission control, and logged no page-origin console error.
+
+GitHub Pages hosts the static assessment and downloads the pinned browser Python
+runtime only when a learner runs a coding solution. No public Python service,
+LangGraph process or database was deployed.
+
