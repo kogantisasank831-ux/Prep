@@ -113,5 +113,20 @@ Local environment: Python 3.12.14. The declared CI environment is Python 3.13.12
 
 ## Publication verification
 
-Pending candidate CI, main promotion, GitHub Pages deployment and live-route
-verification.
+Publication verification completed on 2026-11-03 for implementation commit
+`2a2a2942b478df8ff2f03f498c5d52387393ee37`:
+
+- Candidate CI run `41644590843` passed the Python 3.13.12 lint, format, strict
+  typing, 1,472-test regression and four CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `41644962744` passed both jobs after fast-forward promotion.
+- GitHub Pages run `41644962701` built and deployed successfully.
+- The production route rendered “Engineer memory instead of saving everything,”
+  the beginner route rendered “Give the agent a careful case notebook,” and the
+  depth links resolved in both directions.
+- Live navigation exposed Week 16 as a lesson and left Week 17 as a roadmap item.
+  Both routes exposed zero Week 16 assessment links. Neither route logged a
+  page-origin console error.
+
+GitHub Pages hosts only the static lessons. The SQLite memory store and CLI run
+locally; no public Python service, model, provider or database was deployed.
