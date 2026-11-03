@@ -112,5 +112,23 @@ Local environment: Python 3.12.14. The declared CI environment is Python 3.13.12
 - Front matter, code-fence balance, YAML parsing, JavaScript syntax, UTF-8 reads,
   whitespace and changed-link checks pass locally.
 
-Candidate branch CI, main CI, GitHub Pages deployment and live route verification
-are required before publication is recorded as complete.
+## Publication verification
+
+Publication verification completed on 2026-11-03 for implementation commit
+`6630944797fcbfe5736c99b1a4378468077f3957`:
+
+- Candidate CI run `41460854488` passed the Python 3.13.12 lint, format, strict
+  typing, 1,392-test regression and three CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `41461335198` passed both jobs after fast-forward promotion.
+- GitHub Pages run `41461334201` built and deployed successfully.
+- The production route rendered “Make the control flow visible with LangGraph,”
+  the beginner route rendered “Build your first stateful graph,” and both depth
+  links resolved to one another.
+- Live navigation exposes Week 15 as a lesson and leaves Week 16 as a roadmap
+  item. Neither page exposes a nonexistent Week 15 questionnaire, and neither
+  logged a page-origin console error.
+
+GitHub Pages hosts only the static lessons. The LangGraph runtime, in-memory
+SQLite fixture and checkpoints run locally after the learner installs the pinned
+lab requirement.
