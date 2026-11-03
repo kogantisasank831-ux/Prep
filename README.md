@@ -275,11 +275,11 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–15 assessment tests and Week 10–15 labs'
+requires Node 20+, checks the Week 7–15 assessment tests and Week 10–16 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
-application/Week 13 tool-calling/Week 14 controller/Week 15 graph tests and Week
-1 service regressions. A second required job builds
+application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory
+tests and Week 1 service regressions. A second required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
 The candidate commit must pass before its branch is promoted to
@@ -517,3 +517,43 @@ Run the bank and graph regression checks from the repository root:
 
 The shared browser worker and scoring rules are unchanged. Required CI keeps the
 Week 15 CLI smoke and the existing real PostgreSQL/container gates.
+
+## Week 16 content and durable case-memory lab
+
+The [Week 16 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-16/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-16/beginner/)
+separate runtime context, thread checkpoints and cross-thread memory. The
+[lab](labs/week_16/README.md) retains the investigation objective, supplier,
+document/SQL evidence references, exact calculation and approval status in a
+private schema-versioned SQLite file.
+
+Semantic memory keeps the current typed snapshot; episodic memory keeps compact
+ordered facts and approval transitions. Context selection always includes the
+current summary and provenance, ranks episodes against the transient question
+and packs only complete entries within a hard budget. Raw conversation and
+evidence bodies are outside the accepted schemas and tables.
+
+~~~shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_16.demo seed --db .runtime/week16.sqlite3
+python -m labs.week_16.demo recall --db .runtime/week16.sqlite3
+python -m labs.week_16.demo approve --db .runtime/week16.sqlite3
+python -m labs.week_16.demo smoke
+python -m pytest tests/test_week16_memory.py -q
+~~~
+
+Use a fresh database path for `seed`; initialization refuses overwrite. The
+fixture is dated and expires after 30 days. Reads and writes require a trusted
+tenant/case scope, exact retries are idempotent, updates use compare-and-set
+revisions, investigation facts are immutable and approval has one terminal
+transition. Expired cases are hidden and can be purged; explicit forgetting
+cascades to their episodes.
+
+The scope object is not authentication, file mode `0600` is not encryption and a
+digest is not proof of truth or identity. Production identity, policy,
+encryption, backup, migration, concurrency and deletion evidence remain
+deployment responsibilities. The lab adds no model, provider, API key, network
+call, external action, dependency or hosted service. Required CI includes its 16
+behavior tests and CLI smoke while preserving the existing real
+PostgreSQL/pgvector container gate. A Week 16 assessment has not yet been
+published, so questionnaire navigation remains at Week 15.
