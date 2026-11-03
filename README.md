@@ -227,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 through 15 use the shared engine. Future weeks need their own
+Weeks 1 through 16 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -275,7 +275,7 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–15 assessment tests and Week 10–16 labs'
+requires Node 20+, checks the Week 7–16 assessment tests and Week 10–16 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
 application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory
@@ -527,6 +527,12 @@ separate runtime context, thread checkpoints and cross-thread memory. The
 document/SQL evidence references, exact calculation and approval status in a
 private schema-versioned SQLite file.
 
+The [Week 16 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-16/)
+draws ten balanced questions from a reviewed 100-item bank. Its 20 Python tasks
+exercise scoped authorization, minimal provenance, canonical digests, retention,
+bounded context, revision-safe writes and lifecycle audits without adding a
+provider, hosted runtime or database dependency to the browser assessment.
+
 Semantic memory keeps the current typed snapshot; episodic memory keeps compact
 ordered facts and approval transitions. Context selection always includes the
 current summary and provenance, ranks episodes against the transient question
@@ -539,7 +545,7 @@ python -m labs.week_16.demo seed --db .runtime/week16.sqlite3
 python -m labs.week_16.demo recall --db .runtime/week16.sqlite3
 python -m labs.week_16.demo approve --db .runtime/week16.sqlite3
 python -m labs.week_16.demo smoke
-python -m pytest tests/test_week16_memory.py -q
+python -m pytest tests/test_week16_assessment.py tests/test_week16_memory.py -q
 ~~~
 
 Use a fresh database path for `seed`; initialization refuses overwrite. The
@@ -555,5 +561,4 @@ encryption, backup, migration, concurrency and deletion evidence remain
 deployment responsibilities. The lab adds no model, provider, API key, network
 call, external action, dependency or hosted service. Required CI includes its 16
 behavior tests and CLI smoke while preserving the existing real
-PostgreSQL/pgvector container gate. A Week 16 assessment has not yet been
-published, so questionnaire navigation remains at Week 15.
+PostgreSQL/pgvector container gate. Questionnaire navigation now includes Week 16.

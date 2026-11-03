@@ -1,4 +1,4 @@
-# Week 16 memory and context engineering contracts — revision 1
+# Week 16 memory and context engineering contracts — revision 2
 
 Source: `Path.md` Week 16 and the Week 15 checkpointed procurement report. These
 rules describe a local synthetic teaching store. They are not a production
@@ -18,13 +18,15 @@ procurement system, identity service or authorization policy.
 | W16-NFR2 | Create a new store with mode `0600` and refuse overwrite. Treat file permissions as one local safeguard, not encryption. Production work still needs authenticated identity, policy enforcement, encryption, migration, backup, concurrency, deletion evidence and operating ownership. |
 | W16-ENG1 | Use the pinned project Pydantic and Python standard-library SQLite APIs only. Keep strict contracts in `models.py`, selection in `context.py`, durable lifecycle operations in `memory.py`, synthetic facts in `fixtures.py` and demonstrations in `demo.py`. |
 | W16-ER1 | Test private initialization, schema version, restart persistence, data minimization, tenant/case scope, idempotency, revisions, approval transitions, immutable facts, time validation, bounded relevance, transient questions, expiry cascade, explicit forgetting, strict schemas, deterministic digest and cross-process CLI behavior. Run Ruff, format, strict mypy, the configured regression suite and CLI smoke before publication. |
+| W16-AS1 | Publish a 100-item practice bank with 30 single-choice, 20 multiple-correct, 15 matching, 15 short-answer and 20 self-contained Python coding questions. Every generated 10-question paper contains exactly two of each type for 100 marks. Each coding task has five executable checks, its reference passes all five, its starter scores zero and a distinct plausible wrong implementation loses marks. |
 
 Accepted engineering choices: SQLite demonstrates durable cross-process memory
 without adding a service. One current semantic row plus compact episodes makes
 the difference between “what is true now” and “what happened” inspectable.
 Keyword overlap is a transparent selection baseline, not a claim of semantic
 search quality. Deterministic summaries avoid introducing an unmeasured model
-into a memory-correctness lesson.
+into a memory-correctness lesson. The browser assessment uses small independent
+standard-library transformations; durable SQLite behavior remains in the lab.
 
 Automated fact extraction from arbitrary dialogue, vector similarity, memory
 consolidation, conflict arbitration between independent investigators, legal-hold

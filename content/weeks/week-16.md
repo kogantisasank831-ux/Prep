@@ -3,7 +3,7 @@ layout: week
 week: 16
 phase: 4
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-11-03
 estimated_hours: 8
 permalink: /weeks/week-16/
@@ -37,6 +37,10 @@ episodic events to SQLite, then selects a bounded context for a later turn.
 
 If this vocabulary is new, start with the
 [beginner version]({{ '/weeks/week-16/beginner/' | relative_url }}).
+
+The [Week 16 assessment]({{ '/assessments/week-16/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -427,6 +431,10 @@ leave out.
 Week 17 will build supervisor and specialist boundaries. The same memory rules
 will matter even more when several agents could otherwise share excessive or
 conflicting state.
+
+Use the [Week 16 assessment]({{ '/assessments/week-16/' | relative_url }}) to
+practise memory scopes, semantic and episodic records, data minimisation,
+provenance, bounded recall, expiry, forgetting and revision-safe updates.
 
 ## Sources and further reading
 

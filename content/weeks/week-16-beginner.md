@@ -3,7 +3,7 @@ layout: week
 week: 16
 phase: 4
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-11-03
 estimated_hours: 8
 permalink: /weeks/week-16/beginner/
@@ -38,6 +38,10 @@ The notebook has:
 
 The [production version]({{ '/weeks/week-16/' | relative_url }}) explains the
 schemas, transactions, context budget and incorrect-memory controls in more depth.
+
+The [Week 16 assessment]({{ '/assessments/week-16/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 ## Learn the four memory words
 
@@ -302,6 +306,10 @@ request.
 
 Week 17 will introduce supervisors and specialist agents. A careful shared
 notebook will help them coordinate without giving every agent every message.
+
+Try the [Week 16 assessment]({{ '/assessments/week-16/' | relative_url }}) for a
+random paper covering careful case memory, source labels, expiry, forgetting and
+the difference between saved knowledge and current context.
 
 ## Read alongside the lab
 
