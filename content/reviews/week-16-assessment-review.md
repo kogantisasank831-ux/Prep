@@ -2,7 +2,7 @@
 week: 16
 status: reviewed
 version: 1.0.0
-last_reviewed: 2026-11-03
+last_reviewed: 2026-11-04
 generation_surface: Codex in ChatGPT Work
 publication_authorization: User requested completion and publication of the Week 16 questionnaire within the established test-push-publish workflow
 ---
@@ -108,3 +108,26 @@ per pair; coding awards two points per passed check. Public keys and editable
 browser results are not authenticated exam records. Runtime unavailability
 leaves coding marks pending. Save/restore, print, result download and scoring
 behavior use the unchanged shared engine.
+
+## Publication verification
+
+Publication verification completed on 2026-11-04 for implementation commit
+`cc4956d61cd3ae621a040a48374a527972c4dd57`:
+
+- Candidate CI run `41652890299` passed the Python 3.13.12 lint, format, strict
+  typing, 1,536-test regression and four CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `41653317589` passed both jobs after fast-forward promotion.
+- GitHub Pages run `41653316507` built and deployed successfully.
+- The production and beginner lessons each expose two Week 16 assessment links
+  and retain their reciprocal depth navigation.
+- The live assessment loaded bank version 1.0.0 with the status “100 questions
+  ready,” created a 10-question paper with exactly two questions of every type,
+  exposed two Python-run controls, ten question-navigation links and one scoring
+  submission control, and linked back to the Week 16 lesson.
+- The production, beginner and assessment routes logged no page-origin warning
+  or error during the final browser verification.
+
+GitHub Pages hosts the static assessment and downloads the pinned browser Python
+runtime only when a learner runs a coding solution. The SQLite memory lab remains
+local; no public Python service, model, provider or database was deployed.
