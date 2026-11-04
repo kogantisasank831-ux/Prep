@@ -275,11 +275,11 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–16 assessment tests and Week 10–16 labs'
+requires Node 20+, checks the Week 7–16 assessment tests and Week 10–17 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
-application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory
-tests and Week 1 service regressions. A second required job builds
+application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory/
+Week 17 multi-agent tests and Week 1 service regressions. A second required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
 The candidate commit must pass before its branch is promoted to
@@ -562,3 +562,37 @@ deployment responsibilities. The lab adds no model, provider, API key, network
 call, external action, dependency or hosted service. Required CI includes its 16
 behavior tests and CLI smoke while preserving the existing real
 PostgreSQL/pgvector container gate. Questionnaire navigation now includes Week 16.
+
+## Week 17 content and bounded multi-agent lab
+
+The [Week 17 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-17/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-17/beginner/)
+build a supervisor over document, SQL, supplier-risk and commercial specialists.
+The [local lab](labs/week_17/README.md) uses strict immutable handoffs, one
+three-worker evidence wave, stable result collection, explicit correlation and a
+human approval stop.
+
+Document analysis returns the applicable threshold, SQL analysis uses exact
+`Decimal` price variance, supplier risk returns status and incidents, and the
+commercial specialist applies one deterministic policy. A technical specialist
+fault fails the run without a report; valid missing contract evidence produces
+`needs_human`. No route implements an external procurement action.
+
+~~~shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_17.demo run --case price-spike --run-id demo-17
+python -m labs.week_17.demo compare --case price-spike --run-id demo-17
+python -m labs.week_17.demo smoke
+python -m pytest tests/test_week17_multi_agent.py -q
+~~~
+
+The comparison runs the same domain components through one sequential workflow.
+Both routes produce the same report; the supervisor has four validated handoffs
+and two dependency stages, while the workflow has no inter-agent handoff and four
+sequential stages. These are structural facts, not a production latency claim.
+
+The lab adds no model, provider, API key, network call, database, external action
+or dependency. Required CI includes its 25 behavior tests and CLI smoke while
+preserving all published assessment and PostgreSQL/pgvector gates. Lesson
+navigation includes Week 17; questionnaire navigation remains at Week 16 until a
+reviewed Week 17 bank exists.
