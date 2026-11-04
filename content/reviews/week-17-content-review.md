@@ -107,4 +107,25 @@ publication section is completed.
 
 ## Publication verification
 
-Pending candidate CI and production publication.
+Publication verification completed on 2026-11-04 for implementation commit
+`ff8aef26af99ca779551b8a6c95cc8ef52e7c36a`:
+
+- Candidate CI run `41811828053` passed the Python 3.13.12 lint, format, strict
+  typing, 1,561-test regression and five CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `41812178802` passed both required jobs after fast-forward
+  promotion.
+- GitHub Pages run `41812179854` built and deployed successfully.
+- The production route rendered “Coordinate specialists without creating agent
+  chaos,” and the beginner route rendered “Build a small specialist team with
+  one careful supervisor.” Their reciprocal depth links resolved in both
+  directions.
+- Live navigation exposed Week 17 as a lesson and left Week 18 as a roadmap
+  item. Both routes exposed zero Week 17 assessment links, matching the content-
+  only scope.
+- Neither route logged a page-origin warning or error during final browser
+  verification.
+
+GitHub Pages hosts only the static lessons. The supervisor, specialists and CLI
+run locally; no public Python service, model, provider, database or procurement
+action was deployed.
