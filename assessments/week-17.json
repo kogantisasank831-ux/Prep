@@ -1,0 +1,3234 @@
+{
+  "schema_version": 1,
+  "week": 17,
+  "version": "1.0.0",
+  "title": "Bounded multi-agent coordination",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "type": "single",
+      "topic": "Pattern selection",
+      "difficulty": "foundation",
+      "prompt": "Which Week 17 architecture keeps routing and aggregation under one central controller?",
+      "explanation": "The supervisor-specialist pattern gives one supervisor routing, validation and aggregate-state ownership while specialists retain narrow capabilities.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The supervisor-specialist pattern"
+        },
+        {
+          "id": "o2",
+          "text": "A peer-to-peer swarm"
+        },
+        {
+          "id": "o3",
+          "text": "A transfer-of-control handoff chain"
+        },
+        {
+          "id": "o4",
+          "text": "An unbounded fan-out tree"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q001"
+    },
+    {
+      "type": "single",
+      "topic": "Boundary justification",
+      "difficulty": "foundation",
+      "prompt": "What is the strongest reason to create a separate specialist in the Week 17 system?",
+      "explanation": "A defensible specialist owns distinct governed context, tooling or responsibility rather than merely making the diagram contain more agents.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It owns a distinct governed capability"
+        },
+        {
+          "id": "o2",
+          "text": "It makes the agent count larger"
+        },
+        {
+          "id": "o3",
+          "text": "It formats one percentage"
+        },
+        {
+          "id": "o4",
+          "text": "It repeats the supervisor prompt"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q002"
+    },
+    {
+      "type": "single",
+      "topic": "Boundary justification",
+      "difficulty": "foundation",
+      "prompt": "Which proposed role should remain an ordinary function instead of becoming another agent?",
+      "explanation": "Formatting a percentage shares the same context and decision path, so a normal function is clearer and has less coordination cost.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A percentage-formatting role"
+        },
+        {
+          "id": "o2",
+          "text": "A governed contract-document role"
+        },
+        {
+          "id": "o3",
+          "text": "A relational price-analysis role"
+        },
+        {
+          "id": "o4",
+          "text": "A separately owned supplier-risk role"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q003"
+    },
+    {
+      "type": "single",
+      "topic": "Specialist ownership",
+      "difficulty": "foundation",
+      "prompt": "Which responsibility belongs to the commercial specialist?",
+      "explanation": "Commercial synthesis combines three already validated finding types; it does not retrieve a document, query SQL or mutate a source.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Apply the decision policy to validated findings"
+        },
+        {
+          "id": "o2",
+          "text": "Retrieve the contract source"
+        },
+        {
+          "id": "o3",
+          "text": "Query purchase-order rows"
+        },
+        {
+          "id": "o4",
+          "text": "Update the supplier register"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q004"
+    },
+    {
+      "type": "single",
+      "topic": "Minimal handoffs",
+      "difficulty": "foundation",
+      "prompt": "What should the document specialist receive for the controlled Week 17 case?",
+      "explanation": "The document assignment contains correlation identifiers, the purchase-order identifier and one governed document source reference, not the whole case history.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Run and case IDs, purchase-order ID and document source"
+        },
+        {
+          "id": "o2",
+          "text": "The raw conversation and every source body"
+        },
+        {
+          "id": "o3",
+          "text": "SQL rows and the risk register"
+        },
+        {
+          "id": "o4",
+          "text": "The commercial recommendation and approval token"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q005"
+    },
+    {
+      "type": "single",
+      "topic": "Minimal handoffs",
+      "difficulty": "foundation",
+      "prompt": "Which extra field is required by the SQL assignment but not the document assignment?",
+      "explanation": "SQL must correlate the selected supplier as well as the purchase order before it can return a price finding.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The selected supplier ID"
+        },
+        {
+          "id": "o2",
+          "text": "The raw prompt"
+        },
+        {
+          "id": "o3",
+          "text": "The commercial decision"
+        },
+        {
+          "id": "o4",
+          "text": "A human approval decision"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q006"
+    },
+    {
+      "type": "single",
+      "topic": "Minimal handoffs",
+      "difficulty": "foundation",
+      "prompt": "Which source should the supplier-risk specialist be allowed to inspect?",
+      "explanation": "The risk specialist receives only the selected supplier identity and governed risk-register source needed for its owned classification.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The governed risk-register source"
+        },
+        {
+          "id": "o2",
+          "text": "The contract document body"
+        },
+        {
+          "id": "o3",
+          "text": "The SQL connection and all rows"
+        },
+        {
+          "id": "o4",
+          "text": "The supervisor's mutable result list"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q007"
+    },
+    {
+      "type": "single",
+      "topic": "State ownership",
+      "difficulty": "foundation",
+      "prompt": "Why are Week 17 assignments and findings frozen?",
+      "explanation": "Frozen boundaries prevent a worker from changing its assignment or another role's returned state after the supervisor has accepted it.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To prevent in-place cross-role mutation"
+        },
+        {
+          "id": "o2",
+          "text": "To make network calls faster"
+        },
+        {
+          "id": "o3",
+          "text": "To remove the need for validation"
+        },
+        {
+          "id": "o4",
+          "text": "To let specialists share one global dictionary"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q008"
+    },
+    {
+      "type": "single",
+      "topic": "State ownership",
+      "difficulty": "foundation",
+      "prompt": "Who owns the aggregate list of first-wave findings?",
+      "explanation": "Only the supervisor aggregates findings; specialists remain stateless functions and never edit one another's working data.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The supervisor"
+        },
+        {
+          "id": "o2",
+          "text": "The document specialist"
+        },
+        {
+          "id": "o3",
+          "text": "Whichever worker finishes first"
+        },
+        {
+          "id": "o4",
+          "text": "Every specialist through shared global state"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q009"
+    },
+    {
+      "type": "single",
+      "topic": "Dependency planning",
+      "difficulty": "foundation",
+      "prompt": "Which roles form the bounded independent first wave?",
+      "explanation": "Document, SQL and supplier-risk analysis use separate sources and can be submitted together before commercial synthesis.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Document, SQL and supplier risk"
+        },
+        {
+          "id": "o2",
+          "text": "Document, commercial and approval"
+        },
+        {
+          "id": "o3",
+          "text": "SQL, commercial and payment"
+        },
+        {
+          "id": "o4",
+          "text": "Risk, commercial and supplier contact"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q010"
+    },
+    {
+      "type": "single",
+      "topic": "Bounded concurrency",
+      "difficulty": "foundation",
+      "prompt": "What is the maximum first-wave worker count in the Week 17 lab?",
+      "explanation": "The supervisor bounds its executor at three workers because exactly three declared source specialists form the first wave.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Three workers"
+        },
+        {
+          "id": "o2",
+          "text": "One worker per source row"
+        },
+        {
+          "id": "o3",
+          "text": "Fourteen workers"
+        },
+        {
+          "id": "o4",
+          "text": "An unlimited number of workers"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q011"
+    },
+    {
+      "type": "single",
+      "topic": "Dependency planning",
+      "difficulty": "foundation",
+      "prompt": "When may the commercial specialist run?",
+      "explanation": "Commercial synthesis starts only after all three first-wave findings pass result type, role, run and case validation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "After all three validated first-wave results"
+        },
+        {
+          "id": "o2",
+          "text": "As soon as the fastest worker returns"
+        },
+        {
+          "id": "o3",
+          "text": "Before any source analysis"
+        },
+        {
+          "id": "o4",
+          "text": "Only after an external purchase is made"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q012"
+    },
+    {
+      "type": "single",
+      "topic": "Determinism",
+      "difficulty": "applied",
+      "prompt": "How does the supervisor keep its public completion trace stable despite concurrent work?",
+      "explanation": "It submits the three workers concurrently but awaits and records their results in the declared document, SQL and supplier-risk order.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Collect results in declared role order"
+        },
+        {
+          "id": "o2",
+          "text": "Publish operating-system completion order"
+        },
+        {
+          "id": "o3",
+          "text": "Sort by exception text"
+        },
+        {
+          "id": "o4",
+          "text": "Let workers append to a shared trace"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q013"
+    },
+    {
+      "type": "single",
+      "topic": "Result validation",
+      "difficulty": "applied",
+      "prompt": "What must happen before a returned finding enters aggregate state?",
+      "explanation": "The coordination boundary validates the expected result class, specialist identity, run ID and case ID before accepting a finding.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Validate its type and correlation identity"
+        },
+        {
+          "id": "o2",
+          "text": "Trust the producing function name"
+        },
+        {
+          "id": "o3",
+          "text": "Coerce all fields to strings"
+        },
+        {
+          "id": "o4",
+          "text": "Remove its source reference"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q014"
+    },
+    {
+      "type": "single",
+      "topic": "Failure semantics",
+      "difficulty": "foundation",
+      "prompt": "How is an absent applicable contract threshold classified?",
+      "explanation": "A valid document finding with no applicable terms is business uncertainty and leads to needs_human rather than a technical run failure.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Valid business uncertainty"
+        },
+        {
+          "id": "o2",
+          "text": "A successful no_review decision"
+        },
+        {
+          "id": "o3",
+          "text": "A Python interpreter failure"
+        },
+        {
+          "id": "o4",
+          "text": "Proof that the supplier is inactive"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q015"
+    },
+    {
+      "type": "single",
+      "topic": "Failure semantics",
+      "difficulty": "foundation",
+      "prompt": "How should a raised SQL specialist exception affect the run?",
+      "explanation": "A required technical specialist failure stops coordination closed, records a controlled failure reason and produces no commercial report.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Fail the run closed without a report"
+        },
+        {
+          "id": "o2",
+          "text": "Invent a zero variance"
+        },
+        {
+          "id": "o3",
+          "text": "Continue with the document result only"
+        },
+        {
+          "id": "o4",
+          "text": "Approve the procurement automatically"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q016"
+    },
+    {
+      "type": "single",
+      "topic": "Failure semantics",
+      "difficulty": "applied",
+      "prompt": "Which report value is required when a coordination run has status failed?",
+      "explanation": "The failed-run contract requires report to be null and failure_reason to be present so partial evidence cannot masquerade as a decision.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No report"
+        },
+        {
+          "id": "o2",
+          "text": "A no_review report"
+        },
+        {
+          "id": "o3",
+          "text": "An unsigned payment order"
+        },
+        {
+          "id": "o4",
+          "text": "The last specialist's raw output"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q017"
+    },
+    {
+      "type": "single",
+      "topic": "Decision policy",
+      "difficulty": "applied",
+      "prompt": "What recommendation has highest precedence when contract terms are missing?",
+      "explanation": "Missing terms make the governing threshold unknown, so the policy returns needs_human before checking supplier risk or price variance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "needs_human"
+        },
+        {
+          "id": "o2",
+          "text": "no_review"
+        },
+        {
+          "id": "o3",
+          "text": "review_required only when variance is positive"
+        },
+        {
+          "id": "o4",
+          "text": "automatic_approval"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q018"
+    },
+    {
+      "type": "single",
+      "topic": "Decision policy",
+      "difficulty": "foundation",
+      "prompt": "What recommendation follows from an elevated supplier risk when terms are present?",
+      "explanation": "An inactive supplier or elevated risk requires review even when the price variance remains within the contract threshold.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "review_required"
+        },
+        {
+          "id": "o2",
+          "text": "no_review"
+        },
+        {
+          "id": "o3",
+          "text": "needs_human because every risk is unknown"
+        },
+        {
+          "id": "o4",
+          "text": "purchase_now"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q019"
+    },
+    {
+      "type": "single",
+      "topic": "Decision policy",
+      "difficulty": "applied",
+      "prompt": "What recommendation applies when variance equals the found threshold and supplier risk is low?",
+      "explanation": "The rule uses strictly above the threshold for review; equality is within the threshold and therefore produces no_review.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "no_review"
+        },
+        {
+          "id": "o2",
+          "text": "review_required"
+        },
+        {
+          "id": "o3",
+          "text": "needs_human"
+        },
+        {
+          "id": "o4",
+          "text": "failed"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q020"
+    },
+    {
+      "type": "single",
+      "topic": "Approval boundary",
+      "difficulty": "foundation",
+      "prompt": "What flag is true on every successful commercial report?",
+      "explanation": "Every successful report requires human approval and the lab grants no authority for an external procurement action.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "requires_human_approval"
+        },
+        {
+          "id": "o2",
+          "text": "payment_completed"
+        },
+        {
+          "id": "o3",
+          "text": "supplier_contacted"
+        },
+        {
+          "id": "o4",
+          "text": "purchase_order_updated"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q021"
+    },
+    {
+      "type": "single",
+      "topic": "Approval boundary",
+      "difficulty": "foundation",
+      "prompt": "Which capability is intentionally absent from the Week 17 lab?",
+      "explanation": "The lab stops at an awaiting-approval report and contains no email, supplier contact, payment or purchase-order mutation function.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Executing a procurement action"
+        },
+        {
+          "id": "o2",
+          "text": "Returning a recommendation"
+        },
+        {
+          "id": "o3",
+          "text": "Validating a run ID"
+        },
+        {
+          "id": "o4",
+          "text": "Comparing two architectures"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q022"
+    },
+    {
+      "type": "single",
+      "topic": "Exact arithmetic",
+      "difficulty": "foundation",
+      "prompt": "Why does price variance use Decimal instead of binary float?",
+      "explanation": "Decimal with explicit two-place half-even rounding makes the commercial threshold comparison exact and reproducible for monetary data.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To preserve exact reproducible decision arithmetic"
+        },
+        {
+          "id": "o2",
+          "text": "To enable unbounded fan-out"
+        },
+        {
+          "id": "o3",
+          "text": "To authenticate the source"
+        },
+        {
+          "id": "o4",
+          "text": "To remove the need for a reference price"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q023"
+    },
+    {
+      "type": "single",
+      "topic": "Provenance",
+      "difficulty": "foundation",
+      "prompt": "What can a matching SHA-256 fixture digest establish?",
+      "explanation": "A digest can detect whether current fixture bytes disagree with the referenced bytes; it cannot prove truth, identity or authorization.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The referenced bytes have not changed"
+        },
+        {
+          "id": "o2",
+          "text": "The facts are objectively true"
+        },
+        {
+          "id": "o3",
+          "text": "The caller is authorized"
+        },
+        {
+          "id": "o4",
+          "text": "A human approved the report"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q024"
+    },
+    {
+      "type": "single",
+      "topic": "Architecture comparison",
+      "difficulty": "foundation",
+      "prompt": "How many inter-agent handoffs does the successful supervisor route record?",
+      "explanation": "The supervisor sends three first-wave assignments and one commercial assignment, for four validated handoffs in this structural model.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Four"
+        },
+        {
+          "id": "o2",
+          "text": "Zero"
+        },
+        {
+          "id": "o3",
+          "text": "Two"
+        },
+        {
+          "id": "o4",
+          "text": "An unbounded number"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q025"
+    },
+    {
+      "type": "single",
+      "topic": "Architecture comparison",
+      "difficulty": "foundation",
+      "prompt": "How many dependency stages does the supervisor route report?",
+      "explanation": "The three independent evidence tasks form one stage and dependent commercial synthesis forms the second stage.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Two"
+        },
+        {
+          "id": "o2",
+          "text": "One"
+        },
+        {
+          "id": "o3",
+          "text": "Three"
+        },
+        {
+          "id": "o4",
+          "text": "Four sequential stages"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q026"
+    },
+    {
+      "type": "single",
+      "topic": "Architecture comparison",
+      "difficulty": "foundation",
+      "prompt": "Which structural metrics describe the single-workflow baseline?",
+      "explanation": "The baseline calls the same four components sequentially, so it has zero inter-agent handoffs and four dependency stages.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Zero handoffs and four stages"
+        },
+        {
+          "id": "o2",
+          "text": "Four handoffs and two stages"
+        },
+        {
+          "id": "o3",
+          "text": "Three handoffs and one stage"
+        },
+        {
+          "id": "o4",
+          "text": "Unlimited handoffs and no stages"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q027"
+    },
+    {
+      "type": "single",
+      "topic": "Evidence limits",
+      "difficulty": "applied",
+      "prompt": "Why is measured latency left null in the architecture comparison?",
+      "explanation": "Local deterministic fixtures do not represent model, network or service execution, so their timing would not support a production latency claim.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The lab has no representative production timing evidence"
+        },
+        {
+          "id": "o2",
+          "text": "Python cannot measure time"
+        },
+        {
+          "id": "o3",
+          "text": "Both designs always have identical latency"
+        },
+        {
+          "id": "o4",
+          "text": "Parallel work guarantees zero latency"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q028"
+    },
+    {
+      "type": "single",
+      "topic": "Pattern selection",
+      "difficulty": "applied",
+      "prompt": "When is the single workflow usually the better Week 17 design?",
+      "explanation": "When work shares context and permissions, follows a fully sequential path and ordinary functions suffice, agent coordination adds unjustified cost.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When boundaries do not justify coordination cost"
+        },
+        {
+          "id": "o2",
+          "text": "Whenever there are distinct governed sources"
+        },
+        {
+          "id": "o3",
+          "text": "Whenever independent work can run together"
+        },
+        {
+          "id": "o4",
+          "text": "Whenever teams require isolated ownership"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q029"
+    },
+    {
+      "type": "single",
+      "topic": "Production limits",
+      "difficulty": "applied",
+      "prompt": "Which missing control prevents the local lab from claiming production readiness?",
+      "explanation": "Remote execution would need governed identities, timeouts, retries, cancellation, durable state and distributed observability beyond this local example.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Durable remote coordination controls"
+        },
+        {
+          "id": "o2",
+          "text": "A fifth formatting agent"
+        },
+        {
+          "id": "o3",
+          "text": "A larger public answer key"
+        },
+        {
+          "id": "o4",
+          "text": "Removal of all result validation"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W17-Q030"
+    },
+    {
+      "type": "multiple",
+      "topic": "Boundary justification",
+      "difficulty": "foundation",
+      "prompt": "Which conditions can justify separate specialists?",
+      "explanation": "Distinct governed sources, independent work and separate capability ownership can earn the cost of an explicit coordination boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Distinct governed context or tools"
+        },
+        {
+          "id": "o2",
+          "text": "Independent work that can overlap"
+        },
+        {
+          "id": "o3",
+          "text": "Separate ownership or evaluation"
+        },
+        {
+          "id": "o4",
+          "text": "A desire to maximize agent count"
+        },
+        {
+          "id": "o5",
+          "text": "A one-line formatting step"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W17-Q031"
+    },
+    {
+      "type": "multiple",
+      "topic": "Specialist ownership",
+      "difficulty": "foundation",
+      "prompt": "Which statements describe a truthful commercial-specialist boundary?",
+      "explanation": "The commercial role accepts validated narrow findings, applies one deterministic policy and performs no source retrieval or external effect.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It consumes the three validated finding types"
+        },
+        {
+          "id": "o2",
+          "text": "It owns decision synthesis"
+        },
+        {
+          "id": "o3",
+          "text": "It returns a recommendation requiring human approval"
+        },
+        {
+          "id": "o4",
+          "text": "It secretly queries every source"
+        },
+        {
+          "id": "o5",
+          "text": "It contacts the supplier"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W17-Q032"
+    },
+    {
+      "type": "multiple",
+      "topic": "Minimal handoffs",
+      "difficulty": "foundation",
+      "prompt": "Which data should first-wave assignments exclude?",
+      "explanation": "Minimal handoffs leave raw dialogue, unrelated source bodies and downstream decisions outside a specialist's declared input contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Raw conversation"
+        },
+        {
+          "id": "o2",
+          "text": "Unrelated source bodies"
+        },
+        {
+          "id": "o3",
+          "text": "A precomputed commercial decision"
+        },
+        {
+          "id": "o4",
+          "text": "Run and case correlation IDs"
+        },
+        {
+          "id": "o5",
+          "text": "The specialist's governed source reference"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W17-Q033"
+    },
+    {
+      "type": "multiple",
+      "topic": "State ownership",
+      "difficulty": "applied",
+      "prompt": "Which properties reduce shared-state coordination bugs?",
+      "explanation": "Closed frozen handoffs, stateless specialists and supervisor-only aggregation prevent overwrite, half-read and completion-order defects.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Frozen assignments and findings"
+        },
+        {
+          "id": "o2",
+          "text": "Supervisor-owned aggregate state"
+        },
+        {
+          "id": "o3",
+          "text": "Stateless specialist functions"
+        },
+        {
+          "id": "o4",
+          "text": "One mutable global result dictionary"
+        },
+        {
+          "id": "o5",
+          "text": "Workers appending directly to the public trace"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W17-Q034"
+    },
+    {
+      "type": "multiple",
+      "topic": "Bounded concurrency",
+      "difficulty": "applied",
+      "prompt": "Which are guarantees of the Week 17 first wave?",
+      "explanation": "Only the three declared roles are submitted, each once, to a three-worker maximum; results are published in declared order.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Only declared source specialists are submitted"
+        },
+        {
+          "id": "o2",
+          "text": "Each source specialist is submitted once"
+        },
+        {
+          "id": "o3",
+          "text": "At most three worker threads are used"
+        },
+        {
+          "id": "o4",
+          "text": "Public result order is deterministic"
+        },
+        {
+          "id": "o5",
+          "text": "Specialists may create arbitrary child agents"
+        },
+        {
+          "id": "o6",
+          "text": "Operating-system completion order defines the trace"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q035"
+    },
+    {
+      "type": "multiple",
+      "topic": "Result validation",
+      "difficulty": "foundation",
+      "prompt": "Which fields are checked before accepting a specialist result?",
+      "explanation": "The supervisor validates the concrete result type, declared specialist, run identity and case identity at the coordination boundary.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Expected result type"
+        },
+        {
+          "id": "o2",
+          "text": "Specialist name"
+        },
+        {
+          "id": "o3",
+          "text": "Run ID"
+        },
+        {
+          "id": "o4",
+          "text": "Case ID"
+        },
+        {
+          "id": "o5",
+          "text": "Exception message popularity"
+        },
+        {
+          "id": "o6",
+          "text": "Worker completion speed"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q036"
+    },
+    {
+      "type": "multiple",
+      "topic": "Failure semantics",
+      "difficulty": "applied",
+      "prompt": "Which conditions must fail the run closed?",
+      "explanation": "A required specialist exception, missing registry entry, wrong result type or wrong correlation identity invalidates coordinated synthesis.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A required specialist raises"
+        },
+        {
+          "id": "o2",
+          "text": "A declared specialist is missing"
+        },
+        {
+          "id": "o3",
+          "text": "A result has the wrong class"
+        },
+        {
+          "id": "o4",
+          "text": "A result carries the wrong run or case"
+        },
+        {
+          "id": "o5",
+          "text": "A valid document finding reports terms absent"
+        },
+        {
+          "id": "o6",
+          "text": "Variance equals the threshold"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q037"
+    },
+    {
+      "type": "multiple",
+      "topic": "Failure semantics",
+      "difficulty": "applied",
+      "prompt": "Which statements correctly distinguish business uncertainty from technical failure?",
+      "explanation": "Missing terms can be a valid typed result and become needs_human; an exception or invalid handoff fails the run with no report.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Missing applicable terms can be valid evidence"
+        },
+        {
+          "id": "o2",
+          "text": "Valid missing terms lead to needs_human"
+        },
+        {
+          "id": "o3",
+          "text": "A technical exception yields status failed"
+        },
+        {
+          "id": "o4",
+          "text": "A failed run has no commercial report"
+        },
+        {
+          "id": "o5",
+          "text": "Missing terms must be converted to zero"
+        },
+        {
+          "id": "o6",
+          "text": "A crashed specialist may be ignored"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q038"
+    },
+    {
+      "type": "multiple",
+      "topic": "Decision policy",
+      "difficulty": "applied",
+      "prompt": "Which statements follow the commercial decision precedence?",
+      "explanation": "Unknown terms take priority, supplier risk independently requires review and only variance strictly above a known threshold triggers price review.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Missing terms produce needs_human"
+        },
+        {
+          "id": "o2",
+          "text": "Inactive or elevated suppliers require review"
+        },
+        {
+          "id": "o3",
+          "text": "Variance above the threshold requires review"
+        },
+        {
+          "id": "o4",
+          "text": "Equality with a threshold can remain no_review"
+        },
+        {
+          "id": "o5",
+          "text": "Low risk repairs a missing threshold"
+        },
+        {
+          "id": "o6",
+          "text": "Any nonzero variance requires review"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q039"
+    },
+    {
+      "type": "multiple",
+      "topic": "Approval boundary",
+      "difficulty": "foundation",
+      "prompt": "Which properties hold for every successful run?",
+      "explanation": "A successful run carries a commercial report, stops at awaiting_approval and explicitly requires a person before any external action.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Status is awaiting_approval"
+        },
+        {
+          "id": "o2",
+          "text": "A commercial report is present"
+        },
+        {
+          "id": "o3",
+          "text": "requires_human_approval is true"
+        },
+        {
+          "id": "o4",
+          "text": "No external procurement action is executed"
+        },
+        {
+          "id": "o5",
+          "text": "The supplier is contacted"
+        },
+        {
+          "id": "o6",
+          "text": "The purchase order is automatically changed"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q040"
+    },
+    {
+      "type": "multiple",
+      "topic": "Provenance",
+      "difficulty": "applied",
+      "prompt": "Which source checks belong before returning a first-wave finding?",
+      "explanation": "Specialists verify the expected source kind, current digest and business correlations such as purchase order or supplier identity.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Expected source kind"
+        },
+        {
+          "id": "o2",
+          "text": "Content digest equality"
+        },
+        {
+          "id": "o3",
+          "text": "Purchase-order correlation where applicable"
+        },
+        {
+          "id": "o4",
+          "text": "Supplier correlation where applicable"
+        },
+        {
+          "id": "o5",
+          "text": "Treating the digest as authorization"
+        },
+        {
+          "id": "o6",
+          "text": "Accepting any source with a familiar filename"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q041"
+    },
+    {
+      "type": "multiple",
+      "topic": "Exact arithmetic",
+      "difficulty": "applied",
+      "prompt": "Which rules make the Week 17 price decision reproducible?",
+      "explanation": "The calculation uses Decimal throughout, rejects an invalid reference denominator and rounds explicitly to two places with half-even semantics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use Decimal inputs"
+        },
+        {
+          "id": "o2",
+          "text": "Require a positive reference price"
+        },
+        {
+          "id": "o3",
+          "text": "Quantize to two decimal places"
+        },
+        {
+          "id": "o4",
+          "text": "Use ROUND_HALF_EVEN"
+        },
+        {
+          "id": "o5",
+          "text": "Convert through binary float"
+        },
+        {
+          "id": "o6",
+          "text": "Round differently on each worker"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q042"
+    },
+    {
+      "type": "multiple",
+      "topic": "Determinism",
+      "difficulty": "applied",
+      "prompt": "Which facts support deterministic repeated runs?",
+      "explanation": "Immutable inputs, declared collection order, deterministic specialists and explicit decision precedence keep reports, metrics and traces repeatable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Immutable handoffs"
+        },
+        {
+          "id": "o2",
+          "text": "Declared result collection order"
+        },
+        {
+          "id": "o3",
+          "text": "Deterministic specialist functions"
+        },
+        {
+          "id": "o4",
+          "text": "Explicit policy precedence"
+        },
+        {
+          "id": "o5",
+          "text": "Shared mutable global state"
+        },
+        {
+          "id": "o6",
+          "text": "Publishing whichever future finishes first"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q043"
+    },
+    {
+      "type": "multiple",
+      "topic": "Architecture comparison",
+      "difficulty": "applied",
+      "prompt": "Which are valid conclusions from the controlled architecture comparison?",
+      "explanation": "The two routes can have equal reports while differing in handoffs and dependency stages; no production speed or cost conclusion follows without measurement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The controlled reports are equal"
+        },
+        {
+          "id": "o2",
+          "text": "The supervisor records four handoffs"
+        },
+        {
+          "id": "o3",
+          "text": "The workflow records four sequential stages"
+        },
+        {
+          "id": "o4",
+          "text": "Production latency remains unmeasured"
+        },
+        {
+          "id": "o5",
+          "text": "The supervisor is proven faster in production"
+        },
+        {
+          "id": "o6",
+          "text": "The workflow can never fail"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q044"
+    },
+    {
+      "type": "multiple",
+      "topic": "Pattern selection",
+      "difficulty": "foundation",
+      "prompt": "Which signals favor one workflow over multiple agents?",
+      "explanation": "Shared context and permissions, fully sequential work and function-sized steps make agent boundaries harder to justify.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All steps share the same context"
+        },
+        {
+          "id": "o2",
+          "text": "All steps share the same permissions"
+        },
+        {
+          "id": "o3",
+          "text": "The work is fully sequential"
+        },
+        {
+          "id": "o4",
+          "text": "Ordinary functions express the steps clearly"
+        },
+        {
+          "id": "o5",
+          "text": "Sources have different governance"
+        },
+        {
+          "id": "o6",
+          "text": "Independent capabilities need separate evaluation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q045"
+    },
+    {
+      "type": "multiple",
+      "topic": "Verification",
+      "difficulty": "applied",
+      "prompt": "Which tests provide evidence for the coordination claims?",
+      "explanation": "Concurrency admission, dependency order, identity corruption and repeatability tests directly exercise the advertised orchestration properties.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A barrier proves the first wave can overlap"
+        },
+        {
+          "id": "o2",
+          "text": "Trace assertions prove commercial runs later"
+        },
+        {
+          "id": "o3",
+          "text": "Wrong run or case IDs are rejected"
+        },
+        {
+          "id": "o4",
+          "text": "Repeated runs produce equal output"
+        },
+        {
+          "id": "o5",
+          "text": "A screenshot alone proves concurrency"
+        },
+        {
+          "id": "o6",
+          "text": "One happy path proves every failure mode"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q046"
+    },
+    {
+      "type": "multiple",
+      "topic": "Production limits",
+      "difficulty": "applied",
+      "prompt": "Which controls would a remote production version still need?",
+      "explanation": "Remote coordination adds delivery, identity, timeout, cancellation, retry, durability and tracing concerns that the local lab does not implement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Authenticated workload identities"
+        },
+        {
+          "id": "o2",
+          "text": "Timeout and cancellation policies"
+        },
+        {
+          "id": "o3",
+          "text": "Bounded retries with idempotency"
+        },
+        {
+          "id": "o4",
+          "text": "Durable checkpoints and distributed traces"
+        },
+        {
+          "id": "o5",
+          "text": "Removal of all correlation IDs"
+        },
+        {
+          "id": "o6",
+          "text": "Unlimited recursive delegation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q047"
+    },
+    {
+      "type": "multiple",
+      "topic": "Approval boundary",
+      "difficulty": "foundation",
+      "prompt": "Which actions remain outside specialist authority?",
+      "explanation": "Specialists analyze and recommend only; supplier contact, purchase-order mutation, payment and final approval remain external human-controlled actions.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Contacting a supplier"
+        },
+        {
+          "id": "o2",
+          "text": "Mutating a purchase order"
+        },
+        {
+          "id": "o3",
+          "text": "Making a payment"
+        },
+        {
+          "id": "o4",
+          "text": "Granting final approval"
+        },
+        {
+          "id": "o5",
+          "text": "Returning a typed finding"
+        },
+        {
+          "id": "o6",
+          "text": "Attaching a source reference"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q048"
+    },
+    {
+      "type": "multiple",
+      "topic": "Registry safety",
+      "difficulty": "applied",
+      "prompt": "Which registry constraints prevent unbounded or undeclared delegation?",
+      "explanation": "The supervisor copies a closed four-role registry, checks completeness and alone chooses from that allowlist.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Exactly four declared roles"
+        },
+        {
+          "id": "o2",
+          "text": "A copied immutable registry view"
+        },
+        {
+          "id": "o3",
+          "text": "Completeness checked before dispatch"
+        },
+        {
+          "id": "o4",
+          "text": "Supervisor-controlled selection"
+        },
+        {
+          "id": "o5",
+          "text": "Specialists invent roles at runtime"
+        },
+        {
+          "id": "o6",
+          "text": "Any worker may recursively fan out"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q049"
+    },
+    {
+      "type": "multiple",
+      "topic": "Provenance limits",
+      "difficulty": "foundation",
+      "prompt": "Which claims are not established by a matching content digest?",
+      "explanation": "Byte equality does not authenticate a caller, prove factual truth, establish source authority or record human approval.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The facts are true"
+        },
+        {
+          "id": "o2",
+          "text": "The caller is authorized"
+        },
+        {
+          "id": "o3",
+          "text": "The source owner is authentic"
+        },
+        {
+          "id": "o4",
+          "text": "A person approved the decision"
+        },
+        {
+          "id": "o5",
+          "text": "The compared byte content matches"
+        },
+        {
+          "id": "o6",
+          "text": "A later byte change can be detected"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W17-Q050"
+    },
+    {
+      "type": "match",
+      "topic": "Specialist ownership",
+      "difficulty": "foundation",
+      "prompt": "Match each specialist to its owned responsibility.",
+      "explanation": "Each Week 17 specialist owns one coherent capability and returns a narrow finding for the supervisor.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Document"
+        },
+        {
+          "id": "l2",
+          "text": "SQL"
+        },
+        {
+          "id": "l3",
+          "text": "Supplier risk"
+        },
+        {
+          "id": "l4",
+          "text": "Commercial"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Classify status and incidents"
+        },
+        {
+          "id": "r2",
+          "text": "Find contract terms"
+        },
+        {
+          "id": "r3",
+          "text": "Synthesize validated findings"
+        },
+        {
+          "id": "r4",
+          "text": "Calculate exact price variance"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q051"
+    },
+    {
+      "type": "match",
+      "topic": "Minimal handoffs",
+      "difficulty": "foundation",
+      "prompt": "Match each assignment to its distinctive required data.",
+      "explanation": "Assignments share correlation IDs but otherwise contain only the identifiers and source data needed by the receiving specialist.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Document assignment"
+        },
+        {
+          "id": "l2",
+          "text": "SQL assignment"
+        },
+        {
+          "id": "l3",
+          "text": "Risk assignment"
+        },
+        {
+          "id": "l4",
+          "text": "Commercial assignment"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Supplier and risk-register source"
+        },
+        {
+          "id": "r2",
+          "text": "Purchase order and document source"
+        },
+        {
+          "id": "r3",
+          "text": "Three validated findings"
+        },
+        {
+          "id": "r4",
+          "text": "Purchase order, supplier and SQL source"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q052"
+    },
+    {
+      "type": "match",
+      "topic": "Result contracts",
+      "difficulty": "foundation",
+      "prompt": "Match each result to its distinctive business value.",
+      "explanation": "The typed findings keep document terms, numeric price evidence, supplier risk and the final recommendation separate.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Document finding"
+        },
+        {
+          "id": "l2",
+          "text": "SQL finding"
+        },
+        {
+          "id": "l3",
+          "text": "Risk finding"
+        },
+        {
+          "id": "l4",
+          "text": "Commercial finding"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Supplier status and incident level"
+        },
+        {
+          "id": "r2",
+          "text": "Terms-found flag and threshold"
+        },
+        {
+          "id": "r3",
+          "text": "Recommendation and approval flag"
+        },
+        {
+          "id": "r4",
+          "text": "Exact variance and dated prices"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q053"
+    },
+    {
+      "type": "match",
+      "topic": "Decision policy",
+      "difficulty": "applied",
+      "prompt": "Match each scenario to the resulting recommendation.",
+      "explanation": "Decision precedence separates unknown terms, review triggers and the controlled within-threshold route.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Terms missing"
+        },
+        {
+          "id": "l2",
+          "text": "Supplier elevated"
+        },
+        {
+          "id": "l3",
+          "text": "Variance above threshold"
+        },
+        {
+          "id": "l4",
+          "text": "Low risk and variance at threshold"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "review_required after risk check"
+        },
+        {
+          "id": "r2",
+          "text": "needs_human"
+        },
+        {
+          "id": "r3",
+          "text": "no_review"
+        },
+        {
+          "id": "r4",
+          "text": "review_required"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q054"
+    },
+    {
+      "type": "match",
+      "topic": "Failure semantics",
+      "difficulty": "applied",
+      "prompt": "Match each condition to its coordination outcome.",
+      "explanation": "Valid uncertainty reaches policy, while technical exceptions and correlation defects stop synthesis without a report.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Valid missing terms"
+        },
+        {
+          "id": "l2",
+          "text": "Specialist exception"
+        },
+        {
+          "id": "l3",
+          "text": "Wrong run ID"
+        },
+        {
+          "id": "l4",
+          "text": "All findings valid"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Rejected result and failed run"
+        },
+        {
+          "id": "r2",
+          "text": "Successful report needing human judgment"
+        },
+        {
+          "id": "r3",
+          "text": "Commercial synthesis may run"
+        },
+        {
+          "id": "r4",
+          "text": "Failed run with no report"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q055"
+    },
+    {
+      "type": "match",
+      "topic": "Trace order",
+      "difficulty": "applied",
+      "prompt": "Match each trace event to its dependency position.",
+      "explanation": "The trace exposes one bounded evidence stage followed by commercial synthesis and an approval stop.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Dispatch document/SQL/risk"
+        },
+        {
+          "id": "l2",
+          "text": "Complete document/SQL/risk"
+        },
+        {
+          "id": "l3",
+          "text": "Dispatch commercial"
+        },
+        {
+          "id": "l4",
+          "text": "Awaiting approval"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Start of dependent stage two"
+        },
+        {
+          "id": "r2",
+          "text": "Start of stage one"
+        },
+        {
+          "id": "r3",
+          "text": "Terminal successful state"
+        },
+        {
+          "id": "r4",
+          "text": "End of validated stage one"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q056"
+    },
+    {
+      "type": "match",
+      "topic": "Architecture comparison",
+      "difficulty": "foundation",
+      "prompt": "Match each architecture metric to its Week 17 value.",
+      "explanation": "The comparison reports structural coordination facts without converting them into unmeasured performance claims.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Supervisor handoffs"
+        },
+        {
+          "id": "l2",
+          "text": "Workflow handoffs"
+        },
+        {
+          "id": "l3",
+          "text": "Supervisor stages"
+        },
+        {
+          "id": "l4",
+          "text": "Workflow stages"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "2"
+        },
+        {
+          "id": "r2",
+          "text": "4"
+        },
+        {
+          "id": "r3",
+          "text": "4"
+        },
+        {
+          "id": "r4",
+          "text": "0"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q057"
+    },
+    {
+      "type": "match",
+      "topic": "Control purpose",
+      "difficulty": "applied",
+      "prompt": "Match each control to the defect it reduces.",
+      "explanation": "Different controls address mutation, identity confusion, runaway concurrency and unsafe action authority.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Frozen handoffs"
+        },
+        {
+          "id": "l2",
+          "text": "Run and case correlation"
+        },
+        {
+          "id": "l3",
+          "text": "Three-worker bound"
+        },
+        {
+          "id": "l4",
+          "text": "Human approval flag"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Unbounded fan-out"
+        },
+        {
+          "id": "r2",
+          "text": "Cross-role mutation"
+        },
+        {
+          "id": "r3",
+          "text": "Unreviewed external action"
+        },
+        {
+          "id": "r4",
+          "text": "Result mix-up"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q058"
+    },
+    {
+      "type": "match",
+      "topic": "Source contracts",
+      "difficulty": "foundation",
+      "prompt": "Match each source kind to the specialist that owns it.",
+      "explanation": "Governed source kinds remain isolated behind their respective retrieval and validation boundaries.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "document"
+        },
+        {
+          "id": "l2",
+          "text": "sql"
+        },
+        {
+          "id": "l3",
+          "text": "risk_register"
+        },
+        {
+          "id": "l4",
+          "text": "No source retrieval"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Supplier-risk specialist"
+        },
+        {
+          "id": "r2",
+          "text": "Document specialist"
+        },
+        {
+          "id": "r3",
+          "text": "Commercial specialist"
+        },
+        {
+          "id": "r4",
+          "text": "SQL specialist"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q059"
+    },
+    {
+      "type": "match",
+      "topic": "State ownership",
+      "difficulty": "applied",
+      "prompt": "Match each component to the state it may own.",
+      "explanation": "The supervisor owns run aggregation while specialists own only local function execution over their declared input.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Supervisor"
+        },
+        {
+          "id": "l2",
+          "text": "Document specialist"
+        },
+        {
+          "id": "l3",
+          "text": "SQL specialist"
+        },
+        {
+          "id": "l4",
+          "text": "Commercial specialist"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "One SQL assignment and finding"
+        },
+        {
+          "id": "r2",
+          "text": "Aggregate findings and trace"
+        },
+        {
+          "id": "r3",
+          "text": "One synthesis assignment and report"
+        },
+        {
+          "id": "r4",
+          "text": "One document assignment and finding"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q060"
+    },
+    {
+      "type": "match",
+      "topic": "Verification",
+      "difficulty": "applied",
+      "prompt": "Match each claim to the strongest test evidence.",
+      "explanation": "Tests should exercise the specific observable behavior rather than infer it from a diagram or function name.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Concurrent admission"
+        },
+        {
+          "id": "l2",
+          "text": "Stable order"
+        },
+        {
+          "id": "l3",
+          "text": "Fail closed"
+        },
+        {
+          "id": "l4",
+          "text": "Baseline parity"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Injected exception yields no report"
+        },
+        {
+          "id": "r2",
+          "text": "Three-party barrier"
+        },
+        {
+          "id": "r3",
+          "text": "Equal report assertion"
+        },
+        {
+          "id": "r4",
+          "text": "Repeated exact trace assertion"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q061"
+    },
+    {
+      "type": "match",
+      "topic": "Boundary benefits",
+      "difficulty": "foundation",
+      "prompt": "Match each boundary property to its intended benefit.",
+      "explanation": "Narrow contracts support least context, governance, independent tests and explicit failure ownership.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Minimal context"
+        },
+        {
+          "id": "l2",
+          "text": "Typed result"
+        },
+        {
+          "id": "l3",
+          "text": "Owned source"
+        },
+        {
+          "id": "l4",
+          "text": "Named failure"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Clear governance"
+        },
+        {
+          "id": "r2",
+          "text": "Reduced data exposure"
+        },
+        {
+          "id": "r3",
+          "text": "Clear fault attribution"
+        },
+        {
+          "id": "r4",
+          "text": "Independent validation"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q062"
+    },
+    {
+      "type": "match",
+      "topic": "Production limits",
+      "difficulty": "applied",
+      "prompt": "Match each production concern to the control it would require.",
+      "explanation": "Moving from local functions to remote workers creates operational responsibilities beyond the teaching lab.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Stuck remote task"
+        },
+        {
+          "id": "l2",
+          "text": "Duplicate delivery"
+        },
+        {
+          "id": "l3",
+          "text": "Process restart"
+        },
+        {
+          "id": "l4",
+          "text": "Cross-service diagnosis"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Durable checkpoint"
+        },
+        {
+          "id": "r2",
+          "text": "Timeout and cancellation"
+        },
+        {
+          "id": "r3",
+          "text": "Distributed trace"
+        },
+        {
+          "id": "r4",
+          "text": "Idempotency key"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q063"
+    },
+    {
+      "type": "match",
+      "topic": "Evidence semantics",
+      "difficulty": "foundation",
+      "prompt": "Match each evidence condition to its correct interpretation.",
+      "explanation": "A source reference and digest support correlation and byte-change detection but do not replace trust or approval controls.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Digest matches"
+        },
+        {
+          "id": "l2",
+          "text": "Digest differs"
+        },
+        {
+          "id": "l3",
+          "text": "Source ID matches"
+        },
+        {
+          "id": "l4",
+          "text": "Approval flag true"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Declared source was addressed"
+        },
+        {
+          "id": "r2",
+          "text": "Referenced bytes agree"
+        },
+        {
+          "id": "r3",
+          "text": "A person is still required"
+        },
+        {
+          "id": "r4",
+          "text": "Content changed or wrong fixture"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q064"
+    },
+    {
+      "type": "match",
+      "topic": "Decision precedence",
+      "difficulty": "applied",
+      "prompt": "Match each policy check to its place in the decision order.",
+      "explanation": "The commercial policy checks unknown terms first, risk second, price third and the no-review default last.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Terms absent"
+        },
+        {
+          "id": "l2",
+          "text": "Supplier inactive or elevated"
+        },
+        {
+          "id": "l3",
+          "text": "Variance above threshold"
+        },
+        {
+          "id": "l4",
+          "text": "No trigger"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Third"
+        },
+        {
+          "id": "r2",
+          "text": "First"
+        },
+        {
+          "id": "r3",
+          "text": "Final no_review route"
+        },
+        {
+          "id": "r4",
+          "text": "Second"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W17-Q065"
+    },
+    {
+      "type": "short",
+      "topic": "Architecture names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact architecture value for the supervisor route.",
+      "explanation": "supervisor_specialists is the closed architecture value used for the central coordinator and its specialist handoffs.",
+      "accepted": [
+        "supervisor_specialists"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q066"
+    },
+    {
+      "type": "short",
+      "topic": "Architecture names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact architecture value for the sequential baseline.",
+      "explanation": "single_workflow names the route that invokes the same four components without inter-agent coordination.",
+      "accepted": [
+        "single_workflow"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q067"
+    },
+    {
+      "type": "short",
+      "topic": "Role names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact specialist value for contract analysis.",
+      "explanation": "document is the declared specialist identifier for governed contract-source analysis.",
+      "accepted": [
+        "document"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q068"
+    },
+    {
+      "type": "short",
+      "topic": "Role names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact specialist value for price-row analysis.",
+      "explanation": "sql is the declared specialist identifier for relational purchase-order price evidence.",
+      "accepted": [
+        "sql"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q069"
+    },
+    {
+      "type": "short",
+      "topic": "Role names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact specialist value for supplier status and incidents.",
+      "explanation": "supplier_risk is the declared role identifier for the governed risk-register capability.",
+      "accepted": [
+        "supplier_risk"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q070"
+    },
+    {
+      "type": "short",
+      "topic": "Role names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact specialist value for final decision synthesis.",
+      "explanation": "commercial is the declared role identifier that combines three validated findings.",
+      "accepted": [
+        "commercial"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q071"
+    },
+    {
+      "type": "short",
+      "topic": "Run states",
+      "difficulty": "foundation",
+      "prompt": "Write the exact successful terminal run status.",
+      "explanation": "awaiting_approval records that analysis finished but a person must still review before any action.",
+      "accepted": [
+        "awaiting_approval"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q072"
+    },
+    {
+      "type": "short",
+      "topic": "Run states",
+      "difficulty": "foundation",
+      "prompt": "Write the exact technical-failure run status.",
+      "explanation": "failed is the closed status used when coordination cannot safely produce a commercial report.",
+      "accepted": [
+        "failed"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q073"
+    },
+    {
+      "type": "short",
+      "topic": "Recommendations",
+      "difficulty": "foundation",
+      "prompt": "Write the exact recommendation for a safe within-threshold case.",
+      "explanation": "no_review is returned when terms exist, risk is low and variance does not exceed the threshold.",
+      "accepted": [
+        "no_review"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q074"
+    },
+    {
+      "type": "short",
+      "topic": "Recommendations",
+      "difficulty": "foundation",
+      "prompt": "Write the exact recommendation for an elevated risk or above-threshold price.",
+      "explanation": "review_required is returned when supplier risk or a strictly above-threshold variance requires review.",
+      "accepted": [
+        "review_required"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q075"
+    },
+    {
+      "type": "short",
+      "topic": "Recommendations",
+      "difficulty": "foundation",
+      "prompt": "Write the exact recommendation for missing applicable terms.",
+      "explanation": "needs_human preserves business uncertainty when the governing contract threshold cannot be found.",
+      "accepted": [
+        "needs_human"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q076"
+    },
+    {
+      "type": "short",
+      "topic": "Correlation",
+      "difficulty": "foundation",
+      "prompt": "Write the exact field name that correlates one execution.",
+      "explanation": "run_id binds every assignment and result to one declared coordination execution.",
+      "accepted": [
+        "run_id"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q077"
+    },
+    {
+      "type": "short",
+      "topic": "Correlation",
+      "difficulty": "foundation",
+      "prompt": "Write the exact field name that correlates one procurement case.",
+      "explanation": "case_id prevents a finding for one procurement investigation from entering another case.",
+      "accepted": [
+        "case_id"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q078"
+    },
+    {
+      "type": "short",
+      "topic": "Exact arithmetic",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Python class used for price and percentage arithmetic.",
+      "explanation": "Decimal avoids binary-float drift and supports explicit two-place half-even rounding.",
+      "accepted": [
+        "Decimal"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q079"
+    },
+    {
+      "type": "short",
+      "topic": "Bounded concurrency",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Python executor class used for the first wave.",
+      "explanation": "ThreadPoolExecutor provides the lab's explicit maximum worker bound for three local specialists.",
+      "accepted": [
+        "ThreadPoolExecutor"
+      ],
+      "case_sensitive": true,
+      "id": "W17-Q080"
+    },
+    {
+      "type": "code",
+      "topic": "Closed handoffs",
+      "difficulty": "applied",
+      "prompt": "Implement validate_handoff(envelope, expected_specialist, run_id, case_id). envelope must be an exact dict with exactly run_id, case_id, specialist and payload; payload must be an exact dict. The three expected identity arguments must be non-blank exact strings and expected_specialist one of document, sql, supplier_risk or commercial. Raise TypeError for wrong types, ValueError for shape, blank, unknown-role or identity mismatches. Return a deep copy of payload without mutating the envelope.",
+      "explanation": "A coordination boundary must reject undeclared fields and mismatched correlation data before any specialist payload enters aggregate state.",
+      "starter": "def validate_handoff(envelope, expected_specialist, run_id, case_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\n\ndef validate_handoff(envelope, expected_specialist, run_id, case_id):\n    if type(envelope) is not dict:\n        raise TypeError('envelope_not_dict')\n    if any(type(value) is not str for value in (expected_specialist, run_id, case_id)):\n        raise TypeError('identity_not_string')\n    if not expected_specialist.strip() or not run_id.strip() or not case_id.strip():\n        raise ValueError('identity_blank')\n    roles = {'document', 'sql', 'supplier_risk', 'commercial'}\n    if expected_specialist not in roles:\n        raise ValueError('specialist_unknown')\n    if set(envelope) != {'run_id', 'case_id', 'specialist', 'payload'}:\n        raise ValueError('envelope_shape_invalid')\n    if type(envelope['payload']) is not dict:\n        raise TypeError('payload_not_dict')\n    for key in ('run_id', 'case_id', 'specialist'):\n        if type(envelope[key]) is not str:\n            raise TypeError('envelope_identity_not_string')\n    if envelope['specialist'] != expected_specialist:\n        raise ValueError('specialist_mismatch')\n    if envelope['run_id'] != run_id:\n        raise ValueError('run_mismatch')\n    if envelope['case_id'] != case_id:\n        raise ValueError('case_mismatch')\n    return copy.deepcopy(envelope['payload'])\n",
+      "checks": [
+        {
+          "label": "Valid closed handoff",
+          "code": "envelope={'run_id':'r1','case_id':'c1','specialist':'sql','payload':{'rows':[1,2]}}\nbefore={'run_id':'r1','case_id':'c1','specialist':'sql','payload':{'rows':[1,2]}}\nassert validate_handoff(envelope,'sql','r1','c1')=={'rows':[1,2]}\nassert envelope==before\n"
+        },
+        {
+          "label": "Closed envelope shape",
+          "code": "base={'run_id':'r','case_id':'c','specialist':'document','payload':{}}\nassert raises(TypeError,validate_handoff,[], 'document','r','c')\nassert raises(ValueError,validate_handoff,{**base,'prompt':'secret'},'document','r','c')\n"
+        },
+        {
+          "label": "Strict identity inputs",
+          "code": "base={'run_id':'r','case_id':'c','specialist':'document','payload':{}}\nassert raises(TypeError,validate_handoff,base,'document',17,'c')\nassert raises(ValueError,validate_handoff,base,'agent','r','c')\nassert raises(ValueError,validate_handoff,base,'document',' ','c')\n"
+        },
+        {
+          "label": "Correlation mismatches",
+          "code": "base={'run_id':'r','case_id':'c','specialist':'document','payload':{}}\nassert raises(ValueError,validate_handoff,base,'sql','r','c')\nassert raises(ValueError,validate_handoff,base,'document','other','c')\nassert raises(ValueError,validate_handoff,base,'document','r','other')\n"
+        },
+        {
+          "label": "Independent payload copy",
+          "code": "envelope={'run_id':'r','case_id':'c','specialist':'supplier_risk','payload':{'nested':{'value':1}}}\nresult=validate_handoff(envelope,'supplier_risk','r','c');result['nested']['value']=9\nassert envelope['payload']['nested']['value']==1\n"
+        }
+      ],
+      "id": "W17-Q081"
+    },
+    {
+      "type": "code",
+      "topic": "Minimal assignments",
+      "difficulty": "applied",
+      "prompt": "Implement minimal_assignment(case, specialist). case must be an exact dict with exactly case_id, purchase_order_id, selected_supplier_id and sources. All three IDs must be non-blank exact strings. sources must be an exact dict with exactly document, sql and supplier_risk mapped to non-blank exact source-ID strings. specialist must be one of those three exact strings. Return only: document -> case_id, purchase_order_id, source_id; sql -> case_id, purchase_order_id, selected_supplier_id, source_id; supplier_risk -> case_id, selected_supplier_id, source_id. Reject wrong types, closed-shape violations, blanks and unknown roles without mutation.",
+      "explanation": "Per-specialist projection gives each source worker only the identifiers required for its governed capability.",
+      "starter": "def minimal_assignment(case, specialist):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def minimal_assignment(case, specialist):\n    if type(case) is not dict or type(specialist) is not str:\n        raise TypeError('assignment_input_invalid')\n    if set(case) != {'case_id','purchase_order_id','selected_supplier_id','sources'}:\n        raise ValueError('case_shape_invalid')\n    if type(case['sources']) is not dict:\n        raise TypeError('sources_not_dict')\n    if set(case['sources']) != {'document','sql','supplier_risk'}:\n        raise ValueError('sources_shape_invalid')\n    values = (case['case_id'], case['purchase_order_id'], case['selected_supplier_id'], *case['sources'].values())\n    if any(type(value) is not str for value in values):\n        raise TypeError('identifier_not_string')\n    if any(not value.strip() for value in values):\n        raise ValueError('identifier_blank')\n    if specialist not in {'document','sql','supplier_risk'}:\n        raise ValueError('specialist_unknown')\n    common = {'case_id': case['case_id'], 'source_id': case['sources'][specialist]}\n    if specialist == 'document':\n        return {**common, 'purchase_order_id': case['purchase_order_id']}\n    if specialist == 'sql':\n        return {**common, 'purchase_order_id': case['purchase_order_id'], 'selected_supplier_id': case['selected_supplier_id']}\n    return {**common, 'selected_supplier_id': case['selected_supplier_id']}\n",
+      "checks": [
+        {
+          "label": "Three minimal projections",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d1','sql':'q1','supplier_risk':'r1'}}\nassert minimal_assignment(case,'document')=={'case_id':'c','source_id':'d1','purchase_order_id':'po'}\nassert minimal_assignment(case,'sql')=={'case_id':'c','source_id':'q1','purchase_order_id':'po','selected_supplier_id':'s'}\nassert minimal_assignment(case,'supplier_risk')=={'case_id':'c','source_id':'r1','selected_supplier_id':'s'}\n"
+        },
+        {
+          "label": "No unrelated fields",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'}}\nassert set(minimal_assignment(case,'document'))=={'case_id','purchase_order_id','source_id'}\nassert 'sources' not in minimal_assignment(case,'sql')\n"
+        },
+        {
+          "label": "Closed case and sources",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'}}\nassert raises(ValueError,minimal_assignment,{**case,'conversation':[]},'document')\nbad={**case,'sources':{**case['sources'],'other':'x'}}\nassert raises(ValueError,minimal_assignment,bad,'document')\n"
+        },
+        {
+          "label": "Strict values and role",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'}}\nassert raises(TypeError,minimal_assignment,{**case,'case_id':17},'document')\nassert raises(ValueError,minimal_assignment,{**case,'case_id':' '},'document')\nassert raises(ValueError,minimal_assignment,case,'commercial')\n"
+        },
+        {
+          "label": "Caller data unchanged",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'}}\nbefore={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'}}\nminimal_assignment(case,'sql');assert case==before\n"
+        }
+      ],
+      "id": "W17-Q082"
+    },
+    {
+      "type": "code",
+      "topic": "Result correlation",
+      "difficulty": "applied",
+      "prompt": "Implement validate_result(result, expected_specialist, run_id, case_id). result must be an exact dict with exactly specialist, run_id, case_id and data; data must be an exact dict. The expected values must be non-blank exact strings and the specialist one of the four declared roles. Raise TypeError for wrong types and ValueError for shape, unknown role, blanks or any mismatch. Return a deep copy of data.",
+      "explanation": "Type and identity checks prevent a valid-looking finding from the wrong role, execution or case from entering synthesis.",
+      "starter": "def validate_result(result, expected_specialist, run_id, case_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\n\ndef validate_result(result, expected_specialist, run_id, case_id):\n    if type(result) is not dict:\n        raise TypeError('result_not_dict')\n    if set(result) != {'specialist','run_id','case_id','data'}:\n        raise ValueError('result_shape_invalid')\n    expected_values = (expected_specialist, run_id, case_id)\n    if any(type(value) is not str for value in expected_values):\n        raise TypeError('expected_identity_invalid')\n    if any(not value.strip() for value in expected_values):\n        raise ValueError('expected_identity_blank')\n    roles = {'document','sql','supplier_risk','commercial'}\n    if expected_specialist not in roles:\n        raise ValueError('specialist_unknown')\n    if type(result['data']) is not dict:\n        raise TypeError('result_data_not_dict')\n    for key in ('specialist','run_id','case_id'):\n        if type(result[key]) is not str:\n            raise TypeError('result_identity_invalid')\n    if result['specialist'] != expected_specialist:\n        raise ValueError('result_specialist_mismatch')\n    if result['run_id'] != run_id:\n        raise ValueError('result_run_mismatch')\n    if result['case_id'] != case_id:\n        raise ValueError('result_case_mismatch')\n    return copy.deepcopy(result['data'])\n",
+      "checks": [
+        {
+          "label": "Accepted correlated result",
+          "code": "result={'specialist':'document','run_id':'r','case_id':'c','data':{'terms_found':True}}\nassert validate_result(result,'document','r','c')=={'terms_found':True}\n"
+        },
+        {
+          "label": "Wrong role rejected",
+          "code": "result={'specialist':'document','run_id':'r','case_id':'c','data':{}}\nassert raises(ValueError,validate_result,result,'sql','r','c')\n"
+        },
+        {
+          "label": "Wrong run and case rejected",
+          "code": "result={'specialist':'sql','run_id':'r','case_id':'c','data':{}}\nassert raises(ValueError,validate_result,result,'sql','x','c')\nassert raises(ValueError,validate_result,result,'sql','r','x')\n"
+        },
+        {
+          "label": "Strict closed result",
+          "code": "result={'specialist':'sql','run_id':'r','case_id':'c','data':{}}\nassert raises(TypeError,validate_result,[], 'sql','r','c')\nassert raises(ValueError,validate_result,{**result,'raw':'x'},'sql','r','c')\nassert raises(TypeError,validate_result,{**result,'data':[]},'sql','r','c')\n"
+        },
+        {
+          "label": "Deep copied data",
+          "code": "result={'specialist':'commercial','run_id':'r','case_id':'c','data':{'evidence':['a','b','c']}}\ndata=validate_result(result,'commercial','r','c');data['evidence'].append('d')\nassert result['data']['evidence']==['a','b','c']\n"
+        }
+      ],
+      "id": "W17-Q083"
+    },
+    {
+      "type": "code",
+      "topic": "Dependency planning",
+      "difficulty": "applied",
+      "prompt": "Implement plan_stages(requested). requested must be an exact list containing each of document, sql, supplier_risk and commercial exactly once, in any input order, with exact string values and no other role. Return exactly (('document','sql','supplier_risk'),('commercial',)). Raise TypeError for the wrong container or item types and ValueError for duplicates, missing or unknown roles. Do not mutate requested.",
+      "explanation": "The fixed two-stage plan makes the three independent source tasks explicit and prevents commercial synthesis from running before them.",
+      "starter": "def plan_stages(requested):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def plan_stages(requested):\n    if type(requested) is not list:\n        raise TypeError('requested_not_list')\n    if any(type(role) is not str for role in requested):\n        raise TypeError('role_not_string')\n    expected = {'document','sql','supplier_risk','commercial'}\n    if len(set(requested)) != len(requested):\n        raise ValueError('duplicate_role')\n    if set(requested) != expected:\n        raise ValueError('role_set_invalid')\n    return (('document','sql','supplier_risk'),('commercial',))\n",
+      "checks": [
+        {
+          "label": "Canonical stage plan",
+          "code": "roles=['commercial','sql','document','supplier_risk']\nassert plan_stages(roles)==(('document','sql','supplier_risk'),('commercial',))\nassert roles==['commercial','sql','document','supplier_risk']\n"
+        },
+        {
+          "label": "Missing role rejected",
+          "code": "assert raises(ValueError,plan_stages,['document','sql','supplier_risk'])\n"
+        },
+        {
+          "label": "Unknown role rejected",
+          "code": "assert raises(ValueError,plan_stages,['document','sql','supplier_risk','payment'])\n"
+        },
+        {
+          "label": "Duplicate role rejected",
+          "code": "assert raises(ValueError,plan_stages,['document','sql','supplier_risk','document'])\n"
+        },
+        {
+          "label": "Strict list and strings",
+          "code": "assert raises(TypeError,plan_stages,('document','sql','supplier_risk','commercial'))\nassert raises(TypeError,plan_stages,['document','sql','supplier_risk',17])\n"
+        }
+      ],
+      "id": "W17-Q084"
+    },
+    {
+      "type": "code",
+      "topic": "Bounded dispatch",
+      "difficulty": "applied",
+      "prompt": "Implement bounded_batches(roles, max_workers). roles must be a non-empty exact list of unique exact strings selected from document, sql and supplier_risk. max_workers must be an exact integer from 1 through 3. Return a tuple of tuple batches, preserving input order, with each batch at most max_workers. Raise TypeError or ValueError for malformed input and do not mutate roles.",
+      "explanation": "A deterministic batch plan makes the worker bound observable and prevents undeclared or duplicate fan-out.",
+      "starter": "def bounded_batches(roles, max_workers):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def bounded_batches(roles, max_workers):\n    if type(roles) is not list or type(max_workers) is not int:\n        raise TypeError('dispatch_type_invalid')\n    if any(type(role) is not str for role in roles):\n        raise TypeError('role_not_string')\n    if not roles:\n        raise ValueError('roles_empty')\n    if max_workers < 1 or max_workers > 3:\n        raise ValueError('max_workers_out_of_range')\n    allowed = {'document','sql','supplier_risk'}\n    if any(role not in allowed for role in roles):\n        raise ValueError('role_unknown')\n    if len(set(roles)) != len(roles):\n        raise ValueError('duplicate_role')\n    return tuple(tuple(roles[index:index + max_workers]) for index in range(0, len(roles), max_workers))\n",
+      "checks": [
+        {
+          "label": "Three-worker wave",
+          "code": "roles=['document','sql','supplier_risk']\nassert bounded_batches(roles,3)==(('document','sql','supplier_risk'),)\nassert roles==['document','sql','supplier_risk']\n"
+        },
+        {
+          "label": "Two-worker bound",
+          "code": "assert bounded_batches(['document','sql','supplier_risk'],2)==(('document','sql'),('supplier_risk',))\n"
+        },
+        {
+          "label": "One-worker bound",
+          "code": "assert bounded_batches(['sql','document'],1)==(('sql',),('document',))\n"
+        },
+        {
+          "label": "Role set enforced",
+          "code": "assert raises(ValueError,bounded_batches,['document','commercial'],2)\nassert raises(ValueError,bounded_batches,['sql','sql'],2)\nassert raises(ValueError,bounded_batches,[],2)\n"
+        },
+        {
+          "label": "Strict worker bound",
+          "code": "assert raises(TypeError,bounded_batches,('document',),1)\nassert raises(TypeError,bounded_batches,['document'],True)\nassert raises(ValueError,bounded_batches,['document'],4)\n"
+        }
+      ],
+      "id": "W17-Q085"
+    },
+    {
+      "type": "code",
+      "topic": "Stable collection",
+      "difficulty": "applied",
+      "prompt": "Implement collect_declared(declared, completed). declared must be a non-empty exact list of unique exact strings chosen from document, sql and supplier_risk. completed must be an exact dict whose keys equal declared and whose values are exact dict findings. Return a tuple of (role, deep-copied finding) pairs in declared order. Reject wrong types, unknown or duplicate roles, and missing or unexpected results without mutation.",
+      "explanation": "The supervisor can execute concurrently while exposing a stable declared result order and retaining sole aggregate-state ownership.",
+      "starter": "def collect_declared(declared, completed):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\n\ndef collect_declared(declared, completed):\n    if type(declared) is not list or type(completed) is not dict:\n        raise TypeError('collection_input_invalid')\n    if not declared:\n        raise ValueError('declared_empty')\n    if any(type(role) is not str for role in declared):\n        raise TypeError('role_not_string')\n    if len(set(declared)) != len(declared):\n        raise ValueError('duplicate_role')\n    if any(role not in {'document','sql','supplier_risk'} for role in declared):\n        raise ValueError('role_unknown')\n    if set(completed) != set(declared):\n        raise ValueError('completed_keys_mismatch')\n    if any(type(value) is not dict for value in completed.values()):\n        raise TypeError('finding_not_dict')\n    return tuple((role, copy.deepcopy(completed[role])) for role in declared)\n",
+      "checks": [
+        {
+          "label": "Declared order wins",
+          "code": "declared=['document','sql','supplier_risk'];completed={'supplier_risk':{'v':3},'sql':{'v':2},'document':{'v':1}}\nassert collect_declared(declared,completed)==(('document',{'v':1}),('sql',{'v':2}),('supplier_risk',{'v':3}))\n"
+        },
+        {
+          "label": "Alternate declared order",
+          "code": "assert collect_declared(['sql','document'],{'document':{'v':1},'sql':{'v':2}})==(('sql',{'v':2}),('document',{'v':1}))\n"
+        },
+        {
+          "label": "Exact completion set",
+          "code": "assert raises(ValueError,collect_declared,['document','sql'],{'document':{}})\nassert raises(ValueError,collect_declared,['document'],{'document':{},'sql':{}})\n"
+        },
+        {
+          "label": "Role validation",
+          "code": "assert raises(ValueError,collect_declared,['document','document'],{'document':{}})\nassert raises(ValueError,collect_declared,['commercial'],{'commercial':{}})\n"
+        },
+        {
+          "label": "Deep copy and strict types",
+          "code": "completed={'document':{'items':[1]}};result=collect_declared(['document'],completed);result[0][1]['items'].append(2)\nassert completed=={'document':{'items':[1]}}\nassert raises(TypeError,collect_declared,('document',),completed)\n"
+        }
+      ],
+      "id": "W17-Q086"
+    },
+    {
+      "type": "code",
+      "topic": "Failure propagation",
+      "difficulty": "applied",
+      "prompt": "Implement failure_outcome(outcomes). outcomes must be an exact list of three exact dicts in document, sql, supplier_risk order, each with exactly specialist, status and code. status is ok with code None or technical_failure with a non-blank exact string code. If any technical failure exists, return status failed, report None and failure_reason '<specialist>:<code>' for the first declared failure. Otherwise return status ready_for_commercial, report None and failure_reason None. Reject malformed input.",
+      "explanation": "Technical failures stop synthesis without inventing a report, while an all-success first wave becomes eligible for commercial work.",
+      "starter": "def failure_outcome(outcomes):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def failure_outcome(outcomes):\n    if type(outcomes) is not list:\n        raise TypeError('outcomes_not_list')\n    expected = ['document','sql','supplier_risk']\n    if len(outcomes) != 3:\n        raise ValueError('outcome_count_invalid')\n    for index, outcome in enumerate(outcomes):\n        if type(outcome) is not dict:\n            raise TypeError('outcome_not_dict')\n        if set(outcome) != {'specialist','status','code'}:\n            raise ValueError('outcome_shape_invalid')\n        if type(outcome['specialist']) is not str or outcome['specialist'] != expected[index]:\n            raise ValueError('outcome_order_invalid')\n        if outcome['status'] == 'ok':\n            if outcome['code'] is not None:\n                raise ValueError('ok_code_invalid')\n        elif outcome['status'] == 'technical_failure':\n            if type(outcome['code']) is not str or not outcome['code'].strip():\n                raise ValueError('failure_code_invalid')\n        else:\n            raise ValueError('outcome_status_invalid')\n    for outcome in outcomes:\n        if outcome['status'] == 'technical_failure':\n            return {'status':'failed','report':None,'failure_reason':f\"{outcome['specialist']}:{outcome['code']}\"}\n    return {'status':'ready_for_commercial','report':None,'failure_reason':None}\n",
+      "checks": [
+        {
+          "label": "All results ready",
+          "code": "rows=[{'specialist':x,'status':'ok','code':None} for x in ('document','sql','supplier_risk')]\nassert failure_outcome(rows)=={'status':'ready_for_commercial','report':None,'failure_reason':None}\n"
+        },
+        {
+          "label": "Technical failure closes run",
+          "code": "rows=[{'specialist':'document','status':'ok','code':None},{'specialist':'sql','status':'technical_failure','code':'timeout'},{'specialist':'supplier_risk','status':'ok','code':None}]\nassert failure_outcome(rows)=={'status':'failed','report':None,'failure_reason':'sql:timeout'}\n"
+        },
+        {
+          "label": "First declared failure wins",
+          "code": "rows=[{'specialist':'document','status':'technical_failure','code':'missing'},{'specialist':'sql','status':'technical_failure','code':'timeout'},{'specialist':'supplier_risk','status':'ok','code':None}]\nassert failure_outcome(rows)['failure_reason']=='document:missing'\n"
+        },
+        {
+          "label": "Status and code agree",
+          "code": "base=[{'specialist':x,'status':'ok','code':None} for x in ('document','sql','supplier_risk')]\nassert raises(ValueError,failure_outcome,[{**base[0],'code':'x'},*base[1:]])\nassert raises(ValueError,failure_outcome,[base[0],{**base[1],'status':'technical_failure'},base[2]])\n"
+        },
+        {
+          "label": "Closed ordered shape",
+          "code": "base=[{'specialist':x,'status':'ok','code':None} for x in ('document','sql','supplier_risk')]\nassert raises(TypeError,failure_outcome,tuple(base))\nassert raises(ValueError,failure_outcome,[base[1],base[0],base[2]])\nassert raises(ValueError,failure_outcome,[{**base[0],'extra':1},*base[1:]])\n"
+        }
+      ],
+      "id": "W17-Q087"
+    },
+    {
+      "type": "code",
+      "topic": "Commercial policy",
+      "difficulty": "applied",
+      "prompt": "Implement commercial_recommendation(terms_found, threshold, variance, supplier_status, risk_level). terms_found must be an exact bool; variance an exact Decimal; threshold None exactly when terms_found is false, otherwise a non-negative exact Decimal; supplier_status is active or inactive and risk_level low or elevated. Return needs_human for missing terms, else review_required for inactive/elevated risk, else review_required when variance is strictly above threshold, otherwise no_review. Reject malformed input.",
+      "explanation": "The explicit precedence preserves unknown contract terms, independent supplier risk and the exact strictly-above price rule.",
+      "starter": "def commercial_recommendation(terms_found, threshold, variance, supplier_status, risk_level):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from decimal import Decimal\n\ndef commercial_recommendation(terms_found, threshold, variance, supplier_status, risk_level):\n    if type(terms_found) is not bool or type(variance) is not Decimal:\n        raise TypeError('commercial_input_type_invalid')\n    if type(supplier_status) is not str or type(risk_level) is not str:\n        raise TypeError('commercial_label_type_invalid')\n    if supplier_status not in {'active','inactive'} or risk_level not in {'low','elevated'}:\n        raise ValueError('commercial_label_invalid')\n    if terms_found:\n        if type(threshold) is not Decimal:\n            raise TypeError('threshold_not_decimal')\n        if threshold < 0:\n            raise ValueError('threshold_negative')\n    elif threshold is not None:\n        raise ValueError('missing_terms_threshold_present')\n    if not terms_found:\n        return 'needs_human'\n    if supplier_status == 'inactive' or risk_level == 'elevated':\n        return 'review_required'\n    if variance > threshold:\n        return 'review_required'\n    return 'no_review'\n",
+      "checks": [
+        {
+          "label": "Missing terms first",
+          "code": "from decimal import Decimal\nassert commercial_recommendation(False,None,Decimal('99'),'inactive','elevated')=='needs_human'\n"
+        },
+        {
+          "label": "Supplier risk review",
+          "code": "from decimal import Decimal\nassert commercial_recommendation(True,Decimal('20'),Decimal('1'),'inactive','low')=='review_required'\nassert commercial_recommendation(True,Decimal('20'),Decimal('1'),'active','elevated')=='review_required'\n"
+        },
+        {
+          "label": "Above threshold review",
+          "code": "from decimal import Decimal\nassert commercial_recommendation(True,Decimal('5.00'),Decimal('5.01'),'active','low')=='review_required'\n"
+        },
+        {
+          "label": "Boundary stays no review",
+          "code": "from decimal import Decimal\nassert commercial_recommendation(True,Decimal('5.00'),Decimal('5.00'),'active','low')=='no_review'\nassert commercial_recommendation(True,Decimal('5.00'),Decimal('-1'),'active','low')=='no_review'\n"
+        },
+        {
+          "label": "Strict coherent inputs",
+          "code": "from decimal import Decimal\nassert raises(TypeError,commercial_recommendation,1,Decimal('5'),Decimal('1'),'active','low')\nassert raises(ValueError,commercial_recommendation,False,Decimal('5'),Decimal('1'),'active','low')\nassert raises(TypeError,commercial_recommendation,True,5.0,Decimal('1'),'active','low')\nassert raises(ValueError,commercial_recommendation,True,Decimal('-1'),Decimal('1'),'active','low')\n"
+        }
+      ],
+      "id": "W17-Q088"
+    },
+    {
+      "type": "code",
+      "topic": "Exact variance",
+      "difficulty": "applied",
+      "prompt": "Implement price_variance(current_price, reference_price). Both values must be exact positive Decimal instances. Compute (current-reference)/reference*100 with local decimal precision 28 and return a Decimal quantized to 0.01 using ROUND_HALF_EVEN. Raise TypeError for wrong types and ValueError for non-positive values.",
+      "explanation": "Exact Decimal arithmetic and explicit rounding keep threshold decisions deterministic and avoid binary-float drift.",
+      "starter": "def price_variance(current_price, reference_price):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "from decimal import Decimal, ROUND_HALF_EVEN, localcontext\n\ndef price_variance(current_price, reference_price):\n    if type(current_price) is not Decimal or type(reference_price) is not Decimal:\n        raise TypeError('price_not_decimal')\n    if current_price <= 0 or reference_price <= 0:\n        raise ValueError('price_not_positive')\n    with localcontext() as context:\n        context.prec = 28\n        value = (current_price - reference_price) / reference_price * Decimal('100')\n        return value.quantize(Decimal('0.01'), rounding=ROUND_HALF_EVEN)\n",
+      "checks": [
+        {
+          "label": "Positive variance",
+          "code": "from decimal import Decimal\nassert price_variance(Decimal('110'),Decimal('100'))==Decimal('10.00')\n"
+        },
+        {
+          "label": "Negative variance",
+          "code": "from decimal import Decimal\nassert price_variance(Decimal('90'),Decimal('100'))==Decimal('-10.00')\n"
+        },
+        {
+          "label": "Half-even rounding",
+          "code": "from decimal import Decimal\nassert price_variance(Decimal('1.00005'),Decimal('1'))==Decimal('0.00')\nassert price_variance(Decimal('1.00015'),Decimal('1'))==Decimal('0.02')\n"
+        },
+        {
+          "label": "Strict Decimal inputs",
+          "code": "from decimal import Decimal\nassert raises(TypeError,price_variance,110.0,Decimal('100'))\nassert raises(TypeError,price_variance,Decimal('110'),'100')\n"
+        },
+        {
+          "label": "Positive price domain",
+          "code": "from decimal import Decimal\nassert raises(ValueError,price_variance,Decimal('0'),Decimal('100'))\nassert raises(ValueError,price_variance,Decimal('100'),Decimal('0'))\nassert raises(ValueError,price_variance,Decimal('-1'),Decimal('100'))\n"
+        }
+      ],
+      "id": "W17-Q089"
+    },
+    {
+      "type": "code",
+      "topic": "Source validation",
+      "difficulty": "applied",
+      "prompt": "Implement validate_sources(sources). sources must be an exact list of three exact dicts, in document, sql, risk_register order, each with exactly kind, source_id and digest. Values must be exact strings; source IDs non-blank and unique; digests exactly 64 lowercase hexadecimal characters. Return a tuple of (kind, source_id, first-12-digest) tuples. Reject malformed input without mutation.",
+      "explanation": "Closed source references preserve expected source kinds and compact provenance while detecting fixture-byte disagreement.",
+      "starter": "def validate_sources(sources):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def validate_sources(sources):\n    if type(sources) is not list:\n        raise TypeError('sources_not_list')\n    expected = ('document','sql','risk_register')\n    if len(sources) != 3:\n        raise ValueError('source_count_invalid')\n    ids = []\n    result = []\n    for index, source in enumerate(sources):\n        if type(source) is not dict:\n            raise TypeError('source_not_dict')\n        if set(source) != {'kind','source_id','digest'}:\n            raise ValueError('source_shape_invalid')\n        if any(type(source[key]) is not str for key in source):\n            raise TypeError('source_value_not_string')\n        if source['kind'] != expected[index]:\n            raise ValueError('source_kind_mismatch')\n        if not source['source_id'].strip():\n            raise ValueError('source_id_blank')\n        digest = source['digest']\n        if len(digest) != 64 or any(char not in '0123456789abcdef' for char in digest):\n            raise ValueError('source_digest_invalid')\n        ids.append(source['source_id'])\n        result.append((source['kind'],source['source_id'],digest[:12]))\n    if len(set(ids)) != len(ids):\n        raise ValueError('source_id_duplicate')\n    return tuple(result)\n",
+      "checks": [
+        {
+          "label": "Three governed sources",
+          "code": "sources=[{'kind':'document','source_id':'d','digest':'a'*64},{'kind':'sql','source_id':'q','digest':'b'*64},{'kind':'risk_register','source_id':'r','digest':'c'*64}]\nassert validate_sources(sources)==(('document','d','a'*12),('sql','q','b'*12),('risk_register','r','c'*12))\n"
+        },
+        {
+          "label": "Expected kind order",
+          "code": "sources=[{'kind':'sql','source_id':'q','digest':'a'*64},{'kind':'document','source_id':'d','digest':'b'*64},{'kind':'risk_register','source_id':'r','digest':'c'*64}]\nassert raises(ValueError,validate_sources,sources)\n"
+        },
+        {
+          "label": "Digest format",
+          "code": "base=[{'kind':'document','source_id':'d','digest':'a'*64},{'kind':'sql','source_id':'q','digest':'b'*64},{'kind':'risk_register','source_id':'r','digest':'c'*64}]\nassert raises(ValueError,validate_sources,[{**base[0],'digest':'A'*64},*base[1:]])\nassert raises(ValueError,validate_sources,[{**base[0],'digest':'a'*63},*base[1:]])\n"
+        },
+        {
+          "label": "Distinct nonblank sources",
+          "code": "base=[{'kind':'document','source_id':'d','digest':'a'*64},{'kind':'sql','source_id':'q','digest':'b'*64},{'kind':'risk_register','source_id':'r','digest':'c'*64}]\nassert raises(ValueError,validate_sources,[{**base[0],'source_id':' '},*base[1:]])\nassert raises(ValueError,validate_sources,[base[0],{**base[1],'source_id':'d'},base[2]])\n"
+        },
+        {
+          "label": "Strict closed records",
+          "code": "base=[{'kind':'document','source_id':'d','digest':'a'*64},{'kind':'sql','source_id':'q','digest':'b'*64},{'kind':'risk_register','source_id':'r','digest':'c'*64}]\nassert raises(TypeError,validate_sources,tuple(base))\nassert raises(ValueError,validate_sources,[{**base[0],'body':'raw'},*base[1:]])\nassert raises(TypeError,validate_sources,[{**base[0],'source_id':1},*base[1:]])\n"
+        }
+      ],
+      "id": "W17-Q090"
+    },
+    {
+      "type": "code",
+      "topic": "Finding correlation",
+      "difficulty": "applied",
+      "prompt": "Implement correlate_findings(findings, run_id, case_id). findings must be an exact list containing exactly one document, sql and supplier_risk exact dict, each with exactly specialist, run_id, case_id and data; data must be an exact dict. Expected IDs must be non-blank exact strings. Every finding must match them. SQL and risk data must each contain the same non-blank exact supplier_id. Return a tuple of deep-copied data in document, sql, supplier_risk order. Reject malformed, duplicate, missing or mismatched findings.",
+      "explanation": "Commercial synthesis needs one complete correlated set, including agreement between the two supplier-bearing findings.",
+      "starter": "def correlate_findings(findings, run_id, case_id):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import copy\n\ndef correlate_findings(findings, run_id, case_id):\n    if type(findings) is not list:\n        raise TypeError('findings_not_list')\n    if type(run_id) is not str or type(case_id) is not str:\n        raise TypeError('identity_not_string')\n    if not run_id.strip() or not case_id.strip():\n        raise ValueError('identity_blank')\n    if len(findings) != 3:\n        raise ValueError('finding_count_invalid')\n    by_role = {}\n    for finding in findings:\n        if type(finding) is not dict:\n            raise TypeError('finding_not_dict')\n        if set(finding) != {'specialist','run_id','case_id','data'}:\n            raise ValueError('finding_shape_invalid')\n        if any(type(finding[key]) is not str for key in ('specialist','run_id','case_id')):\n            raise TypeError('finding_identity_invalid')\n        if type(finding['data']) is not dict:\n            raise TypeError('finding_data_not_dict')\n        role = finding['specialist']\n        if role not in {'document','sql','supplier_risk'} or role in by_role:\n            raise ValueError('finding_role_invalid')\n        if finding['run_id'] != run_id:\n            raise ValueError('finding_run_mismatch')\n        if finding['case_id'] != case_id:\n            raise ValueError('finding_case_mismatch')\n        by_role[role] = finding['data']\n    if set(by_role) != {'document','sql','supplier_risk'}:\n        raise ValueError('finding_set_incomplete')\n    suppliers = []\n    for role in ('sql','supplier_risk'):\n        supplier = by_role[role].get('supplier_id')\n        if type(supplier) is not str or not supplier.strip():\n            raise ValueError('supplier_id_invalid')\n        suppliers.append(supplier)\n    if suppliers[0] != suppliers[1]:\n        raise ValueError('supplier_mismatch')\n    return tuple(copy.deepcopy(by_role[role]) for role in ('document','sql','supplier_risk'))\n",
+      "checks": [
+        {
+          "label": "Complete correlated set",
+          "code": "rows=[{'specialist':'supplier_risk','run_id':'r','case_id':'c','data':{'supplier_id':'s','risk':'low'}},{'specialist':'document','run_id':'r','case_id':'c','data':{'terms_found':True}},{'specialist':'sql','run_id':'r','case_id':'c','data':{'supplier_id':'s','variance':'5.00'}}]\nassert correlate_findings(rows,'r','c')==({'terms_found':True},{'supplier_id':'s','variance':'5.00'},{'supplier_id':'s','risk':'low'})\n"
+        },
+        {
+          "label": "Run and case binding",
+          "code": "rows=[{'specialist':'document','run_id':'r','case_id':'c','data':{}},{'specialist':'sql','run_id':'x','case_id':'c','data':{'supplier_id':'s'}},{'specialist':'supplier_risk','run_id':'r','case_id':'c','data':{'supplier_id':'s'}}]\nassert raises(ValueError,correlate_findings,rows,'r','c')\nrows[1]['run_id']='r';rows[2]['case_id']='x';assert raises(ValueError,correlate_findings,rows,'r','c')\n"
+        },
+        {
+          "label": "Required roles exactly once",
+          "code": "base={'run_id':'r','case_id':'c','data':{'supplier_id':'s'}}\nrows=[{**base,'specialist':'document'},{**base,'specialist':'sql'},{**base,'specialist':'sql'}]\nassert raises(ValueError,correlate_findings,rows,'r','c')\nassert raises(ValueError,correlate_findings,rows[:2],'r','c')\n"
+        },
+        {
+          "label": "Supplier correlation",
+          "code": "rows=[{'specialist':'document','run_id':'r','case_id':'c','data':{}},{'specialist':'sql','run_id':'r','case_id':'c','data':{'supplier_id':'s1'}},{'specialist':'supplier_risk','run_id':'r','case_id':'c','data':{'supplier_id':'s2'}}]\nassert raises(ValueError,correlate_findings,rows,'r','c')\nrows[2]['data']={};assert raises(ValueError,correlate_findings,rows,'r','c')\n"
+        },
+        {
+          "label": "Closed deep-copied data",
+          "code": "rows=[{'specialist':'document','run_id':'r','case_id':'c','data':{'items':[1]}},{'specialist':'sql','run_id':'r','case_id':'c','data':{'supplier_id':'s'}},{'specialist':'supplier_risk','run_id':'r','case_id':'c','data':{'supplier_id':'s'}}]\nout=correlate_findings(rows,'r','c');out[0]['items'].append(2);assert rows[0]['data']['items']==[1]\nassert raises(ValueError,correlate_findings,[{**rows[0],'extra':1},*rows[1:]],'r','c')\n"
+        }
+      ],
+      "id": "W17-Q091"
+    },
+    {
+      "type": "code",
+      "topic": "Evidence projection",
+      "difficulty": "applied",
+      "prompt": "Implement build_evidence(findings). findings must be an exact list in document, sql, supplier_risk order. Each item is an exact dict with exactly specialist and source; source is an exact dict with exactly kind, source_id and digest. The expected kinds are document, sql and risk_register. All values are exact strings, source IDs are non-blank and distinct, and digests are 64 lowercase hex characters. Return three unique strings '<kind>:<source_id>:<first 12 digest chars>'. Reject malformed input.",
+      "explanation": "Commercial evidence carries compact governed provenance rather than raw source bodies or unrelated specialist state.",
+      "starter": "def build_evidence(findings):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def build_evidence(findings):\n    if type(findings) is not list:\n        raise TypeError('findings_not_list')\n    expected = (('document','document'),('sql','sql'),('supplier_risk','risk_register'))\n    if len(findings) != 3:\n        raise ValueError('finding_count_invalid')\n    evidence = []\n    source_ids = []\n    for finding, (role, kind) in zip(findings, expected):\n        if type(finding) is not dict or set(finding) != {'specialist','source'}:\n            raise ValueError('finding_shape_invalid')\n        if finding['specialist'] != role:\n            raise ValueError('finding_order_invalid')\n        source = finding['source']\n        if type(source) is not dict:\n            raise TypeError('source_not_dict')\n        if set(source) != {'kind','source_id','digest'}:\n            raise ValueError('source_shape_invalid')\n        if any(type(source[key]) is not str for key in source):\n            raise TypeError('source_value_invalid')\n        if source['kind'] != kind or not source['source_id'].strip():\n            raise ValueError('source_identity_invalid')\n        digest = source['digest']\n        if len(digest) != 64 or any(char not in '0123456789abcdef' for char in digest):\n            raise ValueError('source_digest_invalid')\n        source_ids.append(source['source_id'])\n        evidence.append(f\"{kind}:{source['source_id']}:{digest[:12]}\")\n    if len(set(source_ids)) != 3 or len(set(evidence)) != 3:\n        raise ValueError('evidence_not_unique')\n    return tuple(evidence)\n",
+      "checks": [
+        {
+          "label": "Compact three-source evidence",
+          "code": "rows=[{'specialist':'document','source':{'kind':'document','source_id':'d','digest':'a'*64}},{'specialist':'sql','source':{'kind':'sql','source_id':'q','digest':'b'*64}},{'specialist':'supplier_risk','source':{'kind':'risk_register','source_id':'r','digest':'c'*64}}]\nassert build_evidence(rows)==('document:d:'+('a'*12),'sql:q:'+('b'*12),'risk_register:r:'+('c'*12))\n"
+        },
+        {
+          "label": "Role order enforced",
+          "code": "rows=[{'specialist':'sql','source':{'kind':'sql','source_id':'q','digest':'a'*64}},{'specialist':'document','source':{'kind':'document','source_id':'d','digest':'b'*64}},{'specialist':'supplier_risk','source':{'kind':'risk_register','source_id':'r','digest':'c'*64}}]\nassert raises(ValueError,build_evidence,rows)\n"
+        },
+        {
+          "label": "Role and kind agree",
+          "code": "rows=[{'specialist':'document','source':{'kind':'sql','source_id':'d','digest':'a'*64}},{'specialist':'sql','source':{'kind':'sql','source_id':'q','digest':'b'*64}},{'specialist':'supplier_risk','source':{'kind':'risk_register','source_id':'r','digest':'c'*64}}]\nassert raises(ValueError,build_evidence,rows)\n"
+        },
+        {
+          "label": "Digest and uniqueness",
+          "code": "rows=[{'specialist':'document','source':{'kind':'document','source_id':'d','digest':'a'*64}},{'specialist':'sql','source':{'kind':'sql','source_id':'q','digest':'b'*64}},{'specialist':'supplier_risk','source':{'kind':'risk_register','source_id':'r','digest':'c'*64}}]\nassert raises(ValueError,build_evidence,[*rows[:2],{'specialist':'supplier_risk','source':{**rows[2]['source'],'source_id':'q'}}])\nassert raises(ValueError,build_evidence,[{**rows[0],'source':{**rows[0]['source'],'digest':'bad'}},*rows[1:]])\n"
+        },
+        {
+          "label": "Closed structures",
+          "code": "rows=[{'specialist':'document','source':{'kind':'document','source_id':'d','digest':'a'*64}},{'specialist':'sql','source':{'kind':'sql','source_id':'q','digest':'b'*64}},{'specialist':'supplier_risk','source':{'kind':'risk_register','source_id':'r','digest':'c'*64}}]\nassert raises(TypeError,build_evidence,tuple(rows))\nassert raises(ValueError,build_evidence,[{**rows[0],'raw_body':'secret'},*rows[1:]])\nassert raises(ValueError,build_evidence,[{**rows[0],'source':{**rows[0]['source'],'body':'secret'}},*rows[1:]])\n"
+        }
+      ],
+      "id": "W17-Q092"
+    },
+    {
+      "type": "code",
+      "topic": "Failure sanitization",
+      "difficulty": "applied",
+      "prompt": "Implement sanitize_failure(controlled_code, exception_name). Exactly one argument must be present. A controlled_code is a non-blank exact lowercase identifier matching [a-z][a-z0-9_]* and is returned unchanged. Otherwise exception_name must be an exact class-style identifier matching [A-Z][A-Za-z0-9_]* and the function returns 'unexpected_<name>'. Raise TypeError for non-string non-None inputs and ValueError for both/neither or malformed values. Do not accept arbitrary exception messages.",
+      "explanation": "Controlled domain codes remain useful while unexpected failures expose only their exception class and never arbitrary secret-bearing text.",
+      "starter": "def sanitize_failure(controlled_code, exception_name):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import re\n\ndef sanitize_failure(controlled_code, exception_name):\n    if controlled_code is not None and type(controlled_code) is not str:\n        raise TypeError('controlled_code_invalid')\n    if exception_name is not None and type(exception_name) is not str:\n        raise TypeError('exception_name_invalid')\n    if (controlled_code is None) == (exception_name is None):\n        raise ValueError('exactly_one_failure_input_required')\n    if controlled_code is not None:\n        if re.fullmatch(r'[a-z][a-z0-9_]*', controlled_code) is None:\n            raise ValueError('controlled_code_malformed')\n        return controlled_code\n    if re.fullmatch(r'[A-Z][A-Za-z0-9_]*', exception_name) is None:\n        raise ValueError('exception_name_malformed')\n    return f'unexpected_{exception_name}'\n",
+      "checks": [
+        {
+          "label": "Controlled domain code",
+          "code": "assert sanitize_failure('document_digest_mismatch',None)=='document_digest_mismatch'\n"
+        },
+        {
+          "label": "Unexpected class only",
+          "code": "assert sanitize_failure(None,'RuntimeError')=='unexpected_RuntimeError'\nassert sanitize_failure(None,'TimeoutError')=='unexpected_TimeoutError'\n"
+        },
+        {
+          "label": "Exactly one input",
+          "code": "assert raises(ValueError,sanitize_failure,None,None)\nassert raises(ValueError,sanitize_failure,'timeout','RuntimeError')\n"
+        },
+        {
+          "label": "Message text rejected",
+          "code": "assert raises(ValueError,sanitize_failure,None,'RuntimeError: credential-value')\nassert raises(ValueError,sanitize_failure,'Timeout Error',None)\n"
+        },
+        {
+          "label": "Strict types and case",
+          "code": "assert raises(TypeError,sanitize_failure,17,None)\nassert raises(TypeError,sanitize_failure,None,RuntimeError)\nassert raises(ValueError,sanitize_failure,'UPPER',None)\nassert raises(ValueError,sanitize_failure,None,'runtimeError')\n"
+        }
+      ],
+      "id": "W17-Q093"
+    },
+    {
+      "type": "code",
+      "topic": "Approval reports",
+      "difficulty": "applied",
+      "prompt": "Implement build_report(run_id, case_id, recommendation, summary, evidence). IDs, recommendation and summary must be exact strings; IDs and summary non-blank, summary at most 600 characters, and recommendation one of no_review, review_required, needs_human. evidence must be an exact list of exactly three distinct non-blank exact strings. Return a new exact dict with run_id, case_id, recommendation, summary, evidence as a tuple, requires_human_approval True and status awaiting_approval. Reject malformed input without mutation.",
+      "explanation": "Every successful report is a new closed value that stops at an explicit human approval boundary and contains no external-action capability.",
+      "starter": "def build_report(run_id, case_id, recommendation, summary, evidence):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def build_report(run_id, case_id, recommendation, summary, evidence):\n    if any(type(value) is not str for value in (run_id,case_id,recommendation,summary)):\n        raise TypeError('report_value_not_string')\n    if not run_id.strip() or not case_id.strip() or not summary.strip():\n        raise ValueError('report_value_blank')\n    if len(summary) > 600:\n        raise ValueError('summary_too_long')\n    if recommendation not in {'no_review','review_required','needs_human'}:\n        raise ValueError('recommendation_invalid')\n    if type(evidence) is not list:\n        raise TypeError('evidence_not_list')\n    if len(evidence) != 3 or any(type(item) is not str for item in evidence):\n        raise ValueError('evidence_shape_invalid')\n    if any(not item.strip() for item in evidence) or len(set(evidence)) != 3:\n        raise ValueError('evidence_not_unique')\n    return {'run_id':run_id,'case_id':case_id,'recommendation':recommendation,'summary':summary,'evidence':tuple(evidence),'requires_human_approval':True,'status':'awaiting_approval'}\n",
+      "checks": [
+        {
+          "label": "Closed approval report",
+          "code": "e=['document:d:a','sql:q:b','risk_register:r:c']\nreport=build_report('r','c','review_required','Review this case.',e)\nassert report=={'run_id':'r','case_id':'c','recommendation':'review_required','summary':'Review this case.','evidence':tuple(e),'requires_human_approval':True,'status':'awaiting_approval'}\nassert set(report)=={'run_id','case_id','recommendation','summary','evidence','requires_human_approval','status'}\n"
+        },
+        {
+          "label": "All recommendation values",
+          "code": "e=['d','q','r']\nfor value in ('no_review','review_required','needs_human'):\n    assert build_report('run','case',value,'Human review.',e)['recommendation']==value\n"
+        },
+        {
+          "label": "Approval cannot be omitted",
+          "code": "report=build_report('r','c','no_review','Within threshold.',['d','q','r'])\nassert report['requires_human_approval'] is True and report['status']=='awaiting_approval'\nassert 'action' not in report\n"
+        },
+        {
+          "label": "Evidence is exact and independent",
+          "code": "e=['d','q','r'];report=build_report('r','c','no_review','Within threshold.',e);e.append('x')\nassert report['evidence']==('d','q','r')\nassert raises(ValueError,build_report,'r','c','no_review','Within threshold.',['d','d','r'])\nassert raises(TypeError,build_report,'r','c','no_review','Within threshold.',('d','q','r'))\n"
+        },
+        {
+          "label": "Strict bounded text",
+          "code": "assert raises(ValueError,build_report,' ','c','no_review','Summary.',['d','q','r'])\nassert raises(ValueError,build_report,'r','c','approve','Summary.',['d','q','r'])\nassert raises(ValueError,build_report,'r','c','no_review','x'*601,['d','q','r'])\nassert raises(TypeError,build_report,1,'c','no_review','Summary.',['d','q','r'])\n"
+        }
+      ],
+      "id": "W17-Q094"
+    },
+    {
+      "type": "code",
+      "topic": "Architecture comparison",
+      "difficulty": "applied",
+      "prompt": "Implement compare_structures(supervisor, workflow). Each input must be an exact dict with exactly report, handoffs and dependency_stages. report is an exact dict or None; both metrics are exact non-negative integers. Return an exact dict containing outcome_equal (deep report equality), supervisor_handoffs, workflow_handoffs, supervisor_dependency_stages, workflow_dependency_stages and measured_latency_ms None. Reject malformed inputs and do not invent a latency result.",
+      "explanation": "The comparison separates outcome parity and coordination structure from unmeasured model, network or production performance.",
+      "starter": "def compare_structures(supervisor, workflow):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def compare_structures(supervisor, workflow):\n    for value in (supervisor, workflow):\n        if type(value) is not dict:\n            raise TypeError('architecture_not_dict')\n        if set(value) != {'report','handoffs','dependency_stages'}:\n            raise ValueError('architecture_shape_invalid')\n        if value['report'] is not None and type(value['report']) is not dict:\n            raise TypeError('report_invalid')\n        for key in ('handoffs','dependency_stages'):\n            if type(value[key]) is not int:\n                raise TypeError('metric_not_int')\n            if value[key] < 0:\n                raise ValueError('metric_negative')\n    return {'outcome_equal':supervisor['report']==workflow['report'],'supervisor_handoffs':supervisor['handoffs'],'workflow_handoffs':workflow['handoffs'],'supervisor_dependency_stages':supervisor['dependency_stages'],'workflow_dependency_stages':workflow['dependency_stages'],'measured_latency_ms':None}\n",
+      "checks": [
+        {
+          "label": "Equal outcomes different structure",
+          "code": "report={'recommendation':'review_required'}\ns={'report':report,'handoffs':4,'dependency_stages':2};w={'report':{'recommendation':'review_required'},'handoffs':0,'dependency_stages':4}\nassert compare_structures(s,w)=={'outcome_equal':True,'supervisor_handoffs':4,'workflow_handoffs':0,'supervisor_dependency_stages':2,'workflow_dependency_stages':4,'measured_latency_ms':None}\n"
+        },
+        {
+          "label": "Outcome difference visible",
+          "code": "s={'report':{'recommendation':'review_required'},'handoffs':4,'dependency_stages':2};w={'report':{'recommendation':'no_review'},'handoffs':0,'dependency_stages':4}\nassert compare_structures(s,w)['outcome_equal'] is False\n"
+        },
+        {
+          "label": "Failed parity supported",
+          "code": "s={'report':None,'handoffs':3,'dependency_stages':1};w={'report':None,'handoffs':0,'dependency_stages':2}\nassert compare_structures(s,w)['outcome_equal'] is True\n"
+        },
+        {
+          "label": "No latency claim",
+          "code": "s={'report':{},'handoffs':4,'dependency_stages':2};w={'report':{},'handoffs':0,'dependency_stages':4}\nassert compare_structures(s,w)['measured_latency_ms'] is None\n"
+        },
+        {
+          "label": "Strict closed metrics",
+          "code": "s={'report':{},'handoffs':4,'dependency_stages':2};w={'report':{},'handoffs':0,'dependency_stages':4}\nassert raises(ValueError,compare_structures,{**s,'latency':1},w)\nassert raises(TypeError,compare_structures,{**s,'handoffs':True},w)\nassert raises(ValueError,compare_structures,s,{**w,'dependency_stages':-1})\n"
+        }
+      ],
+      "id": "W17-Q095"
+    },
+    {
+      "type": "code",
+      "topic": "Pattern selection",
+      "difficulty": "applied",
+      "prompt": "Implement choose_architecture(requirements). requirements must be an exact dict with exactly distinct_context, separate_governance, independent_work and coordination_cost_justified, all exact booleans. Return supervisor_specialists only when at least one boundary reason is true, independent_work is true and coordination_cost_justified is true; otherwise return single_workflow. Reject wrong types or shape and do not mutate input.",
+      "explanation": "Multiple agents are a deliberate architecture choice only when meaningful boundaries and independent work justify their added coordination cost.",
+      "starter": "def choose_architecture(requirements):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def choose_architecture(requirements):\n    if type(requirements) is not dict:\n        raise TypeError('requirements_not_dict')\n    expected = {'distinct_context','separate_governance','independent_work','coordination_cost_justified'}\n    if set(requirements) != expected:\n        raise ValueError('requirements_shape_invalid')\n    if any(type(value) is not bool for value in requirements.values()):\n        raise TypeError('requirement_not_bool')\n    boundary = requirements['distinct_context'] or requirements['separate_governance']\n    if boundary and requirements['independent_work'] and requirements['coordination_cost_justified']:\n        return 'supervisor_specialists'\n    return 'single_workflow'\n",
+      "checks": [
+        {
+          "label": "Distinct context justifies supervisor",
+          "code": "r={'distinct_context':True,'separate_governance':False,'independent_work':True,'coordination_cost_justified':True}\nassert choose_architecture(r)=='supervisor_specialists'\n"
+        },
+        {
+          "label": "Governance can justify supervisor",
+          "code": "r={'distinct_context':False,'separate_governance':True,'independent_work':True,'coordination_cost_justified':True}\nassert choose_architecture(r)=='supervisor_specialists'\n"
+        },
+        {
+          "label": "No boundary favors workflow",
+          "code": "r={'distinct_context':False,'separate_governance':False,'independent_work':True,'coordination_cost_justified':True}\nassert choose_architecture(r)=='single_workflow'\n"
+        },
+        {
+          "label": "Sequential or costly favors workflow",
+          "code": "base={'distinct_context':True,'separate_governance':True,'independent_work':True,'coordination_cost_justified':True}\nassert choose_architecture({**base,'independent_work':False})=='single_workflow'\nassert choose_architecture({**base,'coordination_cost_justified':False})=='single_workflow'\n"
+        },
+        {
+          "label": "Strict closed requirements",
+          "code": "r={'distinct_context':True,'separate_governance':False,'independent_work':True,'coordination_cost_justified':True}\nassert raises(ValueError,choose_architecture,{**r,'agent_count':5})\nassert raises(TypeError,choose_architecture,{**r,'distinct_context':1})\nassert raises(TypeError,choose_architecture,[])\n"
+        }
+      ],
+      "id": "W17-Q096"
+    },
+    {
+      "type": "code",
+      "topic": "Registry safety",
+      "difficulty": "applied",
+      "prompt": "Implement validate_registry(registry). registry must be an exact dict with exactly document, sql, supplier_risk and commercial keys and every value callable. Return the role tuple in that exact declared order. Raise TypeError for a non-dict or non-callable value and ValueError for a missing or unexpected role. Do not mutate registry or invoke any function.",
+      "explanation": "A closed complete registry keeps dispatch under supervisor control and prevents specialists from inventing roles or unbounded child work.",
+      "starter": "def validate_registry(registry):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def validate_registry(registry):\n    if type(registry) is not dict:\n        raise TypeError('registry_not_dict')\n    roles = ('document','sql','supplier_risk','commercial')\n    if set(registry) != set(roles):\n        raise ValueError('registry_roles_invalid')\n    if any(not callable(registry[role]) for role in roles):\n        raise TypeError('registry_value_not_callable')\n    return roles\n",
+      "checks": [
+        {
+          "label": "Complete callable registry",
+          "code": "calls=[]\ndef fn(*args): calls.append(args)\nregistry={role:fn for role in ('commercial','sql','document','supplier_risk')}\nassert validate_registry(registry)==('document','sql','supplier_risk','commercial')\nassert calls==[]\n"
+        },
+        {
+          "label": "Missing role rejected",
+          "code": "fn=lambda:None\nregistry={role:fn for role in ('document','sql','supplier_risk')}\nassert raises(ValueError,validate_registry,registry)\n"
+        },
+        {
+          "label": "Unexpected role rejected",
+          "code": "fn=lambda:None\nregistry={role:fn for role in ('document','sql','supplier_risk','commercial','payment')}\nassert raises(ValueError,validate_registry,registry)\n"
+        },
+        {
+          "label": "Every value callable",
+          "code": "fn=lambda:None\nregistry={'document':fn,'sql':fn,'supplier_risk':fn,'commercial':'not-callable'}\nassert raises(TypeError,validate_registry,registry)\n"
+        },
+        {
+          "label": "Exact dict and no invocation",
+          "code": "fn=lambda:(_ for _ in ()).throw(RuntimeError('must not run'))\nregistry={role:fn for role in ('document','sql','supplier_risk','commercial')}\nbefore=dict(registry);validate_registry(registry);assert registry==before\nassert raises(TypeError,validate_registry,list(registry))\n"
+        }
+      ],
+      "id": "W17-Q097"
+    },
+    {
+      "type": "code",
+      "topic": "Bounded retry policy",
+      "difficulty": "applied",
+      "prompt": "Implement retry_candidates(failures, max_attempts). failures must be an exact list of unique-role exact dicts with exactly specialist, code and attempts. specialist is one of the four declared roles; code is one of service_unavailable, timeout, identity_mismatch, type_mismatch, digest_mismatch; attempts is an exact positive integer. max_attempts is an exact integer from 1 through 3, and no attempts value may exceed it. Return a tuple, in input order, of roles whose code is service_unavailable or timeout and attempts is below max_attempts. Never retry validation or digest failures. Reject malformed input.",
+      "explanation": "A production adapter would need a bounded explicit retry policy that never treats identity, type or provenance defects as transient.",
+      "starter": "def retry_candidates(failures, max_attempts):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def retry_candidates(failures, max_attempts):\n    if type(failures) is not list or type(max_attempts) is not int:\n        raise TypeError('retry_input_invalid')\n    if max_attempts < 1 or max_attempts > 3:\n        raise ValueError('max_attempts_invalid')\n    roles = {'document','sql','supplier_risk','commercial'}\n    codes = {'service_unavailable','timeout','identity_mismatch','type_mismatch','digest_mismatch'}\n    retryable = {'service_unavailable','timeout'}\n    seen = set()\n    result = []\n    for failure in failures:\n        if type(failure) is not dict:\n            raise TypeError('failure_not_dict')\n        if set(failure) != {'specialist','code','attempts'}:\n            raise ValueError('failure_shape_invalid')\n        if type(failure['specialist']) is not str or type(failure['code']) is not str or type(failure['attempts']) is not int:\n            raise TypeError('failure_value_invalid')\n        if failure['specialist'] not in roles or failure['specialist'] in seen:\n            raise ValueError('failure_role_invalid')\n        if failure['code'] not in codes:\n            raise ValueError('failure_code_invalid')\n        if failure['attempts'] < 1 or failure['attempts'] > max_attempts:\n            raise ValueError('failure_attempts_invalid')\n        seen.add(failure['specialist'])\n        if failure['code'] in retryable and failure['attempts'] < max_attempts:\n            result.append(failure['specialist'])\n    return tuple(result)\n",
+      "checks": [
+        {
+          "label": "Transient failures below bound",
+          "code": "rows=[{'specialist':'document','code':'service_unavailable','attempts':1},{'specialist':'sql','code':'timeout','attempts':2}]\nassert retry_candidates(rows,3)==('document','sql')\n"
+        },
+        {
+          "label": "Attempt bound stops retry",
+          "code": "rows=[{'specialist':'document','code':'timeout','attempts':3}]\nassert retry_candidates(rows,3)==()\n"
+        },
+        {
+          "label": "Validation failures never retry",
+          "code": "rows=[{'specialist':'document','code':'identity_mismatch','attempts':1},{'specialist':'sql','code':'type_mismatch','attempts':1},{'specialist':'supplier_risk','code':'digest_mismatch','attempts':1}]\nassert retry_candidates(rows,3)==()\n"
+        },
+        {
+          "label": "Role and code allowlists",
+          "code": "assert raises(ValueError,retry_candidates,[{'specialist':'payment','code':'timeout','attempts':1}],3)\nassert raises(ValueError,retry_candidates,[{'specialist':'sql','code':'other','attempts':1}],3)\nassert raises(ValueError,retry_candidates,[{'specialist':'sql','code':'timeout','attempts':1},{'specialist':'sql','code':'timeout','attempts':2}],3)\n"
+        },
+        {
+          "label": "Strict bounded attempts",
+          "code": "assert raises(TypeError,retry_candidates,(),3)\nassert raises(TypeError,retry_candidates,[{'specialist':'sql','code':'timeout','attempts':True}],3)\nassert raises(TypeError,retry_candidates,[],True)\nassert raises(ValueError,retry_candidates,[{'specialist':'sql','code':'timeout','attempts':3}],2)\n"
+        }
+      ],
+      "id": "W17-Q098"
+    },
+    {
+      "type": "code",
+      "topic": "Trace validation",
+      "difficulty": "applied",
+      "prompt": "Implement trace_is_valid(trace). trace must be an exact list of exact strings. Return true only for the complete successful supervisor trace: start; dispatch document, sql, supplier_risk; complete document, sql, supplier_risk; dispatch commercial; complete commercial; awaiting_approval. Return false for any other string sequence. Raise TypeError for a wrong container or non-string item and do not mutate trace.",
+      "explanation": "A closed stable trace proves the dependent commercial stage never appears before all three declared first-wave completions.",
+      "starter": "def trace_is_valid(trace):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def trace_is_valid(trace):\n    if type(trace) is not list:\n        raise TypeError('trace_not_list')\n    if any(type(item) is not str for item in trace):\n        raise TypeError('trace_item_not_string')\n    expected = [\n        'supervisor:start',\n        'supervisor:dispatch:document',\n        'supervisor:dispatch:sql',\n        'supervisor:dispatch:supplier_risk',\n        'supervisor:complete:document',\n        'supervisor:complete:sql',\n        'supervisor:complete:supplier_risk',\n        'supervisor:dispatch:commercial',\n        'supervisor:complete:commercial',\n        'supervisor:awaiting_approval',\n    ]\n    return trace == expected\n",
+      "checks": [
+        {
+          "label": "Complete stable trace",
+          "code": "trace=['supervisor:start','supervisor:dispatch:document','supervisor:dispatch:sql','supervisor:dispatch:supplier_risk','supervisor:complete:document','supervisor:complete:sql','supervisor:complete:supplier_risk','supervisor:dispatch:commercial','supervisor:complete:commercial','supervisor:awaiting_approval']\nbefore=list(trace);assert trace_is_valid(trace) is True;assert trace==before\n"
+        },
+        {
+          "label": "Completion reorder rejected",
+          "code": "trace=['supervisor:start','supervisor:dispatch:document','supervisor:dispatch:sql','supervisor:dispatch:supplier_risk','supervisor:complete:sql','supervisor:complete:document','supervisor:complete:supplier_risk','supervisor:dispatch:commercial','supervisor:complete:commercial','supervisor:awaiting_approval']\nassert trace_is_valid(trace) is False\n"
+        },
+        {
+          "label": "Early commercial rejected",
+          "code": "trace=['supervisor:start','supervisor:dispatch:document','supervisor:dispatch:sql','supervisor:dispatch:supplier_risk','supervisor:dispatch:commercial','supervisor:complete:document','supervisor:complete:sql','supervisor:complete:supplier_risk','supervisor:complete:commercial','supervisor:awaiting_approval']\nassert trace_is_valid(trace) is False\n"
+        },
+        {
+          "label": "Missing or extra event rejected",
+          "code": "assert trace_is_valid([]) is False\ntrace=['supervisor:start','supervisor:unexpected'];assert trace_is_valid(trace) is False\n"
+        },
+        {
+          "label": "Strict trace values",
+          "code": "assert raises(TypeError,trace_is_valid,('supervisor:start',))\nassert raises(TypeError,trace_is_valid,['supervisor:start',17])\n"
+        }
+      ],
+      "id": "W17-Q099"
+    },
+    {
+      "type": "code",
+      "topic": "Run audit",
+      "difficulty": "applied",
+      "prompt": "Implement audit_run(result). result must be an exact dict with exactly architecture, status, report, findings, metrics and failure_reason. architecture is supervisor_specialists or single_workflow; findings an exact list; metrics an exact dict containing exactly non-negative exact integer handoffs and dependency_stages. For awaiting_approval, report must be an exact dict with exactly recommendation and requires_human_approval, a declared recommendation and approval exactly true, while failure_reason is None. For failed, report must be None and failure_reason a non-blank exact string. Return architecture, status, has_report, requires_human_approval, handoffs and dependency_stages. Reject inconsistent or malformed results.",
+      "explanation": "A compact audit makes the success approval invariant and the failed-without-report invariant independently checkable.",
+      "starter": "def audit_run(result):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def audit_run(result):\n    if type(result) is not dict:\n        raise TypeError('result_not_dict')\n    if set(result) != {'architecture','status','report','findings','metrics','failure_reason'}:\n        raise ValueError('result_shape_invalid')\n    if result['architecture'] not in {'supervisor_specialists','single_workflow'}:\n        raise ValueError('architecture_invalid')\n    if type(result['findings']) is not list or type(result['metrics']) is not dict:\n        raise TypeError('result_collection_invalid')\n    if set(result['metrics']) != {'handoffs','dependency_stages'}:\n        raise ValueError('metrics_shape_invalid')\n    for value in result['metrics'].values():\n        if type(value) is not int:\n            raise TypeError('metric_not_int')\n        if value < 0:\n            raise ValueError('metric_negative')\n    approval = False\n    if result['status'] == 'awaiting_approval':\n        report = result['report']\n        if type(report) is not dict or set(report) != {'recommendation','requires_human_approval'}:\n            raise ValueError('success_report_invalid')\n        if report['recommendation'] not in {'no_review','review_required','needs_human'}:\n            raise ValueError('recommendation_invalid')\n        if report['requires_human_approval'] is not True or result['failure_reason'] is not None:\n            raise ValueError('success_fields_invalid')\n        approval = True\n    elif result['status'] == 'failed':\n        if result['report'] is not None or type(result['failure_reason']) is not str or not result['failure_reason'].strip():\n            raise ValueError('failed_fields_invalid')\n    else:\n        raise ValueError('status_invalid')\n    return {'architecture':result['architecture'],'status':result['status'],'has_report':result['report'] is not None,'requires_human_approval':approval,'handoffs':result['metrics']['handoffs'],'dependency_stages':result['metrics']['dependency_stages']}\n",
+      "checks": [
+        {
+          "label": "Successful supervisor audit",
+          "code": "result={'architecture':'supervisor_specialists','status':'awaiting_approval','report':{'recommendation':'review_required','requires_human_approval':True},'findings':[1,2,3],'metrics':{'handoffs':4,'dependency_stages':2},'failure_reason':None}\nassert audit_run(result)=={'architecture':'supervisor_specialists','status':'awaiting_approval','has_report':True,'requires_human_approval':True,'handoffs':4,'dependency_stages':2}\n"
+        },
+        {
+          "label": "Successful workflow audit",
+          "code": "result={'architecture':'single_workflow','status':'awaiting_approval','report':{'recommendation':'no_review','requires_human_approval':True},'findings':[1,2,3],'metrics':{'handoffs':0,'dependency_stages':4},'failure_reason':None}\nassert audit_run(result)['handoffs']==0 and audit_run(result)['dependency_stages']==4\n"
+        },
+        {
+          "label": "Failed run audit",
+          "code": "result={'architecture':'supervisor_specialists','status':'failed','report':None,'findings':[1],'metrics':{'handoffs':3,'dependency_stages':1},'failure_reason':'sql:timeout'}\nassert audit_run(result)=={'architecture':'supervisor_specialists','status':'failed','has_report':False,'requires_human_approval':False,'handoffs':3,'dependency_stages':1}\n"
+        },
+        {
+          "label": "Status fields must agree",
+          "code": "base={'architecture':'supervisor_specialists','status':'failed','report':None,'findings':[],'metrics':{'handoffs':3,'dependency_stages':1},'failure_reason':'timeout'}\nassert raises(ValueError,audit_run,{**base,'report':{'recommendation':'no_review','requires_human_approval':True}})\nassert raises(ValueError,audit_run,{**base,'status':'awaiting_approval','failure_reason':None})\n"
+        },
+        {
+          "label": "Closed strict result",
+          "code": "base={'architecture':'supervisor_specialists','status':'failed','report':None,'findings':[],'metrics':{'handoffs':3,'dependency_stages':1},'failure_reason':'timeout'}\nassert raises(ValueError,audit_run,{**base,'trace':[]})\nassert raises(TypeError,audit_run,{**base,'findings':()})\nassert raises(TypeError,audit_run,{**base,'metrics':{'handoffs':True,'dependency_stages':1}})\nassert raises(ValueError,audit_run,{**base,'architecture':'swarm'})\n"
+        }
+      ],
+      "id": "W17-Q100"
+    }
+  ]
+}

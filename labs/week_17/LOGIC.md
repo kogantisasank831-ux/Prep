@@ -1,4 +1,4 @@
-# Week 17 multi-agent coordination contracts — revision 1
+# Week 17 multi-agent coordination contracts — revision 2
 
 Source: `Path.md`, Week 17, and the synthetic procurement investigation used in
 Weeks 14–16. These rules describe a deterministic local teaching system. They do
@@ -27,6 +27,7 @@ not define a production procurement, identity or authorization policy.
 | W17-NFR1 | Given the same case, run ID and registry, report, findings, metrics and trace are deterministic. |
 | W17-NFR2 | The lab makes no model, provider, network, database or secret-dependent call and adds no dependency. |
 | W17-NFR3 | Tests cover each business route, actual concurrent admission, dependency order, strict handoffs, deterministic output, corrupted provenance, failure propagation, bounded fan-out and baseline parity. |
+| W17-AS1 | Publish a 100-item practice bank with 30 single-choice, 20 multiple-correct, 15 matching, 15 short-answer and 20 self-contained Python coding questions. Every generated 10-question paper contains exactly two of each type for 100 marks. Each coding task has five executable checks, its reference passes all five, its starter scores zero and a distinct plausible wrong implementation loses marks. |
 
 ## Decision precedence
 
@@ -48,6 +49,9 @@ specialists are deterministic functions so coordination behavior is observable
 without mixing in model variability. A production adapter may use a governed
 model or service behind the same contract, but it must preserve correlation,
 validation, timeouts, authorization, observability and approval controls.
+The browser assessment models the same observable contracts with small
+independent standard-library functions; actual concurrent execution remains in
+the local lab.
 
 Cross-process job queues, cancellation of stuck remote work, retries,
 idempotency keys, rate limits, model evaluation, authenticated identities,

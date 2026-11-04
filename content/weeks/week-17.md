@@ -3,7 +3,7 @@ layout: week
 week: 17
 phase: 4
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-11-04
 estimated_hours: 8
 permalink: /weeks/week-17/
@@ -39,6 +39,10 @@ stage, but also adds four inter-agent handoffs.
 
 If agents, handoffs and parallel execution are new, start with the
 [beginner version]({{ '/weeks/week-17/beginner/' | relative_url }}).
+
+The [Week 17 assessment]({{ '/assessments/week-17/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -347,6 +351,10 @@ You are done when you can show:
 - an approval boundary with no external action;
 - equal supervisor/workflow reports on the controlled cases; and
 - passing smoke, tests, lint, format and strict typing.
+
+Use the [Week 17 assessment]({{ '/assessments/week-17/' | relative_url }}) to
+practise specialist boundaries, minimal handoffs, dependency order, fail-closed
+coordination, exact decision policy and evidence-bounded architecture comparison.
 
 ## Sources and further reading
 

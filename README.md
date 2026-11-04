@@ -275,7 +275,7 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–16 assessment tests and Week 10–17 labs'
+requires Node 20+, checks the Week 7–17 assessment tests and Week 10–17 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
 application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory/
@@ -572,6 +572,13 @@ The [local lab](labs/week_17/README.md) uses strict immutable handoffs, one
 three-worker evidence wave, stable result collection, explicit correlation and a
 human approval stop.
 
+The [Week 17 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-17/)
+draws ten balanced questions from a reviewed 100-item bank. Its 20 independent
+standard-library Python tasks exercise closed handoffs, minimal assignments,
+bounded dispatch, stable collection, result and source correlation, exact
+commercial policy, failure sanitization, approval reports, architecture choice
+and run auditing without adding a provider, hosted runtime or database.
+
 Document analysis returns the applicable threshold, SQL analysis uses exact
 `Decimal` price variance, supplier risk returns status and incidents, and the
 commercial specialist applies one deterministic policy. A technical specialist
@@ -583,7 +590,7 @@ python -m pip install -r requirements-dev.txt
 python -m labs.week_17.demo run --case price-spike --run-id demo-17
 python -m labs.week_17.demo compare --case price-spike --run-id demo-17
 python -m labs.week_17.demo smoke
-python -m pytest tests/test_week17_multi_agent.py -q
+python -m pytest tests/test_week17_assessment.py tests/test_week17_multi_agent.py -q
 ~~~
 
 The comparison runs the same domain components through one sequential workflow.
@@ -591,8 +598,8 @@ Both routes produce the same report; the supervisor has four validated handoffs
 and two dependency stages, while the workflow has no inter-agent handoff and four
 sequential stages. These are structural facts, not a production latency claim.
 
-The lab adds no model, provider, API key, network call, database, external action
-or dependency. Required CI includes its 25 behavior tests and CLI smoke while
-preserving all published assessment and PostgreSQL/pgvector gates. Lesson
-navigation includes Week 17; questionnaire navigation remains at Week 16 until a
-reviewed Week 17 bank exists.
+The lab and assessment add no model, provider, API key, network call, database,
+external action or dependency. Required CI includes the 64 assessment checks,
+25 lab behavior tests and CLI smoke while preserving all published assessment
+and PostgreSQL/pgvector gates. Lesson and questionnaire navigation include Week
+17.

@@ -3,7 +3,7 @@ layout: week
 week: 17
 phase: 4
 status: approved
-version: 1.0.0
+version: 1.0.1
 last_reviewed: 2026-11-04
 estimated_hours: 8
 permalink: /weeks/week-17/beginner/
@@ -32,6 +32,10 @@ coordination rules without random answers, API keys or provider cost.
 The [production version]({{ '/weeks/week-17/' | relative_url }}) explains strict
 schemas, correlation checks, failure propagation and the architecture comparison
 in more depth.
+
+The [Week 17 assessment]({{ '/assessments/week-17/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 ## Meet the five roles
 
@@ -305,6 +309,10 @@ The checks prove that:
 8. What does a two-stage dependency shape tell you—and what does it not tell you?
 9. When would one workflow be the better design?
 10. How would you justify each of the four specialists in an interview?
+
+Try the [Week 17 assessment]({{ '/assessments/week-17/' | relative_url }}) for a
+random paper covering specialist jobs, small handoffs, safe parallel work,
+failure handling, human approval and the one-workflow comparison.
 
 ## Read alongside the lab
 
