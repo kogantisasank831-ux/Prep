@@ -110,4 +110,26 @@ publication section is completed.
 
 ## Publication verification
 
-Pending candidate validation and publication.
+Publication verification completed on 2026-11-05 for implementation commit
+`54e53ea92da6eb9f7d0581745a579aa1403c848c`:
+
+- Candidate CI run `42079948716` passed the Python 3.13.12 lint, format, strict
+  typing, 1,738-test regression and seven CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `42080444613` passed both required jobs after lease-protected
+  fast-forward promotion.
+- GitHub Pages run `42080443965` built and deployed successfully.
+- The production route rendered “Put enforceable guardrails between agents and
+  tools,” and the beginner route rendered “Give an agent a small keyring, a
+  supervisor and an undo plan.” Their reciprocal depth links resolved in both
+  directions.
+- Live navigation exposed Week 19 as a lesson, left Week 20 as a roadmap item
+  and exposed zero Week 19 assessment links. The roadmap's Week 19 card contained
+  one lesson link and no questionnaire link, matching the content-only scope.
+- The production, beginner and roadmap routes logged no page-origin warning or
+  error during final browser verification.
+
+GitHub Pages hosts only the static lessons. The approval ledger, gateway,
+sandbox, audit chain, synthetic procurement records and CLI run locally; no
+public Python service, model, provider, database, secret or procurement action
+was deployed.
