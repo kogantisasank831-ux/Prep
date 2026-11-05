@@ -117,5 +117,24 @@ behavior use the unchanged shared engine.
 
 ## Publication verification
 
-Candidate CI, main promotion, GitHub Pages deployment and live browser
-verification must pass before this section is completed.
+Publication verification completed on 2026-11-05 for implementation commit
+`7266cf5386653621ebd854cf27ff7a8ee3ed1788`:
+
+- Candidate CI run `42062744655` passed the Python 3.13.12 lint, format, strict
+  typing, 1,709-test regression and six CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `42064705434` passed both jobs after fast-forward promotion.
+- GitHub Pages run `42064702847` built and deployed successfully.
+- The production and beginner lessons each expose two Week 18 assessment links
+  and retain their reciprocal depth navigation.
+- The live assessment loaded bank version 1.0.0 with the status “100 questions
+  ready,” created a 10-question paper with exactly two questions of every type,
+  exposed two Python-run controls, ten question-navigation links and one scoring
+  submission control, and linked back to the Week 18 lesson.
+- The production, beginner and assessment routes logged no page-origin warning
+  or error during the final browser verification.
+
+GitHub Pages hosts the static assessment and downloads the pinned browser Python
+runtime only when a learner runs a coding solution. The complete 28-case agent
+evaluation remains local; no public Python service, model, provider, database or
+procurement action was deployed.
