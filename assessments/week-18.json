@@ -1,0 +1,3174 @@
+{
+  "schema_version": 1,
+  "week": 18,
+  "version": "1.0.0",
+  "title": "Deterministic agent evaluation",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "type": "single",
+      "topic": "Evaluation objective",
+      "difficulty": "foundation",
+      "prompt": "What is the primary Week 18 evaluation decision?",
+      "explanation": "Week 18 evaluates one named candidate against explicit case contracts; it does not rank unrelated agents or estimate production performance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Whether one named candidate satisfies declared outcome, trajectory and safety contracts on a versioned dataset"
+        },
+        {
+          "id": "o2",
+          "text": "Whether any agent can produce a persuasive paragraph"
+        },
+        {
+          "id": "o3",
+          "text": "Whether the fixture latency predicts production latency"
+        },
+        {
+          "id": "o4",
+          "text": "Whether a model benchmark has the highest public score"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q001"
+    },
+    {
+      "type": "single",
+      "topic": "Candidate identity",
+      "difficulty": "foundation",
+      "prompt": "Why must an evaluation name and version the candidate under test?",
+      "explanation": "Candidate identity makes results reproducible and prevents scores from silently referring to changing agent behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "So results identify the exact behavior that produced them"
+        },
+        {
+          "id": "o2",
+          "text": "So the dataset can omit its own version"
+        },
+        {
+          "id": "o3",
+          "text": "So every trial may use a different implementation"
+        },
+        {
+          "id": "o4",
+          "text": "So graders can inspect private chain-of-thought"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q002"
+    },
+    {
+      "type": "single",
+      "topic": "Dataset identity",
+      "difficulty": "foundation",
+      "prompt": "What binds a Week 18 result to the exact dataset bytes?",
+      "explanation": "The semantic version describes intended evolution while the SHA-256 digest binds the result to the exact reviewed dataset bytes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A SHA-256 dataset digest"
+        },
+        {
+          "id": "o2",
+          "text": "The number of browser tabs"
+        },
+        {
+          "id": "o3",
+          "text": "The evaluator's current clock"
+        },
+        {
+          "id": "o4",
+          "text": "A free-form title alone"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q003"
+    },
+    {
+      "type": "single",
+      "topic": "Task success",
+      "difficulty": "foundation",
+      "prompt": "When can a fail-closed agent result count as successful task handling?",
+      "explanation": "Task success is contract-based: a correct refusal, escalation or controlled failure can be the right outcome for an unsafe or impossible request.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When its status and controlled failure match the case contract and it performs no unsafe action"
+        },
+        {
+          "id": "o2",
+          "text": "Whenever it calls at least one tool"
+        },
+        {
+          "id": "o3",
+          "text": "Whenever it produces a commercial recommendation"
+        },
+        {
+          "id": "o4",
+          "text": "Only when its status is completed"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q004"
+    },
+    {
+      "type": "single",
+      "topic": "Independent metrics",
+      "difficulty": "applied",
+      "prompt": "What does case W18-025 deliberately demonstrate?",
+      "explanation": "W18-025 fails closed after a wrong SQL supplier argument, so the outcome contract passes while the independent argument grader exposes the defect.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Task handling can pass while tool-argument accuracy fails"
+        },
+        {
+          "id": "o2",
+          "text": "Every metric must always have the same value"
+        },
+        {
+          "id": "o3",
+          "text": "A wrong supplier argument should be ignored"
+        },
+        {
+          "id": "o4",
+          "text": "Tool failures should be removed from cost"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q005"
+    },
+    {
+      "type": "single",
+      "topic": "Tool selection",
+      "difficulty": "foundation",
+      "prompt": "How does Week 18 grade tool selection?",
+      "explanation": "Exact ordered comparison catches omitted, extra, reordered and repeated calls instead of hiding them behind a plausible final result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The actual ordered tool sequence must exactly equal the expected sequence"
+        },
+        {
+          "id": "o2",
+          "text": "Any superset of expected tools passes"
+        },
+        {
+          "id": "o3",
+          "text": "Only the first tool name matters"
+        },
+        {
+          "id": "o4",
+          "text": "Tools are ignored when the final text looks correct"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q006"
+    },
+    {
+      "type": "single",
+      "topic": "No-tool cases",
+      "difficulty": "foundation",
+      "prompt": "What is the expected tool route for a purchase or supplier-contact request that must stop for approval?",
+      "explanation": "Approval-required action requests stop before tools, so the declared route is empty and explicit human escalation supplies the correct end state.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An empty tool sequence"
+        },
+        {
+          "id": "o2",
+          "text": "All read tools followed by commercial"
+        },
+        {
+          "id": "o3",
+          "text": "Only the commercial tool"
+        },
+        {
+          "id": "o4",
+          "text": "One placeholder tool call"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q007"
+    },
+    {
+      "type": "single",
+      "topic": "Argument denominator",
+      "difficulty": "applied",
+      "prompt": "How do Week 18 no-tool cases affect tool-argument accuracy?",
+      "explanation": "Argument accuracy is micro-averaged over expected argument positions; a case with no expected calls contributes zero positions rather than free credit.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They add no argument positions to either numerator or denominator"
+        },
+        {
+          "id": "o2",
+          "text": "They count as one automatically correct argument"
+        },
+        {
+          "id": "o3",
+          "text": "They count as one incorrect argument"
+        },
+        {
+          "id": "o4",
+          "text": "They are deleted from all other metrics"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q008"
+    },
+    {
+      "type": "single",
+      "topic": "Step efficiency",
+      "difficulty": "foundation",
+      "prompt": "Which formula defines per-case step efficiency?",
+      "explanation": "The symmetric min-over-max ratio stays in the closed interval from zero to one and penalizes both missing and extra steps.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "min(expected steps, actual steps) divided by max(expected steps, actual steps)"
+        },
+        {
+          "id": "o2",
+          "text": "expected steps divided by actual steps without a bound"
+        },
+        {
+          "id": "o3",
+          "text": "successful tools divided by every dataset case"
+        },
+        {
+          "id": "o4",
+          "text": "one minus the human escalation rate"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q009"
+    },
+    {
+      "type": "single",
+      "topic": "Loop detection",
+      "difficulty": "foundation",
+      "prompt": "What is the bounded Week 18 loop signal?",
+      "explanation": "The candidate has no retry loop, so a repeated tool name in one case trajectory is an explicit and deterministic loop indicator.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A repeated tool name within one trajectory"
+        },
+        {
+          "id": "o2",
+          "text": "Any trajectory containing more than one tool"
+        },
+        {
+          "id": "o3",
+          "text": "A human escalation after validation"
+        },
+        {
+          "id": "o4",
+          "text": "Two different cases using the same tool"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q010"
+    },
+    {
+      "type": "single",
+      "topic": "Escalation interpretation",
+      "difficulty": "applied",
+      "prompt": "What does the baseline human-escalation rate of 18/28 mean?",
+      "explanation": "The rate describes this deliberately stress-heavy suite and must not be presented as an estimate of the production request distribution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Eighteen stress-heavy evaluation cases explicitly handed control to a human"
+        },
+        {
+          "id": "o2",
+          "text": "Production traffic will escalate at exactly the same rate"
+        },
+        {
+          "id": "o3",
+          "text": "Eighteen cases were unsafe"
+        },
+        {
+          "id": "o4",
+          "text": "Ten cases were omitted from scoring"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q011"
+    },
+    {
+      "type": "single",
+      "topic": "Cost accounting",
+      "difficulty": "foundation",
+      "prompt": "Which attempts belong in the cost numerator for cost per successful task?",
+      "explanation": "Failed work still consumes resources, so total fixture cost across every attempt is divided by the number of successful tasks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "All evaluated attempts, including unsuccessful ones"
+        },
+        {
+          "id": "o2",
+          "text": "Only successful attempts"
+        },
+        {
+          "id": "o3",
+          "text": "Only normal-category attempts"
+        },
+        {
+          "id": "o4",
+          "text": "Only calls after commercial synthesis"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q012"
+    },
+    {
+      "type": "single",
+      "topic": "Latency accounting",
+      "difficulty": "applied",
+      "prompt": "How is a parallel first wave represented in deterministic fixture latency?",
+      "explanation": "Critical-path fixture arithmetic uses the slowest parallel first-wave call, not their sum, and remains a declared fixture rather than a production measurement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use the maximum first-wave tool latency, then add preflight and any commercial latency"
+        },
+        {
+          "id": "o2",
+          "text": "Sum all first-wave tool latencies"
+        },
+        {
+          "id": "o3",
+          "text": "Use measured browser wall-clock time"
+        },
+        {
+          "id": "o4",
+          "text": "Drop failed tool latency"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q013"
+    },
+    {
+      "type": "single",
+      "topic": "Safety gate",
+      "difficulty": "foundation",
+      "prompt": "How should a single observed unsafe external action affect a case?",
+      "explanation": "Unsafe action is a hard case signal; strong averages must not conceal an external action that the bounded candidate was forbidden to take.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Fail the task-safety contract and increment unsafe-action evidence"
+        },
+        {
+          "id": "o2",
+          "text": "Average it away if most metrics are high"
+        },
+        {
+          "id": "o3",
+          "text": "Count it only as extra latency"
+        },
+        {
+          "id": "o4",
+          "text": "Treat it as a successful escalation"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q014"
+    },
+    {
+      "type": "single",
+      "topic": "Prompt injection scope",
+      "difficulty": "applied",
+      "prompt": "What does the Week 18 prompt-injection test actually establish?",
+      "explanation": "The test demonstrates a narrow isolation property in a deterministic adapter and is not evidence of broad model or system safety.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One untrusted synthetic field does not alter this deterministic adapter's route or arguments"
+        },
+        {
+          "id": "o2",
+          "text": "The agent is secure against every prompt-injection attack"
+        },
+        {
+          "id": "o3",
+          "text": "The model will never follow malicious instructions"
+        },
+        {
+          "id": "o4",
+          "text": "Every retrieved document is factually correct"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q015"
+    },
+    {
+      "type": "single",
+      "topic": "Code graders",
+      "difficulty": "foundation",
+      "prompt": "Which claim is best suited to a deterministic code grader?",
+      "explanation": "Exact structured properties such as statuses, tool sequences and numeric formulas are reproducible and inexpensive to grade in code.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The ordered tool names exactly equal the declared route"
+        },
+        {
+          "id": "o2",
+          "text": "The answer is diplomatically worded"
+        },
+        {
+          "id": "o3",
+          "text": "The procurement policy is socially acceptable"
+        },
+        {
+          "id": "o4",
+          "text": "A reviewer finds the explanation persuasive"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q016"
+    },
+    {
+      "type": "single",
+      "topic": "Human graders",
+      "difficulty": "foundation",
+      "prompt": "When is a human grader most appropriate?",
+      "explanation": "Human review is appropriate for rubric-guided judgment that cannot be reduced safely to an exact deterministic comparison.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When expert policy judgment or nuanced safety review is required"
+        },
+        {
+          "id": "o2",
+          "text": "When comparing two exact integers"
+        },
+        {
+          "id": "o3",
+          "text": "When hashing dataset bytes"
+        },
+        {
+          "id": "o4",
+          "text": "When checking whether a tuple contains duplicates"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q017"
+    },
+    {
+      "type": "single",
+      "topic": "Model graders",
+      "difficulty": "foundation",
+      "prompt": "What is the main caution when using a model grader?",
+      "explanation": "Model graders can scale semantic review but require calibration, versioning and checks for disagreement, drift and non-determinism.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Calibrate it against reviewed examples and monitor variability"
+        },
+        {
+          "id": "o2",
+          "text": "Assume its score is ground truth"
+        },
+        {
+          "id": "o3",
+          "text": "Let it replace every safety gate"
+        },
+        {
+          "id": "o4",
+          "text": "Hide its prompt and version from evaluation records"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q018"
+    },
+    {
+      "type": "single",
+      "topic": "Offline evaluation",
+      "difficulty": "foundation",
+      "prompt": "What is an offline evaluation best used for?",
+      "explanation": "Offline datasets support repeatable regression and comparison before deployment, while live behavior still needs separate online observation.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pre-deployment regression and controlled candidate comparison"
+        },
+        {
+          "id": "o2",
+          "text": "Estimating live traffic mix from a synthetic suite"
+        },
+        {
+          "id": "o3",
+          "text": "Taking external procurement actions"
+        },
+        {
+          "id": "o4",
+          "text": "Replacing production monitoring permanently"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q019"
+    },
+    {
+      "type": "single",
+      "topic": "Online evaluation",
+      "difficulty": "foundation",
+      "prompt": "What distinguishes online evaluation?",
+      "explanation": "Online evaluation measures governed deployed behavior; it introduces operational, privacy and sampling concerns not present in the local synthetic lab.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It observes deployed behavior and production-derived signals under governed controls"
+        },
+        {
+          "id": "o2",
+          "text": "It always reveals private reasoning"
+        },
+        {
+          "id": "o3",
+          "text": "It needs no privacy or safety review"
+        },
+        {
+          "id": "o4",
+          "text": "It uses only visible training cases"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q020"
+    },
+    {
+      "type": "single",
+      "topic": "Evaluation leakage",
+      "difficulty": "foundation",
+      "prompt": "Why keep a held-out evaluation set?",
+      "explanation": "A held-out set reduces the risk of repeatedly tuning to visible cases and mistaking memorization for general capability improvement.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To detect whether improvements generalize beyond cases used for tuning"
+        },
+        {
+          "id": "o2",
+          "text": "To make the dataset digest optional"
+        },
+        {
+          "id": "o3",
+          "text": "To guarantee production safety"
+        },
+        {
+          "id": "o4",
+          "text": "To increase the visible practice score"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q021"
+    },
+    {
+      "type": "single",
+      "topic": "Category slices",
+      "difficulty": "foundation",
+      "prompt": "Why report metrics by category as well as overall?",
+      "explanation": "Category slices reveal whether defects cluster in prompt injection, conflicts, failures or other conditions that an overall mean can conceal.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Overall averages can hide concentrated failures in important stress classes"
+        },
+        {
+          "id": "o2",
+          "text": "Every category must have the same number of cases"
+        },
+        {
+          "id": "o3",
+          "text": "Slices turn fixture latency into wall-clock latency"
+        },
+        {
+          "id": "o4",
+          "text": "Slices eliminate the need for raw counts"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q022"
+    },
+    {
+      "type": "single",
+      "topic": "Raw evidence",
+      "difficulty": "foundation",
+      "prompt": "Which presentation makes an evaluation rate auditable?",
+      "explanation": "Raw counts and denominators let reviewers reconstruct the rate and notice small samples, excluded positions and undefined ratios.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Show the numerator, denominator and formula beside the rounded rate"
+        },
+        {
+          "id": "o2",
+          "text": "Show only a colored badge"
+        },
+        {
+          "id": "o3",
+          "text": "Round to zero decimal places and discard counts"
+        },
+        {
+          "id": "o4",
+          "text": "Replace counts with an adjective"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q023"
+    },
+    {
+      "type": "single",
+      "topic": "Failure semantics",
+      "difficulty": "applied",
+      "prompt": "How should missing contract evidence differ from a document-service crash?",
+      "explanation": "Business uncertainty and technical unavailability require different interpretation, recovery and escalation even if neither produces a commercial decision.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use distinct controlled outcomes because business absence and technical failure are different states"
+        },
+        {
+          "id": "o2",
+          "text": "Map both to completed"
+        },
+        {
+          "id": "o3",
+          "text": "Invent the missing evidence"
+        },
+        {
+          "id": "o4",
+          "text": "Retry forever until both look identical"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q024"
+    },
+    {
+      "type": "single",
+      "topic": "Conflicting evidence",
+      "difficulty": "applied",
+      "prompt": "What is the safe response to conflicting supplier or source identities?",
+      "explanation": "Identity and source conflicts invalidate the evidence chain, so the bounded agent must fail closed or request human resolution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject or escalate through a controlled code before commercial action"
+        },
+        {
+          "id": "o2",
+          "text": "Choose whichever value appears first"
+        },
+        {
+          "id": "o3",
+          "text": "Average the identifiers"
+        },
+        {
+          "id": "o4",
+          "text": "Continue and hide the conflict from the trace"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q025"
+    },
+    {
+      "type": "single",
+      "topic": "Invalid arguments",
+      "difficulty": "applied",
+      "prompt": "Why use an independent oracle for expected tool arguments?",
+      "explanation": "Independent expectations prevent self-confirming evaluation and allow a wrong call to be detected even when the candidate handles its consequence safely.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The candidate must not grade the same arguments it generated"
+        },
+        {
+          "id": "o2",
+          "text": "It makes tool order irrelevant"
+        },
+        {
+          "id": "o3",
+          "text": "It removes the need for case expectations"
+        },
+        {
+          "id": "o4",
+          "text": "It guarantees every call is correct"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q026"
+    },
+    {
+      "type": "single",
+      "topic": "Approval boundary",
+      "difficulty": "foundation",
+      "prompt": "What must the candidate do when asked to approve a purchase?",
+      "explanation": "The candidate exposes no write or approval authority, so approval and purchase requests terminate at a human decision boundary before tool dispatch.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Stop before tools and explicitly escalate for human approval"
+        },
+        {
+          "id": "o2",
+          "text": "Approve if fixture cost is low"
+        },
+        {
+          "id": "o3",
+          "text": "Call every read tool and then purchase"
+        },
+        {
+          "id": "o4",
+          "text": "Convert the request into a normal status query"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q027"
+    },
+    {
+      "type": "single",
+      "topic": "Deterministic replay",
+      "difficulty": "foundation",
+      "prompt": "What should happen when the same candidate version and dataset bytes are evaluated again?",
+      "explanation": "No model, clock, network or random source participates, so identical declared inputs must reproduce identical observations and metrics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Observations and summary metrics should be identical"
+        },
+        {
+          "id": "o2",
+          "text": "Case order should be randomized"
+        },
+        {
+          "id": "o3",
+          "text": "The dataset digest should change"
+        },
+        {
+          "id": "o4",
+          "text": "Fixture latency should follow current network conditions"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q028"
+    },
+    {
+      "type": "single",
+      "topic": "Result persistence",
+      "difficulty": "foundation",
+      "prompt": "Why require a fresh output directory for each evaluation run?",
+      "explanation": "Fresh-directory persistence protects provenance by preventing a new result from replacing or blending with an older evaluation artifact.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To avoid silently overwriting or mixing evidence from another run"
+        },
+        {
+          "id": "o2",
+          "text": "To improve the task-completion numerator"
+        },
+        {
+          "id": "o3",
+          "text": "To remove dataset identity"
+        },
+        {
+          "id": "o4",
+          "text": "To permit duplicate case IDs"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q029"
+    },
+    {
+      "type": "single",
+      "topic": "Evaluator independence",
+      "difficulty": "applied",
+      "prompt": "Why keep candidate execution separate from graders?",
+      "explanation": "Separation makes grader behavior testable and reduces the chance that candidate logic and evaluation logic share the same defect.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "So tests can mutate observations and prove each grader detects wrong evidence"
+        },
+        {
+          "id": "o2",
+          "text": "So the candidate can rewrite expected answers"
+        },
+        {
+          "id": "o3",
+          "text": "So every failure becomes a tool failure"
+        },
+        {
+          "id": "o4",
+          "text": "So metrics no longer need definitions"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W18-Q030"
+    },
+    {
+      "type": "multiple",
+      "topic": "Observation contract",
+      "difficulty": "foundation",
+      "prompt": "Which fields belong in a useful closed per-case observation?",
+      "explanation": "Closed observations retain enough structured evidence to regrade behavior without collecting private reasoning or unrelated prompt history.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Outcome status and controlled recommendation or failure"
+        },
+        {
+          "id": "o2",
+          "text": "Ordered projected tool calls"
+        },
+        {
+          "id": "o3",
+          "text": "Explicit human-escalation and unsafe-action evidence"
+        },
+        {
+          "id": "o4",
+          "text": "Fixture cost and latency"
+        },
+        {
+          "id": "o5",
+          "text": "Private hidden chain-of-thought"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q031"
+    },
+    {
+      "type": "multiple",
+      "topic": "Dataset coverage",
+      "difficulty": "foundation",
+      "prompt": "Which conditions are explicit Week 18 dataset categories?",
+      "explanation": "The suite covers declared operational and safety stresses; unrelated trivia is outside the procurement-agent evaluation objective.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Missing information"
+        },
+        {
+          "id": "o2",
+          "text": "Tool failure"
+        },
+        {
+          "id": "o3",
+          "text": "Conflicting evidence"
+        },
+        {
+          "id": "o4",
+          "text": "Prompt injection"
+        },
+        {
+          "id": "o5",
+          "text": "Celebrity trivia"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q032"
+    },
+    {
+      "type": "multiple",
+      "topic": "Successful outcomes",
+      "difficulty": "foundation",
+      "prompt": "Which outcomes can count as task success when declared by the case?",
+      "explanation": "Success means satisfying the expected end-state contract without unsafe action, not merely returning a normal completion status.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A correct completed recommendation"
+        },
+        {
+          "id": "o2",
+          "text": "A correct safe refusal"
+        },
+        {
+          "id": "o3",
+          "text": "A correct controlled technical failure"
+        },
+        {
+          "id": "o4",
+          "text": "A correct human escalation"
+        },
+        {
+          "id": "o5",
+          "text": "An undeclared external purchase"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q033"
+    },
+    {
+      "type": "multiple",
+      "topic": "Exact routing",
+      "difficulty": "foundation",
+      "prompt": "Which trajectory defects make exact tool selection fail?",
+      "explanation": "Exact ordered equality detects omissions, additions, reordering and repetition while the matching declared sequence passes.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "An omitted expected tool"
+        },
+        {
+          "id": "o2",
+          "text": "An extra tool"
+        },
+        {
+          "id": "o3",
+          "text": "The right tools in the wrong order"
+        },
+        {
+          "id": "o4",
+          "text": "A repeated tool"
+        },
+        {
+          "id": "o5",
+          "text": "A matching ordered tuple"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q034"
+    },
+    {
+      "type": "multiple",
+      "topic": "Argument grading",
+      "difficulty": "applied",
+      "prompt": "Which properties make tool-argument grading trustworthy?",
+      "explanation": "Independent positional comparison with explicit counts avoids self-grading and preserves the real micro-average denominator.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Expectations come from an oracle independent of the candidate"
+        },
+        {
+          "id": "o2",
+          "text": "Arguments are compared at declared positions"
+        },
+        {
+          "id": "o3",
+          "text": "Raw correct and expected counts are retained"
+        },
+        {
+          "id": "o4",
+          "text": "No-tool cases add zero positions"
+        },
+        {
+          "id": "o5",
+          "text": "The candidate marks its own calls correct"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q035"
+    },
+    {
+      "type": "multiple",
+      "topic": "Efficiency",
+      "difficulty": "applied",
+      "prompt": "Which statements about Week 18 step efficiency are true?",
+      "explanation": "The symmetric min-over-max formula is bounded, equals one only at the expected count and penalizes either direction of mismatch.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Expected steps equal one plus the expected tool count"
+        },
+        {
+          "id": "o2",
+          "text": "The ratio is bounded between zero and one"
+        },
+        {
+          "id": "o3",
+          "text": "Both missing and extra steps reduce the score"
+        },
+        {
+          "id": "o4",
+          "text": "A perfect case has value one"
+        },
+        {
+          "id": "o5",
+          "text": "Extra steps can raise the value above one"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q036"
+    },
+    {
+      "type": "multiple",
+      "topic": "Loops",
+      "difficulty": "applied",
+      "prompt": "Which controls help make loop evidence meaningful?",
+      "explanation": "A declared per-trajectory policy, ordered evidence and mutation test make loop grading reproducible without confusing normal reuse across cases.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Define the loop signal before running the candidate"
+        },
+        {
+          "id": "o2",
+          "text": "Inspect each case trajectory rather than aggregate tool popularity"
+        },
+        {
+          "id": "o3",
+          "text": "Retain ordered tool calls"
+        },
+        {
+          "id": "o4",
+          "text": "Test a mutated trajectory with a repeated tool"
+        },
+        {
+          "id": "o5",
+          "text": "Treat every repeated tool across different cases as a loop"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q037"
+    },
+    {
+      "type": "multiple",
+      "topic": "Escalation",
+      "difficulty": "foundation",
+      "prompt": "Which statements correctly interpret human escalation?",
+      "explanation": "Escalation is an observed behavior and sometimes a success; its aggregate rate inherits the deliberately stress-heavy dataset mix.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It records an explicit handoff to a person"
+        },
+        {
+          "id": "o2",
+          "text": "It can be the correct outcome for approval-required work"
+        },
+        {
+          "id": "o3",
+          "text": "Its rate depends on dataset composition"
+        },
+        {
+          "id": "o4",
+          "text": "It should be sliced by scenario"
+        },
+        {
+          "id": "o5",
+          "text": "A high synthetic rate directly predicts production traffic"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q038"
+    },
+    {
+      "type": "multiple",
+      "topic": "Cost",
+      "difficulty": "applied",
+      "prompt": "Which rules apply to fixture cost per successful task?",
+      "explanation": "The metric charges failures, handles a zero-success denominator explicitly and must remain labelled as fixture arithmetic rather than billing.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Sum cost from every attempt"
+        },
+        {
+          "id": "o2",
+          "text": "Divide by successful task count"
+        },
+        {
+          "id": "o3",
+          "text": "Return an undefined value when there are no successes"
+        },
+        {
+          "id": "o4",
+          "text": "Label the units as synthetic fixtures"
+        },
+        {
+          "id": "o5",
+          "text": "Present the number as a provider invoice"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q039"
+    },
+    {
+      "type": "multiple",
+      "topic": "Latency",
+      "difficulty": "applied",
+      "prompt": "Which statements keep fixture latency claims honest?",
+      "explanation": "The lab calculates deterministic critical-path fixtures and makes no claim about wall-clock, network or production percentile latency.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Use declared deterministic tool values"
+        },
+        {
+          "id": "o2",
+          "text": "Use the maximum duration for parallel first-wave tools"
+        },
+        {
+          "id": "o3",
+          "text": "Include preflight and downstream commercial latency"
+        },
+        {
+          "id": "o4",
+          "text": "Label the result as fixture critical-path time"
+        },
+        {
+          "id": "o5",
+          "text": "Call it measured production p95 latency"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q040"
+    },
+    {
+      "type": "multiple",
+      "topic": "Safety",
+      "difficulty": "foundation",
+      "prompt": "Which facts support a hard unsafe-action gate?",
+      "explanation": "The bounded authority, explicit evidence and fail-closed scoring prevent an aggregate average from concealing forbidden external behavior.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The candidate has no external write authority"
+        },
+        {
+          "id": "o2",
+          "text": "Approval and purchase requests stop before tools"
+        },
+        {
+          "id": "o3",
+          "text": "Observed external actions are retained explicitly"
+        },
+        {
+          "id": "o4",
+          "text": "An unsafe action fails case success"
+        },
+        {
+          "id": "o5",
+          "text": "A high task average cancels one unsafe action"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q041"
+    },
+    {
+      "type": "multiple",
+      "topic": "Injection limits",
+      "difficulty": "applied",
+      "prompt": "Which statements about the prompt-injection cases are accurate?",
+      "explanation": "These cases validate one local boundary and do not generalize to arbitrary models, retrieved sources, tools or deployment environments.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They use synthetic untrusted text"
+        },
+        {
+          "id": "o2",
+          "text": "They check route and argument isolation"
+        },
+        {
+          "id": "o3",
+          "text": "They exercise the deterministic adapter"
+        },
+        {
+          "id": "o4",
+          "text": "They support only a narrow claim"
+        },
+        {
+          "id": "o5",
+          "text": "They certify every model and tool environment"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q042"
+    },
+    {
+      "type": "multiple",
+      "topic": "Code graders",
+      "difficulty": "foundation",
+      "prompt": "Which qualities are desirable in deterministic code graders?",
+      "explanation": "Code graders should be explicit, independent, mutation-tested and deterministic rather than relying on uncontrolled environmental state.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A precise declared contract"
+        },
+        {
+          "id": "o2",
+          "text": "Independent expected values"
+        },
+        {
+          "id": "o3",
+          "text": "Tests that make the grader fail on mutations"
+        },
+        {
+          "id": "o4",
+          "text": "Stable reproducible arithmetic"
+        },
+        {
+          "id": "o5",
+          "text": "Dependence on an undocumented current clock"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q043"
+    },
+    {
+      "type": "multiple",
+      "topic": "Human review",
+      "difficulty": "applied",
+      "prompt": "Which controls improve a human-grading process?",
+      "explanation": "Rubrics, anchors, agreement measurement and adjudication make judgment more consistent while candidate-dependent criteria would bias results.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A written rubric"
+        },
+        {
+          "id": "o2",
+          "text": "Reviewed anchor examples"
+        },
+        {
+          "id": "o3",
+          "text": "Inter-rater agreement checks"
+        },
+        {
+          "id": "o4",
+          "text": "A route for adjudicating disagreement"
+        },
+        {
+          "id": "o5",
+          "text": "Changing criteria after seeing the candidate name"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q044"
+    },
+    {
+      "type": "multiple",
+      "topic": "Model grading",
+      "difficulty": "applied",
+      "prompt": "Which safeguards are appropriate for a model grader?",
+      "explanation": "Versioning, calibration and monitoring expose model-grader uncertainty, while critical safety rules remain explicit hard checks.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Pin and record the grader version"
+        },
+        {
+          "id": "o2",
+          "text": "Calibrate against human-reviewed examples"
+        },
+        {
+          "id": "o3",
+          "text": "Measure disagreement and drift"
+        },
+        {
+          "id": "o4",
+          "text": "Keep hard safety checks outside a single semantic score"
+        },
+        {
+          "id": "o5",
+          "text": "Assume repeated calls are perfectly deterministic"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q045"
+    },
+    {
+      "type": "multiple",
+      "topic": "Offline evaluation",
+      "difficulty": "foundation",
+      "prompt": "Which are appropriate offline-evaluation uses?",
+      "explanation": "Offline evaluation supports controlled comparison and testing but its intentionally selected cases do not reveal the live request distribution.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Regression testing before release"
+        },
+        {
+          "id": "o2",
+          "text": "Comparing candidate versions on the same cases"
+        },
+        {
+          "id": "o3",
+          "text": "Replaying historical or synthetic scenarios"
+        },
+        {
+          "id": "o4",
+          "text": "Testing grader mutations"
+        },
+        {
+          "id": "o5",
+          "text": "Inferring exact live traffic frequency from a stress suite"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q046"
+    },
+    {
+      "type": "multiple",
+      "topic": "Online evaluation",
+      "difficulty": "applied",
+      "prompt": "Which concerns arise when evaluating deployed traces?",
+      "explanation": "Online evidence adds privacy, sampling, drift and operational concerns; synthetic fixture arithmetic cannot guarantee deployed performance.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Privacy and data minimization"
+        },
+        {
+          "id": "o2",
+          "text": "Sampling bias"
+        },
+        {
+          "id": "o3",
+          "text": "Changing production distributions"
+        },
+        {
+          "id": "o4",
+          "text": "Safe rollback and monitoring"
+        },
+        {
+          "id": "o5",
+          "text": "A guarantee that synthetic fixtures equal wall-clock behavior"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q047"
+    },
+    {
+      "type": "multiple",
+      "topic": "Leakage control",
+      "difficulty": "applied",
+      "prompt": "Which practices reduce evaluation leakage?",
+      "explanation": "Separation, versioning and governed refreshes help detect generalization rather than repeated optimization against disclosed answers.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Keep a held-out set"
+        },
+        {
+          "id": "o2",
+          "text": "Separate tuning data from release gates"
+        },
+        {
+          "id": "o3",
+          "text": "Version cases and record provenance"
+        },
+        {
+          "id": "o4",
+          "text": "Refresh production-derived tests under governance"
+        },
+        {
+          "id": "o5",
+          "text": "Publish every hidden expected answer to the tuning loop"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q048"
+    },
+    {
+      "type": "multiple",
+      "topic": "Reporting",
+      "difficulty": "foundation",
+      "prompt": "Which items belong in an auditable category slice?",
+      "explanation": "Named slices with counts, rates and denominators expose sample size and failure concentration; a color alone cannot be audited.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Category name"
+        },
+        {
+          "id": "o2",
+          "text": "Case count"
+        },
+        {
+          "id": "o3",
+          "text": "Success count and rate"
+        },
+        {
+          "id": "o4",
+          "text": "Metric denominators relevant to the slice"
+        },
+        {
+          "id": "o5",
+          "text": "Only a green or red icon"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q049"
+    },
+    {
+      "type": "multiple",
+      "topic": "Release evidence",
+      "difficulty": "applied",
+      "prompt": "Which evidence supports a bounded Week 18 release decision?",
+      "explanation": "Identity, independent grading, safety evidence and mutation tests support a narrow decision without turning finite synthetic coverage into a universal claim.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The exact candidate and dataset digest"
+        },
+        {
+          "id": "o2",
+          "text": "Passing independent outcome and trajectory graders"
+        },
+        {
+          "id": "o3",
+          "text": "Zero unsafe actions on the suite"
+        },
+        {
+          "id": "o4",
+          "text": "Mutation tests for the graders"
+        },
+        {
+          "id": "o5",
+          "text": "A claim that 28 synthetic cases prove universal safety"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W18-Q050"
+    },
+    {
+      "type": "match",
+      "topic": "Evaluation vocabulary",
+      "difficulty": "applied",
+      "prompt": "Match each evaluation term to its meaning.",
+      "explanation": "These four terms separate what is attempted, each execution, the scoring logic and the evidence that logic inspects.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Task"
+        },
+        {
+          "id": "l2",
+          "text": "Trial"
+        },
+        {
+          "id": "l3",
+          "text": "Grader"
+        },
+        {
+          "id": "l4",
+          "text": "Trace"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A rule that scores observed evidence"
+        },
+        {
+          "id": "r2",
+          "text": "A unit with declared inputs and success criteria"
+        },
+        {
+          "id": "r3",
+          "text": "The structured trajectory produced during an attempt"
+        },
+        {
+          "id": "r4",
+          "text": "One candidate attempt on a task"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q051"
+    },
+    {
+      "type": "match",
+      "topic": "Dataset categories",
+      "difficulty": "foundation",
+      "prompt": "Match each category to its intended stress.",
+      "explanation": "Each category isolates a different failure mode so category slices can reveal where behavior degrades.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "missing_information"
+        },
+        {
+          "id": "l2",
+          "text": "tool_failure"
+        },
+        {
+          "id": "l3",
+          "text": "conflicting_evidence"
+        },
+        {
+          "id": "l4",
+          "text": "prompt_injection"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Identities or sources disagree"
+        },
+        {
+          "id": "r2",
+          "text": "Required request or evidence is absent"
+        },
+        {
+          "id": "r3",
+          "text": "Untrusted text attempts to change behavior"
+        },
+        {
+          "id": "r4",
+          "text": "A declared dependency returns a controlled failure"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q052"
+    },
+    {
+      "type": "match",
+      "topic": "Core metrics",
+      "difficulty": "foundation",
+      "prompt": "Match each metric to its definition.",
+      "explanation": "The metrics use different evidence and denominators, so they must remain separate even when their values happen to align.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "task_completion_rate"
+        },
+        {
+          "id": "l2",
+          "text": "tool_selection_accuracy"
+        },
+        {
+          "id": "l3",
+          "text": "tool_argument_accuracy"
+        },
+        {
+          "id": "l4",
+          "text": "mean_step_efficiency"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Correct argument positions divided by expected positions"
+        },
+        {
+          "id": "r2",
+          "text": "Successful outcome contracts divided by cases"
+        },
+        {
+          "id": "r3",
+          "text": "Average bounded expected-versus-actual step ratio"
+        },
+        {
+          "id": "r4",
+          "text": "Exact ordered routes divided by cases"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q053"
+    },
+    {
+      "type": "match",
+      "topic": "Outcome statuses",
+      "difficulty": "applied",
+      "prompt": "Match each status to its meaning.",
+      "explanation": "Statuses describe execution end states while needs_human is the business recommendation used by an escalation outcome.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "completed"
+        },
+        {
+          "id": "l2",
+          "text": "escalated"
+        },
+        {
+          "id": "l3",
+          "text": "failed"
+        },
+        {
+          "id": "l4",
+          "text": "needs_human"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "A controlled technical or validation failure ended the case"
+        },
+        {
+          "id": "r2",
+          "text": "A declared business result was produced"
+        },
+        {
+          "id": "r3",
+          "text": "A recommendation value requiring human judgment"
+        },
+        {
+          "id": "r4",
+          "text": "Control was explicitly handed to a human"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q054"
+    },
+    {
+      "type": "match",
+      "topic": "Grader choice",
+      "difficulty": "foundation",
+      "prompt": "Match each claim to the most suitable primary grader.",
+      "explanation": "Different claims need different evidence; critical forbidden actions remain exact gates rather than being averaged into semantic quality.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Exact JSON shape"
+        },
+        {
+          "id": "l2",
+          "text": "Nuanced policy compliance"
+        },
+        {
+          "id": "l3",
+          "text": "Semantic answer quality at scale"
+        },
+        {
+          "id": "l4",
+          "text": "Forbidden external action"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Calibrated model grader"
+        },
+        {
+          "id": "r2",
+          "text": "Code grader"
+        },
+        {
+          "id": "r3",
+          "text": "Deterministic hard gate"
+        },
+        {
+          "id": "r4",
+          "text": "Human grader"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q055"
+    },
+    {
+      "type": "match",
+      "topic": "Dataset identity",
+      "difficulty": "foundation",
+      "prompt": "Match each dataset field to its purpose.",
+      "explanation": "Logical names, semantic versions, byte digests and case identifiers provide complementary levels of evaluation provenance.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "dataset_id"
+        },
+        {
+          "id": "l2",
+          "text": "version"
+        },
+        {
+          "id": "l3",
+          "text": "sha256"
+        },
+        {
+          "id": "l4",
+          "text": "case_id"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Digest of exact bytes"
+        },
+        {
+          "id": "r2",
+          "text": "Stable logical suite name"
+        },
+        {
+          "id": "r3",
+          "text": "Stable identity of one task"
+        },
+        {
+          "id": "r4",
+          "text": "Declared semantic revision"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q056"
+    },
+    {
+      "type": "match",
+      "topic": "Observation fields",
+      "difficulty": "applied",
+      "prompt": "Match each observation field to what it records.",
+      "explanation": "A closed observation preserves structured route, effort, escalation and safety evidence needed by independent graders.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "tool_calls"
+        },
+        {
+          "id": "l2",
+          "text": "steps"
+        },
+        {
+          "id": "l3",
+          "text": "human_escalated"
+        },
+        {
+          "id": "l4",
+          "text": "unsafe_actions"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Whether control was explicitly handed off"
+        },
+        {
+          "id": "r2",
+          "text": "Ordered names and projected arguments"
+        },
+        {
+          "id": "r3",
+          "text": "Forbidden external effects observed"
+        },
+        {
+          "id": "r4",
+          "text": "Preflight plus dispatched calls"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q057"
+    },
+    {
+      "type": "match",
+      "topic": "Failure distinctions",
+      "difficulty": "foundation",
+      "prompt": "Match each condition to the safe interpretation.",
+      "explanation": "Distinct causes must remain distinct because their correct recovery, status and escalation behavior differ.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Missing contract"
+        },
+        {
+          "id": "l2",
+          "text": "Document timeout"
+        },
+        {
+          "id": "l3",
+          "text": "Supplier mismatch"
+        },
+        {
+          "id": "l4",
+          "text": "Purchase request"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Conflicting identity evidence"
+        },
+        {
+          "id": "r2",
+          "text": "Business evidence is unavailable"
+        },
+        {
+          "id": "r3",
+          "text": "Approval boundary requiring a human"
+        },
+        {
+          "id": "r4",
+          "text": "Technical dependency failure"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q058"
+    },
+    {
+      "type": "match",
+      "topic": "Latency arithmetic",
+      "difficulty": "foundation",
+      "prompt": "Match each latency component to its treatment.",
+      "explanation": "The deterministic formula models a declared critical path and explicitly excludes claims about observed production timing.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Preflight"
+        },
+        {
+          "id": "l2",
+          "text": "Parallel first wave"
+        },
+        {
+          "id": "l3",
+          "text": "Commercial synthesis"
+        },
+        {
+          "id": "l4",
+          "text": "Wall-clock p95"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Add after the first wave when used"
+        },
+        {
+          "id": "r2",
+          "text": "Add once per case"
+        },
+        {
+          "id": "r3",
+          "text": "Not measured by this local fixture"
+        },
+        {
+          "id": "r4",
+          "text": "Take the maximum tool fixture"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q059"
+    },
+    {
+      "type": "match",
+      "topic": "Interpretation limits",
+      "difficulty": "applied",
+      "prompt": "Match each result to its required caveat.",
+      "explanation": "Each number or pass condition is useful only when its scope and measurement boundary remain visible.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Escalation rate"
+        },
+        {
+          "id": "l2",
+          "text": "Cost units"
+        },
+        {
+          "id": "l3",
+          "text": "Fixture latency"
+        },
+        {
+          "id": "l4",
+          "text": "Injection result"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Critical-path arithmetic, not production timing"
+        },
+        {
+          "id": "r2",
+          "text": "Depends on stress-heavy suite composition"
+        },
+        {
+          "id": "r3",
+          "text": "Narrow adapter isolation, not universal safety"
+        },
+        {
+          "id": "r4",
+          "text": "Synthetic values, not billing"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q060"
+    },
+    {
+      "type": "match",
+      "topic": "Quality controls",
+      "difficulty": "foundation",
+      "prompt": "Match each risk to its control.",
+      "explanation": "Independent oracles, held-out data, mutations and immutable identity address distinct evaluation-integrity risks.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Self-grading arguments"
+        },
+        {
+          "id": "l2",
+          "text": "Memorizing visible cases"
+        },
+        {
+          "id": "l3",
+          "text": "Broken grader"
+        },
+        {
+          "id": "l4",
+          "text": "Silent dataset change"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Mutation test"
+        },
+        {
+          "id": "r2",
+          "text": "Independent expected-argument oracle"
+        },
+        {
+          "id": "r3",
+          "text": "Version plus byte digest"
+        },
+        {
+          "id": "r4",
+          "text": "Held-out release set"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q061"
+    },
+    {
+      "type": "match",
+      "topic": "Evaluation flow",
+      "difficulty": "foundation",
+      "prompt": "Match each stage to its output.",
+      "explanation": "The staged flow keeps input validation, candidate behavior, scoring and reporting separately inspectable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Load"
+        },
+        {
+          "id": "l2",
+          "text": "Run"
+        },
+        {
+          "id": "l3",
+          "text": "Grade"
+        },
+        {
+          "id": "l4",
+          "text": "Aggregate"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Per-case scores and failure labels"
+        },
+        {
+          "id": "r2",
+          "text": "Validated dataset and digest"
+        },
+        {
+          "id": "r3",
+          "text": "Overall and category metrics"
+        },
+        {
+          "id": "r4",
+          "text": "Closed observations"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q062"
+    },
+    {
+      "type": "match",
+      "topic": "Dataset counts",
+      "difficulty": "applied",
+      "prompt": "Match each Week 18 quantity to its value.",
+      "explanation": "The fixed counts make coverage auditable and show why category percentages must be read with their small raw denominators.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Normal cases"
+        },
+        {
+          "id": "l2",
+          "text": "Invalid-tool-argument cases"
+        },
+        {
+          "id": "l3",
+          "text": "Distinct categories"
+        },
+        {
+          "id": "l4",
+          "text": "Total cases"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "7"
+        },
+        {
+          "id": "r2",
+          "text": "6"
+        },
+        {
+          "id": "r3",
+          "text": "28"
+        },
+        {
+          "id": "r4",
+          "text": "3"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q063"
+    },
+    {
+      "type": "match",
+      "topic": "Baseline values",
+      "difficulty": "foundation",
+      "prompt": "Match each baseline metric to its reviewed value.",
+      "explanation": "These deterministic values describe the reviewed candidate and dataset only, with 72 of 73 argument positions correct.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Task completion"
+        },
+        {
+          "id": "l2",
+          "text": "Tool-argument accuracy"
+        },
+        {
+          "id": "l3",
+          "text": "Human escalation"
+        },
+        {
+          "id": "l4",
+          "text": "Cost units per success"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "0.642857"
+        },
+        {
+          "id": "r2",
+          "text": "1.000000"
+        },
+        {
+          "id": "r3",
+          "text": "9.464286"
+        },
+        {
+          "id": "r4",
+          "text": "0.986301"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q064"
+    },
+    {
+      "type": "match",
+      "topic": "Authority boundaries",
+      "difficulty": "foundation",
+      "prompt": "Match each request to the expected high-level behavior.",
+      "explanation": "The candidate may analyze governed evidence but cannot invent identifiers, resolve conflicts silently or exercise procurement authority.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Status analysis"
+        },
+        {
+          "id": "l2",
+          "text": "Missing request identifier"
+        },
+        {
+          "id": "l3",
+          "text": "Approve purchase"
+        },
+        {
+          "id": "l4",
+          "text": "Conflicting supplier evidence"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Stop for human approval without tools"
+        },
+        {
+          "id": "r2",
+          "text": "Use governed read tools"
+        },
+        {
+          "id": "r3",
+          "text": "Fail closed or escalate"
+        },
+        {
+          "id": "r4",
+          "text": "Reject or escalate without tools"
+        }
+      ],
+      "correct": {
+        "l1": "r2",
+        "l2": "r4",
+        "l3": "r1",
+        "l4": "r3"
+      },
+      "id": "W18-Q065"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Week 18 metric field for successful outcome contracts divided by cases.",
+      "explanation": "task_completion_rate is the aggregate field for contract-correct outcomes without unsafe action.",
+      "accepted": [
+        "task_completion_rate"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q066"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact metric field for exact ordered tool routes divided by cases.",
+      "explanation": "tool_selection_accuracy records the fraction of cases whose complete ordered route exactly matched.",
+      "accepted": [
+        "tool_selection_accuracy"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q067"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact metric field for correct argument positions divided by expected argument positions.",
+      "explanation": "tool_argument_accuracy is a micro-average over declared argument positions rather than cases.",
+      "accepted": [
+        "tool_argument_accuracy"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q068"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact metric field for the average bounded expected-versus-actual step ratio.",
+      "explanation": "mean_step_efficiency averages the per-case min-over-max ratio across the evaluated cases.",
+      "accepted": [
+        "mean_step_efficiency"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q069"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact metric field for trajectories containing a repeated tool.",
+      "explanation": "loop_rate reports the fraction of case trajectories that satisfy the declared repeated-tool signal.",
+      "accepted": [
+        "loop_rate"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q070"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact metric field for explicit human handoffs divided by cases.",
+      "explanation": "human_escalation_rate describes explicit handoffs in this dataset and not an estimated production rate.",
+      "accepted": [
+        "human_escalation_rate"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q071"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact field for total fixture cost divided by successful tasks.",
+      "explanation": "cost_units_per_successful_task includes cost from failed attempts in its numerator.",
+      "accepted": [
+        "cost_units_per_successful_task"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q072"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact field for average deterministic critical-path fixture latency.",
+      "explanation": "mean_fixture_latency_ms is labelled fixture arithmetic and is not measured production wall-clock latency.",
+      "accepted": [
+        "mean_fixture_latency_ms"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q073"
+    },
+    {
+      "type": "short",
+      "topic": "Metric names",
+      "difficulty": "foundation",
+      "prompt": "Write the exact metric field for cases with any forbidden external action.",
+      "explanation": "unsafe_action_rate preserves the fraction of cases with explicit unsafe-action evidence.",
+      "accepted": [
+        "unsafe_action_rate"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q074"
+    },
+    {
+      "type": "short",
+      "topic": "Dataset identity",
+      "difficulty": "applied",
+      "prompt": "Write the exact Week 18 dataset ID.",
+      "explanation": "week18-procurement-agent-v1 is the stable logical identifier bound to a version and byte digest.",
+      "accepted": [
+        "week18-procurement-agent-v1"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q075"
+    },
+    {
+      "type": "short",
+      "topic": "Controlled defect",
+      "difficulty": "applied",
+      "prompt": "Write the exact case ID that passes task handling while exposing one wrong SQL supplier argument.",
+      "explanation": "W18-025 deliberately separates task-success grading from the independent positional argument grader.",
+      "accepted": [
+        "W18-025"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q076"
+    },
+    {
+      "type": "short",
+      "topic": "Outcome values",
+      "difficulty": "applied",
+      "prompt": "Write the exact status for a case that returns its declared business result.",
+      "explanation": "completed is the closed status used when the candidate produces the declared business result.",
+      "accepted": [
+        "completed"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q077"
+    },
+    {
+      "type": "short",
+      "topic": "Outcome values",
+      "difficulty": "applied",
+      "prompt": "Write the exact status for an explicit handoff to a person.",
+      "explanation": "escalated records a deliberate transfer to human judgment rather than a normal completion.",
+      "accepted": [
+        "escalated"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q078"
+    },
+    {
+      "type": "short",
+      "topic": "Outcome values",
+      "difficulty": "applied",
+      "prompt": "Write the exact status for a controlled technical or validation failure.",
+      "explanation": "failed is the controlled end-state value for a technical or validation failure contract.",
+      "accepted": [
+        "failed"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q079"
+    },
+    {
+      "type": "short",
+      "topic": "Recommendation values",
+      "difficulty": "applied",
+      "prompt": "Write the exact recommendation value that requires human judgment.",
+      "explanation": "needs_human is the closed recommendation used when the business decision must remain with a person.",
+      "accepted": [
+        "needs_human"
+      ],
+      "case_sensitive": true,
+      "id": "W18-Q080"
+    },
+    {
+      "type": "code",
+      "topic": "Outcome grading",
+      "difficulty": "applied",
+      "prompt": "Implement task_success(expected, observed). expected must be an exact dict with status, recommendation and failure_code. observed must be an exact dict with those fields plus unsafe_actions, an exact tuple of strings. Status must be completed, escalated or failed. Raise TypeError for wrong container or unsafe-action types and ValueError for wrong shapes or status values. Return True only when all three expected outcome fields match and unsafe_actions is empty.",
+      "explanation": "Task success grades the declared end state independently from trajectory quality and makes any observed unsafe action a hard failure.",
+      "starter": "def task_success(expected, observed):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def task_success(expected, observed):\n    if type(expected) is not dict or type(observed) is not dict:\n        raise TypeError('outcome_not_dict')\n    if set(expected) != {'status', 'recommendation', 'failure_code'}:\n        raise ValueError('expected_shape_invalid')\n    if set(observed) != {'status', 'recommendation', 'failure_code', 'unsafe_actions'}:\n        raise ValueError('observed_shape_invalid')\n    statuses = {'completed', 'escalated', 'failed'}\n    if expected['status'] not in statuses or observed['status'] not in statuses:\n        raise ValueError('status_invalid')\n    if type(observed['unsafe_actions']) is not tuple:\n        raise TypeError('unsafe_actions_not_tuple')\n    if any(type(item) is not str for item in observed['unsafe_actions']):\n        raise TypeError('unsafe_action_not_string')\n    return (\n        observed['status'] == expected['status']\n        and observed['recommendation'] == expected['recommendation']\n        and observed['failure_code'] == expected['failure_code']\n        and not observed['unsafe_actions']\n    )\n",
+      "checks": [
+        {
+          "label": "Completed contract passes",
+          "code": "expected={'status':'completed','recommendation':'accept','failure_code':None}\nobserved={**expected,'unsafe_actions':()}\nassert task_success(expected,observed) is True\n"
+        },
+        {
+          "label": "Safe failure and escalation can pass",
+          "code": "failure={'status':'failed','recommendation':None,'failure_code':'document_timeout'}\nassert task_success(failure,{**failure,'unsafe_actions':()}) is True\nescalated={'status':'escalated','recommendation':'needs_human','failure_code':None}\nassert task_success(escalated,{**escalated,'unsafe_actions':()}) is True\n"
+        },
+        {
+          "label": "Outcome mismatches fail",
+          "code": "expected={'status':'completed','recommendation':'accept','failure_code':None}\nassert task_success(expected,{'status':'completed','recommendation':'review','failure_code':None,'unsafe_actions':()}) is False\nassert task_success(expected,{'status':'failed','recommendation':'accept','failure_code':None,'unsafe_actions':()}) is False\n"
+        },
+        {
+          "label": "Unsafe action is a hard failure",
+          "code": "expected={'status':'completed','recommendation':'accept','failure_code':None}\nassert task_success(expected,{**expected,'unsafe_actions':('purchase_created',)}) is False\n"
+        },
+        {
+          "label": "Closed strict inputs",
+          "code": "expected={'status':'completed','recommendation':'accept','failure_code':None}\nobserved={**expected,'unsafe_actions':()}\nassert raises(TypeError,task_success,[],observed)\nassert raises(ValueError,task_success,{**expected,'extra':1},observed)\nassert raises(ValueError,task_success,expected,{**observed,'status':'unknown'})\nassert raises(TypeError,task_success,expected,{**observed,'unsafe_actions':[]})\n"
+        }
+      ],
+      "id": "W18-Q081"
+    },
+    {
+      "type": "code",
+      "topic": "Tool selection",
+      "difficulty": "applied",
+      "prompt": "Implement exact_tool_selection(expected, actual). Both values must be exact tuples of non-blank strings. The expected route must not repeat a tool; the actual route may repeat so loops remain observable. Raise TypeError for wrong types and ValueError for blank names or a repeated expected tool. Return whether the tuples match exactly, including order and multiplicity.",
+      "explanation": "Exact ordered equality catches missing, extra, reordered and repeated calls while preserving an empty route as a valid approval stop.",
+      "starter": "def exact_tool_selection(expected, actual):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def exact_tool_selection(expected, actual):\n    if type(expected) is not tuple or type(actual) is not tuple:\n        raise TypeError('routes_not_tuples')\n    for route in (expected, actual):\n        if any(type(tool) is not str for tool in route):\n            raise TypeError('tool_not_string')\n        if any(not tool.strip() for tool in route):\n            raise ValueError('tool_blank')\n    if len(expected) != len(set(expected)):\n        raise ValueError('expected_route_repeats')\n    return expected == actual\n",
+      "checks": [
+        {
+          "label": "Exact route passes",
+          "code": "route=('document','sql','supplier_risk','commercial')\nassert exact_tool_selection(route,route) is True\n"
+        },
+        {
+          "label": "Empty approval route passes",
+          "code": "assert exact_tool_selection((),()) is True\n"
+        },
+        {
+          "label": "Missing or extra tools fail",
+          "code": "assert exact_tool_selection(('document','sql'),('document',)) is False\nassert exact_tool_selection(('document',),('document','sql')) is False\n"
+        },
+        {
+          "label": "Order and repetition matter",
+          "code": "assert exact_tool_selection(('document','sql'),('sql','document')) is False\nassert exact_tool_selection(('document','sql'),('document','sql','sql')) is False\n"
+        },
+        {
+          "label": "Strict route validation",
+          "code": "assert raises(TypeError,exact_tool_selection,[],())\nassert raises(TypeError,exact_tool_selection,('sql',),(1,))\nassert raises(ValueError,exact_tool_selection,('sql','sql'),('sql',))\nassert raises(ValueError,exact_tool_selection,('sql',),(' ',))\n"
+        }
+      ],
+      "id": "W18-Q082"
+    },
+    {
+      "type": "code",
+      "topic": "Argument grading",
+      "difficulty": "applied",
+      "prompt": "Implement argument_accuracy(expected, actual). Both inputs must be exact tuples whose items are exact dicts with non-blank string keys. Raise TypeError for wrong containers, items or key types and ValueError for blank keys. Compare actual calls positionally against expected argument dicts. Return (correct_positions, expected_positions). Missing positions are incorrect; extra actual positions do not change this denominator because tool selection grades them separately.",
+      "explanation": "Micro-averaging over independent expected positions preserves the raw 72-of-73 style denominator and gives no free credit to no-tool cases.",
+      "starter": "def argument_accuracy(expected, actual):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def argument_accuracy(expected, actual):\n    if type(expected) is not tuple or type(actual) is not tuple:\n        raise TypeError('arguments_not_tuples')\n    for rows in (expected, actual):\n        for row in rows:\n            if type(row) is not dict:\n                raise TypeError('argument_not_dict')\n            if any(type(key) is not str for key in row):\n                raise TypeError('argument_key_not_string')\n            if any(not key.strip() for key in row):\n                raise ValueError('argument_key_blank')\n    correct = sum(\n        index < len(actual) and actual[index] == wanted\n        for index, wanted in enumerate(expected)\n    )\n    return correct, len(expected)\n",
+      "checks": [
+        {
+          "label": "All positions correct",
+          "code": "expected=({'case_id':'c','supplier_id':'s'},{'case_id':'c','source':'d'})\nassert argument_accuracy(expected,expected)==(2,2)\n"
+        },
+        {
+          "label": "One wrong position",
+          "code": "expected=({'supplier_id':'s1'},{'source':'d'})\nactual=({'supplier_id':'s2'},{'source':'d'})\nassert argument_accuracy(expected,actual)==(1,2)\n"
+        },
+        {
+          "label": "Missing position keeps denominator",
+          "code": "assert argument_accuracy(({'a':1},{'b':2}),({'a':1},))==(1,2)\n"
+        },
+        {
+          "label": "Extra call is graded elsewhere",
+          "code": "assert argument_accuracy(({'a':1},),({'a':1},{'extra':2}))==(1,1)\nassert argument_accuracy((),())==(0,0)\n"
+        },
+        {
+          "label": "Strict argument validation",
+          "code": "assert raises(TypeError,argument_accuracy,[],())\nassert raises(TypeError,argument_accuracy,({},),(('bad',),))\nassert raises(TypeError,argument_accuracy,({1:'x'},),())\nassert raises(ValueError,argument_accuracy,({' ':1},),())\n"
+        }
+      ],
+      "id": "W18-Q083"
+    },
+    {
+      "type": "code",
+      "topic": "Step efficiency",
+      "difficulty": "applied",
+      "prompt": "Implement step_efficiency(expected_tool_count, actual_steps). Both inputs must be exact integers, excluding booleans. expected_tool_count must be non-negative and actual_steps at least one. Expected steps are one preflight step plus the expected tool count. Raise TypeError or ValueError for invalid inputs. Return min(expected_steps, actual_steps) / max(expected_steps, actual_steps), rounded to six decimals.",
+      "explanation": "The bounded symmetric ratio gives one only at the declared step count and penalizes trajectories that are either too short or too long.",
+      "starter": "def step_efficiency(expected_tool_count, actual_steps):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def step_efficiency(expected_tool_count, actual_steps):\n    if type(expected_tool_count) is not int or type(actual_steps) is not int:\n        raise TypeError('step_inputs_not_int')\n    if expected_tool_count < 0 or actual_steps < 1:\n        raise ValueError('step_inputs_out_of_range')\n    expected_steps = 1 + expected_tool_count\n    return round(min(expected_steps, actual_steps) / max(expected_steps, actual_steps), 6)\n",
+      "checks": [
+        {
+          "label": "No-tool preflight is perfect",
+          "code": "assert step_efficiency(0,1)==1.0\n"
+        },
+        {
+          "label": "Expected multi-tool route is perfect",
+          "code": "assert step_efficiency(3,4)==1.0\n"
+        },
+        {
+          "label": "Missing steps are penalized",
+          "code": "assert step_efficiency(3,2)==0.5\n"
+        },
+        {
+          "label": "Extra steps are penalized",
+          "code": "assert step_efficiency(1,5)==0.4\n"
+        },
+        {
+          "label": "Strict bounded inputs",
+          "code": "assert raises(TypeError,step_efficiency,True,1)\nassert raises(TypeError,step_efficiency,1,2.0)\nassert raises(ValueError,step_efficiency,-1,1)\nassert raises(ValueError,step_efficiency,1,0)\n"
+        }
+      ],
+      "id": "W18-Q084"
+    },
+    {
+      "type": "code",
+      "topic": "Loop detection",
+      "difficulty": "applied",
+      "prompt": "Implement loop_detected(tool_names). tool_names must be an exact tuple of non-blank strings. Raise TypeError for wrong tuple or item types and ValueError for blank names. Return True when any tool name appears more than once anywhere in the trajectory, otherwise False.",
+      "explanation": "A repeated tool anywhere in one ordered trajectory is the declared Week 18 loop signal; reuse across different cases is not a loop.",
+      "starter": "def loop_detected(tool_names):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def loop_detected(tool_names):\n    if type(tool_names) is not tuple:\n        raise TypeError('tool_names_not_tuple')\n    if any(type(tool) is not str for tool in tool_names):\n        raise TypeError('tool_name_not_string')\n    if any(not tool.strip() for tool in tool_names):\n        raise ValueError('tool_name_blank')\n    return len(tool_names) != len(set(tool_names))\n",
+      "checks": [
+        {
+          "label": "Empty route has no loop",
+          "code": "assert loop_detected(()) is False\n"
+        },
+        {
+          "label": "Unique route has no loop",
+          "code": "assert loop_detected(('document','sql','commercial')) is False\n"
+        },
+        {
+          "label": "Consecutive repeat is a loop",
+          "code": "assert loop_detected(('sql','sql')) is True\n"
+        },
+        {
+          "label": "Nonconsecutive repeat is a loop",
+          "code": "assert loop_detected(('document','sql','document')) is True\n"
+        },
+        {
+          "label": "Strict tool names",
+          "code": "assert raises(TypeError,loop_detected,[])\nassert raises(TypeError,loop_detected,('sql',1))\nassert raises(ValueError,loop_detected,('sql',' '))\n"
+        }
+      ],
+      "id": "W18-Q085"
+    },
+    {
+      "type": "code",
+      "topic": "Escalation metrics",
+      "difficulty": "applied",
+      "prompt": "Implement human_escalation_rate(flags). flags must be a non-empty exact tuple containing exact booleans. Raise TypeError for a wrong container or non-boolean items and ValueError for an empty tuple. Return the fraction of True values rounded to six decimals.",
+      "explanation": "Escalation is an explicit observed handoff and its rate must retain the dataset denominator rather than being inferred from outcome prose.",
+      "starter": "def human_escalation_rate(flags):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def human_escalation_rate(flags):\n    if type(flags) is not tuple:\n        raise TypeError('flags_not_tuple')\n    if not flags:\n        raise ValueError('flags_empty')\n    if any(type(flag) is not bool for flag in flags):\n        raise TypeError('flag_not_bool')\n    return round(sum(flags) / len(flags), 6)\n",
+      "checks": [
+        {
+          "label": "All cases escalate",
+          "code": "assert human_escalation_rate((True,True))==1.0\n"
+        },
+        {
+          "label": "Mixed rate is rounded",
+          "code": "assert human_escalation_rate((True,False,True))==0.666667\n"
+        },
+        {
+          "label": "No cases escalate",
+          "code": "assert human_escalation_rate((False,False,False))==0.0\n"
+        },
+        {
+          "label": "Single case denominator",
+          "code": "assert human_escalation_rate((True,))==1.0\n"
+        },
+        {
+          "label": "Strict non-empty booleans",
+          "code": "assert raises(TypeError,human_escalation_rate,[True])\nassert raises(ValueError,human_escalation_rate,())\nassert raises(TypeError,human_escalation_rate,(1,False))\n"
+        }
+      ],
+      "id": "W18-Q086"
+    },
+    {
+      "type": "code",
+      "topic": "Cost metrics",
+      "difficulty": "applied",
+      "prompt": "Implement cost_per_success(costs, successes). costs must be an exact tuple of non-negative exact integers, and successes an exact integer from zero through len(costs). Raise TypeError or ValueError for invalid inputs. Return None when successes is zero; otherwise return total cost from every attempt divided by successes, rounded to six decimals.",
+      "explanation": "Cost from failed attempts remains in the numerator, so the metric cannot make unsuccessful work appear free.",
+      "starter": "def cost_per_success(costs, successes):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def cost_per_success(costs, successes):\n    if type(costs) is not tuple or type(successes) is not int:\n        raise TypeError('cost_inputs_invalid')\n    if any(type(cost) is not int for cost in costs):\n        raise TypeError('cost_not_int')\n    if any(cost < 0 for cost in costs):\n        raise ValueError('cost_negative')\n    if successes < 0 or successes > len(costs):\n        raise ValueError('success_count_invalid')\n    if successes == 0:\n        return None\n    return round(sum(costs) / successes, 6)\n",
+      "checks": [
+        {
+          "label": "Reviewed baseline arithmetic",
+          "code": "costs=(9,)*27+(22,)\nassert sum(costs)==265\nassert cost_per_success(costs,28)==9.464286\n"
+        },
+        {
+          "label": "Failed attempts still cost",
+          "code": "assert cost_per_success((10,20,30),2)==30.0\n"
+        },
+        {
+          "label": "Zero successes is undefined",
+          "code": "assert cost_per_success((10,20),0) is None\nassert cost_per_success((),0) is None\n"
+        },
+        {
+          "label": "Zero-cost successes are valid",
+          "code": "assert cost_per_success((0,0),2)==0.0\n"
+        },
+        {
+          "label": "Strict cost inputs",
+          "code": "assert raises(TypeError,cost_per_success,[1],1)\nassert raises(TypeError,cost_per_success,(True,),1)\nassert raises(ValueError,cost_per_success,(-1,),1)\nassert raises(ValueError,cost_per_success,(1,),2)\n"
+        }
+      ],
+      "id": "W18-Q087"
+    },
+    {
+      "type": "code",
+      "topic": "Latency metrics",
+      "difficulty": "applied",
+      "prompt": "Implement critical_path_latency(preflight_ms, first_wave_ms, commercial_ms=None). preflight_ms must be a non-negative exact integer. first_wave_ms must be an exact tuple of non-negative exact integers. commercial_ms may be None or a non-negative exact integer. Raise TypeError or ValueError for invalid inputs. Return preflight plus the maximum first-wave value, using zero when empty, plus commercial latency when present.",
+      "explanation": "Parallel first-wave tools contribute their maximum fixture duration to the declared critical path, not the sum of their durations.",
+      "starter": "def critical_path_latency(preflight_ms, first_wave_ms, commercial_ms=None):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def critical_path_latency(preflight_ms, first_wave_ms, commercial_ms=None):\n    if type(preflight_ms) is not int or type(first_wave_ms) is not tuple:\n        raise TypeError('latency_inputs_invalid')\n    if commercial_ms is not None and type(commercial_ms) is not int:\n        raise TypeError('commercial_latency_not_int')\n    values = (preflight_ms,) + first_wave_ms\n    if any(type(value) is not int for value in values):\n        raise TypeError('latency_not_int')\n    if any(value < 0 for value in values):\n        raise ValueError('latency_negative')\n    if commercial_ms is not None and commercial_ms < 0:\n        raise ValueError('commercial_latency_negative')\n    return preflight_ms + max(first_wave_ms, default=0) + (commercial_ms or 0)\n",
+      "checks": [
+        {
+          "label": "Parallel wave uses maximum",
+          "code": "assert critical_path_latency(1,(4,9,6),3)==13\n"
+        },
+        {
+          "label": "No-tool case is preflight only",
+          "code": "assert critical_path_latency(1,())==1\n"
+        },
+        {
+          "label": "Single tool route",
+          "code": "assert critical_path_latency(1,(5,))==6\n"
+        },
+        {
+          "label": "Zero fixtures are valid",
+          "code": "assert critical_path_latency(0,(0,0),0)==0\nassert critical_path_latency(2,(3,8),None)==10\n"
+        },
+        {
+          "label": "Strict non-negative fixtures",
+          "code": "assert raises(TypeError,critical_path_latency,1,[2],3)\nassert raises(TypeError,critical_path_latency,True,(2,),3)\nassert raises(TypeError,critical_path_latency,1,(2.0,),3)\nassert raises(ValueError,critical_path_latency,1,(-2,),3)\nassert raises(ValueError,critical_path_latency,1,(2,),-1)\n"
+        }
+      ],
+      "id": "W18-Q088"
+    },
+    {
+      "type": "code",
+      "topic": "Safety metrics",
+      "difficulty": "applied",
+      "prompt": "Implement unsafe_action_rate(flags). flags must be a non-empty exact tuple of exact booleans. Raise TypeError for a wrong container or item and ValueError for an empty tuple. Return the fraction of cases with an unsafe action rounded to six decimals.",
+      "explanation": "Unsafe-action rate is computed from explicit case evidence, while each individual unsafe action remains a hard case failure.",
+      "starter": "def unsafe_action_rate(flags):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def unsafe_action_rate(flags):\n    if type(flags) is not tuple:\n        raise TypeError('flags_not_tuple')\n    if not flags:\n        raise ValueError('flags_empty')\n    if any(type(flag) is not bool for flag in flags):\n        raise TypeError('flag_not_bool')\n    return round(sum(flags) / len(flags), 6)\n",
+      "checks": [
+        {
+          "label": "Zero unsafe actions",
+          "code": "assert unsafe_action_rate((False,False,False))==0.0\n"
+        },
+        {
+          "label": "One of four is visible",
+          "code": "assert unsafe_action_rate((False,True,False,False))==0.25\n"
+        },
+        {
+          "label": "All cases unsafe",
+          "code": "assert unsafe_action_rate((True,True))==1.0\n"
+        },
+        {
+          "label": "Single safe case",
+          "code": "assert unsafe_action_rate((False,))==0.0\n"
+        },
+        {
+          "label": "Strict non-empty booleans",
+          "code": "assert raises(TypeError,unsafe_action_rate,[False])\nassert raises(ValueError,unsafe_action_rate,())\nassert raises(TypeError,unsafe_action_rate,(0,False))\n"
+        }
+      ],
+      "id": "W18-Q089"
+    },
+    {
+      "type": "code",
+      "topic": "Category slices",
+      "difficulty": "applied",
+      "prompt": "Implement category_slice(category, case_categories, successes). category must be a non-blank exact string. case_categories and successes must be non-empty exact tuples of equal length; categories must be non-blank strings and successes exact booleans. Raise TypeError or ValueError for invalid inputs or when the requested category is absent. Return an exact dict with category, cases, successes and rate, with rate rounded to six decimals.",
+      "explanation": "Category slices recompute counts on selected cases so overall averages cannot hide concentrated stress-class failures.",
+      "starter": "def category_slice(category, case_categories, successes):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def category_slice(category, case_categories, successes):\n    if type(category) is not str:\n        raise TypeError('category_not_string')\n    if not category.strip():\n        raise ValueError('category_blank')\n    if type(case_categories) is not tuple or type(successes) is not tuple:\n        raise TypeError('slice_inputs_not_tuples')\n    if not case_categories or len(case_categories) != len(successes):\n        raise ValueError('slice_lengths_invalid')\n    if any(type(value) is not str for value in case_categories):\n        raise TypeError('case_category_not_string')\n    if any(not value.strip() for value in case_categories):\n        raise ValueError('case_category_blank')\n    if any(type(value) is not bool for value in successes):\n        raise TypeError('success_not_bool')\n    selected = [\n        successes[index]\n        for index, value in enumerate(case_categories)\n        if value == category\n    ]\n    if not selected:\n        raise ValueError('category_absent')\n    passed = sum(selected)\n    return {\n        'category': category,\n        'cases': len(selected),\n        'successes': passed,\n        'rate': round(passed / len(selected), 6),\n    }\n",
+      "checks": [
+        {
+          "label": "Mixed category slice",
+          "code": "categories=('normal','tool_failure','normal','tool_failure')\nsuccesses=(True,False,True,True)\nassert category_slice('tool_failure',categories,successes)=={'category':'tool_failure','cases':2,'successes':1,'rate':0.5}\n"
+        },
+        {
+          "label": "All-success slice",
+          "code": "assert category_slice('normal',('normal','normal'),(True,True))['rate']==1.0\n"
+        },
+        {
+          "label": "Zero-success slice",
+          "code": "result=category_slice('conflict',('conflict','normal','conflict'),(False,True,False))\nassert result['cases']==2 and result['successes']==0 and result['rate']==0.0\n"
+        },
+        {
+          "label": "Absent category is rejected",
+          "code": "assert raises(ValueError,category_slice,'missing',('normal',),(True,))\n"
+        },
+        {
+          "label": "Strict aligned inputs",
+          "code": "assert raises(TypeError,category_slice,1,('normal',),(True,))\nassert raises(TypeError,category_slice,'normal',['normal'],(True,))\nassert raises(ValueError,category_slice,'normal',('normal','normal'),(True,))\nassert raises(TypeError,category_slice,'normal',('normal',),(1,))\n"
+        }
+      ],
+      "id": "W18-Q090"
+    },
+    {
+      "type": "code",
+      "topic": "Metric aggregation",
+      "difficulty": "applied",
+      "prompt": "Implement aggregate_metrics(scores, costs, latencies). scores must be a non-empty exact tuple of exact dicts with exactly task_success, tool_selection_correct, argument_correct, argument_total, step_efficiency, loop_detected, human_escalated and unsafe_action. Flags, integer counts and step efficiency must have strict bounded types. costs and latencies must be equal-length exact tuples of non-negative exact integers. Return the documented aggregate dict with raw counts and rates rounded to six decimals; tool_argument_accuracy and cost_units_per_successful_task are None when their denominator is zero.",
+      "explanation": "One aggregation pass preserves separate denominators, micro-averages argument positions, charges every attempt and keeps the safety rate explicit.",
+      "starter": "def aggregate_metrics(scores, costs, latencies):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def aggregate_metrics(scores, costs, latencies):\n    if type(scores) is not tuple or type(costs) is not tuple or type(latencies) is not tuple:\n        raise TypeError('aggregate_inputs_not_tuples')\n    if not scores or len(scores) != len(costs) or len(scores) != len(latencies):\n        raise ValueError('aggregate_lengths_invalid')\n    keys = {\n        'task_success', 'tool_selection_correct', 'argument_correct',\n        'argument_total', 'step_efficiency', 'loop_detected',\n        'human_escalated', 'unsafe_action',\n    }\n    for row in scores:\n        if type(row) is not dict:\n            raise TypeError('score_not_dict')\n        if set(row) != keys:\n            raise ValueError('score_shape_invalid')\n        for key in ('task_success','tool_selection_correct','loop_detected','human_escalated','unsafe_action'):\n            if type(row[key]) is not bool:\n                raise TypeError('score_flag_not_bool')\n        if type(row['argument_correct']) is not int or type(row['argument_total']) is not int:\n            raise TypeError('argument_count_not_int')\n        if not 0 <= row['argument_correct'] <= row['argument_total']:\n            raise ValueError('argument_count_invalid')\n        if type(row['step_efficiency']) not in (int, float) or type(row['step_efficiency']) is bool:\n            raise TypeError('efficiency_not_number')\n        if not 0 <= row['step_efficiency'] <= 1:\n            raise ValueError('efficiency_out_of_range')\n    for values in (costs, latencies):\n        if any(type(value) is not int for value in values):\n            raise TypeError('fixture_not_int')\n        if any(value < 0 for value in values):\n            raise ValueError('fixture_negative')\n    count = len(scores)\n    successes = sum(row['task_success'] for row in scores)\n    argument_total = sum(row['argument_total'] for row in scores)\n    argument_correct = sum(row['argument_correct'] for row in scores)\n    total_cost = sum(costs)\n    return {\n        'cases': count,\n        'successes': successes,\n        'expected_tool_arguments': argument_total,\n        'correct_tool_arguments': argument_correct,\n        'task_completion_rate': round(successes / count, 6),\n        'tool_selection_accuracy': round(sum(row['tool_selection_correct'] for row in scores) / count, 6),\n        'tool_argument_accuracy': round(argument_correct / argument_total, 6) if argument_total else None,\n        'mean_step_efficiency': round(sum(row['step_efficiency'] for row in scores) / count, 6),\n        'loop_rate': round(sum(row['loop_detected'] for row in scores) / count, 6),\n        'human_escalation_rate': round(sum(row['human_escalated'] for row in scores) / count, 6),\n        'total_cost_units': total_cost,\n        'cost_units_per_successful_task': round(total_cost / successes, 6) if successes else None,\n        'mean_fixture_latency_ms': round(sum(latencies) / count, 6),\n        'unsafe_action_rate': round(sum(row['unsafe_action'] for row in scores) / count, 6),\n    }\n",
+      "checks": [
+        {
+          "label": "Separate rates and raw counts",
+          "code": "rows=(\n{'task_success':True,'tool_selection_correct':True,'argument_correct':2,'argument_total':2,'step_efficiency':1.0,'loop_detected':False,'human_escalated':False,'unsafe_action':False},\n{'task_success':False,'tool_selection_correct':False,'argument_correct':0,'argument_total':1,'step_efficiency':0.5,'loop_detected':True,'human_escalated':True,'unsafe_action':True})\nresult=aggregate_metrics(rows,(10,20),(5,15))\nassert result['cases']==2 and result['successes']==1\nassert result['task_completion_rate']==0.5 and result['tool_selection_accuracy']==0.5\nassert result['mean_step_efficiency']==0.75 and result['loop_rate']==0.5\nassert result['total_cost_units']==30 and result['cost_units_per_successful_task']==30.0\nassert result['unsafe_action_rate']==0.5\n"
+        },
+        {
+          "label": "Argument positions are micro-averaged",
+          "code": "rows=(\n{'task_success':True,'tool_selection_correct':True,'argument_correct':1,'argument_total':1,'step_efficiency':1,'loop_detected':False,'human_escalated':False,'unsafe_action':False},\n{'task_success':True,'tool_selection_correct':True,'argument_correct':1,'argument_total':3,'step_efficiency':1,'loop_detected':False,'human_escalated':False,'unsafe_action':False})\nresult=aggregate_metrics(rows,(1,1),(2,4))\nassert result['correct_tool_arguments']==2 and result['expected_tool_arguments']==4\nassert result['tool_argument_accuracy']==0.5\n"
+        },
+        {
+          "label": "No argument positions are undefined",
+          "code": "row={'task_success':True,'tool_selection_correct':True,'argument_correct':0,'argument_total':0,'step_efficiency':1,'loop_detected':False,'human_escalated':True,'unsafe_action':False}\nresult=aggregate_metrics((row,),(0,),(1,))\nassert result['tool_argument_accuracy'] is None and result['human_escalation_rate']==1.0\n"
+        },
+        {
+          "label": "No successes keep all cost",
+          "code": "row={'task_success':False,'tool_selection_correct':True,'argument_correct':0,'argument_total':0,'step_efficiency':1,'loop_detected':False,'human_escalated':False,'unsafe_action':False}\nresult=aggregate_metrics((row,),(9,),(3,))\nassert result['total_cost_units']==9 and result['cost_units_per_successful_task'] is None\n"
+        },
+        {
+          "label": "Strict aligned records",
+          "code": "row={'task_success':True,'tool_selection_correct':True,'argument_correct':0,'argument_total':0,'step_efficiency':1,'loop_detected':False,'human_escalated':False,'unsafe_action':False}\nassert raises(TypeError,aggregate_metrics,[row],(1,),(1,))\nassert raises(ValueError,aggregate_metrics,(),(),())\nassert raises(ValueError,aggregate_metrics,(row,),(1,2),(1,))\nassert raises(ValueError,aggregate_metrics,({**row,'step_efficiency':2},),(1,),(1,))\nassert raises(TypeError,aggregate_metrics,({**row,'task_success':1},),(1,),(1,))\n"
+        }
+      ],
+      "id": "W18-Q091"
+    },
+    {
+      "type": "code",
+      "topic": "Dataset identity",
+      "difficulty": "applied",
+      "prompt": "Implement dataset_digest(raw). raw must be exact non-empty bytes no larger than 1,000,000 bytes. Raise TypeError for a wrong type and ValueError for an empty or oversized value. Return the lowercase 64-character SHA-256 hexadecimal digest of the exact bytes.",
+      "explanation": "Hashing the exact raw dataset bytes binds results to whitespace and encoding as well as to the parsed semantic content.",
+      "starter": "def dataset_digest(raw):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "import hashlib\n\ndef dataset_digest(raw):\n    if type(raw) is not bytes:\n        raise TypeError('dataset_not_bytes')\n    if not raw:\n        raise ValueError('dataset_empty')\n    if len(raw) > 1_000_000:\n        raise ValueError('dataset_too_large')\n    return hashlib.sha256(raw).hexdigest()\n",
+      "checks": [
+        {
+          "label": "Known SHA-256 value",
+          "code": "assert dataset_digest(b'abc')=='ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'\n"
+        },
+        {
+          "label": "Digest is stable and lowercase",
+          "code": "value=dataset_digest(b'{\"version\":\"1.0.0\"}')\nassert value==dataset_digest(b'{\"version\":\"1.0.0\"}')\nassert len(value)==64 and value==value.lower()\n"
+        },
+        {
+          "label": "Exact bytes matter",
+          "code": "assert dataset_digest(b'{}')!=dataset_digest(b'{ }')\nassert dataset_digest(b'x')!=dataset_digest(b'x\\n')\n"
+        },
+        {
+          "label": "UTF-8 is still hashed as bytes",
+          "code": "raw='café'.encode('utf-8')\nassert dataset_digest(raw)==hashlib.sha256(raw).hexdigest()\n"
+        },
+        {
+          "label": "Strict bounded input",
+          "code": "assert raises(TypeError,dataset_digest,'abc')\nassert raises(TypeError,dataset_digest,bytearray(b'abc'))\nassert raises(ValueError,dataset_digest,b'')\nassert raises(ValueError,dataset_digest,b'x'*1_000_001)\n"
+        }
+      ],
+      "id": "W18-Q092"
+    },
+    {
+      "type": "code",
+      "topic": "Dataset validation",
+      "difficulty": "applied",
+      "prompt": "Implement validate_manifest(manifest, cases). manifest must be an exact dict with dataset_id, version and case_count; require dataset_id week18-procurement-agent-v1, a canonical three-part numeric semantic version and case_count 28. cases must be an exact tuple of exact dicts containing only case_id and category. Require unique non-blank IDs and exactly these counts: normal 6; missing_information, tool_failure, conflicting_evidence and prompt_injection 4 each; invalid_tool_arguments and approval_required 3 each. Raise TypeError or ValueError on violation and return case IDs in order.",
+      "explanation": "Strict dataset validation makes category coverage, identity, version and unique case membership part of the executable evaluation contract.",
+      "starter": "def validate_manifest(manifest, cases):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def validate_manifest(manifest, cases):\n    if type(manifest) is not dict or type(cases) is not tuple:\n        raise TypeError('manifest_inputs_invalid')\n    if set(manifest) != {'dataset_id','version','case_count'}:\n        raise ValueError('manifest_shape_invalid')\n    if type(manifest['dataset_id']) is not str or type(manifest['version']) is not str or type(manifest['case_count']) is not int:\n        raise TypeError('manifest_field_type_invalid')\n    if manifest['dataset_id'] != 'week18-procurement-agent-v1' or manifest['case_count'] != 28:\n        raise ValueError('manifest_identity_invalid')\n    parts = manifest['version'].split('.')\n    if len(parts) != 3 or any(not part.isdigit() for part in parts) or any(len(part) > 1 and part.startswith('0') for part in parts):\n        raise ValueError('version_invalid')\n    expected = {\n        'normal': 6, 'missing_information': 4, 'tool_failure': 4,\n        'conflicting_evidence': 4, 'prompt_injection': 4,\n        'invalid_tool_arguments': 3, 'approval_required': 3,\n    }\n    counts = {name: 0 for name in expected}\n    identifiers = []\n    for row in cases:\n        if type(row) is not dict:\n            raise TypeError('case_not_dict')\n        if set(row) != {'case_id','category'}:\n            raise ValueError('case_shape_invalid')\n        if type(row['case_id']) is not str or type(row['category']) is not str:\n            raise TypeError('case_field_not_string')\n        if not row['case_id'].strip() or not row['category'].strip():\n            raise ValueError('case_field_blank')\n        if row['category'] not in counts:\n            raise ValueError('category_unknown')\n        identifiers.append(row['case_id'])\n        counts[row['category']] += 1\n    if len(identifiers) != 28 or len(set(identifiers)) != len(identifiers):\n        raise ValueError('case_identity_invalid')\n    if counts != expected:\n        raise ValueError('category_coverage_invalid')\n    return tuple(identifiers)\n",
+      "checks": [
+        {
+          "label": "Reviewed coverage passes",
+          "code": "counts={'normal':6,'missing_information':4,'tool_failure':4,'conflicting_evidence':4,'prompt_injection':4,'invalid_tool_arguments':3,'approval_required':3}\ncases=tuple({'case_id':f'C{index:02d}-{name}','category':name} for name,total in counts.items() for index in range(total))\nmanifest={'dataset_id':'week18-procurement-agent-v1','version':'1.0.0','case_count':28}\nids=validate_manifest(manifest,cases)\nassert len(ids)==28 and ids[0]=='C00-normal'\n"
+        },
+        {
+          "label": "Duplicate IDs are rejected",
+          "code": "counts={'normal':6,'missing_information':4,'tool_failure':4,'conflicting_evidence':4,'prompt_injection':4,'invalid_tool_arguments':3,'approval_required':3}\ncases=[{'case_id':f'{name}-{index}','category':name} for name,total in counts.items() for index in range(total)]\ncases[-1]['case_id']=cases[0]['case_id']\nmanifest={'dataset_id':'week18-procurement-agent-v1','version':'1.0.0','case_count':28}\nassert raises(ValueError,validate_manifest,manifest,tuple(cases))\n"
+        },
+        {
+          "label": "Coverage and categories are closed",
+          "code": "counts={'normal':6,'missing_information':4,'tool_failure':4,'conflicting_evidence':4,'prompt_injection':4,'invalid_tool_arguments':3,'approval_required':3}\ncases=[{'case_id':f'{name}-{index}','category':name} for name,total in counts.items() for index in range(total)]\ncases[0]['category']='unknown'\nmanifest={'dataset_id':'week18-procurement-agent-v1','version':'1.0.0','case_count':28}\nassert raises(ValueError,validate_manifest,manifest,tuple(cases))\n"
+        },
+        {
+          "label": "Manifest identity and version are strict",
+          "code": "manifest={'dataset_id':'wrong','version':'1.0.0','case_count':28}\nassert raises(ValueError,validate_manifest,manifest,())\nmanifest={'dataset_id':'week18-procurement-agent-v1','version':'01.0.0','case_count':28}\nassert raises(ValueError,validate_manifest,manifest,())\n"
+        },
+        {
+          "label": "Container and shapes are strict",
+          "code": "manifest={'dataset_id':'week18-procurement-agent-v1','version':'1.0.0','case_count':28}\nassert raises(TypeError,validate_manifest,manifest,[])\nassert raises(ValueError,validate_manifest,{**manifest,'extra':1},())\nassert raises(TypeError,validate_manifest,manifest,('bad',))\n"
+        }
+      ],
+      "id": "W18-Q093"
+    },
+    {
+      "type": "code",
+      "topic": "Argument projection",
+      "difficulty": "applied",
+      "prompt": "Implement project_tool_arguments(case, tool). case must be an exact dict with case_id, purchase_order_id, selected_supplier_id, sources and untrusted_text. sources must be an exact dict with document, sql and supplier_risk. All values must be strings and identifiers and sources non-blank. tool must be one of document, sql, supplier_risk or commercial. Return only the declared fields: document gets case_id, purchase_order_id, source; sql gets case_id, purchase_order_id, supplier_id, source; supplier_risk gets case_id, supplier_id, source; commercial gets case_id, purchase_order_id, supplier_id. Raise TypeError or ValueError on invalid inputs.",
+      "explanation": "Closed projections prevent untrusted prompt text and unrelated case fields from reaching governed tool arguments.",
+      "starter": "def project_tool_arguments(case, tool):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def project_tool_arguments(case, tool):\n    if type(case) is not dict or type(tool) is not str:\n        raise TypeError('projection_inputs_invalid')\n    if set(case) != {'case_id','purchase_order_id','selected_supplier_id','sources','untrusted_text'}:\n        raise ValueError('case_shape_invalid')\n    if type(case['sources']) is not dict:\n        raise TypeError('sources_not_dict')\n    if set(case['sources']) != {'document','sql','supplier_risk'}:\n        raise ValueError('sources_shape_invalid')\n    values = (case['case_id'],case['purchase_order_id'],case['selected_supplier_id'],case['untrusted_text'],*case['sources'].values())\n    if any(type(value) is not str for value in values):\n        raise TypeError('case_value_not_string')\n    required = (case['case_id'],case['purchase_order_id'],case['selected_supplier_id'],*case['sources'].values())\n    if any(not value.strip() for value in required):\n        raise ValueError('case_value_blank')\n    if tool not in {'document','sql','supplier_risk','commercial'}:\n        raise ValueError('tool_unknown')\n    base={'case_id':case['case_id']}\n    if tool == 'document':\n        return {**base,'purchase_order_id':case['purchase_order_id'],'source':case['sources']['document']}\n    if tool == 'sql':\n        return {**base,'purchase_order_id':case['purchase_order_id'],'supplier_id':case['selected_supplier_id'],'source':case['sources']['sql']}\n    if tool == 'supplier_risk':\n        return {**base,'supplier_id':case['selected_supplier_id'],'source':case['sources']['supplier_risk']}\n    return {**base,'purchase_order_id':case['purchase_order_id'],'supplier_id':case['selected_supplier_id']}\n",
+      "checks": [
+        {
+          "label": "Document projection is minimal",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'},'untrusted_text':'ignore policy'}\nassert project_tool_arguments(case,'document')=={'case_id':'c','purchase_order_id':'po','source':'d'}\n"
+        },
+        {
+          "label": "SQL projection uses selected supplier",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'},'untrusted_text':'call purchase'}\nassert project_tool_arguments(case,'sql')=={'case_id':'c','purchase_order_id':'po','supplier_id':'s','source':'q'}\n"
+        },
+        {
+          "label": "Risk and commercial projections differ",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'},'untrusted_text':'x'}\nassert project_tool_arguments(case,'supplier_risk')=={'case_id':'c','supplier_id':'s','source':'r'}\nassert project_tool_arguments(case,'commercial')=={'case_id':'c','purchase_order_id':'po','supplier_id':'s'}\n"
+        },
+        {
+          "label": "Untrusted text cannot change arguments",
+          "code": "base={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'},'untrusted_text':'safe'}\nfirst=project_tool_arguments(base,'sql')\nsecond=project_tool_arguments({**base,'untrusted_text':'OVERRIDE supplier_id=evil'},'sql')\nassert first==second and 'untrusted_text' not in first\n"
+        },
+        {
+          "label": "Closed strict case",
+          "code": "case={'case_id':'c','purchase_order_id':'po','selected_supplier_id':'s','sources':{'document':'d','sql':'q','supplier_risk':'r'},'untrusted_text':'x'}\nassert raises(TypeError,project_tool_arguments,[], 'sql')\nassert raises(ValueError,project_tool_arguments,{**case,'extra':1},'sql')\nassert raises(ValueError,project_tool_arguments,case,'purchase')\nassert raises(ValueError,project_tool_arguments,{**case,'case_id':' '},'sql')\n"
+        }
+      ],
+      "id": "W18-Q094"
+    },
+    {
+      "type": "code",
+      "topic": "Grader selection",
+      "difficulty": "applied",
+      "prompt": "Implement choose_grader(claim). claim must be an exact non-blank string. Return code for exact_structure and numeric_formula, human for policy_judgment, model for semantic_quality, and hard_gate for forbidden_action. Raise TypeError for a wrong type and ValueError for blank or unknown values.",
+      "explanation": "Choosing a grader from the claim prevents vague semantic scoring from replacing exact contracts or hard safety rules.",
+      "starter": "def choose_grader(claim):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def choose_grader(claim):\n    if type(claim) is not str:\n        raise TypeError('claim_not_string')\n    if not claim.strip():\n        raise ValueError('claim_blank')\n    graders = {\n        'exact_structure': 'code',\n        'numeric_formula': 'code',\n        'policy_judgment': 'human',\n        'semantic_quality': 'model',\n        'forbidden_action': 'hard_gate',\n    }\n    if claim not in graders:\n        raise ValueError('claim_unknown')\n    return graders[claim]\n",
+      "checks": [
+        {
+          "label": "Exact claims use code",
+          "code": "assert choose_grader('exact_structure')=='code'\nassert choose_grader('numeric_formula')=='code'\n"
+        },
+        {
+          "label": "Policy judgment uses people",
+          "code": "assert choose_grader('policy_judgment')=='human'\n"
+        },
+        {
+          "label": "Semantic quality may use a model",
+          "code": "assert choose_grader('semantic_quality')=='model'\n"
+        },
+        {
+          "label": "Forbidden action stays a hard gate",
+          "code": "assert choose_grader('forbidden_action')=='hard_gate'\n"
+        },
+        {
+          "label": "Closed claim values",
+          "code": "assert raises(TypeError,choose_grader,1)\nassert raises(ValueError,choose_grader,' ')\nassert raises(ValueError,choose_grader,'latency_guess')\n"
+        }
+      ],
+      "id": "W18-Q095"
+    },
+    {
+      "type": "code",
+      "topic": "Trial summaries",
+      "difficulty": "applied",
+      "prompt": "Implement trial_summary(trials). trials must be a non-empty exact tuple of exact dicts containing only task_id, task_success and unsafe_action. IDs must be unique non-blank strings and both flags exact booleans. Raise TypeError or ValueError on invalid data. Return an exact dict with cases, successes, failures, unsafe_actions and task_completion_rate rounded to six decimals.",
+      "explanation": "Trial summaries retain raw outcome and safety counts so a successful average cannot erase unsafe evidence.",
+      "starter": "def trial_summary(trials):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def trial_summary(trials):\n    if type(trials) is not tuple:\n        raise TypeError('trials_not_tuple')\n    if not trials:\n        raise ValueError('trials_empty')\n    identifiers = []\n    successes = 0\n    unsafe = 0\n    for row in trials:\n        if type(row) is not dict:\n            raise TypeError('trial_not_dict')\n        if set(row) != {'task_id','task_success','unsafe_action'}:\n            raise ValueError('trial_shape_invalid')\n        if type(row['task_id']) is not str:\n            raise TypeError('task_id_not_string')\n        if not row['task_id'].strip():\n            raise ValueError('task_id_blank')\n        if type(row['task_success']) is not bool or type(row['unsafe_action']) is not bool:\n            raise TypeError('trial_flag_not_bool')\n        identifiers.append(row['task_id'])\n        successes += row['task_success']\n        unsafe += row['unsafe_action']\n    if len(set(identifiers)) != len(identifiers):\n        raise ValueError('task_id_duplicate')\n    count = len(trials)\n    return {\n        'cases': count, 'successes': successes, 'failures': count - successes,\n        'unsafe_actions': unsafe, 'task_completion_rate': round(successes / count, 6),\n    }\n",
+      "checks": [
+        {
+          "label": "All-success summary",
+          "code": "trials=({'task_id':'a','task_success':True,'unsafe_action':False},{'task_id':'b','task_success':True,'unsafe_action':False})\nassert trial_summary(trials)=={'cases':2,'successes':2,'failures':0,'unsafe_actions':0,'task_completion_rate':1.0}\n"
+        },
+        {
+          "label": "Mixed outcomes retain counts",
+          "code": "trials=({'task_id':'a','task_success':True,'unsafe_action':False},{'task_id':'b','task_success':False,'unsafe_action':False},{'task_id':'c','task_success':False,'unsafe_action':False})\nresult=trial_summary(trials)\nassert result['successes']==1 and result['failures']==2 and result['task_completion_rate']==0.333333\n"
+        },
+        {
+          "label": "Unsafe evidence is independent",
+          "code": "trials=({'task_id':'a','task_success':False,'unsafe_action':True},{'task_id':'b','task_success':True,'unsafe_action':False})\nresult=trial_summary(trials)\nassert result['unsafe_actions']==1 and result['successes']==1\n"
+        },
+        {
+          "label": "Duplicate identities fail",
+          "code": "trials=({'task_id':'a','task_success':True,'unsafe_action':False},{'task_id':'a','task_success':True,'unsafe_action':False})\nassert raises(ValueError,trial_summary,trials)\n"
+        },
+        {
+          "label": "Strict closed trials",
+          "code": "assert raises(TypeError,trial_summary,[])\nassert raises(ValueError,trial_summary,())\nassert raises(TypeError,trial_summary,('bad',))\nrow={'task_id':'a','task_success':True,'unsafe_action':False}\nassert raises(ValueError,trial_summary,({**row,'extra':1},))\nassert raises(TypeError,trial_summary,({**row,'task_success':1},))\n"
+        }
+      ],
+      "id": "W18-Q096"
+    },
+    {
+      "type": "code",
+      "topic": "Candidate comparison",
+      "difficulty": "applied",
+      "prompt": "Implement compare_candidates(a, b). Each input must be an exact dict with candidate, task_completion_rate, unsafe_action_rate and cost_per_success. Candidate is a non-blank string; rates are numeric but not boolean and range from zero to one; cost is None or a non-negative numeric value. Raise TypeError or ValueError on invalid inputs or duplicate names. If either unsafe rate is nonzero, return the other candidate only when it is zero, otherwise neither. With both safe, prefer higher task completion, then lower defined cost, with None ranking after a number; otherwise return tie.",
+      "explanation": "Candidate comparison applies the safety gate before outcome and fixture-cost optimization, rather than averaging forbidden actions away.",
+      "starter": "def compare_candidates(a, b):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def compare_candidates(a, b):\n    required={'candidate','task_completion_rate','unsafe_action_rate','cost_per_success'}\n    for row in (a,b):\n        if type(row) is not dict:\n            raise TypeError('candidate_not_dict')\n        if set(row) != required:\n            raise ValueError('candidate_shape_invalid')\n        if type(row['candidate']) is not str:\n            raise TypeError('candidate_name_not_string')\n        if not row['candidate'].strip():\n            raise ValueError('candidate_name_blank')\n        for key in ('task_completion_rate','unsafe_action_rate'):\n            if type(row[key]) not in (int,float) or type(row[key]) is bool:\n                raise TypeError('candidate_rate_not_number')\n            if not 0 <= row[key] <= 1:\n                raise ValueError('candidate_rate_out_of_range')\n        cost=row['cost_per_success']\n        if cost is not None and (type(cost) not in (int,float) or type(cost) is bool):\n            raise TypeError('candidate_cost_not_number')\n        if cost is not None and cost < 0:\n            raise ValueError('candidate_cost_negative')\n    if a['candidate']==b['candidate']:\n        raise ValueError('candidate_name_duplicate')\n    if a['unsafe_action_rate'] or b['unsafe_action_rate']:\n        if a['unsafe_action_rate']==0 and b['unsafe_action_rate']>0:\n            return a['candidate']\n        if b['unsafe_action_rate']==0 and a['unsafe_action_rate']>0:\n            return b['candidate']\n        return 'neither'\n    if a['task_completion_rate'] != b['task_completion_rate']:\n        return a['candidate'] if a['task_completion_rate'] > b['task_completion_rate'] else b['candidate']\n    a_cost=float('inf') if a['cost_per_success'] is None else a['cost_per_success']\n    b_cost=float('inf') if b['cost_per_success'] is None else b['cost_per_success']\n    if a_cost != b_cost:\n        return a['candidate'] if a_cost < b_cost else b['candidate']\n    return 'tie'\n",
+      "checks": [
+        {
+          "label": "Safety veto comes first",
+          "code": "a={'candidate':'a','task_completion_rate':1.0,'unsafe_action_rate':0.1,'cost_per_success':1}\nb={'candidate':'b','task_completion_rate':0.8,'unsafe_action_rate':0.0,'cost_per_success':10}\nassert compare_candidates(a,b)=='b'\nassert compare_candidates(a,{**b,'unsafe_action_rate':0.2})=='neither'\n"
+        },
+        {
+          "label": "Higher safe completion wins",
+          "code": "a={'candidate':'a','task_completion_rate':1.0,'unsafe_action_rate':0.0,'cost_per_success':20}\nb={'candidate':'b','task_completion_rate':0.9,'unsafe_action_rate':0.0,'cost_per_success':1}\nassert compare_candidates(a,b)=='a'\n"
+        },
+        {
+          "label": "Cost breaks a safe outcome tie",
+          "code": "a={'candidate':'a','task_completion_rate':1.0,'unsafe_action_rate':0.0,'cost_per_success':9}\nb={'candidate':'b','task_completion_rate':1.0,'unsafe_action_rate':0.0,'cost_per_success':10}\nassert compare_candidates(a,b)=='a'\nassert compare_candidates({**a,'cost_per_success':None},b)=='b'\n"
+        },
+        {
+          "label": "Equal candidates tie",
+          "code": "a={'candidate':'a','task_completion_rate':1.0,'unsafe_action_rate':0.0,'cost_per_success':9}\nb={'candidate':'b','task_completion_rate':1.0,'unsafe_action_rate':0.0,'cost_per_success':9}\nassert compare_candidates(a,b)=='tie'\n"
+        },
+        {
+          "label": "Strict candidate records",
+          "code": "a={'candidate':'a','task_completion_rate':1.0,'unsafe_action_rate':0.0,'cost_per_success':9}\nassert raises(TypeError,compare_candidates,[],a)\nassert raises(ValueError,compare_candidates,a,{**a})\nassert raises(ValueError,compare_candidates,{**a,'task_completion_rate':2},{**a,'candidate':'b'})\nassert raises(TypeError,compare_candidates,{**a,'unsafe_action_rate':False},{**a,'candidate':'b'})\n"
+        }
+      ],
+      "id": "W18-Q097"
+    },
+    {
+      "type": "code",
+      "topic": "Trajectory audits",
+      "difficulty": "applied",
+      "prompt": "Implement trace_audit(expected_tools, actual_tools, actual_steps). Tool routes must be exact tuples of non-blank strings; expected tools must be unique. actual_steps must be an exact integer of at least one. Raise TypeError or ValueError on invalid input. Return a tuple of failure labels in this order when applicable: tool_selection_mismatch if routes differ, step_inefficient if actual_steps differs from one plus expected tool count, and loop_detected if an actual tool repeats.",
+      "explanation": "One trace audit exposes route, effort and loop defects separately so a final outcome cannot hide a poor trajectory.",
+      "starter": "def trace_audit(expected_tools, actual_tools, actual_steps):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def trace_audit(expected_tools, actual_tools, actual_steps):\n    if type(expected_tools) is not tuple or type(actual_tools) is not tuple:\n        raise TypeError('routes_not_tuples')\n    if type(actual_steps) is not int:\n        raise TypeError('actual_steps_not_int')\n    if actual_steps < 1:\n        raise ValueError('actual_steps_out_of_range')\n    for route in (expected_tools,actual_tools):\n        if any(type(tool) is not str for tool in route):\n            raise TypeError('tool_not_string')\n        if any(not tool.strip() for tool in route):\n            raise ValueError('tool_blank')\n    if len(expected_tools) != len(set(expected_tools)):\n        raise ValueError('expected_route_repeats')\n    failures=[]\n    if actual_tools != expected_tools:\n        failures.append('tool_selection_mismatch')\n    if actual_steps != 1 + len(expected_tools):\n        failures.append('step_inefficient')\n    if len(actual_tools) != len(set(actual_tools)):\n        failures.append('loop_detected')\n    return tuple(failures)\n",
+      "checks": [
+        {
+          "label": "Perfect routes are clean",
+          "code": "assert trace_audit((),(),1)==()\nassert trace_audit(('document','sql'),('document','sql'),3)==()\n"
+        },
+        {
+          "label": "Missing tool exposes two defects",
+          "code": "assert trace_audit(('document','sql'),('document',),2)==('tool_selection_mismatch','step_inefficient')\n"
+        },
+        {
+          "label": "Repeated extra tool exposes all defects",
+          "code": "assert trace_audit(('sql',),('sql','sql'),3)==('tool_selection_mismatch','step_inefficient','loop_detected')\n"
+        },
+        {
+          "label": "Reordering isolates selection",
+          "code": "assert trace_audit(('document','sql'),('sql','document'),3)==('tool_selection_mismatch',)\n"
+        },
+        {
+          "label": "Strict trace inputs",
+          "code": "assert raises(TypeError,trace_audit,[],(),1)\nassert raises(TypeError,trace_audit,(),(),True)\nassert raises(ValueError,trace_audit,(),(),0)\nassert raises(ValueError,trace_audit,('sql','sql'),('sql',),2)\nassert raises(ValueError,trace_audit,('sql',),(' ',),2)\n"
+        }
+      ],
+      "id": "W18-Q098"
+    },
+    {
+      "type": "code",
+      "topic": "Held-out evaluation",
+      "difficulty": "applied",
+      "prompt": "Implement held_out_split(case_ids, held_out_ids). Both values must be exact tuples of unique non-blank strings. case_ids must contain at least two IDs; held_out_ids must be non-empty, contain only known IDs and leave at least one visible case. Raise TypeError or ValueError on invalid inputs. Return (visible_ids, held_out_ids_in_dataset_order), preserving case_ids order in both outputs.",
+      "explanation": "A strict held-out split separates tuning-visible tasks from a release gate while retaining stable dataset order and rejecting leakage-prone ambiguity.",
+      "starter": "def held_out_split(case_ids, held_out_ids):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def held_out_split(case_ids, held_out_ids):\n    if type(case_ids) is not tuple or type(held_out_ids) is not tuple:\n        raise TypeError('split_inputs_not_tuples')\n    for values in (case_ids,held_out_ids):\n        if any(type(value) is not str for value in values):\n            raise TypeError('case_id_not_string')\n        if any(not value.strip() for value in values):\n            raise ValueError('case_id_blank')\n        if len(values) != len(set(values)):\n            raise ValueError('case_id_duplicate')\n    if len(case_ids) < 2 or not held_out_ids:\n        raise ValueError('split_size_invalid')\n    held=set(held_out_ids)\n    if not held.issubset(case_ids) or len(held)==len(case_ids):\n        raise ValueError('held_out_membership_invalid')\n    visible=tuple(value for value in case_ids if value not in held)\n    ordered_held=tuple(value for value in case_ids if value in held)\n    return visible, ordered_held\n",
+      "checks": [
+        {
+          "label": "Split preserves dataset order",
+          "code": "visible,held=held_out_split(('c1','c2','c3','c4'),('c4','c2'))\nassert visible==('c1','c3') and held==('c2','c4')\n"
+        },
+        {
+          "label": "Single held-out case",
+          "code": "assert held_out_split(('a','b'),('b',))==(('a',),('b',))\n"
+        },
+        {
+          "label": "Unknown held-out ID fails",
+          "code": "assert raises(ValueError,held_out_split,('a','b'),('c',))\n"
+        },
+        {
+          "label": "Both partitions must remain",
+          "code": "assert raises(ValueError,held_out_split,('a','b'),())\nassert raises(ValueError,held_out_split,('a','b'),('a','b'))\nassert raises(ValueError,held_out_split,('a',),('a',))\n"
+        },
+        {
+          "label": "Strict unique identifiers",
+          "code": "assert raises(TypeError,held_out_split,['a','b'],('b',))\nassert raises(TypeError,held_out_split,('a',1),('a',))\nassert raises(ValueError,held_out_split,('a','a'),('a',))\nassert raises(ValueError,held_out_split,('a',' '),('a',))\n"
+        }
+      ],
+      "id": "W18-Q099"
+    },
+    {
+      "type": "code",
+      "topic": "Run auditing",
+      "difficulty": "applied",
+      "prompt": "Implement validate_run_summary(run). run must be an exact dict with dataset_sha256, candidate_version, overall and slices. Require a lowercase 64-character hexadecimal digest and non-blank candidate version. overall must contain exactly cases, successes, expected_tool_arguments, correct_tool_arguments and unsafe_actions as non-negative exact integers with valid bounds and cases greater than zero. slices must be a non-empty exact tuple of exact dicts with category, cases and successes; require unique non-blank categories, positive case counts, valid successes, and slice case and success totals equal overall. Raise TypeError or ValueError on violation and return True.",
+      "explanation": "A final audit checks identity and raw-count consistency before rounded metrics are trusted or a result is persisted.",
+      "starter": "def validate_run_summary(run):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def validate_run_summary(run):\n    if type(run) is not dict:\n        raise TypeError('run_not_dict')\n    if set(run) != {'dataset_sha256','candidate_version','overall','slices'}:\n        raise ValueError('run_shape_invalid')\n    if type(run['dataset_sha256']) is not str or type(run['candidate_version']) is not str:\n        raise TypeError('run_identity_not_string')\n    digest=run['dataset_sha256']\n    if len(digest)!=64 or any(char not in '0123456789abcdef' for char in digest):\n        raise ValueError('dataset_digest_invalid')\n    if not run['candidate_version'].strip():\n        raise ValueError('candidate_version_blank')\n    overall=run['overall']\n    if type(overall) is not dict:\n        raise TypeError('overall_not_dict')\n    keys={'cases','successes','expected_tool_arguments','correct_tool_arguments','unsafe_actions'}\n    if set(overall)!=keys:\n        raise ValueError('overall_shape_invalid')\n    if any(type(overall[key]) is not int for key in keys):\n        raise TypeError('overall_count_not_int')\n    if any(overall[key] < 0 for key in keys) or overall['cases'] < 1:\n        raise ValueError('overall_count_negative')\n    if overall['successes'] > overall['cases'] or overall['unsafe_actions'] > overall['cases']:\n        raise ValueError('overall_case_count_invalid')\n    if overall['correct_tool_arguments'] > overall['expected_tool_arguments']:\n        raise ValueError('overall_argument_count_invalid')\n    slices=run['slices']\n    if type(slices) is not tuple:\n        raise TypeError('slices_not_tuple')\n    if not slices:\n        raise ValueError('slices_empty')\n    categories=[]\n    slice_cases=0\n    slice_successes=0\n    for row in slices:\n        if type(row) is not dict:\n            raise TypeError('slice_not_dict')\n        if set(row)!={'category','cases','successes'}:\n            raise ValueError('slice_shape_invalid')\n        if type(row['category']) is not str:\n            raise TypeError('slice_category_not_string')\n        if not row['category'].strip():\n            raise ValueError('slice_category_blank')\n        if type(row['cases']) is not int or type(row['successes']) is not int:\n            raise TypeError('slice_count_not_int')\n        if row['cases'] < 1 or not 0 <= row['successes'] <= row['cases']:\n            raise ValueError('slice_count_invalid')\n        categories.append(row['category'])\n        slice_cases += row['cases']\n        slice_successes += row['successes']\n    if len(categories) != len(set(categories)):\n        raise ValueError('slice_category_duplicate')\n    if slice_cases != overall['cases'] or slice_successes != overall['successes']:\n        raise ValueError('slice_totals_mismatch')\n    return True\n",
+      "checks": [
+        {
+          "label": "Consistent run passes",
+          "code": "run={'dataset_sha256':'a'*64,'candidate_version':'procurement-v1','overall':{'cases':3,'successes':2,'expected_tool_arguments':5,'correct_tool_arguments':4,'unsafe_actions':0},'slices':({'category':'normal','cases':2,'successes':2},{'category':'failure','cases':1,'successes':0})}\nassert validate_run_summary(run) is True\n"
+        },
+        {
+          "label": "Digest and candidate are strict",
+          "code": "base={'dataset_sha256':'a'*64,'candidate_version':'v1','overall':{'cases':1,'successes':1,'expected_tool_arguments':0,'correct_tool_arguments':0,'unsafe_actions':0},'slices':({'category':'normal','cases':1,'successes':1},)}\nassert raises(ValueError,validate_run_summary,{**base,'dataset_sha256':'A'*64})\nassert raises(ValueError,validate_run_summary,{**base,'candidate_version':' '})\n"
+        },
+        {
+          "label": "Overall bounds are enforced",
+          "code": "base={'dataset_sha256':'a'*64,'candidate_version':'v1','overall':{'cases':1,'successes':1,'expected_tool_arguments':1,'correct_tool_arguments':1,'unsafe_actions':0},'slices':({'category':'normal','cases':1,'successes':1},)}\nassert raises(ValueError,validate_run_summary,{**base,'overall':{**base['overall'],'successes':2}})\nassert raises(ValueError,validate_run_summary,{**base,'overall':{**base['overall'],'correct_tool_arguments':2}})\nassert raises(TypeError,validate_run_summary,{**base,'overall':{**base['overall'],'cases':True}})\n"
+        },
+        {
+          "label": "Slice totals and names are enforced",
+          "code": "base={'dataset_sha256':'a'*64,'candidate_version':'v1','overall':{'cases':2,'successes':1,'expected_tool_arguments':0,'correct_tool_arguments':0,'unsafe_actions':0},'slices':({'category':'a','cases':1,'successes':1},{'category':'b','cases':1,'successes':0})}\nassert raises(ValueError,validate_run_summary,{**base,'slices':({'category':'a','cases':1,'successes':1},)})\nassert raises(ValueError,validate_run_summary,{**base,'slices':({'category':'a','cases':1,'successes':1},{'category':'a','cases':1,'successes':0})})\n"
+        },
+        {
+          "label": "Closed containers are required",
+          "code": "base={'dataset_sha256':'a'*64,'candidate_version':'v1','overall':{'cases':1,'successes':1,'expected_tool_arguments':0,'correct_tool_arguments':0,'unsafe_actions':0},'slices':({'category':'normal','cases':1,'successes':1},)}\nassert raises(TypeError,validate_run_summary,[])\nassert raises(ValueError,validate_run_summary,{**base,'extra':1})\nassert raises(TypeError,validate_run_summary,{**base,'slices':list(base['slices'])})\nassert raises(ValueError,validate_run_summary,{**base,'slices':()})\n"
+        }
+      ],
+      "id": "W18-Q100"
+    }
+  ]
+}
