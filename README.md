@@ -644,3 +644,37 @@ Required CI includes strict lint, format and typing, 64 assessment checks, 20
 focused evaluator tests and the Week 18 smoke alongside all published
 assessment, lab and real PostgreSQL/pgvector gates. Lesson and questionnaire
 navigation include Week 18.
+
+## Week 19 content and deterministic agent-safety gateway
+
+The [Week 19 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-19/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-19/beginner/)
+put an enforceable gateway between agent proposals and synthetic procurement
+tools. The [local lab](labs/week_19/README.md) separates trusted tenant/principal
+scope from tool requests, checks a closed least-privilege registry, requires one
+exact human grant for each write and stops execution at a hard step limit.
+
+Three read tools use separate permissions. A local review-flag write returns an
+undo receipt; reversal needs a different permission, a fresh human approval, the
+same tenant, an unused token and unchanged post-write state. The dispatcher has
+no shell, network, filesystem, database, provider or external action capability.
+
+~~~shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_19.demo case --scenario write-without-approval
+python -m labs.week_19.demo case --scenario reversal
+python -m labs.week_19.demo case --scenario secret-rejected
+python -m labs.week_19.demo smoke
+python -m pytest tests/test_week19_agent_safety.py -q
+~~~
+
+Audit events cover request, approval, denial, execution, reversal, step limit and
+failure while excluding raw arguments, secret values and arbitrary exception
+text. Their deterministic SHA-256 chain detects mutation and reordering in a
+supplied event sequence; it is not a substitute for authenticated, durable,
+append-only production storage.
+
+Required CI adds strict lint, format and typing, 29 focused guardrail tests and a
+12-check smoke while retaining every published assessment, lab and real
+PostgreSQL/pgvector gate. Week 19 is content-only: lesson navigation includes it,
+while questionnaire navigation remains through Week 18.
