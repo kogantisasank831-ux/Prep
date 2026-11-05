@@ -1,4 +1,4 @@
-# Week 18 agent-evaluation contracts — revision 1
+# Week 18 agent-evaluation contracts — revision 2
 
 Source: `Path.md` Week 18 and the Week 17 bounded procurement supervisor. These
 rules describe a deterministic offline teaching evaluation. They do not certify
@@ -22,6 +22,7 @@ production quality, security, latency, cost or business approval.
 | W18-NFR1 | Given the same dataset and candidate version, observations, scores and summary are deterministic. No model, provider, network, database, secret, current clock or random source participates. |
 | W18-NFR2 | The evaluator and candidate remain separate enough that tests can mutate observations and prove the graders detect wrong outcomes, tools, arguments, loops and unsafe actions. |
 | W18-ER1 | Test dataset validation and coverage, all 28 expected outcomes, metric denominators, category slices, prompt-injection isolation, approval stops, failure propagation, mutation detection, deterministic replay, fresh-directory persistence and CLI smoke. Run Ruff, format, strict mypy, configured regressions and CLI smoke before publication. |
+| W18-AS1 | Publish a 100-item practice bank with 30 single-choice, 20 multiple-correct, 15 matching, 15 short-answer and 20 self-contained Python coding questions. Every generated 10-question paper contains exactly two of each type for 100 marks. Each coding task has five executable checks, its reference passes all five, its starter scores zero and a distinct plausible wrong implementation loses marks. |
 
 ## Accepted interpretation
 

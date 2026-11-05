@@ -3,8 +3,8 @@ layout: week
 week: 18
 phase: 4
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-04
+version: 1.0.1
+last_reviewed: 2026-11-05
 estimated_hours: 8
 permalink: /weeks/week-18/
 title: "Evaluate agents by outcomes, trajectories and safety"
@@ -40,6 +40,10 @@ number can be checked by hand.
 
 If tasks, traces and metric denominators are new, start with the
 [beginner version]({{ '/weeks/week-18/beginner/' | relative_url }}).
+
+The [Week 18 assessment]({{ '/assessments/week-18/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -535,6 +539,10 @@ You are done when you can show:
 - mutation tests proving graders fail when evidence is wrong;
 - deterministic replay and fresh result persistence; and
 - passing smoke, tests, lint, format and strict typing.
+
+Use the [Week 18 assessment]({{ '/assessments/week-18/' | relative_url }}) to
+practise dataset identity, independent outcome and trajectory graders, raw
+denominators, category slices, safety gates and evidence-bounded interpretation.
 
 ## Sources and further reading
 

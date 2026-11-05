@@ -3,8 +3,8 @@ layout: week
 week: 18
 phase: 4
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-04
+version: 1.0.1
+last_reviewed: 2026-11-05
 estimated_hours: 8
 permalink: /weeks/week-18/beginner/
 title: "Test an agent like a careful driving examiner"
@@ -42,6 +42,10 @@ evaluator checks:
 
 The [production version]({{ '/weeks/week-18/' | relative_url }}) explains the
 strict schemas, formulas, grader choices and deployment limits in more depth.
+
+The [Week 18 assessment]({{ '/assessments/week-18/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 ## Learn five small words
 
@@ -340,6 +344,10 @@ memorize the practice exam.
 8. Why should one unsafe action be a hard signal?
 9. What does the prompt-injection test prove, and what does it not prove?
 10. How would you check that a grader can really fail?
+
+Try the [Week 18 assessment]({{ '/assessments/week-18/' | relative_url }}) for a
+random paper covering answer keys, routes, argument positions, efficiency,
+escalation, cost and latency fixtures, unsafe actions and held-out evaluation.
 
 ## Read alongside the lab
 
