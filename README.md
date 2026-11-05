@@ -227,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 through 16 use the shared engine. Future weeks need their own
+Weeks 1 through 17 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -275,11 +275,12 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–17 assessment tests and Week 10–17 labs'
+requires Node 20+, checks the Week 7–17 assessment tests and Week 10–18 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
 application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory/
-Week 17 multi-agent tests and Week 1 service regressions. A second required job builds
+Week 17 multi-agent/Week 18 agent-evaluation tests and Week 1 service regressions.
+A second required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
 The candidate commit must pass before its branch is promoted to
@@ -603,3 +604,37 @@ external action or dependency. Required CI includes the 64 assessment checks,
 25 lab behavior tests and CLI smoke while preserving all published assessment
 and PostgreSQL/pgvector gates. Lesson and questionnaire navigation include Week
 17.
+
+## Week 18 content and deterministic agent-evaluation lab
+
+The [Week 18 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-18/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-18/beginner/)
+evaluate Procurement Intelligence Agent v1 on a versioned 28-case synthetic
+suite. The [local lab](labs/week_18/README.md) records end states and ordered tool
+traces, then reports task completion, exact tool selection, argument accuracy,
+step efficiency, loops, escalation, fixture cost/latency and unsafe actions.
+
+The dataset covers six normal requests; four each for missing information, tool
+failure, conflicting evidence and prompt injection; and three each for invalid
+tool arguments and approval-required actions. A controlled wrong SQL supplier
+argument fails closed: task handling passes while the independent argument
+grader exposes the defect. Category slices retain raw counts and denominators.
+
+~~~shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_18.demo case --case-id W18-025
+python -m labs.week_18.demo evaluate
+python -m labs.week_18.demo smoke
+python -m pytest tests/test_week18_agent_evaluation.py -q
+~~~
+
+The run is deterministic and uses no model, provider, API key, network, database
+or external procurement action. Cost units and latency are declared fixtures for
+metric arithmetic, not billing or production measurements. Prompt-injection
+checks prove only that one untrusted field stays outside this adapter's routing
+and arguments; they are not a broad safety certificate.
+
+Required CI includes strict lint, format, typing, 20 focused evaluator tests and
+the Week 18 smoke alongside all published assessment, lab and real PostgreSQL/
+pgvector gates. Lesson navigation includes Week 18. Questionnaire navigation
+remains at Week 17 until a separately reviewed Week 18 bank is published.
