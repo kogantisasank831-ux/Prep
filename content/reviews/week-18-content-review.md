@@ -124,5 +124,24 @@ publication section is completed.
 
 ## Publication verification
 
-Candidate CI, main promotion, GitHub Pages deployment and live route verification
-remain pending.
+Publication verification completed on 2026-11-05 for implementation commit
+`d4babe7e8ce6f6c78f616a2dffda56a8cb3b103a`:
+
+- Candidate CI run `41976331296` passed the Python 3.13.12 lint, format, strict
+  typing, 1,645-test regression and six CLI smoke gates, followed by the real
+  PostgreSQL/pgvector permission, revocation and named-volume restart job.
+- Main CI run `41976583730` passed both required jobs after fast-forward
+  promotion.
+- GitHub Pages run `41976583214` built and deployed successfully.
+- The production route rendered “Evaluate agents by outcomes, trajectories and
+  safety,” and the beginner route rendered “Test an agent like a careful driving
+  examiner.” Their reciprocal depth links resolved in both directions.
+- Live navigation exposed Week 18 as a lesson and left Week 19 as a roadmap item.
+  Both routes exposed zero Week 18 assessment links, matching the content-only
+  scope.
+- Neither route logged a page-origin warning or error during final browser
+  verification.
+
+GitHub Pages hosts only the static lessons. The evaluation candidate, dataset,
+graders and CLI run locally; no public Python service, model, provider, database
+or procurement action was deployed.
