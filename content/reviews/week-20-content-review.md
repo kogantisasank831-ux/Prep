@@ -116,12 +116,28 @@ Local environment: Python 3.12.14. The declared CI environment is Python 3.13.12
   navigation and absence of a premature Week 20 assessment link pass locally.
 
 Candidate CI, the real PostgreSQL/pgvector job, main promotion and live Pages
-verification must pass before the publication section is completed.
+verification were then required before publication could be recorded below.
 
 ## Publication verification
 
-Pending candidate CI, lease-protected main promotion, Pages deployment and live
-browser verification.
+Publication verification completed on 2026-11-06 for implementation commit
+`fc48e9cf8864748351b2db850f07ff73b8842877`.
+
+- Candidate CI run `42252595960` passed on Python 3.13.12: Ruff lint and format,
+  strict mypy, all 1,841 tests, the Week 13-20 CLI smokes, and the real
+  PostgreSQL/pgvector permission, revocation and restart checks.
+- Lease-protected promotion to `main` completed, and main CI run `42253153613`
+  passed the same Python and PostgreSQL/pgvector jobs.
+- Pages deployment run `42253153501` completed successfully.
+- The production lesson renders the heading “Design failure as a controlled
+  state, not a surprise”; its circuit states render as native prose rather than
+  raw Mermaid source. The beginner lesson renders “Keep the delivery desk useful
+  when one service breaks,” and the depth links resolve reciprocally.
+- The live sidebar and Week 20 roadmap card each expose the Week 20 lesson. The
+  card has one lesson link and zero questionnaire links; the production lesson,
+  beginner lesson and roadmap have zero Week 20 assessment links.
+- Browser checks found no page-origin warnings or errors on the production
+  lesson, beginner lesson or roadmap.
 
 GitHub Pages will host only the static lessons. The manual clock, scripted
 dependencies, circuits, queue, retry worker and CLI run locally; no public Python
