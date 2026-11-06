@@ -160,16 +160,10 @@ age and the caller's remaining deadline before scheduling another attempt.
 
 ## Stop calling a dependency that is probably down
 
-A circuit breaker remembers recent failure state for one dependency:
-
-```mermaid
-stateDiagram-v2
-    [*] --> Closed
-    Closed --> Open: threshold reached
-    Open --> HalfOpen: recovery interval
-    HalfOpen --> Closed: probe succeeds
-    HalfOpen --> Open: probe fails
-```
+A circuit breaker remembers recent failure state for one dependency. It starts
+closed, opens when the failure threshold is reached and moves to half-open after
+the recovery interval. A successful probe closes it; a failed probe opens it
+again.
 
 - **Closed:** calls flow; successes reset consecutive failures.
 - **Open:** calls fail fast without spending a dependency attempt.
