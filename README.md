@@ -681,3 +681,39 @@ Required CI includes strict lint, format and typing, 64 focused assessment
 checks, 29 focused guardrail tests and a 12-check smoke while retaining every
 published assessment, lab and real PostgreSQL/pgvector gate. Lesson and
 questionnaire navigation both include Week 19.
+
+## Week 20 content and deterministic reliability worker
+
+The [Week 20 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-20/)
+and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-20/beginner/)
+turn reliability and failure handling into one inspectable queue-worker flow.
+The [local lab](labs/week_20/README.md) classifies transient and permanent
+failures, applies finite capped backoff and per-attempt deadlines, opens one
+circuit per dependency, invokes declared model/tool fallbacks and preserves a
+terminal result for every independent batch item.
+
+Five deterministic scenarios cover a primary-model outage, database timeout,
+contract-invalid API result, vector-store outage and rate limit. Three use
+visible degraded fallbacks, the rate-limited call recovers on its second primary
+attempt and the invalid result enters a minimal dead-letter queue without
+preventing the two later jobs from completing.
+
+~~~shell
+python -m pip install -r requirements-dev.txt
+python -m labs.week_20.demo case --scenario llm-provider-outage
+python -m labs.week_20.demo case --scenario invalid-api-result
+python -m labs.week_20.demo batch
+python -m labs.week_20.demo smoke
+python -m pytest tests/test_week20_reliability.py -q
+~~~
+
+The simulator uses a manual clock and scripted in-memory dependencies. It proves
+policy branches, strict contracts and deterministic failure behavior; it does
+not prove real socket cancellation, broker durability, distributed circuit
+coordination, fallback quality/capacity or exactly-once effects. Automatic
+retries represent safe read-like work, not Week 19's approval-bound writes.
+
+Required CI adds 39 focused reliability checks and a 16-check smoke to all
+existing assessment, lab and PostgreSQL/pgvector gates. Lesson navigation
+includes Week 20 while questionnaire navigation intentionally remains through
+Week 19 until a separate Week 20 questionnaire release.
