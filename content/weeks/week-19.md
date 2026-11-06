@@ -3,8 +3,8 @@ layout: week
 week: 19
 phase: 5
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-05
+version: 1.0.1
+last_reviewed: 2026-11-06
 estimated_hours: 8
 permalink: /weeks/week-19/
 title: "Put enforceable guardrails between agents and tools"
@@ -36,6 +36,10 @@ provider or external procurement action.
 
 If authorization and capability boundaries are new, start with the
 [beginner version]({{ '/weeks/week-19/beginner/' | relative_url }}).
+
+The [Week 19 assessment]({{ '/assessments/week-19/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -392,6 +396,10 @@ You are done when you can show:
 - controlled policy and tool failure responses;
 - deterministic replay, CLI smoke and 29 focused passing tests; and
 - explicit production gaps rather than a broad safety claim.
+
+Use the [Week 19 assessment]({{ '/assessments/week-19/' | relative_url }}) to
+practise trusted boundaries, least privilege, exact approval, bounded autonomy,
+secret-safe audit evidence, controlled failure and conflict-aware reversal.
 
 ## Sources and further reading
 

@@ -1,4 +1,4 @@
-# Week 19 agent-safety contracts — revision 1
+# Week 19 agent-safety contracts — revision 2
 
 Source: `Path.md` Week 19 and the Week 18 Procurement Intelligence Agent v1
 evaluation boundary. These rules define a deterministic local teaching gateway.
@@ -24,6 +24,7 @@ durable audit system or real procurement integration.
 | W19-SR3 | Never treat an approval ledger reference, sandbox instance or audit object as agent-visible capability. The local Python process is an educational trust boundary, not hostile-code isolation. |
 | W19-NFR1 | Given the same trusted scope, requests, approvals and fixtures, results, receipts and audit hashes are deterministic. No model, provider, current clock, random source or external service participates. |
 | W19-NFR2 | Keep the implementation dependency-free beyond the repository's pinned Pydantic runtime and standard library. Run under strict typing with closed frozen boundary models. |
+| W19-AS1 | Publish a reviewed 100-question practice bank containing 30 single-choice, 20 multiple-correct, 15 matching, 15 short-answer and 20 Python coding items. Every seeded 10-question paper draws exactly two of each type for 100 marks. Each coding item has five executable self-contained standard-library checks, and shared scoring keeps unavailable or stale code results pending rather than inventing marks. |
 | W19-ER1 | Test strict schemas, tenant isolation, permission denial, unknown tools, argument validation, recursive secret rejection, approval absence/mismatch/reuse, step limits, sanitized failures, chain tampering, reversible writes, tenant-scoped undo, stale-undo conflicts, deterministic replay and CLI smoke. |
 
 ## Permission and operation matrix

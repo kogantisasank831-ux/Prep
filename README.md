@@ -227,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 through 18 use the shared engine. Future weeks need their own
+Weeks 1 through 19 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -647,12 +647,15 @@ navigation include Week 18.
 
 ## Week 19 content and deterministic agent-safety gateway
 
-The [Week 19 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-19/)
-and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-19/beginner/)
+The [Week 19 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-19/),
+its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-19/beginner/)
+and the [Week 19 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-19/)
 put an enforceable gateway between agent proposals and synthetic procurement
 tools. The [local lab](labs/week_19/README.md) separates trusted tenant/principal
 scope from tool requests, checks a closed least-privilege registry, requires one
-exact human grant for each write and stops execution at a hard step limit.
+exact human grant for each write and stops execution at a hard step limit. The
+assessment draws balanced 10-question papers from 100 reviewed items and gives
+each of 20 standard-library Python exercises five executable checks.
 
 Three read tools use separate permissions. A local review-flag write returns an
 undo receipt; reversal needs a different permission, a fresh human approval, the
@@ -674,7 +677,7 @@ text. Their deterministic SHA-256 chain detects mutation and reordering in a
 supplied event sequence; it is not a substitute for authenticated, durable,
 append-only production storage.
 
-Required CI adds strict lint, format and typing, 29 focused guardrail tests and a
-12-check smoke while retaining every published assessment, lab and real
-PostgreSQL/pgvector gate. Week 19 is content-only: lesson navigation includes it,
-while questionnaire navigation remains through Week 18.
+Required CI includes strict lint, format and typing, 64 focused assessment
+checks, 29 focused guardrail tests and a 12-check smoke while retaining every
+published assessment, lab and real PostgreSQL/pgvector gate. Lesson and
+questionnaire navigation both include Week 19.

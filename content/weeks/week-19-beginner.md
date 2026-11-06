@@ -3,8 +3,8 @@ layout: week
 week: 19
 phase: 5
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-05
+version: 1.0.1
+last_reviewed: 2026-11-06
 estimated_hours: 6
 permalink: /weeks/week-19/beginner/
 title: "Give an agent a small keyring, a supervisor and an undo plan"
@@ -37,6 +37,10 @@ tools. The agent cannot create permission by saying “the user approved it.”
 The [production version]({{ '/weeks/week-19/' | relative_url }}) explains the
 strict contracts, approval digest, audit-chain properties and production limits
 in more depth.
+
+The [Week 19 assessment]({{ '/assessments/week-19/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 ## Learn nine small ideas
 
@@ -310,6 +314,10 @@ and an external anchor are separate controls.
 10. Why must a stale undo refuse to overwrite newer state?
 11. Why is `tool_failure` safer than returning a raw exception?
 12. What extra controls would a production sandbox need?
+
+Try the [Week 19 assessment]({{ '/assessments/week-19/' | relative_url }}) for a
+random paper covering trusted scope, narrow tools, exact write approval, step
+limits, safe audit evidence, controlled failures and one-use reversal.
 
 ## Read alongside the lab
 
