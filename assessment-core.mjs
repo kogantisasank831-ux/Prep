@@ -1,5 +1,6 @@
 /** Pure assessment contracts shared by the page and validation tools. */
 export const TYPES = ["single", "multiple", "match", "short", "code"];
+export const DIFFICULTIES = ["foundation", "applied"];
 export const POINTS = 10;
 export const MAX_SOURCE = 20_000;
 export const TYPE_LABELS = {
@@ -15,6 +16,15 @@ export function validateBank(bank) {
   invariant(bank?.schema_version === 1 && Number.isInteger(bank.week), "Unsupported assessment bank.");
   invariant(typeof bank.version === "string" && bank.questions?.length === 100, "A weekly bank needs exactly 100 questions.");
   invariant(bank.paper_policy?.questions === 10 && bank.paper_policy.per_type === 2 && bank.paper_policy.points_each === POINTS, "Unsupported paper scoring policy.");
+  const difficultyPolicy = bank.paper_policy.difficulty_per_type;
+  if (difficultyPolicy !== undefined) {
+    invariant(difficultyPolicy && typeof difficultyPolicy === "object" && Object.keys(difficultyPolicy).length === TYPES.length && TYPES.every(type => Object.hasOwn(difficultyPolicy, type)), "Difficulty policy needs every question type.");
+    for (const type of TYPES) {
+      const quota = difficultyPolicy[type];
+      invariant(quota && typeof quota === "object" && Object.keys(quota).length === DIFFICULTIES.length && DIFFICULTIES.every(difficulty => Number.isInteger(quota[difficulty]) && quota[difficulty] >= 0), `Invalid difficulty quota for ${type}.`);
+      invariant(DIFFICULTIES.reduce((sum, difficulty) => sum + quota[difficulty], 0) === bank.paper_policy.per_type, `Difficulty quotas must select ${bank.paper_policy.per_type} ${type} questions.`);
+    }
+  }
   invariant(["python", "sql"].includes(bank.code_language ?? "python"), "Unsupported coding language.");
   if (bank.code_language === "sql") {
     invariant(typeof bank.sql_schema === "string" && bank.sql_schema.length > 10, "SQL needs a fixture schema.");
@@ -25,6 +35,7 @@ export function validateBank(bank) {
     invariant(typeof q.id === "string" && !ids.has(q.id), "Question IDs must be unique.");
     ids.add(q.id);
     invariant(TYPES.includes(q.type) && typeof q.prompt === "string" && q.prompt.length > 10, `Invalid question ${q.id}.`);
+    invariant(DIFFICULTIES.includes(q.difficulty), `Invalid difficulty ${q.id}.`);
     invariant(typeof q.topic === "string" && typeof q.explanation === "string" && q.explanation.length > 10, `Missing teaching context ${q.id}.`);
     if (["single", "multiple"].includes(q.type)) {
       invariant(Array.isArray(q.options) && q.options.length >= 3, `Missing choices ${q.id}.`);
@@ -50,6 +61,13 @@ export function validateBank(bank) {
     }
   }
   for (const type of TYPES) invariant(bank.questions.filter(q => q.type === type).length >= 2, `Insufficient ${type} questions.`);
+  if (difficultyPolicy !== undefined) {
+    for (const type of TYPES) {
+      for (const difficulty of DIFFICULTIES) {
+        invariant(bank.questions.filter(q => q.type === type && q.difficulty === difficulty).length >= difficultyPolicy[type][difficulty], `Insufficient ${difficulty} ${type} questions.`);
+      }
+    }
+  }
   return bank;
 }
 
@@ -85,7 +103,12 @@ export function buildPaper(bank, seed) {
   validateBank(bank);
   invariant(validSeed(seed), "Invalid paper seed.");
   const random = generator(`${bank.week}:${bank.version}:${seed}`);
-  const chosen = TYPES.flatMap(type => shuffled(bank.questions.filter(q => q.type === type), random).slice(0, 2));
+  const difficultyPolicy = bank.paper_policy.difficulty_per_type;
+  const chosen = TYPES.flatMap(type => difficultyPolicy === undefined
+    ? shuffled(bank.questions.filter(q => q.type === type), random).slice(0, bank.paper_policy.per_type)
+    : DIFFICULTIES.flatMap(difficulty => shuffled(
+      bank.questions.filter(q => q.type === type && q.difficulty === difficulty), random,
+    ).slice(0, difficultyPolicy[type][difficulty])));
   return shuffled(chosen, random).map(q => ({
     ...q,
     ...(q.options ? { options: shuffled(q.options, random) } : {}),

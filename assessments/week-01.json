@@ -1,13 +1,20 @@
 {
   "schema_version": 1,
   "week": 1,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Python service foundations",
   "source_lesson": "/weeks/week-01/",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 2, "applied": 0},
+      "multiple": {"foundation": 0, "applied": 2},
+      "match": {"foundation": 2, "applied": 0},
+      "short": {"foundation": 2, "applied": 0},
+      "code": {"foundation": 0, "applied": 2}
+    }
   },
   "questions": [
     {

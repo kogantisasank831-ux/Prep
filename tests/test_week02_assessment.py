@@ -31,10 +31,23 @@ class Question(TypedDict, total=False):
     checks: list[Check]
 
 
+class DifficultyQuota(TypedDict):
+    foundation: int
+    applied: int
+
+
+class PaperPolicy(TypedDict):
+    questions: int
+    per_type: int
+    points_each: int
+    difficulty_per_type: dict[str, DifficultyQuota]
+
+
 class Bank(TypedDict):
     schema_version: int
     week: int
     version: str
+    paper_policy: PaperPolicy
     code_language: str
     sql_schema: str
     sql_fixtures: dict[str, str]
@@ -48,7 +61,7 @@ CODING = [q for q in BANK["questions"] if q["type"] == "code"]
 def test_bank_distribution_and_unique_content() -> None:
     assert BANK["schema_version"] == 1
     assert BANK["week"] == 2
-    assert BANK["version"] == "1.0.0"
+    assert BANK["version"] == "1.1.0"
     assert BANK["code_language"] == "sql"
     assert len(BANK["questions"]) == 100
     assert Counter(q["type"] for q in BANK["questions"]) == {
@@ -64,6 +77,10 @@ def test_bank_distribution_and_unique_content() -> None:
     assert len({q["prompt"] for q in BANK["questions"]}) == 100
     assert all(len(q["explanation"]) > 30 for q in BANK["questions"])
     assert all(q["difficulty"] in {"foundation", "applied"} for q in BANK["questions"])
+    assert all(
+        quota == {"foundation": 1, "applied": 1}
+        for quota in BANK["paper_policy"]["difficulty_per_type"].values()
+    )
 
 
 @pytest.mark.parametrize("question", CODING, ids=[q["id"] for q in CODING])

@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 1
+phase: 1
+status: approved
+version: 1.2.0
+last_reviewed: 2026-11-07
+estimated_hours: 8
 permalink: /weeks/week-01/
 description: Build a typed, validated, and testable procurement-document extraction API with Python and FastAPI.
 title: Python for production AI systems
@@ -28,9 +34,18 @@ The service is intentionally narrow. It accepts multipart form data with `media_
 
 We will build the explanation in the same order that a reliable implementation becomes necessary. First make one transformation trustworthy. Then decide where state belongs. Then make contracts precise, make failures useful, and make evidence safe. Only after those pieces are familiar will we assemble the HTTP application around them.
 
-### Work with one real request
+## Your route through Week 1
 
-If the vocabulary is unfamiliar, begin with the [simpler introduction]({{ '/weeks/week-01/beginner/' | relative_url }}). Otherwise, follow one supplier note through the chapters. After each checkpoint, explain which component owns the rule before looking at its implementation.
+This in-depth version is for a learner who already understands basic Python
+functions, classes, collections and exceptions. If those ideas or the service
+vocabulary are unfamiliar, begin with the [simpler introduction]({{ '/weeks/week-01/beginner/' | relative_url }}). Otherwise, follow one supplier note through the chapters. After each checkpoint, explain which component owns the rule before looking at its implementation.
+
+| Time | Focus | Evidence to keep |
+| --- | --- | --- |
+| Hours 1–2 | Pure transformations, object responsibilities and typed contracts | A request trace with the owner of every rule |
+| Hours 3–4 | Runtime validation, internal values and replaceable dependencies | One accepted command and one boundary rejection |
+| Hours 5–6 | Failure translation, safe logs, iterators and async I/O | A failure map and an explanation of blocking versus awaited work |
+| Hours 7–8 | HTTP assembly, unit and API tests, and assessment | Test output, one sample response and one deliberate failure |
 
 Use the [local service setup](https://github.com/kogantisasank831-ux/Prep#run-the-week-1-python-service) to install the pinned requirements and run the existing tests. Read the component lessons first, then send the sample multipart request after the HTTP and testing chapters. Keep its normalized text, counts and one failure response so that the final request trace describes behavior you have seen yourself.
 

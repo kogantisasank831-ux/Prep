@@ -21,6 +21,7 @@ class Question(TypedDict, total=False):
     id: str
     type: str
     prompt: str
+    difficulty: str
     reference: str
     starter: str
     checks: list[Check]
@@ -28,10 +29,23 @@ class Question(TypedDict, total=False):
     verification: dict[str, str]
 
 
+class DifficultyQuota(TypedDict):
+    foundation: int
+    applied: int
+
+
+class PaperPolicy(TypedDict):
+    questions: int
+    per_type: int
+    points_each: int
+    difficulty_per_type: dict[str, DifficultyQuota]
+
+
 class Bank(TypedDict):
     schema_version: int
     week: int
     version: str
+    paper_policy: PaperPolicy
     questions: list[Question]
 
 
@@ -53,6 +67,7 @@ def run[T](operation: Awaitable[T]) -> T:
 def test_bank_count_distribution_and_unique_prompts() -> None:
     assert BANK["schema_version"] == 1
     assert BANK["week"] == 1
+    assert BANK["version"] == "1.1.0"
     assert len(BANK["questions"]) == 100
     assert Counter(q["type"] for q in BANK["questions"]) == {
         "single": 30,
@@ -63,6 +78,14 @@ def test_bank_count_distribution_and_unique_prompts() -> None:
     }
     assert len({q["id"] for q in BANK["questions"]}) == 100
     assert len({q["prompt"] for q in BANK["questions"]}) == 100
+    assert all(q["difficulty"] in {"foundation", "applied"} for q in BANK["questions"])
+    assert BANK["paper_policy"]["difficulty_per_type"] == {
+        "single": {"foundation": 2, "applied": 0},
+        "multiple": {"foundation": 0, "applied": 2},
+        "match": {"foundation": 2, "applied": 0},
+        "short": {"foundation": 2, "applied": 0},
+        "code": {"foundation": 0, "applied": 2},
+    }
     assert [q["id"] for q in BANK["questions"]] == [
         f"W01-Q{i:03d}" for i in range(1, 101)
     ]

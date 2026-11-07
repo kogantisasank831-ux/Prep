@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 3
+phase: 1
+status: approved
+version: 1.2.0
+last_reviewed: 2026-11-07
+estimated_hours: 8
 permalink: /weeks/week-03/
 title: "LLM foundations: from tokens to a local model comparison"
 description: Build first-principles LLM intuition and a reproducible, local-only comparison harness for two Qwen2.5 GGUF models.
@@ -12,6 +18,23 @@ alternate_url: /weeks/week-03/beginner/
 ---
 
 Test your understanding with the [Week 3 assessment]({{ '/assessments/week-03/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on attention, sampling and controlled comparisons.
+
+## Your route through Week 3
+
+This in-depth version is for a learner who already has a basic understanding of
+vectors, probability, Python and HTTP/JSON boundaries. It moves from model
+mechanics into a reproducible local evaluation harness.
+
+| Time | Focus | Evidence to keep |
+| --- | --- | --- |
+| Hours 1–3 | Tokens through decoder blocks (Sections 1–11) | A shape-and-information trace for one next-token prediction |
+| Hours 4–5 | Training, alignment, context, sampling and failure language (Sections 12–17) | A supported explanation that separates fact, observation and inference |
+| Hours 6–7 | Local boundary and evidence hardening (Sections 18–24) | A fixed comparison plan, manifest and durable trial record |
+| Hour 8 | Recall, exercises and mini-project planning | A reviewable definition of done and the limits of the evidence |
+
+Sections 1–17 are the conceptual core. Sections 18–24 are the operational deep
+dive; do them after you can explain the generation path without relying on the
+code.
 
 ## One prompt, two continuations
 

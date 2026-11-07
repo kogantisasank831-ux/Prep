@@ -1,14 +1,21 @@
 {
   "schema_version": 1,
   "week": 2,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "SQL and procurement data modelling",
   "source_lesson": "/weeks/week-02/",
   "code_language": "sql",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "sql_schema": "-- Small synthetic assessment schema, separate from the full Week 2 lab.\n-- All prices use each order's currency and the line's unit.\n-- Zero quantity is permitted here only to exercise denominator guards.\nCREATE TABLE suppliers (id integer PRIMARY KEY, name text NOT NULL, active boolean NOT NULL);\nCREATE TABLE orders (\n id integer PRIMARY KEY, supplier_id integer NOT NULL REFERENCES suppliers(id),\n ordered_on date NOT NULL, status text NOT NULL, currency text NOT NULL);\nCREATE TABLE lines (\n id integer PRIMARY KEY, order_id integer NOT NULL REFERENCES orders(id), product text NOT NULL,\n quantity numeric NOT NULL CHECK (quantity >= 0), unit text NOT NULL,\n unit_price numeric NOT NULL CHECK (unit_price >= 0), promised_on date NOT NULL);\nCREATE TABLE receipts (\n id integer PRIMARY KEY, line_id integer NOT NULL REFERENCES lines(id), received_on date NOT NULL,\n delivered numeric NOT NULL, accepted numeric NOT NULL CHECK (accepted >= 0 AND accepted <= delivered));\nCREATE TABLE prices (\n id integer PRIMARY KEY, product text NOT NULL, priced_on date NOT NULL,\n unit text NOT NULL, currency text NOT NULL, price numeric NOT NULL);\n",
   "sql_fixtures": {

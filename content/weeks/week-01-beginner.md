@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 1
+phase: 1
+status: approved
+version: 1.2.0
+last_reviewed: 2026-11-07
+estimated_hours: 8
 permalink: /weeks/week-01/beginner/
 description: A beginner-friendly introduction to the Python and FastAPI concepts used in the production Week 1 lesson.
 title: Python service foundations—a simpler introduction
@@ -10,6 +16,30 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-01/
 ---
+
+## Before you start
+
+This version is for someone new to production Python services. You need only the
+basics of variables, functions, lists and dictionaries. FastAPI, Pydantic,
+dataclasses, protocols, async code and automated tests are introduced here; you
+do not need to know them already.
+
+## Beginner learning path
+
+Keep one supplier-note request in view and work in this order:
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | The API contract, functions, classes and types | Explain what enters the service, what leaves it and which rules belong to each component |
+| Hours 3–4 | Runtime validation, dataclasses, errors and safe logging | Trace one valid request and one rejected request without exposing document text |
+| Hours 5–6 | Iterators, async I/O and dependency replacement | Predict when work happens and explain why a fake reader makes a test easier |
+| Hours 7–8 | Tests, the local service and the assessment | Run the examples, record one success and one failure, then explain the result before checking the answer |
+
+The core goal is the request trace and its tests. Protocol details, concurrency
+limits and framework assembly are useful previews; revisit them in the production
+version after you can explain the basic flow. You do not need to memorise every
+decorator or type annotation on the first pass.
+
 ## What are we trying to build?
 
 Imagine that a procurement team receives short supplier notes as text files. We want to create an API that accepts one `.txt` file and returns its text together with a few useful facts:
