@@ -119,8 +119,27 @@ unchanged shared engine.
 
 ## Publication verification
 
-Pending candidate CI, lease-protected main promotion, Pages deployment and live
-browser verification.
+Completed 2026-11-07 for implementation commit
+`a8cd0d91d99f37211a040308d277c9028ab18ef2`.
+
+- Candidate CI run `42343532231` passed before promotion. Its Python 3.13.12
+  job passed Ruff lint and format, strict mypy, all 1,905 tests and all eight
+  configured CLI smokes. Its PostgreSQL/pgvector job also passed the real
+  database permission, revocation and restart checks.
+- Main CI run `42343729924` passed the same Python and real
+  PostgreSQL/pgvector gates after lease-protected promotion from the reviewed
+  baseline.
+- Pages run `42343729768` completed successfully for the promoted commit.
+- The live production and beginner lessons each expose two Week 20 assessment
+  links and reciprocal depth navigation. The roadmap Week 20 card exposes one
+  lesson link and one assessment link, while the sidebar exposes one Week 20
+  lesson link.
+- The live assessment reports 100 questions ready at version 1.0.0 and renders
+  a 10-question paper with exactly two questions of each format. It exposes ten
+  question jump links, two Python check controls, one submit-and-score control
+  and a working link back to the production lesson.
+- The production lesson, beginner lesson, roadmap and assessment produced no
+  page-origin browser warnings or errors during verification.
 
 GitHub Pages will host the static assessment and download the pinned browser
 Python runtime only when a learner runs a coding solution. The complete
