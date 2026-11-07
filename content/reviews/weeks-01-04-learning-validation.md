@@ -84,5 +84,18 @@ calibration. Scores remain practice evidence, not authenticated exam records.
 
 The broader configured regression command could not finish locally because the
 available environment does not contain the Week 15 `langgraph` dependency; it
-stopped during collection before running tests. The configured Python 3.13.12 CI
-suite remains required before promotion. Publication is a separate gated action.
+stopped during collection before running tests.
+
+## Candidate validation
+
+Candidate implementation commit `bb7674caff0c557519b55866981c5f567734184e`
+was validated by pull-request workflow run `42367949158` on Python 3.13.12.
+
+- The pytest job passed lint, formatting, strict mypy, the configured regression
+  suite and the Week 13–20 CLI smokes.
+- The integration job built the Week 12 container stack, ran the real
+  PostgreSQL/pgvector and FastAPI services, passed the permission/revocation
+  checks, and passed the named-volume restart smoke.
+
+Pull request #1 remains unmerged. Promotion to `main`, Pages deployment and live
+site verification are separate approval-gated actions.
