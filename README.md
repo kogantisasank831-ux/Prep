@@ -227,7 +227,7 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 through 19 use the shared engine. Future weeks need their own
+Weeks 1 through 20 use the shared engine. Future weeks need their own
 reviewed 100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
@@ -275,11 +275,12 @@ composed metric/source/review regressions and the existing 30-case evaluation.
 
 The `Weekly learning checks` workflow runs on assessment/content-branch and main
 pushes and pull requests. It installs the declared Python 3.13.12 environment,
-requires Node 20+, checks the Week 7–18 assessment tests and Week 10–18 labs'
+requires Node 20+, checks the Week 7–20 assessment tests and Week 10–20 labs'
 Ruff/typing gates, and runs every published assessment suite, Week 7 hybrid/
 Week 8 assistant/Week 9 evaluation/Week 10 tracing/Week 11 security/Week 12
 application/Week 13 tool-calling/Week 14 controller/Week 15 graph/Week 16 memory/
-Week 17 multi-agent/Week 18 agent-evaluation tests and Week 1 service regressions.
+Week 17 multi-agent/Week 18 agent-evaluation/Week 19 safety/Week 20 reliability
+tests and Week 1 service regressions.
 A second required job builds
 the real Week 12 Compose stack, runs PostgreSQL/pgvector permission/revocation
 integration and real HTTP smoke before and after its volume-preserving restart.
@@ -684,13 +685,16 @@ questionnaire navigation both include Week 19.
 
 ## Week 20 content and deterministic reliability worker
 
-The [Week 20 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-20/)
-and its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-20/beginner/)
+The [Week 20 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-20/),
+its [beginner version](https://kogantisasank831-ux.github.io/Prep/weeks/week-20/beginner/)
+and the [Week 20 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-20/)
 turn reliability and failure handling into one inspectable queue-worker flow.
 The [local lab](labs/week_20/README.md) classifies transient and permanent
 failures, applies finite capped backoff and per-attempt deadlines, opens one
 circuit per dependency, invokes declared model/tool fallbacks and preserves a
-terminal result for every independent batch item.
+terminal result for every independent batch item. The assessment draws balanced
+10-question papers from 100 reviewed items and gives each of 20 self-contained
+Python exercises five executable checks.
 
 Five deterministic scenarios cover a primary-model outage, database timeout,
 contract-invalid API result, vector-store outage and rate limit. Three use
@@ -704,6 +708,7 @@ python -m labs.week_20.demo case --scenario llm-provider-outage
 python -m labs.week_20.demo case --scenario invalid-api-result
 python -m labs.week_20.demo batch
 python -m labs.week_20.demo smoke
+python -m pytest tests/test_week20_assessment.py -q
 python -m pytest tests/test_week20_reliability.py -q
 ~~~
 
@@ -713,7 +718,6 @@ not prove real socket cancellation, broker durability, distributed circuit
 coordination, fallback quality/capacity or exactly-once effects. Automatic
 retries represent safe read-like work, not Week 19's approval-bound writes.
 
-Required CI adds 39 focused reliability checks and a 16-check smoke to all
-existing assessment, lab and PostgreSQL/pgvector gates. Lesson navigation
-includes Week 20 while questionnaire navigation intentionally remains through
-Week 19 until a separate Week 20 questionnaire release.
+Required CI adds 64 focused assessment checks, 39 focused reliability checks
+and a 16-check smoke to all existing assessment, lab and PostgreSQL/pgvector
+gates. Lesson and questionnaire navigation both include Week 20.

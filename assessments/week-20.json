@@ -1,0 +1,3171 @@
+{
+  "schema_version": 1,
+  "week": 20,
+  "version": "1.0.0",
+  "title": "Reliability and controlled failure handling",
+  "code_language": "python",
+  "paper_policy": {
+    "questions": 10,
+    "per_type": 2,
+    "points_each": 10
+  },
+  "questions": [
+    {
+      "type": "single",
+      "topic": "Terminal states",
+      "difficulty": "foundation",
+      "prompt": "Which statement best describes reliability in the Week 20 worker?",
+      "explanation": "Reliability means every accepted unit of work reaches a controlled, observable terminal state even when a dependency fails.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Every accepted job ends as completed, visibly degraded or dead-lettered"
+        },
+        {
+          "id": "o2",
+          "text": "Every dependency call eventually succeeds if it is retried forever"
+        },
+        {
+          "id": "o3",
+          "text": "Every failure is converted into a normal successful response"
+        },
+        {
+          "id": "o4",
+          "text": "Every batch stops as soon as one item fails"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q001"
+    },
+    {
+      "type": "single",
+      "topic": "Failure classification",
+      "difficulty": "foundation",
+      "prompt": "Which outcome is classified as transient by the Week 20 retry policy?",
+      "explanation": "Unavailable, rate-limited and timed-out calls may heal later; a contract-invalid response is permanent for the unchanged request.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A dependency is temporarily unavailable"
+        },
+        {
+          "id": "o2",
+          "text": "A nominally successful response omits required fields"
+        },
+        {
+          "id": "o3",
+          "text": "A caller lacks authorization"
+        },
+        {
+          "id": "o4",
+          "text": "A configured endpoint is invalid"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q002"
+    },
+    {
+      "type": "single",
+      "topic": "Contract validation",
+      "difficulty": "foundation",
+      "prompt": "Why is the invalid supplier response not retried with the same request?",
+      "explanation": "Missing required fields are a contract failure, and replaying the unchanged request is not expected to repair that response shape.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The response is contract-invalid rather than a temporary availability fault"
+        },
+        {
+          "id": "o2",
+          "text": "The queue permits only one job in total"
+        },
+        {
+          "id": "o3",
+          "text": "The supplier response was slower than the deadline"
+        },
+        {
+          "id": "o4",
+          "text": "All API results must use a model fallback"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q003"
+    },
+    {
+      "type": "single",
+      "topic": "Deadlines",
+      "difficulty": "foundation",
+      "prompt": "A database returns valid-looking data after 250 ms when the attempt deadline is 100 ms. What does the lab do?",
+      "explanation": "The response is classified as a timeout and its late data is discarded because it exceeded the accepted attempt deadline.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Classify timeout and ignore the late data"
+        },
+        {
+          "id": "o2",
+          "text": "Accept the data because its fields are valid"
+        },
+        {
+          "id": "o3",
+          "text": "Extend the deadline retroactively to 250 ms"
+        },
+        {
+          "id": "o4",
+          "text": "Report a normal completion with no warning"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q004"
+    },
+    {
+      "type": "single",
+      "topic": "Retry budgets",
+      "difficulty": "foundation",
+      "prompt": "What is the primary purpose of a finite retry budget?",
+      "explanation": "A finite budget prevents one fault from consuming unbounded time and multiplying load against an already unhealthy dependency.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Bound added latency and dependency load"
+        },
+        {
+          "id": "o2",
+          "text": "Guarantee that every transient fault recovers"
+        },
+        {
+          "id": "o3",
+          "text": "Make non-idempotent writes safe automatically"
+        },
+        {
+          "id": "o4",
+          "text": "Replace the need for deadlines"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q005"
+    },
+    {
+      "type": "single",
+      "topic": "Backoff",
+      "difficulty": "foundation",
+      "prompt": "With base backoff 100 ms and cap 150 ms, what delay should the third failed attempt schedule if another attempt remains?",
+      "explanation": "The exponential value is 400 ms for attempt three, but the configured cap limits the scheduled delay to 150 ms.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "150 ms"
+        },
+        {
+          "id": "o2",
+          "text": "100 ms"
+        },
+        {
+          "id": "o3",
+          "text": "300 ms"
+        },
+        {
+          "id": "o4",
+          "text": "400 ms"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q006"
+    },
+    {
+      "type": "single",
+      "topic": "Jitter",
+      "difficulty": "foundation",
+      "prompt": "Why do production retry clients normally add jitter to backoff?",
+      "explanation": "Randomized delay spreads clients that failed together so they do not all attack the recovering dependency at the same instant.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To reduce synchronized retry waves"
+        },
+        {
+          "id": "o2",
+          "text": "To make a write idempotent"
+        },
+        {
+          "id": "o3",
+          "text": "To validate fallback output fields"
+        },
+        {
+          "id": "o4",
+          "text": "To guarantee lower latency for every request"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q007"
+    },
+    {
+      "type": "single",
+      "topic": "Retry ownership",
+      "difficulty": "applied",
+      "prompt": "Why should retries usually be owned by one deliberate layer?",
+      "explanation": "Independent retry loops in clients, services, workers and brokers multiply attempts and can amplify an outage.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Nested retry layers multiply traffic and obscure the remaining budget"
+        },
+        {
+          "id": "o2",
+          "text": "Only a browser is permitted to retry"
+        },
+        {
+          "id": "o3",
+          "text": "Circuit breakers cannot coexist with retries"
+        },
+        {
+          "id": "o4",
+          "text": "A queue always guarantees exactly-once delivery"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q008"
+    },
+    {
+      "type": "single",
+      "topic": "Idempotency",
+      "difficulty": "applied",
+      "prompt": "What must a production idempotency key be bound to?",
+      "explanation": "The receiver must durably associate the key with the semantic request and terminal result, rejecting reuse for different work.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The exact business intent and its terminal result"
+        },
+        {
+          "id": "o2",
+          "text": "Only the current process identifier"
+        },
+        {
+          "id": "o3",
+          "text": "Only the latest dependency error text"
+        },
+        {
+          "id": "o4",
+          "text": "Any request from the same tenant"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q009"
+    },
+    {
+      "type": "single",
+      "topic": "Ambiguous writes",
+      "difficulty": "applied",
+      "prompt": "An approval-bound write times out after dispatch. What is the safer next step?",
+      "explanation": "A timeout may leave the write outcome unknown, so state must be reconciled and any required fresh approval obtained before another effect.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reconcile whether the effect happened before considering another write"
+        },
+        {
+          "id": "o2",
+          "text": "Retry immediately with the consumed approval"
+        },
+        {
+          "id": "o3",
+          "text": "Assume the write did not happen"
+        },
+        {
+          "id": "o4",
+          "text": "Convert the operation into a read"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q010"
+    },
+    {
+      "type": "single",
+      "topic": "Rate limits",
+      "difficulty": "applied",
+      "prompt": "Exponential backoff is 100 ms, Retry-After is 300 ms and its accepted cap is 500 ms. Which delay is used?",
+      "explanation": "The policy takes the larger of local backoff and the bounded Retry-After, producing a 300 ms delay.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "300 ms"
+        },
+        {
+          "id": "o2",
+          "text": "100 ms"
+        },
+        {
+          "id": "o3",
+          "text": "400 ms"
+        },
+        {
+          "id": "o4",
+          "text": "500 ms"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q011"
+    },
+    {
+      "type": "single",
+      "topic": "Circuit breakers",
+      "difficulty": "foundation",
+      "prompt": "What does a closed circuit breaker do?",
+      "explanation": "Closed is the normal state: dependency calls are allowed while failures are counted against the configured threshold.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Allow calls and observe their outcomes"
+        },
+        {
+          "id": "o2",
+          "text": "Fail every call without invoking the dependency"
+        },
+        {
+          "id": "o3",
+          "text": "Allow exactly one recovery probe"
+        },
+        {
+          "id": "o4",
+          "text": "Redirect every call to a dead-letter queue"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q012"
+    },
+    {
+      "type": "single",
+      "topic": "Circuit breakers",
+      "difficulty": "foundation",
+      "prompt": "What does an open circuit do during its recovery interval?",
+      "explanation": "An open circuit fails fast without spending a dependency invocation, allowing the dependency time to recover.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Reject calls without invoking the dependency"
+        },
+        {
+          "id": "o2",
+          "text": "Send unlimited probes"
+        },
+        {
+          "id": "o3",
+          "text": "Reset its failure count on every request"
+        },
+        {
+          "id": "o4",
+          "text": "Acknowledge the queue job as completed"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q013"
+    },
+    {
+      "type": "single",
+      "topic": "Circuit breakers",
+      "difficulty": "foundation",
+      "prompt": "What is the purpose of the half-open state?",
+      "explanation": "Half-open admits a limited recovery probe after the open interval; success closes the circuit and failure reopens it.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Test recovery with a limited probe"
+        },
+        {
+          "id": "o2",
+          "text": "Run the primary and fallback forever"
+        },
+        {
+          "id": "o3",
+          "text": "Disable deadline enforcement"
+        },
+        {
+          "id": "o4",
+          "text": "Mark every queued job as degraded"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q014"
+    },
+    {
+      "type": "single",
+      "topic": "Circuit scope",
+      "difficulty": "applied",
+      "prompt": "Why does the lab keep a separate circuit for each dependency name?",
+      "explanation": "Failure state must remain isolated so an unhealthy vector store does not block unrelated healthy dependencies such as the catalog API.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "To prevent one dependency failure from blocking unrelated dependencies"
+        },
+        {
+          "id": "o2",
+          "text": "To make every dependency share the same quota"
+        },
+        {
+          "id": "o3",
+          "text": "To remove the need for fallback contracts"
+        },
+        {
+          "id": "o4",
+          "text": "To guarantee cross-process coordination"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q015"
+    },
+    {
+      "type": "single",
+      "topic": "Model fallback",
+      "difficulty": "applied",
+      "prompt": "How should a successful secondary-model fallback be reported?",
+      "explanation": "A fallback is a different product path, so the result is visibly degraded, names the selected model and preserves the declared output shape.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "degraded with fallback_used and the secondary dependency named"
+        },
+        {
+          "id": "o2",
+          "text": "completed with the primary model named"
+        },
+        {
+          "id": "o3",
+          "text": "failed even when valid fallback data exists"
+        },
+        {
+          "id": "o4",
+          "text": "completed with no indication of the model used"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q016"
+    },
+    {
+      "type": "single",
+      "topic": "Cache fallback",
+      "difficulty": "applied",
+      "prompt": "Which evidence makes the database cache fallback honest?",
+      "explanation": "The fallback preserves required data while explicitly reporting its source and stale-45s freshness reduction.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A visible source and freshness label"
+        },
+        {
+          "id": "o2",
+          "text": "Removing the cache age from the response"
+        },
+        {
+          "id": "o3",
+          "text": "Calling stale data a normal database hit"
+        },
+        {
+          "id": "o4",
+          "text": "Retrying the database without a limit"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q017"
+    },
+    {
+      "type": "single",
+      "topic": "Fallback policy",
+      "difficulty": "applied",
+      "prompt": "Why does the invalid supplier result enter the dead-letter queue?",
+      "explanation": "No compatible fallback is declared, and inventing a supplier risk value would violate the output contract.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "There is no declared compatible fallback and fabrication would be unsafe"
+        },
+        {
+          "id": "o2",
+          "text": "Every third batch item must be dead-lettered"
+        },
+        {
+          "id": "o3",
+          "text": "The circuit always opens after one successful response"
+        },
+        {
+          "id": "o4",
+          "text": "Dead letters are faster than validation"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q018"
+    },
+    {
+      "type": "single",
+      "topic": "Queue processing",
+      "difficulty": "foundation",
+      "prompt": "What does leasing a queue job mean?",
+      "explanation": "A lease gives one worker temporary responsibility for a job and establishes the precondition for acknowledgement, requeue or dead-letter transition.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "One worker temporarily owns responsibility for processing the job"
+        },
+        {
+          "id": "o2",
+          "text": "The job has completed successfully"
+        },
+        {
+          "id": "o3",
+          "text": "The job can never be delivered again"
+        },
+        {
+          "id": "o4",
+          "text": "The payload has been copied into the dead-letter queue"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q019"
+    },
+    {
+      "type": "single",
+      "topic": "At-least-once delivery",
+      "difficulty": "applied",
+      "prompt": "Why must an at-least-once consumer expect duplicate delivery?",
+      "explanation": "A worker can finish an effect and crash before acknowledgement, causing the broker to make the same message visible again.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A worker may complete work but fail before acknowledgement"
+        },
+        {
+          "id": "o2",
+          "text": "A circuit breaker intentionally duplicates every request"
+        },
+        {
+          "id": "o3",
+          "text": "A fallback always submits a new business intent"
+        },
+        {
+          "id": "o4",
+          "text": "A dead-letter queue guarantees replay"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q020"
+    },
+    {
+      "type": "single",
+      "topic": "Acknowledgement",
+      "difficulty": "applied",
+      "prompt": "Which production design problem exists between a side effect and queue acknowledgement?",
+      "explanation": "A crash between the two can cause either duplicate effects or lost work, so the relationship must be atomic or explicitly reconcilable.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "They need a crash-safe atomic or reconcilable relationship"
+        },
+        {
+          "id": "o2",
+          "text": "They should always use different tenant identifiers"
+        },
+        {
+          "id": "o3",
+          "text": "Acknowledgement should happen before validation"
+        },
+        {
+          "id": "o4",
+          "text": "The queue should discard terminal results"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q021"
+    },
+    {
+      "type": "single",
+      "topic": "Partial failure",
+      "difficulty": "foundation",
+      "prompt": "What does the Week 20 batch demonstrate after the third item fails permanently?",
+      "explanation": "The fourth and fifth independent jobs still run, and every item retains its own terminal result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Independent later items continue and keep separate outcomes"
+        },
+        {
+          "id": "o2",
+          "text": "All earlier successes are rolled back"
+        },
+        {
+          "id": "o3",
+          "text": "The entire batch is reported as one success"
+        },
+        {
+          "id": "o4",
+          "text": "The failed item is silently removed"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q022"
+    },
+    {
+      "type": "single",
+      "topic": "Dependencies",
+      "difficulty": "applied",
+      "prompt": "When can continuing after one batch item fails be unsafe?",
+      "explanation": "If a later item depends on the failed prerequisite, continuing may violate business semantics; dependencies must be explicit.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "When a later item requires the failed item as a prerequisite"
+        },
+        {
+          "id": "o2",
+          "text": "Whenever the later item uses a different dependency"
+        },
+        {
+          "id": "o3",
+          "text": "Only when the failed item was rate limited"
+        },
+        {
+          "id": "o4",
+          "text": "Never; partial continuation is always correct"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q023"
+    },
+    {
+      "type": "single",
+      "topic": "Dead-letter queues",
+      "difficulty": "foundation",
+      "prompt": "What is the main role of a dead-letter queue?",
+      "explanation": "A DLQ quarantines terminal or poison work for diagnosis so it does not block normal traffic; it does not repair the work.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Quarantine failed work for controlled investigation"
+        },
+        {
+          "id": "o2",
+          "text": "Automatically make every failed payload valid"
+        },
+        {
+          "id": "o3",
+          "text": "Replace all application logging"
+        },
+        {
+          "id": "o4",
+          "text": "Guarantee exactly-once execution"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q024"
+    },
+    {
+      "type": "single",
+      "topic": "DLQ redrive",
+      "difficulty": "applied",
+      "prompt": "What should happen before a dead-lettered item is redriven?",
+      "explanation": "Operators should diagnose and repair the cause, authorize replay and verify idempotency rather than creating an automatic failure loop.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Repair the cause, authorize replay and check idempotency"
+        },
+        {
+          "id": "o2",
+          "text": "Copy arbitrary exception text into the payload"
+        },
+        {
+          "id": "o3",
+          "text": "Replay continuously until the queue is empty"
+        },
+        {
+          "id": "o4",
+          "text": "Delete the diagnostic record before inspection"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q025"
+    },
+    {
+      "type": "single",
+      "topic": "Observability",
+      "difficulty": "applied",
+      "prompt": "Why must degraded results be counted separately from normal completions?",
+      "explanation": "Fallback may preserve availability while reducing freshness, retrieval quality or model behavior; a normal-success count would hide the incident.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Fallback can preserve availability while reducing another user-visible property"
+        },
+        {
+          "id": "o2",
+          "text": "Degraded results always contain no data"
+        },
+        {
+          "id": "o3",
+          "text": "Only failed requests need metrics"
+        },
+        {
+          "id": "o4",
+          "text": "Every fallback has exactly the same quality and capacity"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q026"
+    },
+    {
+      "type": "single",
+      "topic": "Fallback capacity",
+      "difficulty": "applied",
+      "prompt": "What can make a declared fallback unavailable during a primary outage?",
+      "explanation": "The fallback may share a region, quota or upstream dependency, or lack capacity for the full outage traffic.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Shared failure domains or insufficient outage capacity"
+        },
+        {
+          "id": "o2",
+          "text": "A visible degraded label"
+        },
+        {
+          "id": "o3",
+          "text": "A deterministic test fixture"
+        },
+        {
+          "id": "o4",
+          "text": "A bounded retry count"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q027"
+    },
+    {
+      "type": "single",
+      "topic": "Simulation limits",
+      "difficulty": "foundation",
+      "prompt": "What does the lab's manual clock fail to prove?",
+      "explanation": "Advancing an integer proves timing policy branches but does not cancel sockets, tasks or database work or release their resources.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Real cancellation and resource cleanup"
+        },
+        {
+          "id": "o2",
+          "text": "The exact virtual delay sequence"
+        },
+        {
+          "id": "o3",
+          "text": "The deterministic ordering of fixtures"
+        },
+        {
+          "id": "o4",
+          "text": "The configured retry cap"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q028"
+    },
+    {
+      "type": "single",
+      "topic": "Scenario outcomes",
+      "difficulty": "foundation",
+      "prompt": "How does the rate-limit scenario terminate?",
+      "explanation": "After a 300 ms virtual wait, the second catalog call succeeds on the primary path, so the result is completed/recovered_after_retry.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "completed after a primary retry"
+        },
+        {
+          "id": "o2",
+          "text": "degraded through lexical search"
+        },
+        {
+          "id": "o3",
+          "text": "dead_letter with invalid_response"
+        },
+        {
+          "id": "o4",
+          "text": "degraded through bounded cache"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q029"
+    },
+    {
+      "type": "single",
+      "topic": "Safety claim",
+      "difficulty": "applied",
+      "prompt": "Which conclusion is justified after all Week 20 lab tests pass?",
+      "explanation": "The deterministic synthetic contracts and failure branches are verified; real cancellation, durability, concurrency, quality and capacity remain unproven.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The declared local contracts hold over the tested synthetic boundary"
+        },
+        {
+          "id": "o2",
+          "text": "The worker is proven reliable for every provider and broker"
+        },
+        {
+          "id": "o3",
+          "text": "The cache is guaranteed fresh in production"
+        },
+        {
+          "id": "o4",
+          "text": "Exactly-once effects are guaranteed across crashes"
+        }
+      ],
+      "correct": [
+        "o1"
+      ],
+      "id": "W20-Q030"
+    },
+    {
+      "type": "multiple",
+      "topic": "Transient outcomes",
+      "difficulty": "foundation",
+      "prompt": "Which Week 20 outcomes are eligible for a bounded same-request retry?",
+      "explanation": "Only unavailable, rate-limited and timed-out read-like operations are classified as transient in the lab.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "unavailable"
+        },
+        {
+          "id": "o2",
+          "text": "rate_limited"
+        },
+        {
+          "id": "o3",
+          "text": "timeout"
+        },
+        {
+          "id": "o4",
+          "text": "invalid_response"
+        },
+        {
+          "id": "o5",
+          "text": "permission_denied"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W20-Q031"
+    },
+    {
+      "type": "multiple",
+      "topic": "Non-retryable work",
+      "difficulty": "applied",
+      "prompt": "Which conditions should not be automatically replayed by the Week 20 read-like retry loop?",
+      "explanation": "Contract-invalid, authorization/configuration and ambiguous consequential writes need repair or reconciliation rather than blind replay.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "A response missing required fields"
+        },
+        {
+          "id": "o2",
+          "text": "A denied permission or invalid credential"
+        },
+        {
+          "id": "o3",
+          "text": "A timed-out consequential write with unknown outcome"
+        },
+        {
+          "id": "o4",
+          "text": "A safe read that receives a temporary unavailable response"
+        },
+        {
+          "id": "o5",
+          "text": "A safe catalog read that receives a bounded rate limit"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W20-Q032"
+    },
+    {
+      "type": "multiple",
+      "topic": "Retry policy",
+      "difficulty": "foundation",
+      "prompt": "Which controls belong in a production retry policy?",
+      "explanation": "Classification, operation safety, finite attempts/time, capped backoff with jitter and one owning layer constrain retry cost and semantics.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Closed retryable-outcome set"
+        },
+        {
+          "id": "o2",
+          "text": "Safe-operation contract"
+        },
+        {
+          "id": "o3",
+          "text": "Finite attempt or elapsed-time budget"
+        },
+        {
+          "id": "o4",
+          "text": "Capped backoff and production jitter"
+        },
+        {
+          "id": "o5",
+          "text": "Unlimited nested retry loops"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q033"
+    },
+    {
+      "type": "multiple",
+      "topic": "Deadline design",
+      "difficulty": "applied",
+      "prompt": "Which distinctions matter when designing timeouts?",
+      "explanation": "Connection and request phases, attempt and total budgets, cancellation behavior and ambiguous side effects must be treated separately.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Connection establishment versus end-to-end request"
+        },
+        {
+          "id": "o2",
+          "text": "One attempt deadline versus caller total deadline"
+        },
+        {
+          "id": "o3",
+          "text": "Stopping the wait versus cancelling and cleaning up work"
+        },
+        {
+          "id": "o4",
+          "text": "Confirmed failure versus unknown side-effect outcome"
+        },
+        {
+          "id": "o5",
+          "text": "Timeout versus guaranteed non-execution of a remote write"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q034"
+    },
+    {
+      "type": "multiple",
+      "topic": "Idempotency",
+      "difficulty": "applied",
+      "prompt": "Which properties are required for strong production idempotency?",
+      "explanation": "The record must bind the key to intent/result, reject conflicts, survive restarts and coordinate concurrent requests.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Bind the key to semantic request identity"
+        },
+        {
+          "id": "o2",
+          "text": "Retain the terminal result durably"
+        },
+        {
+          "id": "o3",
+          "text": "Reject the key when reused for different work"
+        },
+        {
+          "id": "o4",
+          "text": "Coordinate concurrent callers"
+        },
+        {
+          "id": "o5",
+          "text": "Store the key only in one worker's memory"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q035"
+    },
+    {
+      "type": "multiple",
+      "topic": "Circuit operation",
+      "difficulty": "applied",
+      "prompt": "Which production concerns accompany circuit breakers?",
+      "explanation": "Teams must choose a meaningful failure-domain scope, coordinate recovery probes and observe state transitions and rejection rates.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Endpoint, shard, region or tenant scope"
+        },
+        {
+          "id": "o2",
+          "text": "Coordination of concurrent half-open probes"
+        },
+        {
+          "id": "o3",
+          "text": "Metrics and alerts for state changes"
+        },
+        {
+          "id": "o4",
+          "text": "Separate state for independent dependencies"
+        },
+        {
+          "id": "o5",
+          "text": "Using one request-local circuit for all history"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q036"
+    },
+    {
+      "type": "multiple",
+      "topic": "Fallback contracts",
+      "difficulty": "applied",
+      "prompt": "Which checks should precede adopting a model or tool fallback?",
+      "explanation": "A fallback needs compatible shape and authority plus known quality, limits, failure independence and capacity for outage traffic.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Required output shape and semantics"
+        },
+        {
+          "id": "o2",
+          "text": "Authority and safety behavior"
+        },
+        {
+          "id": "o3",
+          "text": "Quality, latency and cost limits"
+        },
+        {
+          "id": "o4",
+          "text": "Failure-domain independence and outage capacity"
+        },
+        {
+          "id": "o5",
+          "text": "Ability to hide which path was selected"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q037"
+    },
+    {
+      "type": "multiple",
+      "topic": "Durable queues",
+      "difficulty": "applied",
+      "prompt": "Which capabilities are missing from the in-memory teaching queue but needed in production?",
+      "explanation": "Production processing needs durable messages and results, lease management, backpressure and crash-safe acknowledgement/effect handling.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Durable broker storage"
+        },
+        {
+          "id": "o2",
+          "text": "Lease or visibility renewal"
+        },
+        {
+          "id": "o3",
+          "text": "Crash-safe terminal-result persistence"
+        },
+        {
+          "id": "o4",
+          "text": "Backpressure and queue-age limits"
+        },
+        {
+          "id": "o5",
+          "text": "A claim of exactly once from a local dictionary"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q038"
+    },
+    {
+      "type": "multiple",
+      "topic": "DLQ operations",
+      "difficulty": "applied",
+      "prompt": "Which responsibilities belong to a production dead-letter workflow?",
+      "explanation": "A DLQ requires alerting, retention, safe diagnosis, repaired causes and controlled idempotent redrive with clear ownership.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Alert on arrival or age"
+        },
+        {
+          "id": "o2",
+          "text": "Retain under an explicit data policy"
+        },
+        {
+          "id": "o3",
+          "text": "Diagnose and repair the cause"
+        },
+        {
+          "id": "o4",
+          "text": "Authorize and rate-limit redrive"
+        },
+        {
+          "id": "o5",
+          "text": "Blindly return every item to the source queue"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q039"
+    },
+    {
+      "type": "multiple",
+      "topic": "Attempt evidence",
+      "difficulty": "foundation",
+      "prompt": "Which fields belong in a safe Week 20 attempt record?",
+      "explanation": "Controlled dependency, attempt, invocation, outcome, timing/backoff and circuit state explain the decision without copying sensitive payloads.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Dependency and attempt number"
+        },
+        {
+          "id": "o2",
+          "text": "Whether the dependency was invoked"
+        },
+        {
+          "id": "o3",
+          "text": "Controlled outcome and elapsed time"
+        },
+        {
+          "id": "o4",
+          "text": "Scheduled backoff and circuit state"
+        },
+        {
+          "id": "o5",
+          "text": "Raw credentials and arbitrary exception text"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q040"
+    },
+    {
+      "type": "multiple",
+      "topic": "Telemetry safety",
+      "difficulty": "applied",
+      "prompt": "Which values should generally be excluded from reliability telemetry?",
+      "explanation": "Raw payloads, credentials, connection strings and uncontrolled error text can leak secrets and create unbounded-cardinality data.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Raw request or response payloads"
+        },
+        {
+          "id": "o2",
+          "text": "Credentials and connection strings"
+        },
+        {
+          "id": "o3",
+          "text": "Arbitrary provider exception text"
+        },
+        {
+          "id": "o4",
+          "text": "Controlled outcome codes"
+        },
+        {
+          "id": "o5",
+          "text": "Dependency names from a fixed allowlist"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3"
+      ],
+      "id": "W20-Q041"
+    },
+    {
+      "type": "multiple",
+      "topic": "Batch evidence",
+      "difficulty": "foundation",
+      "prompt": "Which statements describe the five-scenario Week 20 batch?",
+      "explanation": "The batch retains five ordered outcomes: one normal completion, three visible degradations and one dead letter, with later items continuing.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "It retains five terminal results in submission order"
+        },
+        {
+          "id": "o2",
+          "text": "It contains one completed result"
+        },
+        {
+          "id": "o3",
+          "text": "It contains three degraded results"
+        },
+        {
+          "id": "o4",
+          "text": "It contains one dead-letter result"
+        },
+        {
+          "id": "o5",
+          "text": "It aborts before the vector and rate-limit jobs"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q042"
+    },
+    {
+      "type": "multiple",
+      "topic": "LLM outage",
+      "difficulty": "applied",
+      "prompt": "Which evidence belongs to the LLM-provider outage scenario?",
+      "explanation": "Two primary unavailable outcomes open its circuit, after one 100 ms backoff, and the compatible secondary model returns a degraded result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Two unavailable primary outcomes"
+        },
+        {
+          "id": "o2",
+          "text": "The primary circuit opens"
+        },
+        {
+          "id": "o3",
+          "text": "The secondary model is selected"
+        },
+        {
+          "id": "o4",
+          "text": "The result is degraded/fallback_used"
+        },
+        {
+          "id": "o5",
+          "text": "The result is completed/recovered_after_retry"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q043"
+    },
+    {
+      "type": "multiple",
+      "topic": "Database timeout",
+      "difficulty": "applied",
+      "prompt": "Which evidence belongs to the database-timeout scenario?",
+      "explanation": "Two responses exceed the 100 ms deadline, the primary circuit opens and a visibly stale bounded cache supplies the degraded result.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Late database data is classified as timeout"
+        },
+        {
+          "id": "o2",
+          "text": "The database primary circuit opens"
+        },
+        {
+          "id": "o3",
+          "text": "bounded-cache is selected"
+        },
+        {
+          "id": "o4",
+          "text": "freshness is labelled stale-45s"
+        },
+        {
+          "id": "o5",
+          "text": "The database late response is accepted as normal"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q044"
+    },
+    {
+      "type": "multiple",
+      "topic": "Vector fallback",
+      "difficulty": "applied",
+      "prompt": "Which evidence belongs to the vector-store failure scenario?",
+      "explanation": "The vector store fails transiently twice, opens its own circuit and a contract-compatible lexical result is marked degraded.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The vector store becomes unavailable twice"
+        },
+        {
+          "id": "o2",
+          "text": "Its circuit opens independently"
+        },
+        {
+          "id": "o3",
+          "text": "lexical-search is selected"
+        },
+        {
+          "id": "o4",
+          "text": "The retrieval mode is labelled lexical"
+        },
+        {
+          "id": "o5",
+          "text": "The catalog API circuit opens as a side effect"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q045"
+    },
+    {
+      "type": "multiple",
+      "topic": "Rate-limit recovery",
+      "difficulty": "applied",
+      "prompt": "Which evidence belongs to the rate-limit scenario?",
+      "explanation": "The bounded 300 ms Retry-After is observed, the second catalog call succeeds and no fallback is involved.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "The first outcome is rate_limited"
+        },
+        {
+          "id": "o2",
+          "text": "The virtual delay is 300 ms"
+        },
+        {
+          "id": "o3",
+          "text": "The second catalog-api call succeeds"
+        },
+        {
+          "id": "o4",
+          "text": "The code is recovered_after_retry"
+        },
+        {
+          "id": "o5",
+          "text": "The status is degraded because any retry is degradation"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q046"
+    },
+    {
+      "type": "multiple",
+      "topic": "Invalid response",
+      "difficulty": "applied",
+      "prompt": "Which evidence belongs to the invalid supplier API scenario?",
+      "explanation": "An OK transport status lacks required business fields, so it is not retried and becomes a minimal first-delivery dead letter.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Required supplier_id and risk fields are absent"
+        },
+        {
+          "id": "o2",
+          "text": "The outcome is invalid_response"
+        },
+        {
+          "id": "o3",
+          "text": "Only one dependency attempt occurs"
+        },
+        {
+          "id": "o4",
+          "text": "A minimal DLQ record is retained"
+        },
+        {
+          "id": "o5",
+          "text": "A default risk value is invented"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q047"
+    },
+    {
+      "type": "multiple",
+      "topic": "Graceful degradation",
+      "difficulty": "foundation",
+      "prompt": "Which details make a fallback result visibly degraded rather than silently normal?",
+      "explanation": "The terminal status, fallback code, selected dependency and reduction warnings expose the changed path and its limitations.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "status degraded"
+        },
+        {
+          "id": "o2",
+          "text": "code fallback_used"
+        },
+        {
+          "id": "o3",
+          "text": "selected fallback dependency"
+        },
+        {
+          "id": "o4",
+          "text": "Warnings such as stale data or reduced retrieval"
+        },
+        {
+          "id": "o5",
+          "text": "Pretending the primary dependency succeeded"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q048"
+    },
+    {
+      "type": "multiple",
+      "topic": "Service objectives",
+      "difficulty": "applied",
+      "prompt": "Which user-visible dimensions may need separate objectives when fallbacks are allowed?",
+      "explanation": "A fallback can preserve response availability while changing latency, freshness or semantic quality, so one success rate is incomplete.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Availability"
+        },
+        {
+          "id": "o2",
+          "text": "Latency"
+        },
+        {
+          "id": "o3",
+          "text": "Freshness"
+        },
+        {
+          "id": "o4",
+          "text": "Answer or retrieval quality"
+        },
+        {
+          "id": "o5",
+          "text": "Raw secret volume"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q049"
+    },
+    {
+      "type": "multiple",
+      "topic": "Honest limitations",
+      "difficulty": "applied",
+      "prompt": "Which limitations must accompany the Week 20 lab evidence?",
+      "explanation": "The simulator has virtual time, scripted dependencies, in-memory sequential state and exact backoff, so several production properties remain untested.",
+      "options": [
+        {
+          "id": "o1",
+          "text": "No real socket or task cancellation is exercised"
+        },
+        {
+          "id": "o2",
+          "text": "Queue and circuit state are not durable"
+        },
+        {
+          "id": "o3",
+          "text": "Concurrent worker races are not tested"
+        },
+        {
+          "id": "o4",
+          "text": "Fallback quality and outage capacity are not measured"
+        },
+        {
+          "id": "o5",
+          "text": "Exactly-once effects are proven"
+        }
+      ],
+      "correct": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "id": "W20-Q050"
+    },
+    {
+      "type": "match",
+      "topic": "Failure taxonomy",
+      "difficulty": "foundation",
+      "prompt": "Match each failure class to the Week 20 response.",
+      "explanation": "Transient faults may receive bounded retries, contract faults stop unchanged replay, and ambiguous writes require reconciliation.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Temporary unavailability"
+        },
+        {
+          "id": "l2",
+          "text": "Rate limit"
+        },
+        {
+          "id": "l3",
+          "text": "Contract-invalid response"
+        },
+        {
+          "id": "l4",
+          "text": "Ambiguous write timeout"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Bounded retry with backoff"
+        },
+        {
+          "id": "r2",
+          "text": "Honor a capped Retry-After"
+        },
+        {
+          "id": "r3",
+          "text": "Stop unchanged replay or use declared fallback"
+        },
+        {
+          "id": "r4",
+          "text": "Reconcile state before another effect"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q051"
+    },
+    {
+      "type": "match",
+      "topic": "Queue transitions",
+      "difficulty": "foundation",
+      "prompt": "Match each queue transition to its meaning.",
+      "explanation": "Submission records intent, lease assigns responsibility, acknowledgement records a terminal success and dead-lettering quarantines terminal failure.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "submit"
+        },
+        {
+          "id": "l2",
+          "text": "lease"
+        },
+        {
+          "id": "l3",
+          "text": "acknowledge"
+        },
+        {
+          "id": "l4",
+          "text": "dead-letter"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Record one semantic job and idempotency key"
+        },
+        {
+          "id": "r2",
+          "text": "Assign temporary worker responsibility"
+        },
+        {
+          "id": "r3",
+          "text": "Persist a completed or degraded terminal result"
+        },
+        {
+          "id": "r4",
+          "text": "Quarantine work that should leave normal traffic"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q052"
+    },
+    {
+      "type": "match",
+      "topic": "Circuit states",
+      "difficulty": "foundation",
+      "prompt": "Match each circuit event or state to its behavior.",
+      "explanation": "Closed permits calls, open rejects during recovery, half-open probes and a successful probe resets the circuit.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "closed"
+        },
+        {
+          "id": "l2",
+          "text": "open"
+        },
+        {
+          "id": "l3",
+          "text": "half-open"
+        },
+        {
+          "id": "l4",
+          "text": "successful recovery probe"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Allow normal dependency calls"
+        },
+        {
+          "id": "r2",
+          "text": "Fail fast during the recovery interval"
+        },
+        {
+          "id": "r3",
+          "text": "Admit a limited test call"
+        },
+        {
+          "id": "r4",
+          "text": "Return to closed and reset failures"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q053"
+    },
+    {
+      "type": "match",
+      "topic": "Scenario dependencies",
+      "difficulty": "foundation",
+      "prompt": "Match each scenario to its primary dependency.",
+      "explanation": "Each deterministic scenario targets a distinct dependency so its policy and circuit evidence remain inspectable.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "LLM-provider outage"
+        },
+        {
+          "id": "l2",
+          "text": "Database timeout"
+        },
+        {
+          "id": "l3",
+          "text": "Invalid API result"
+        },
+        {
+          "id": "l4",
+          "text": "Vector-store failure"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "model-primary"
+        },
+        {
+          "id": "r2",
+          "text": "database-primary"
+        },
+        {
+          "id": "r3",
+          "text": "supplier-api"
+        },
+        {
+          "id": "r4",
+          "text": "vector-store"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q054"
+    },
+    {
+      "type": "match",
+      "topic": "Scenario results",
+      "difficulty": "applied",
+      "prompt": "Match each incident to its terminal evidence.",
+      "explanation": "Three incidents degrade through declared fallbacks, one contract failure dead-letters and the rate limit recovers on the primary.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "LLM-provider outage"
+        },
+        {
+          "id": "l2",
+          "text": "Invalid supplier result"
+        },
+        {
+          "id": "l3",
+          "text": "Vector-store failure"
+        },
+        {
+          "id": "l4",
+          "text": "Catalog rate limit"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "degraded via model-secondary"
+        },
+        {
+          "id": "r2",
+          "text": "dead_letter/invalid_response"
+        },
+        {
+          "id": "r3",
+          "text": "degraded via lexical-search"
+        },
+        {
+          "id": "r4",
+          "text": "completed/recovered_after_retry"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q055"
+    },
+    {
+      "type": "match",
+      "topic": "Fallback chains",
+      "difficulty": "foundation",
+      "prompt": "Match each primary dependency to its declared fallback.",
+      "explanation": "The lesson declares explicit model, cache and retrieval fallbacks and leaves the invalid supplier API without one.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "model-primary"
+        },
+        {
+          "id": "l2",
+          "text": "database-primary"
+        },
+        {
+          "id": "l3",
+          "text": "vector-store"
+        },
+        {
+          "id": "l4",
+          "text": "supplier-api"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "model-secondary"
+        },
+        {
+          "id": "r2",
+          "text": "bounded-cache"
+        },
+        {
+          "id": "r3",
+          "text": "lexical-search"
+        },
+        {
+          "id": "r4",
+          "text": "no declared fallback"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q056"
+    },
+    {
+      "type": "match",
+      "topic": "Result states",
+      "difficulty": "foundation",
+      "prompt": "Match each result label to its meaning.",
+      "explanation": "Normal success, reduced success, terminal quarantine and retry recovery are distinct observable outcomes.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "completed/ok"
+        },
+        {
+          "id": "l2",
+          "text": "completed/recovered_after_retry"
+        },
+        {
+          "id": "l3",
+          "text": "degraded/fallback_used"
+        },
+        {
+          "id": "l4",
+          "text": "dead_letter"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Primary succeeded on its first attempt"
+        },
+        {
+          "id": "r2",
+          "text": "Primary succeeded after a bounded retry"
+        },
+        {
+          "id": "r3",
+          "text": "A declared backup supplied valid reduced behavior"
+        },
+        {
+          "id": "r4",
+          "text": "Processing stopped and diagnostic metadata was retained"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q057"
+    },
+    {
+      "type": "match",
+      "topic": "Attempt records",
+      "difficulty": "foundation",
+      "prompt": "Match each attempt field to the question it answers.",
+      "explanation": "The controlled record explains dependency selection, invocation, timing policy and circuit state without raw payloads.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "dependency"
+        },
+        {
+          "id": "l2",
+          "text": "invoked"
+        },
+        {
+          "id": "l3",
+          "text": "scheduled_backoff_ms"
+        },
+        {
+          "id": "l4",
+          "text": "circuit_state_after"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Which adapter path was considered?"
+        },
+        {
+          "id": "r2",
+          "text": "Did a dependency call actually run?"
+        },
+        {
+          "id": "r3",
+          "text": "How much virtual delay was scheduled?"
+        },
+        {
+          "id": "r4",
+          "text": "What breaker state followed the decision?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q058"
+    },
+    {
+      "type": "match",
+      "topic": "Queue invariants",
+      "difficulty": "applied",
+      "prompt": "Match each queue action to its required invariant.",
+      "explanation": "Explicit invariants keep duplicate intent, ownership and terminal transitions from becoming silent state corruption.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Submit reused idempotency key"
+        },
+        {
+          "id": "l2",
+          "text": "Acknowledge"
+        },
+        {
+          "id": "l3",
+          "text": "Requeue"
+        },
+        {
+          "id": "l4",
+          "text": "Move to dead letter"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Tenant and scenario fingerprint must match"
+        },
+        {
+          "id": "r2",
+          "text": "Job must be leased and result job ID must match"
+        },
+        {
+          "id": "r3",
+          "text": "Job must be leased and delivery budget must remain"
+        },
+        {
+          "id": "r4",
+          "text": "Job must be leased and terminal record must agree"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q059"
+    },
+    {
+      "type": "match",
+      "topic": "Pattern purpose",
+      "difficulty": "foundation",
+      "prompt": "Match each reliability pattern to the risk it primarily controls.",
+      "explanation": "Deadlines bound waiting, backoff limits repeated pressure, circuits avoid known-bad calls and fallbacks preserve reduced service.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Deadline"
+        },
+        {
+          "id": "l2",
+          "text": "Backoff"
+        },
+        {
+          "id": "l3",
+          "text": "Circuit breaker"
+        },
+        {
+          "id": "l4",
+          "text": "Fallback"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Unbounded wait and held resources"
+        },
+        {
+          "id": "r2",
+          "text": "Immediate repeated pressure"
+        },
+        {
+          "id": "r3",
+          "text": "Calls to a dependency likely still unhealthy"
+        },
+        {
+          "id": "r4",
+          "text": "Loss of all useful behavior when a primary fails"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q060"
+    },
+    {
+      "type": "match",
+      "topic": "Production gaps",
+      "difficulty": "applied",
+      "prompt": "Match each lab mechanism to the production property it does not establish.",
+      "explanation": "Deterministic fixtures prove policy branches but not the real resource, durability, concurrency or semantic behavior they stand in for.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Manual clock"
+        },
+        {
+          "id": "l2",
+          "text": "In-memory queue"
+        },
+        {
+          "id": "l3",
+          "text": "Process-local circuit"
+        },
+        {
+          "id": "l4",
+          "text": "Scripted fallback"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Socket cancellation and cleanup"
+        },
+        {
+          "id": "r2",
+          "text": "Durability across worker crashes"
+        },
+        {
+          "id": "r3",
+          "text": "Distributed state and probe coordination"
+        },
+        {
+          "id": "r4",
+          "text": "Semantic quality and outage capacity"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q061"
+    },
+    {
+      "type": "match",
+      "topic": "Reliability metrics",
+      "difficulty": "applied",
+      "prompt": "Match each metric to the operational question it answers.",
+      "explanation": "Attempts, circuit transitions, degraded rate and DLQ age expose distinct failure and recovery behaviors.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Attempts per dependency call"
+        },
+        {
+          "id": "l2",
+          "text": "Circuit-open transitions"
+        },
+        {
+          "id": "l3",
+          "text": "Degraded-result rate"
+        },
+        {
+          "id": "l4",
+          "text": "Oldest DLQ age"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "How much retry amplification occurs?"
+        },
+        {
+          "id": "r2",
+          "text": "Which dependencies are being failed fast?"
+        },
+        {
+          "id": "r3",
+          "text": "How often are users receiving reduced behavior?"
+        },
+        {
+          "id": "r4",
+          "text": "How long has quarantined work remained unresolved?"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q062"
+    },
+    {
+      "type": "match",
+      "topic": "DLQ lifecycle",
+      "difficulty": "applied",
+      "prompt": "Match each DLQ stage to the responsible action.",
+      "explanation": "A safe dead-letter workflow detects, diagnoses, repairs and then controls replay rather than looping automatically.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Detect"
+        },
+        {
+          "id": "l2",
+          "text": "Diagnose"
+        },
+        {
+          "id": "l3",
+          "text": "Repair"
+        },
+        {
+          "id": "l4",
+          "text": "Redrive"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Alert on new or aging entries"
+        },
+        {
+          "id": "r2",
+          "text": "Inspect controlled code and payload class safely"
+        },
+        {
+          "id": "r3",
+          "text": "Correct code, configuration or data"
+        },
+        {
+          "id": "r4",
+          "text": "Authorize, rate-limit and verify idempotency"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q063"
+    },
+    {
+      "type": "match",
+      "topic": "Idempotency claims",
+      "difficulty": "applied",
+      "prompt": "Match each mechanism to the claim it can honestly support.",
+      "explanation": "Local duplicate suppression, durable receiver records, conditional writes and approvals solve different problems and must not be conflated.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "In-memory key dictionary"
+        },
+        {
+          "id": "l2",
+          "text": "Durable key-to-intent/result record"
+        },
+        {
+          "id": "l3",
+          "text": "Conditional domain write"
+        },
+        {
+          "id": "l4",
+          "text": "One-use human approval"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Suppress duplicate processing in one process"
+        },
+        {
+          "id": "r2",
+          "text": "Detect replay and conflict across restarts"
+        },
+        {
+          "id": "r3",
+          "text": "Prevent an already-applied state transition from repeating"
+        },
+        {
+          "id": "r4",
+          "text": "Authorize one exact action, not its silent retry"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q064"
+    },
+    {
+      "type": "match",
+      "topic": "Retry timing",
+      "difficulty": "foundation",
+      "prompt": "Match each timing term to its definition.",
+      "explanation": "Attempt, backoff, Retry-After and total deadline are separate inputs to a bounded retry decision.",
+      "left": [
+        {
+          "id": "l1",
+          "text": "Attempt deadline"
+        },
+        {
+          "id": "l2",
+          "text": "Exponential backoff"
+        },
+        {
+          "id": "l3",
+          "text": "Retry-After"
+        },
+        {
+          "id": "l4",
+          "text": "Total caller deadline"
+        }
+      ],
+      "right": [
+        {
+          "id": "r1",
+          "text": "Maximum accepted duration for one dependency call"
+        },
+        {
+          "id": "r2",
+          "text": "Locally increasing delay capped by policy"
+        },
+        {
+          "id": "r3",
+          "text": "Dependency-provided delay bounded by the client"
+        },
+        {
+          "id": "r4",
+          "text": "Remaining end-to-end budget for the whole request"
+        }
+      ],
+      "correct": {
+        "l1": "r1",
+        "l2": "r2",
+        "l3": "r3",
+        "l4": "r4"
+      },
+      "id": "W20-Q065"
+    },
+    {
+      "type": "short",
+      "topic": "Terminal states",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Week 20 status for a normal primary-path success.",
+      "explanation": "completed identifies a usable primary-path terminal result, whether immediate or recovered after retry.",
+      "accepted": [
+        "completed"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q066"
+    },
+    {
+      "type": "short",
+      "topic": "Terminal states",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Week 20 status for valid but visibly reduced fallback behavior.",
+      "explanation": "degraded distinguishes fallback output from a normal primary-path completion.",
+      "accepted": [
+        "degraded"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q067"
+    },
+    {
+      "type": "short",
+      "topic": "Terminal states",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Week 20 status for quarantined terminal work.",
+      "explanation": "dead_letter is the public terminal state when work leaves normal processing for investigation.",
+      "accepted": [
+        "dead_letter"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q068"
+    },
+    {
+      "type": "short",
+      "topic": "Contract validation",
+      "difficulty": "foundation",
+      "prompt": "Write the exact controlled code for an OK-looking dependency response missing required fields.",
+      "explanation": "invalid_response separates a business-data contract failure from transport availability.",
+      "accepted": [
+        "invalid_response"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q069"
+    },
+    {
+      "type": "short",
+      "topic": "Deadlines",
+      "difficulty": "foundation",
+      "prompt": "Write the exact attempt outcome used when elapsed time exceeds the configured deadline.",
+      "explanation": "timeout is recorded even if the late response contains otherwise valid-looking data.",
+      "accepted": [
+        "timeout"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q070"
+    },
+    {
+      "type": "short",
+      "topic": "Rate limits",
+      "difficulty": "foundation",
+      "prompt": "Write the exact attempt outcome for a dependency asking the caller to slow down.",
+      "explanation": "rate_limited is transient in the lab and may receive a bounded delay and retry.",
+      "accepted": [
+        "rate_limited"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q071"
+    },
+    {
+      "type": "short",
+      "topic": "Circuit breakers",
+      "difficulty": "foundation",
+      "prompt": "Write the exact circuit state that admits a recovery probe after the open interval.",
+      "explanation": "half_open allows a limited probe whose result closes or reopens the circuit.",
+      "accepted": [
+        "half_open"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q072"
+    },
+    {
+      "type": "short",
+      "topic": "Fallbacks",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Week 20 result code for a successful declared fallback.",
+      "explanation": "fallback_used accompanies degraded status whenever a later compatible dependency supplies the result.",
+      "accepted": [
+        "fallback_used"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q073"
+    },
+    {
+      "type": "short",
+      "topic": "Retries",
+      "difficulty": "foundation",
+      "prompt": "Write the exact result code for a primary dependency that succeeds after a retry.",
+      "explanation": "recovered_after_retry distinguishes primary recovery from both first-attempt success and fallback degradation.",
+      "accepted": [
+        "recovered_after_retry"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q074"
+    },
+    {
+      "type": "short",
+      "topic": "Result evidence",
+      "difficulty": "foundation",
+      "prompt": "Write the exact result field that names the dependency which supplied usable data.",
+      "explanation": "selected_dependency makes the primary or fallback path explicit to callers and operators.",
+      "accepted": [
+        "selected_dependency"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q075"
+    },
+    {
+      "type": "short",
+      "topic": "Queue evidence",
+      "difficulty": "foundation",
+      "prompt": "Write the exact result field that records how many times the queue delivered a job.",
+      "explanation": "delivery_count exposes bounded redelivery without conflating it with dependency-attempt count.",
+      "accepted": [
+        "delivery_count"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q076"
+    },
+    {
+      "type": "short",
+      "topic": "Idempotency",
+      "difficulty": "foundation",
+      "prompt": "Write the exact Job field used to identify one semantic submission for duplicate suppression.",
+      "explanation": "idempotency_key is bound to tenant and scenario in the deterministic queue demonstration.",
+      "accepted": [
+        "idempotency_key"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q077"
+    },
+    {
+      "type": "short",
+      "topic": "Rate limits",
+      "difficulty": "foundation",
+      "prompt": "Write the exact dependency-response field carrying the requested wait before retry.",
+      "explanation": "retry_after_ms holds the dependency-provided delay, which the worker caps before use.",
+      "accepted": [
+        "retry_after_ms"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q078"
+    },
+    {
+      "type": "short",
+      "topic": "Cache fallback",
+      "difficulty": "foundation",
+      "prompt": "Write the exact freshness value returned by the Week 20 bounded-cache fixture.",
+      "explanation": "stale-45s exposes the cache age instead of presenting the data as a live database response.",
+      "accepted": [
+        "stale-45s"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q079"
+    },
+    {
+      "type": "short",
+      "topic": "Retrieval fallback",
+      "difficulty": "foundation",
+      "prompt": "Write the exact dependency name selected when vector retrieval falls back to keyword retrieval.",
+      "explanation": "lexical-search supplies the compatible reduced retrieval result after the vector store fails.",
+      "accepted": [
+        "lexical-search"
+      ],
+      "case_sensitive": true,
+      "id": "W20-Q080"
+    },
+    {
+      "type": "code",
+      "topic": "Failure classification",
+      "difficulty": "applied",
+      "prompt": "Implement classify_outcome(status, elapsed_ms, timeout_ms, required_fields, data). Use exact built-in types: status is one of ok, unavailable, rate_limited, invalid or failed; elapsed_ms is a non-negative int; timeout_ms is a positive int; required_fields is a tuple of unique non-blank strings; data is a dict with string keys. Raise TypeError or ValueError for malformed input. Return timeout when elapsed_ms exceeds timeout_ms before inspecting status; otherwise map unavailable and rate_limited directly, invalid to invalid_response, failed to dependency_failure, and ok to ok only when every required field exists or invalid_response otherwise.",
+      "explanation": "Trusted adapter classification gives deadline precedence and separates transient transport outcomes from contract-invalid data.",
+      "starter": "def classify_outcome(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def classify_outcome(status, elapsed_ms, timeout_ms, required_fields, data):\n    if type(status) is not str or type(elapsed_ms) is not int or type(timeout_ms) is not int:\n        raise TypeError('scalar_invalid')\n    if status not in {'ok','unavailable','rate_limited','invalid','failed'}:\n        raise ValueError('status_invalid')\n    if elapsed_ms < 0 or timeout_ms <= 0:\n        raise ValueError('time_invalid')\n    if type(required_fields) is not tuple or type(data) is not dict:\n        raise TypeError('container_invalid')\n    if any(type(field) is not str for field in required_fields) or any(type(key) is not str for key in data):\n        raise TypeError('field_invalid')\n    if any(not field.strip() for field in required_fields) or len(set(required_fields)) != len(required_fields):\n        raise ValueError('required_fields_invalid')\n    if elapsed_ms > timeout_ms:\n        return 'timeout'\n    if status == 'ok':\n        return 'ok' if set(required_fields).issubset(data) else 'invalid_response'\n    return {'unavailable':'unavailable','rate_limited':'rate_limited','invalid':'invalid_response','failed':'dependency_failure'}[status]\n",
+      "checks": [
+        {
+          "label": "Valid OK data passes",
+          "code": "assert classify_outcome('ok',10,100,('items','source'),{'items':[],'source':'api'})=='ok'\nassert classify_outcome('ok',100,100,(),{})=='ok'"
+        },
+        {
+          "label": "Deadline has precedence",
+          "code": "assert classify_outcome('ok',101,100,('value',),{'value':1})=='timeout'\nassert classify_outcome('failed',200,100,(),{})=='timeout'"
+        },
+        {
+          "label": "Transient statuses remain distinct",
+          "code": "assert classify_outcome('unavailable',1,100,(),{})=='unavailable'\nassert classify_outcome('rate_limited',1,100,(),{})=='rate_limited'"
+        },
+        {
+          "label": "Contract and permanent failures are controlled",
+          "code": "assert classify_outcome('ok',1,100,('risk',),{'supplier_id':'S1'})=='invalid_response'\nassert classify_outcome('invalid',1,100,(),{})=='invalid_response'\nassert classify_outcome('failed',1,100,(),{})=='dependency_failure'"
+        },
+        {
+          "label": "Strict inputs are rejected",
+          "code": "assert raises(TypeError,classify_outcome,'ok',True,100,(),{})\nassert raises(ValueError,classify_outcome,'unknown',1,100,(),{})\nassert raises(TypeError,classify_outcome,'ok',1,100,['x'],{})\nassert raises(ValueError,classify_outcome,'ok',1,100,('x','x'),{})\nassert raises(TypeError,classify_outcome,'ok',1,100,(),{1:'x'})"
+        }
+      ],
+      "id": "W20-Q081"
+    },
+    {
+      "type": "code",
+      "topic": "Exponential backoff",
+      "difficulty": "applied",
+      "prompt": "Implement capped_backoff(attempt, base_ms, cap_ms). All inputs must be exact ints, not bools. attempt, base_ms and cap_ms must be positive and base_ms cannot exceed cap_ms. Raise TypeError or ValueError for malformed input. Return min(cap_ms, base_ms * 2 ** (attempt - 1)).",
+      "explanation": "Capped exponential backoff grows delay between failures without allowing unbounded waiting.",
+      "starter": "def capped_backoff(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def capped_backoff(attempt, base_ms, cap_ms):\n    if type(attempt) is not int or type(base_ms) is not int or type(cap_ms) is not int:\n        raise TypeError('backoff_input_invalid')\n    if attempt < 1 or base_ms < 1 or cap_ms < 1:\n        raise ValueError('backoff_value_invalid')\n    if base_ms > cap_ms:\n        raise ValueError('base_exceeds_cap')\n    return min(cap_ms, base_ms * (2 ** (attempt - 1)))\n",
+      "checks": [
+        {
+          "label": "First attempt uses base delay",
+          "code": "assert capped_backoff(1,100,1000)==100\nassert capped_backoff(1,1,1)==1"
+        },
+        {
+          "label": "Delay grows exponentially",
+          "code": "assert capped_backoff(2,100,1000)==200\nassert capped_backoff(3,100,1000)==400"
+        },
+        {
+          "label": "Cap bounds later attempts",
+          "code": "assert capped_backoff(4,100,500)==500\nassert capped_backoff(10,25,80)==80"
+        },
+        {
+          "label": "Inverted and non-positive values fail",
+          "code": "assert raises(ValueError,capped_backoff,0,100,1000)\nassert raises(ValueError,capped_backoff,1,0,1000)\nassert raises(ValueError,capped_backoff,1,200,100)"
+        },
+        {
+          "label": "Exact integers are required",
+          "code": "assert raises(TypeError,capped_backoff,True,100,1000)\nassert raises(TypeError,capped_backoff,1,100.0,1000)\nassert raises(TypeError,capped_backoff,1,100,'1000')"
+        }
+      ],
+      "id": "W20-Q082"
+    },
+    {
+      "type": "code",
+      "topic": "Retry-After",
+      "difficulty": "applied",
+      "prompt": "Implement retry_delay(attempt, base_ms, backoff_cap_ms, retry_after_ms, retry_after_cap_ms). Inputs other than retry_after_ms must be exact positive ints; base_ms cannot exceed backoff_cap_ms. retry_after_ms is None or an exact positive int, and retry_after_cap_ms is a positive int. Raise TypeError or ValueError for malformed input. Calculate capped exponential backoff; when Retry-After exists return the larger of backoff and the Retry-After value capped by retry_after_cap_ms.",
+      "explanation": "Combining a local backoff floor with a bounded server hint respects throttling without allowing an extreme value to park the worker.",
+      "starter": "def retry_delay(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def retry_delay(attempt, base_ms, backoff_cap_ms, retry_after_ms, retry_after_cap_ms):\n    values = (attempt, base_ms, backoff_cap_ms, retry_after_cap_ms)\n    if any(type(value) is not int for value in values):\n        raise TypeError('retry_delay_input_invalid')\n    if any(value < 1 for value in values) or base_ms > backoff_cap_ms:\n        raise ValueError('retry_delay_value_invalid')\n    if retry_after_ms is not None and type(retry_after_ms) is not int:\n        raise TypeError('retry_after_invalid')\n    if retry_after_ms is not None and retry_after_ms < 1:\n        raise ValueError('retry_after_invalid')\n    backoff = min(backoff_cap_ms, base_ms * (2 ** (attempt - 1)))\n    if retry_after_ms is None:\n        return backoff\n    return max(backoff, min(retry_after_ms, retry_after_cap_ms))\n",
+      "checks": [
+        {
+          "label": "No hint uses local backoff",
+          "code": "assert retry_delay(1,100,1000,None,2000)==100\nassert retry_delay(3,100,1000,None,2000)==400"
+        },
+        {
+          "label": "Larger bounded hint is honored",
+          "code": "assert retry_delay(1,100,1000,300,500)==300\nassert retry_delay(2,100,1000,450,500)==450"
+        },
+        {
+          "label": "Local backoff remains the floor",
+          "code": "assert retry_delay(3,100,1000,50,500)==400\nassert retry_delay(2,100,1000,150,500)==200"
+        },
+        {
+          "label": "Both caps are enforced",
+          "code": "assert retry_delay(5,100,500,5000,250)==500\nassert retry_delay(1,100,1000,5000,250)==250"
+        },
+        {
+          "label": "Strict timing values are required",
+          "code": "assert raises(TypeError,retry_delay,True,100,1000,None,2000)\nassert raises(TypeError,retry_delay,1,100,1000,10.0,2000)\nassert raises(ValueError,retry_delay,1,100,1000,0,2000)\nassert raises(ValueError,retry_delay,1,200,100,None,2000)"
+        }
+      ],
+      "id": "W20-Q083"
+    },
+    {
+      "type": "code",
+      "topic": "Retry decision",
+      "difficulty": "applied",
+      "prompt": "Implement should_retry(outcome, attempt, max_attempts, circuit_state, operation_safe). outcome must be one of ok, unavailable, rate_limited, timeout, invalid_response, dependency_failure or circuit_open. attempt and max_attempts are exact positive ints with attempt not greater than max_attempts. circuit_state is closed, open or half_open. operation_safe is an exact bool. Raise TypeError or ValueError for malformed input. Return True only for a safe operation with a transient outcome, remaining attempts and a circuit that is not open.",
+      "explanation": "A retry decision must combine failure class, operation semantics, remaining budget and circuit state rather than reacting to any exception.",
+      "starter": "def should_retry(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def should_retry(outcome, attempt, max_attempts, circuit_state, operation_safe):\n    if type(outcome) is not str or type(attempt) is not int or type(max_attempts) is not int or type(circuit_state) is not str or type(operation_safe) is not bool:\n        raise TypeError('retry_decision_input_invalid')\n    outcomes = {'ok','unavailable','rate_limited','timeout','invalid_response','dependency_failure','circuit_open'}\n    if outcome not in outcomes or circuit_state not in {'closed','open','half_open'}:\n        raise ValueError('retry_decision_value_invalid')\n    if attempt < 1 or max_attempts < 1 or attempt > max_attempts:\n        raise ValueError('attempt_invalid')\n    transient = {'unavailable','rate_limited','timeout'}\n    return operation_safe and outcome in transient and attempt < max_attempts and circuit_state != 'open'\n",
+      "checks": [
+        {
+          "label": "Safe transient call with budget retries",
+          "code": "assert should_retry('unavailable',1,3,'closed',True) is True\nassert should_retry('timeout',2,3,'half_open',True) is True"
+        },
+        {
+          "label": "Unsafe operation never auto-retries",
+          "code": "assert should_retry('unavailable',1,3,'closed',False) is False\nassert should_retry('timeout',1,3,'half_open',False) is False"
+        },
+        {
+          "label": "Permanent and successful outcomes stop",
+          "code": "assert should_retry('invalid_response',1,3,'closed',True) is False\nassert should_retry('dependency_failure',1,3,'closed',True) is False\nassert should_retry('ok',1,3,'closed',True) is False"
+        },
+        {
+          "label": "Budget and open circuit stop",
+          "code": "assert should_retry('rate_limited',3,3,'closed',True) is False\nassert should_retry('unavailable',1,3,'open',True) is False\nassert should_retry('circuit_open',1,3,'open',True) is False"
+        },
+        {
+          "label": "Strict closed inputs",
+          "code": "assert raises(TypeError,should_retry,'timeout',True,3,'closed',True)\nassert raises(TypeError,should_retry,'timeout',1,3,'closed',1)\nassert raises(ValueError,should_retry,'unknown',1,3,'closed',True)\nassert raises(ValueError,should_retry,'timeout',4,3,'closed',True)"
+        }
+      ],
+      "id": "W20-Q084"
+    },
+    {
+      "type": "code",
+      "topic": "Circuit admission",
+      "difficulty": "applied",
+      "prompt": "Implement circuit_admission(state, now_ms, opened_at_ms, recovery_timeout_ms). state is closed, open or half_open; now_ms and recovery_timeout_ms are exact non-negative/positive ints. opened_at_ms is None unless state is open, where it must be an exact non-negative int not later than now_ms. Raise TypeError or ValueError for malformed input. Return a tuple (new_state, allowed): closed and half_open allow calls unchanged; an open circuit remains blocked before the interval and becomes allowed half_open at or after it.",
+      "explanation": "Admission logic makes open-state rejection and the exact recovery-probe boundary deterministic.",
+      "starter": "def circuit_admission(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def circuit_admission(state, now_ms, opened_at_ms, recovery_timeout_ms):\n    if type(state) is not str or type(now_ms) is not int or type(recovery_timeout_ms) is not int:\n        raise TypeError('circuit_input_invalid')\n    if state not in {'closed','open','half_open'} or now_ms < 0 or recovery_timeout_ms < 1:\n        raise ValueError('circuit_value_invalid')\n    if state == 'open':\n        if type(opened_at_ms) is not int:\n            raise TypeError('opened_at_invalid')\n        if opened_at_ms < 0 or opened_at_ms > now_ms:\n            raise ValueError('opened_at_invalid')\n        if now_ms - opened_at_ms < recovery_timeout_ms:\n            return ('open', False)\n        return ('half_open', True)\n    if opened_at_ms is not None:\n        raise ValueError('opened_at_only_when_open')\n    return (state, True)\n",
+      "checks": [
+        {
+          "label": "Closed calls are allowed",
+          "code": "assert circuit_admission('closed',0,None,500)==('closed',True)\nassert circuit_admission('closed',900,None,1)==('closed',True)"
+        },
+        {
+          "label": "Open circuit fails fast before boundary",
+          "code": "assert circuit_admission('open',499,0,500)==('open',False)\nassert circuit_admission('open',1009,1000,10)==('open',False)"
+        },
+        {
+          "label": "Recovery boundary becomes half open",
+          "code": "assert circuit_admission('open',500,0,500)==('half_open',True)\nassert circuit_admission('open',1010,1000,10)==('half_open',True)"
+        },
+        {
+          "label": "Half-open admits its coordinated probe",
+          "code": "assert circuit_admission('half_open',500,None,500)==('half_open',True)"
+        },
+        {
+          "label": "Malformed timestamps and states fail",
+          "code": "assert raises(ValueError,circuit_admission,'bad',0,None,500)\nassert raises(TypeError,circuit_admission,'open',500,None,500)\nassert raises(ValueError,circuit_admission,'open',400,500,100)\nassert raises(ValueError,circuit_admission,'closed',0,0,500)\nassert raises(TypeError,circuit_admission,'closed',True,None,500)"
+        }
+      ],
+      "id": "W20-Q085"
+    },
+    {
+      "type": "code",
+      "topic": "Circuit failure transition",
+      "difficulty": "applied",
+      "prompt": "Implement circuit_failure(state, consecutive_failures, threshold, now_ms). state must be closed or half_open; the other inputs are exact ints, consecutive_failures and now_ms are non-negative, and threshold is positive. Raise TypeError or ValueError for malformed input. Increment failures. Return a dict with state, consecutive_failures and opened_at_ms. Open at the threshold or after any failed half-open probe, setting opened_at_ms to now_ms; otherwise remain closed with opened_at_ms None.",
+      "explanation": "A failed recovery probe immediately reopens the circuit, while ordinary closed-state failures open only at the configured threshold.",
+      "starter": "def circuit_failure(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def circuit_failure(state, consecutive_failures, threshold, now_ms):\n    if type(state) is not str or type(consecutive_failures) is not int or type(threshold) is not int or type(now_ms) is not int:\n        raise TypeError('circuit_failure_input_invalid')\n    if state not in {'closed','half_open'} or consecutive_failures < 0 or threshold < 1 or now_ms < 0:\n        raise ValueError('circuit_failure_value_invalid')\n    failures = consecutive_failures + 1\n    if state == 'half_open' or failures >= threshold:\n        return {'state':'open','consecutive_failures':failures,'opened_at_ms':now_ms}\n    return {'state':'closed','consecutive_failures':failures,'opened_at_ms':None}\n",
+      "checks": [
+        {
+          "label": "Below threshold remains closed",
+          "code": "assert circuit_failure('closed',0,2,10)=={'state':'closed','consecutive_failures':1,'opened_at_ms':None}"
+        },
+        {
+          "label": "Threshold opens exactly",
+          "code": "assert circuit_failure('closed',1,2,25)=={'state':'open','consecutive_failures':2,'opened_at_ms':25}\nassert circuit_failure('closed',0,1,0)['state']=='open'"
+        },
+        {
+          "label": "Failure count is retained",
+          "code": "row=circuit_failure('closed',4,5,90)\nassert row['consecutive_failures']==5 and row['opened_at_ms']==90"
+        },
+        {
+          "label": "Failed half-open probe reopens immediately",
+          "code": "assert circuit_failure('half_open',0,20,500)=={'state':'open','consecutive_failures':1,'opened_at_ms':500}"
+        },
+        {
+          "label": "Strict state and counters",
+          "code": "assert raises(ValueError,circuit_failure,'open',0,2,0)\nassert raises(TypeError,circuit_failure,'closed',False,2,0)\nassert raises(ValueError,circuit_failure,'closed',-1,2,0)\nassert raises(ValueError,circuit_failure,'closed',0,0,0)"
+        }
+      ],
+      "id": "W20-Q086"
+    },
+    {
+      "type": "code",
+      "topic": "Circuit success transition",
+      "difficulty": "applied",
+      "prompt": "Implement circuit_success(state, consecutive_failures, opened_at_ms). state is closed or half_open; consecutive_failures is an exact non-negative int; opened_at_ms must be None for closed and an exact non-negative int for half_open. Raise TypeError or ValueError for malformed input. Return ('closed', 0, None) for every valid success.",
+      "explanation": "Any accepted success resets consecutive failures, clears the open timestamp and closes a recovery probe.",
+      "starter": "def circuit_success(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def circuit_success(state, consecutive_failures, opened_at_ms):\n    if type(state) is not str or type(consecutive_failures) is not int:\n        raise TypeError('circuit_success_input_invalid')\n    if state not in {'closed','half_open'} or consecutive_failures < 0:\n        raise ValueError('circuit_success_value_invalid')\n    if state == 'closed' and opened_at_ms is not None:\n        raise ValueError('closed_has_opened_at')\n    if state == 'half_open':\n        if type(opened_at_ms) is not int:\n            raise TypeError('half_open_timestamp_invalid')\n        if opened_at_ms < 0:\n            raise ValueError('half_open_timestamp_invalid')\n    return ('closed', 0, None)\n",
+      "checks": [
+        {
+          "label": "Closed success stays reset",
+          "code": "assert circuit_success('closed',0,None)==('closed',0,None)\nassert circuit_success('closed',3,None)==('closed',0,None)"
+        },
+        {
+          "label": "Half-open success closes",
+          "code": "assert circuit_success('half_open',2,500)==('closed',0,None)"
+        },
+        {
+          "label": "Failure history is cleared",
+          "code": "state,failures,opened=circuit_success('half_open',99,1)\nassert state=='closed' and failures==0 and opened is None"
+        },
+        {
+          "label": "Timestamp must match state",
+          "code": "assert raises(ValueError,circuit_success,'closed',0,5)\nassert raises(TypeError,circuit_success,'half_open',1,None)\nassert raises(ValueError,circuit_success,'half_open',1,-1)"
+        },
+        {
+          "label": "Strict state and count",
+          "code": "assert raises(ValueError,circuit_success,'open',1,0)\nassert raises(TypeError,circuit_success,'closed',False,None)\nassert raises(ValueError,circuit_success,'closed',-1,None)"
+        }
+      ],
+      "id": "W20-Q087"
+    },
+    {
+      "type": "code",
+      "topic": "Output contracts",
+      "difficulty": "applied",
+      "prompt": "Implement required_fields_present(required_fields, data). required_fields must be an exact tuple of unique non-blank exact strings. data must be an exact dict with exact string keys. Raise TypeError or ValueError for malformed input. Return True only when every required field is a key in data; extra data keys are allowed.",
+      "explanation": "Transport success is usable only after every declared output field is present; checking any one field would accept partial contracts.",
+      "starter": "def required_fields_present(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def required_fields_present(required_fields, data):\n    if type(required_fields) is not tuple or type(data) is not dict:\n        raise TypeError('required_field_container_invalid')\n    if any(type(field) is not str for field in required_fields) or any(type(key) is not str for key in data):\n        raise TypeError('required_field_item_invalid')\n    if any(not field.strip() for field in required_fields):\n        raise ValueError('required_field_blank')\n    if len(set(required_fields)) != len(required_fields):\n        raise ValueError('required_field_duplicate')\n    return set(required_fields).issubset(data)\n",
+      "checks": [
+        {
+          "label": "Every required field passes",
+          "code": "assert required_fields_present(('supplier_id','risk'),{'supplier_id':'S1','risk':'low'}) is True"
+        },
+        {
+          "label": "Extra fields are allowed",
+          "code": "assert required_fields_present(('items',),{'items':[],'source':'api'}) is True\nassert required_fields_present((),{}) is True"
+        },
+        {
+          "label": "One missing field fails",
+          "code": "assert required_fields_present(('supplier_id','risk'),{'supplier_id':'S1'}) is False\nassert required_fields_present(('a','b'),{'b':2}) is False"
+        },
+        {
+          "label": "All missing fields fail",
+          "code": "assert required_fields_present(('value',),{}) is False"
+        },
+        {
+          "label": "Strict containers and names",
+          "code": "assert raises(TypeError,required_fields_present,['x'],{'x':1})\nassert raises(TypeError,required_fields_present,('x',),{1:'x'})\nassert raises(TypeError,required_fields_present,(1,),{})\nassert raises(ValueError,required_fields_present,(' ',),{})\nassert raises(ValueError,required_fields_present,('x','x'),{'x':1})"
+        }
+      ],
+      "id": "W20-Q088"
+    },
+    {
+      "type": "code",
+      "topic": "Fallback evidence",
+      "difficulty": "applied",
+      "prompt": "Implement fallback_resolution(primary_code, fallback_name, data). primary_code and fallback_name must be exact non-blank strings; data must be an exact dict with string keys. Raise TypeError or ValueError for malformed input. Return a new dict with status degraded, code fallback_used, selected_dependency fallback_name, a shallow copy of data, and warnings equal to the tuple ('primary_dependency_failed', 'primary_code:' + primary_code, 'degraded_fallback:' + fallback_name). Do not mutate or alias the input dict.",
+      "explanation": "A controlled fallback result preserves data while explicitly naming the reduced path and the primary failure context.",
+      "starter": "def fallback_resolution(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def fallback_resolution(primary_code, fallback_name, data):\n    if type(primary_code) is not str or type(fallback_name) is not str or type(data) is not dict:\n        raise TypeError('fallback_input_invalid')\n    if not primary_code.strip() or not fallback_name.strip():\n        raise ValueError('fallback_name_blank')\n    if any(type(key) is not str for key in data):\n        raise TypeError('fallback_data_key_invalid')\n    return {\n        'status':'degraded',\n        'code':'fallback_used',\n        'selected_dependency':fallback_name,\n        'data':dict(data),\n        'warnings':('primary_dependency_failed','primary_code:'+primary_code,'degraded_fallback:'+fallback_name),\n    }\n",
+      "checks": [
+        {
+          "label": "Fallback state is explicit",
+          "code": "row=fallback_resolution('timeout','bounded-cache',{'orders':['PO-1']})\nassert row['status']=='degraded' and row['code']=='fallback_used'"
+        },
+        {
+          "label": "Selected dependency is named",
+          "code": "assert fallback_resolution('unavailable','model-secondary',{})['selected_dependency']=='model-secondary'"
+        },
+        {
+          "label": "Warnings explain both paths",
+          "code": "row=fallback_resolution('unavailable','lexical-search',{})\nassert row['warnings']==('primary_dependency_failed','primary_code:unavailable','degraded_fallback:lexical-search')"
+        },
+        {
+          "label": "Data is copied not aliased",
+          "code": "data={'value':1}; row=fallback_resolution('timeout','cache',data)\nassert row['data']==data and row['data'] is not data\ndata['value']=2; assert row['data']['value']==1"
+        },
+        {
+          "label": "Strict names and data keys",
+          "code": "assert raises(TypeError,fallback_resolution,1,'cache',{})\nassert raises(ValueError,fallback_resolution,'timeout',' ',{})\nassert raises(TypeError,fallback_resolution,'timeout','cache',[])\nassert raises(TypeError,fallback_resolution,'timeout','cache',{1:'x'})"
+        }
+      ],
+      "id": "W20-Q089"
+    },
+    {
+      "type": "code",
+      "topic": "Failure codes",
+      "difficulty": "applied",
+      "prompt": "Implement terminal_failure_code(outcome, failure_kind). outcome is one of unavailable, rate_limited, timeout, invalid_response, dependency_failure or circuit_open. failure_kind is transient or permanent. Raise TypeError or ValueError for malformed input. For a transient outcome other than circuit_open return retry_exhausted. Otherwise map outcomes to dependency_unavailable, rate_limited, timeout, invalid_response, dependency_failure or circuit_open respectively.",
+      "explanation": "A terminal code distinguishes exhausted transient work from permanent contract/dependency failures and open-circuit fast failure.",
+      "starter": "def terminal_failure_code(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def terminal_failure_code(outcome, failure_kind):\n    if type(outcome) is not str or type(failure_kind) is not str:\n        raise TypeError('failure_code_input_invalid')\n    mapping = {\n        'unavailable':'dependency_unavailable',\n        'rate_limited':'rate_limited',\n        'timeout':'timeout',\n        'invalid_response':'invalid_response',\n        'dependency_failure':'dependency_failure',\n        'circuit_open':'circuit_open',\n    }\n    if outcome not in mapping or failure_kind not in {'transient','permanent'}:\n        raise ValueError('failure_code_value_invalid')\n    if failure_kind == 'transient' and outcome != 'circuit_open':\n        return 'retry_exhausted'\n    return mapping[outcome]\n",
+      "checks": [
+        {
+          "label": "Exhausted transient outcomes share a code",
+          "code": "assert terminal_failure_code('unavailable','transient')=='retry_exhausted'\nassert terminal_failure_code('rate_limited','transient')=='retry_exhausted'\nassert terminal_failure_code('timeout','transient')=='retry_exhausted'"
+        },
+        {
+          "label": "Open circuit remains explicit",
+          "code": "assert terminal_failure_code('circuit_open','transient')=='circuit_open'"
+        },
+        {
+          "label": "Permanent contract result is preserved",
+          "code": "assert terminal_failure_code('invalid_response','permanent')=='invalid_response'"
+        },
+        {
+          "label": "Permanent dependency codes map exactly",
+          "code": "assert terminal_failure_code('dependency_failure','permanent')=='dependency_failure'\nassert terminal_failure_code('unavailable','permanent')=='dependency_unavailable'"
+        },
+        {
+          "label": "Closed vocabulary is enforced",
+          "code": "assert raises(TypeError,terminal_failure_code,1,'transient')\nassert raises(ValueError,terminal_failure_code,'ok','transient')\nassert raises(ValueError,terminal_failure_code,'timeout','none')"
+        }
+      ],
+      "id": "W20-Q090"
+    },
+    {
+      "type": "code",
+      "topic": "Idempotent submission",
+      "difficulty": "applied",
+      "prompt": "Implement register_idempotency(key, tenant, scenario, fingerprints). key, tenant and scenario must be exact non-blank strings. fingerprints must be an exact dict whose keys are strings and values are 2-tuples of strings. Raise TypeError or ValueError for malformed input. If key is new, store (tenant, scenario) and return accept. If it maps to the same pair return duplicate without mutation. If it maps to different work raise ValueError('idempotency_key_conflict').",
+      "explanation": "Duplicate suppression must distinguish an exact replay from dangerous reuse of the same key for another tenant or scenario.",
+      "starter": "def register_idempotency(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def register_idempotency(key, tenant, scenario, fingerprints):\n    if type(key) is not str or type(tenant) is not str or type(scenario) is not str or type(fingerprints) is not dict:\n        raise TypeError('idempotency_input_invalid')\n    if not key.strip() or not tenant.strip() or not scenario.strip():\n        raise ValueError('idempotency_blank')\n    for known_key, value in fingerprints.items():\n        if type(known_key) is not str or type(value) is not tuple or len(value) != 2 or any(type(item) is not str for item in value):\n            raise TypeError('fingerprint_invalid')\n    fingerprint = (tenant, scenario)\n    known = fingerprints.get(key)\n    if known is None:\n        fingerprints[key] = fingerprint\n        return 'accept'\n    if known == fingerprint:\n        return 'duplicate'\n    raise ValueError('idempotency_key_conflict')\n",
+      "checks": [
+        {
+          "label": "New intent is registered",
+          "code": "rows={}; assert register_idempotency('k1','t1','database-timeout',rows)=='accept'\nassert rows=={'k1':('t1','database-timeout')}"
+        },
+        {
+          "label": "Exact replay is suppressed",
+          "code": "rows={'k1':('t1','database-timeout')}; before=dict(rows)\nassert register_idempotency('k1','t1','database-timeout',rows)=='duplicate'\nassert rows==before"
+        },
+        {
+          "label": "Scenario conflict is rejected",
+          "code": "rows={'k1':('t1','database-timeout')}\nassert raises(ValueError,register_idempotency,'k1','t1','rate-limit-errors',rows)"
+        },
+        {
+          "label": "Tenant conflict is rejected",
+          "code": "rows={'k1':('t1','database-timeout')}\nassert raises(ValueError,register_idempotency,'k1','t2','database-timeout',rows)"
+        },
+        {
+          "label": "Strict fingerprints and identifiers",
+          "code": "assert raises(ValueError,register_idempotency,' ','t','s',{})\nassert raises(TypeError,register_idempotency,'k','t','s',[])\nassert raises(TypeError,register_idempotency,'k','t','s',{'k':['t','s']})\nassert raises(TypeError,register_idempotency,1,'t','s',{})"
+        }
+      ],
+      "id": "W20-Q091"
+    },
+    {
+      "type": "code",
+      "topic": "Queue leasing",
+      "difficulty": "applied",
+      "prompt": "Implement lease_next(pending, in_flight, deliveries). pending must be an exact list of unique non-blank strings; in_flight is an exact dict from string job IDs to exact True; deliveries is an exact dict from string job IDs to non-negative exact ints. Raise TypeError or ValueError for malformed or conflicting state. If pending is empty return None. Otherwise remove and return its first job ID, increment that job's delivery count and mark it in flight.",
+      "explanation": "Leasing atomically removes one pending job, records temporary ownership and increments the delivery evidence.",
+      "starter": "def lease_next(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def lease_next(pending, in_flight, deliveries):\n    if type(pending) is not list or type(in_flight) is not dict or type(deliveries) is not dict:\n        raise TypeError('lease_container_invalid')\n    if any(type(job) is not str for job in pending) or any(not job.strip() for job in pending) or len(set(pending)) != len(pending):\n        raise ValueError('pending_invalid')\n    if any(type(job) is not str or value is not True for job, value in in_flight.items()):\n        raise TypeError('in_flight_invalid')\n    if any(type(job) is not str or type(count) is not int for job, count in deliveries.items()):\n        raise TypeError('deliveries_invalid')\n    if any(count < 0 for count in deliveries.values()):\n        raise ValueError('delivery_count_invalid')\n    if not pending:\n        return None\n    job = pending[0]\n    if job in in_flight:\n        raise ValueError('job_already_in_flight')\n    pending.pop(0)\n    deliveries[job] = deliveries.get(job, 0) + 1\n    in_flight[job] = True\n    return job\n",
+      "checks": [
+        {
+          "label": "First pending job is leased",
+          "code": "pending=['j1','j2']; active={}; counts={}\nassert lease_next(pending,active,counts)=='j1'\nassert pending==['j2'] and active=={'j1':True} and counts=={'j1':1}"
+        },
+        {
+          "label": "Repeated delivery increments count",
+          "code": "pending=['j1']; active={}; counts={'j1':2}\nassert lease_next(pending,active,counts)=='j1' and counts['j1']==3"
+        },
+        {
+          "label": "Empty queue is unchanged",
+          "code": "pending=[]; active={}; counts={}\nassert lease_next(pending,active,counts) is None\nassert pending==[] and active=={} and counts=={}"
+        },
+        {
+          "label": "Conflicting lease fails before mutation",
+          "code": "pending=['j1']; active={'j1':True}; counts={'j1':1}\nassert raises(ValueError,lease_next,pending,active,counts)\nassert pending==['j1'] and counts=={'j1':1}"
+        },
+        {
+          "label": "Malformed state is rejected",
+          "code": "assert raises(TypeError,lease_next,('j1',),{}, {})\nassert raises(ValueError,lease_next,['j1','j1'],{}, {})\nassert raises(TypeError,lease_next,['j1'],{'j2':False}, {})\nassert raises(TypeError,lease_next,['j1'],{}, {'j1':True})\nassert raises(ValueError,lease_next,['j1'],{}, {'j1':-1})"
+        }
+      ],
+      "id": "W20-Q092"
+    },
+    {
+      "type": "code",
+      "topic": "Queue acknowledgement",
+      "difficulty": "applied",
+      "prompt": "Implement acknowledge(job_id, result_job_id, idempotency_key, in_flight, results). The identifiers must be exact non-blank strings. in_flight and results are exact dicts; in_flight must map string job IDs to exact True and results must map string keys to string result job IDs. Raise TypeError or ValueError for malformed input. Require job_id to be leased and equal result_job_id; reject an existing result key. On success remove the lease, store result_job_id under idempotency_key and return True.",
+      "explanation": "Acknowledgement accepts only the leased job's matching terminal result and prevents silent replacement of prior evidence.",
+      "starter": "def acknowledge(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def acknowledge(job_id, result_job_id, idempotency_key, in_flight, results):\n    if any(type(value) is not str for value in (job_id,result_job_id,idempotency_key)) or type(in_flight) is not dict or type(results) is not dict:\n        raise TypeError('ack_input_invalid')\n    if any(not value.strip() for value in (job_id,result_job_id,idempotency_key)):\n        raise ValueError('ack_identifier_blank')\n    if any(type(key) is not str or value is not True for key, value in in_flight.items()):\n        raise TypeError('in_flight_invalid')\n    if any(type(key) is not str or type(value) is not str for key, value in results.items()):\n        raise TypeError('results_invalid')\n    if in_flight.get(job_id) is not True:\n        raise ValueError('job_not_leased')\n    if result_job_id != job_id:\n        raise ValueError('result_job_mismatch')\n    if idempotency_key in results:\n        raise ValueError('result_already_recorded')\n    del in_flight[job_id]\n    results[idempotency_key] = result_job_id\n    return True\n",
+      "checks": [
+        {
+          "label": "Matching leased result is stored",
+          "code": "active={'j1':True}; results={}\nassert acknowledge('j1','j1','k1',active,results) is True\nassert active=={} and results=={'k1':'j1'}"
+        },
+        {
+          "label": "Unleased job is rejected",
+          "code": "active={}; results={}\nassert raises(ValueError,acknowledge,'j1','j1','k1',active,results)\nassert active=={} and results=={}"
+        },
+        {
+          "label": "Mismatched result is rejected without mutation",
+          "code": "active={'j1':True}; results={}\nassert raises(ValueError,acknowledge,'j1','j2','k1',active,results)\nassert active=={'j1':True} and results=={}"
+        },
+        {
+          "label": "Existing terminal result cannot be overwritten",
+          "code": "active={'j1':True}; results={'k1':'old'}\nassert raises(ValueError,acknowledge,'j1','j1','k1',active,results)\nassert active=={'j1':True} and results=={'k1':'old'}"
+        },
+        {
+          "label": "Strict identifiers and state",
+          "code": "assert raises(TypeError,acknowledge,1,'j1','k1',{'j1':True},{})\nassert raises(ValueError,acknowledge,' ',' ','k1',{}, {})\nassert raises(TypeError,acknowledge,'j1','j1','k1',{'j1':1},{})\nassert raises(TypeError,acknowledge,'j1','j1','k1',{'j1':True},{'k1':1})"
+        }
+      ],
+      "id": "W20-Q093"
+    },
+    {
+      "type": "code",
+      "topic": "Redelivery budget",
+      "difficulty": "applied",
+      "prompt": "Implement can_requeue(failure_kind, delivery_count, max_deliveries). failure_kind must be transient or permanent. Counts must be exact positive ints and delivery_count cannot exceed max_deliveries. Raise TypeError or ValueError for malformed input. Return True only for a transient failure when delivery_count is strictly less than max_deliveries.",
+      "explanation": "Queue redelivery is a separate outer budget and stops when the next delivery would exceed its configured maximum.",
+      "starter": "def can_requeue(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def can_requeue(failure_kind, delivery_count, max_deliveries):\n    if type(failure_kind) is not str or type(delivery_count) is not int or type(max_deliveries) is not int:\n        raise TypeError('redelivery_input_invalid')\n    if failure_kind not in {'transient','permanent'} or delivery_count < 1 or max_deliveries < 1 or delivery_count > max_deliveries:\n        raise ValueError('redelivery_value_invalid')\n    return failure_kind == 'transient' and delivery_count < max_deliveries\n",
+      "checks": [
+        {
+          "label": "Transient work with budget requeues",
+          "code": "assert can_requeue('transient',1,2) is True\nassert can_requeue('transient',2,3) is True"
+        },
+        {
+          "label": "Final allowed delivery does not requeue",
+          "code": "assert can_requeue('transient',2,2) is False\nassert can_requeue('transient',1,1) is False"
+        },
+        {
+          "label": "Permanent work never requeues",
+          "code": "assert can_requeue('permanent',1,5) is False"
+        },
+        {
+          "label": "Invalid count relationships fail",
+          "code": "assert raises(ValueError,can_requeue,'transient',0,2)\nassert raises(ValueError,can_requeue,'transient',3,2)\nassert raises(ValueError,can_requeue,'transient',1,0)"
+        },
+        {
+          "label": "Closed exact types and kind",
+          "code": "assert raises(TypeError,can_requeue,'transient',True,2)\nassert raises(TypeError,can_requeue,1,1,2)\nassert raises(ValueError,can_requeue,'none',1,2)"
+        }
+      ],
+      "id": "W20-Q094"
+    },
+    {
+      "type": "code",
+      "topic": "Dead-letter minimization",
+      "difficulty": "applied",
+      "prompt": "Implement dead_letter_record(job, code, delivery_count, dependency_attempt_count). job must be an exact dict with exactly job_id, tenant_id, idempotency_key and scenario, each mapped to a non-blank exact string. code is a non-blank exact string. Counts are exact non-negative ints, with delivery_count positive. Raise TypeError or ValueError for malformed input. Return a new dict containing only job_id, tenant_id, scenario, code, delivery_count and dependency_attempt_count; do not include idempotency_key or alias job.",
+      "explanation": "A minimal DLQ record keeps controlled diagnostic correlation without copying the full submission or sensitive payload into a second store.",
+      "starter": "def dead_letter_record(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def dead_letter_record(job, code, delivery_count, dependency_attempt_count):\n    if type(job) is not dict or type(code) is not str or type(delivery_count) is not int or type(dependency_attempt_count) is not int:\n        raise TypeError('dead_letter_input_invalid')\n    required = {'job_id','tenant_id','idempotency_key','scenario'}\n    if set(job) != required or any(type(value) is not str for value in job.values()):\n        raise ValueError('job_shape_invalid')\n    if any(not value.strip() for value in job.values()) or not code.strip():\n        raise ValueError('dead_letter_value_blank')\n    if delivery_count < 1 or dependency_attempt_count < 0:\n        raise ValueError('dead_letter_count_invalid')\n    return {\n        'job_id':job['job_id'],\n        'tenant_id':job['tenant_id'],\n        'scenario':job['scenario'],\n        'code':code,\n        'delivery_count':delivery_count,\n        'dependency_attempt_count':dependency_attempt_count,\n    }\n",
+      "checks": [
+        {
+          "label": "Controlled fields are retained",
+          "code": "job={'job_id':'j1','tenant_id':'t1','idempotency_key':'k1','scenario':'invalid-api-result'}\nrow=dead_letter_record(job,'invalid_response',1,1)\nassert row['job_id']=='j1' and row['tenant_id']=='t1' and row['scenario']=='invalid-api-result' and row['code']=='invalid_response'"
+        },
+        {
+          "label": "Only the minimal schema is returned",
+          "code": "job={'job_id':'j1','tenant_id':'t1','idempotency_key':'k1','scenario':'invalid-api-result'}\nrow=dead_letter_record(job,'invalid_response',1,1)\nassert set(row)=={'job_id','tenant_id','scenario','code','delivery_count','dependency_attempt_count'}\nassert 'idempotency_key' not in row"
+        },
+        {
+          "label": "Counts remain distinct",
+          "code": "job={'job_id':'j','tenant_id':'t','idempotency_key':'k','scenario':'s'}\nrow=dead_letter_record(job,'retry_exhausted',2,6)\nassert row['delivery_count']==2 and row['dependency_attempt_count']==6"
+        },
+        {
+          "label": "Input is not aliased or mutated",
+          "code": "job={'job_id':'j','tenant_id':'t','idempotency_key':'k','scenario':'s'}; before=dict(job)\nrow=dead_letter_record(job,'failed',1,0)\nassert job==before and row is not job"
+        },
+        {
+          "label": "Exact shape and counts are enforced",
+          "code": "assert raises(ValueError,dead_letter_record,{'job_id':'j'},'failed',1,0)\nassert raises(ValueError,dead_letter_record,{'job_id':'j','tenant_id':'t','idempotency_key':'k','scenario':'s','payload':'secret'},'failed',1,0)\nassert raises(TypeError,dead_letter_record,{},'failed',True,0)\nassert raises(ValueError,dead_letter_record,{'job_id':'j','tenant_id':'t','idempotency_key':'k','scenario':'s'},'failed',0,0)"
+        }
+      ],
+      "id": "W20-Q095"
+    },
+    {
+      "type": "code",
+      "topic": "Batch summaries",
+      "difficulty": "applied",
+      "prompt": "Implement summarize_batch(statuses). statuses must be an exact tuple containing only exact strings completed, degraded or dead_letter. Raise TypeError or ValueError for malformed input. Return a dict with completed_count, degraded_count, dead_letter_count and total, each derived from statuses. Empty input is valid.",
+      "explanation": "Per-state counts must be derived from the retained item results so one failure cannot overwrite or hide partial success.",
+      "starter": "def summarize_batch(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def summarize_batch(statuses):\n    if type(statuses) is not tuple:\n        raise TypeError('statuses_invalid')\n    if any(type(status) is not str for status in statuses):\n        raise TypeError('status_item_invalid')\n    allowed = {'completed','degraded','dead_letter'}\n    if any(status not in allowed for status in statuses):\n        raise ValueError('status_value_invalid')\n    return {\n        'completed_count':statuses.count('completed'),\n        'degraded_count':statuses.count('degraded'),\n        'dead_letter_count':statuses.count('dead_letter'),\n        'total':len(statuses),\n    }\n",
+      "checks": [
+        {
+          "label": "Week 20 batch counts agree",
+          "code": "row=summarize_batch(('degraded','degraded','dead_letter','degraded','completed'))\nassert row=={'completed_count':1,'degraded_count':3,'dead_letter_count':1,'total':5}"
+        },
+        {
+          "label": "All completed is represented",
+          "code": "assert summarize_batch(('completed','completed'))=={'completed_count':2,'degraded_count':0,'dead_letter_count':0,'total':2}"
+        },
+        {
+          "label": "Empty batch is explicit",
+          "code": "assert summarize_batch(())=={'completed_count':0,'degraded_count':0,'dead_letter_count':0,'total':0}"
+        },
+        {
+          "label": "Order does not change counts",
+          "code": "a=summarize_batch(('completed','degraded','dead_letter')); b=summarize_batch(('dead_letter','completed','degraded'))\nassert a==b"
+        },
+        {
+          "label": "Closed exact statuses",
+          "code": "assert raises(TypeError,summarize_batch,['completed'])\nassert raises(TypeError,summarize_batch,('completed',1))\nassert raises(ValueError,summarize_batch,('failed',))"
+        }
+      ],
+      "id": "W20-Q096"
+    },
+    {
+      "type": "code",
+      "topic": "Partial-batch ordering",
+      "difficulty": "applied",
+      "prompt": "Implement ordered_results(job_ids, results). job_ids must be an exact tuple of unique non-blank exact strings. results must be an exact dict from exact string job IDs to exact string terminal statuses. Its keys must exactly match job_ids and statuses must be completed, degraded or dead_letter. Raise TypeError or ValueError for malformed input. Return a tuple of statuses in job_ids order.",
+      "explanation": "Reconstructing results from explicit submission order preserves a terminal outcome for every independent item even when completion paths differ.",
+      "starter": "def ordered_results(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def ordered_results(job_ids, results):\n    if type(job_ids) is not tuple or type(results) is not dict:\n        raise TypeError('ordered_result_container_invalid')\n    if any(type(job) is not str for job in job_ids) or any(not job.strip() for job in job_ids) or len(set(job_ids)) != len(job_ids):\n        raise ValueError('job_ids_invalid')\n    if any(type(job) is not str or type(status) is not str for job, status in results.items()):\n        raise TypeError('result_item_invalid')\n    if set(results) != set(job_ids):\n        raise ValueError('result_coverage_invalid')\n    allowed = {'completed','degraded','dead_letter'}\n    if any(status not in allowed for status in results.values()):\n        raise ValueError('result_status_invalid')\n    return tuple(results[job] for job in job_ids)\n",
+      "checks": [
+        {
+          "label": "Submission order is preserved",
+          "code": "ids=('j1','j2','j3'); rows={'j3':'completed','j1':'degraded','j2':'dead_letter'}\nassert ordered_results(ids,rows)==('degraded','dead_letter','completed')"
+        },
+        {
+          "label": "Failure does not erase later outcomes",
+          "code": "assert ordered_results(('a','b','c'),{'a':'completed','b':'dead_letter','c':'degraded'})==('completed','dead_letter','degraded')"
+        },
+        {
+          "label": "Every job requires one terminal result",
+          "code": "assert raises(ValueError,ordered_results,('a','b'),{'a':'completed'})\nassert raises(ValueError,ordered_results,('a',),{'a':'completed','b':'degraded'})"
+        },
+        {
+          "label": "Duplicate IDs and unknown states fail",
+          "code": "assert raises(ValueError,ordered_results,('a','a'),{'a':'completed'})\nassert raises(ValueError,ordered_results,('a',),{'a':'failed'})"
+        },
+        {
+          "label": "Exact containers and items",
+          "code": "assert raises(TypeError,ordered_results,['a'],{'a':'completed'})\nassert raises(TypeError,ordered_results,('a',),{'a':1})\nassert raises(ValueError,ordered_results,(' ',),{' ':'completed'})"
+        }
+      ],
+      "id": "W20-Q097"
+    },
+    {
+      "type": "code",
+      "topic": "Safe attempt evidence",
+      "difficulty": "applied",
+      "prompt": "Implement attempt_record(dependency, attempt, invoked, outcome, elapsed_ms, scheduled_backoff_ms, circuit_state_after). dependency and outcome are exact non-blank strings; attempt is an exact positive int; invoked is an exact bool; elapsed and backoff are exact non-negative ints; circuit_state_after is closed, open or half_open. Raise TypeError or ValueError for malformed input. If invoked is False, require elapsed_ms and scheduled_backoff_ms to be zero. Return a new dict containing exactly those seven named fields.",
+      "explanation": "A closed attempt record explains invocation and policy without accepting payloads, credentials or arbitrary error text.",
+      "starter": "def attempt_record(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def attempt_record(dependency, attempt, invoked, outcome, elapsed_ms, scheduled_backoff_ms, circuit_state_after):\n    if type(dependency) is not str or type(outcome) is not str or type(circuit_state_after) is not str or type(attempt) is not int or type(invoked) is not bool or type(elapsed_ms) is not int or type(scheduled_backoff_ms) is not int:\n        raise TypeError('attempt_input_invalid')\n    if not dependency.strip() or not outcome.strip() or attempt < 1 or elapsed_ms < 0 or scheduled_backoff_ms < 0:\n        raise ValueError('attempt_value_invalid')\n    if circuit_state_after not in {'closed','open','half_open'}:\n        raise ValueError('circuit_state_invalid')\n    if not invoked and (elapsed_ms != 0 or scheduled_backoff_ms != 0):\n        raise ValueError('non_invocation_has_timing')\n    return {\n        'dependency':dependency,\n        'attempt':attempt,\n        'invoked':invoked,\n        'outcome':outcome,\n        'elapsed_ms':elapsed_ms,\n        'scheduled_backoff_ms':scheduled_backoff_ms,\n        'circuit_state_after':circuit_state_after,\n    }\n",
+      "checks": [
+        {
+          "label": "Invoked attempt records controlled timing",
+          "code": "row=attempt_record('catalog-api',1,True,'rate_limited',5,300,'closed')\nassert row['invoked'] is True and row['elapsed_ms']==5 and row['scheduled_backoff_ms']==300"
+        },
+        {
+          "label": "Circuit rejection records no invocation",
+          "code": "row=attempt_record('model-primary',3,False,'circuit_open',0,0,'open')\nassert row['invoked'] is False and row['circuit_state_after']=='open'"
+        },
+        {
+          "label": "Schema is closed and minimal",
+          "code": "row=attempt_record('db',1,True,'timeout',250,100,'closed')\nassert set(row)=={'dependency','attempt','invoked','outcome','elapsed_ms','scheduled_backoff_ms','circuit_state_after'}"
+        },
+        {
+          "label": "Non-invocation cannot claim timing",
+          "code": "assert raises(ValueError,attempt_record,'db',1,False,'circuit_open',1,0,'open')\nassert raises(ValueError,attempt_record,'db',1,False,'circuit_open',0,1,'open')"
+        },
+        {
+          "label": "Strict types and ranges",
+          "code": "assert raises(TypeError,attempt_record,'db',True,True,'ok',1,0,'closed')\nassert raises(TypeError,attempt_record,'db',1,1,'ok',1,0,'closed')\nassert raises(ValueError,attempt_record,'db',0,True,'ok',1,0,'closed')\nassert raises(ValueError,attempt_record,'db',1,True,'ok',1,0,'bad')"
+        }
+      ],
+      "id": "W20-Q098"
+    },
+    {
+      "type": "code",
+      "topic": "Outcome metrics",
+      "difficulty": "applied",
+      "prompt": "Implement outcome_counts(attempts). attempts must be an exact tuple of exact dicts containing exactly dependency and outcome, both non-blank exact strings. outcome must be one of ok, unavailable, rate_limited, timeout, invalid_response, dependency_failure or circuit_open. Raise TypeError or ValueError for malformed input. Return a dict containing all seven allowed outcomes with integer counts, including zeros; do not group by raw dependency value.",
+      "explanation": "Controlled outcome counters support bounded low-cardinality telemetry without turning dependency details or payloads into metric labels.",
+      "starter": "def outcome_counts(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def outcome_counts(attempts):\n    if type(attempts) is not tuple:\n        raise TypeError('attempts_invalid')\n    allowed = ('ok','unavailable','rate_limited','timeout','invalid_response','dependency_failure','circuit_open')\n    counts = {outcome:0 for outcome in allowed}\n    for row in attempts:\n        if type(row) is not dict:\n            raise TypeError('attempt_invalid')\n        if set(row) != {'dependency','outcome'}:\n            raise ValueError('attempt_shape_invalid')\n        if any(type(value) is not str for value in row.values()):\n            raise TypeError('attempt_value_invalid')\n        if not row['dependency'].strip() or row['outcome'] not in counts:\n            raise ValueError('attempt_value_invalid')\n        counts[row['outcome']] += 1\n    return counts\n",
+      "checks": [
+        {
+          "label": "Known outcomes are counted",
+          "code": "rows=({'dependency':'api','outcome':'timeout'},{'dependency':'api','outcome':'timeout'},{'dependency':'cache','outcome':'ok'})\ncounts=outcome_counts(rows); assert counts['timeout']==2 and counts['ok']==1"
+        },
+        {
+          "label": "Every controlled outcome is present",
+          "code": "counts=outcome_counts(())\nassert set(counts)=={'ok','unavailable','rate_limited','timeout','invalid_response','dependency_failure','circuit_open'}\nassert all(value==0 for value in counts.values())"
+        },
+        {
+          "label": "Dependencies do not become metric keys",
+          "code": "counts=outcome_counts(({'dependency':'tenant-specific-host','outcome':'ok'},))\nassert 'tenant-specific-host' not in counts and counts['ok']==1"
+        },
+        {
+          "label": "Unknown and expanded records fail",
+          "code": "assert raises(ValueError,outcome_counts,({'dependency':'api','outcome':'mystery'},))\nassert raises(ValueError,outcome_counts,({'dependency':'api','outcome':'ok','payload':'secret'},))"
+        },
+        {
+          "label": "Exact tuple and string fields",
+          "code": "assert raises(TypeError,outcome_counts,[{'dependency':'api','outcome':'ok'}])\nassert raises(TypeError,outcome_counts,('bad',))\nassert raises(TypeError,outcome_counts,({'dependency':'api','outcome':1},))\nassert raises(ValueError,outcome_counts,({'dependency':' ','outcome':'ok'},))"
+        }
+      ],
+      "id": "W20-Q099"
+    },
+    {
+      "type": "code",
+      "topic": "Queue lifecycle",
+      "difficulty": "applied",
+      "prompt": "Implement valid_reliability_lifecycle(events). events must be an exact tuple of non-blank exact strings. Raise TypeError or ValueError for malformed input. Return True only for one of these complete sequences: submitted, leased, acknowledged; submitted, leased, dead_lettered; submitted, leased, requeued, leased, acknowledged; or submitted, leased, requeued, leased, dead_lettered. Return False for every other well-formed sequence.",
+      "explanation": "A closed lifecycle makes missing leases, premature acknowledgement and unbounded or impossible transitions visible.",
+      "starter": "def valid_reliability_lifecycle(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
+      "reference": "def valid_reliability_lifecycle(events):\n    if type(events) is not tuple:\n        raise TypeError('events_invalid')\n    if any(type(event) is not str for event in events):\n        raise TypeError('event_invalid')\n    if any(not event.strip() for event in events):\n        raise ValueError('event_blank')\n    allowed = {\n        ('submitted','leased','acknowledged'),\n        ('submitted','leased','dead_lettered'),\n        ('submitted','leased','requeued','leased','acknowledged'),\n        ('submitted','leased','requeued','leased','dead_lettered'),\n    }\n    return events in allowed\n",
+      "checks": [
+        {
+          "label": "Direct completion is valid",
+          "code": "assert valid_reliability_lifecycle(('submitted','leased','acknowledged')) is True"
+        },
+        {
+          "label": "Direct terminal quarantine is valid",
+          "code": "assert valid_reliability_lifecycle(('submitted','leased','dead_lettered')) is True"
+        },
+        {
+          "label": "One bounded redelivery may terminate either way",
+          "code": "assert valid_reliability_lifecycle(('submitted','leased','requeued','leased','acknowledged')) is True\nassert valid_reliability_lifecycle(('submitted','leased','requeued','leased','dead_lettered')) is True"
+        },
+        {
+          "label": "Missing or impossible transitions fail",
+          "code": "assert valid_reliability_lifecycle(('submitted','acknowledged')) is False\nassert valid_reliability_lifecycle(('leased','acknowledged')) is False\nassert valid_reliability_lifecycle(('submitted','leased','requeued','acknowledged')) is False\nassert valid_reliability_lifecycle(('submitted','leased','requeued','leased','requeued','leased','acknowledged')) is False"
+        },
+        {
+          "label": "Strict event tuple",
+          "code": "assert raises(TypeError,valid_reliability_lifecycle,['submitted','leased','acknowledged'])\nassert raises(TypeError,valid_reliability_lifecycle,('submitted',1))\nassert raises(ValueError,valid_reliability_lifecycle,('submitted',' '))\nassert valid_reliability_lifecycle(()) is False\nassert valid_reliability_lifecycle(('submitted','leased','unknown')) is False"
+        }
+      ],
+      "id": "W20-Q100"
+    }
+  ]
+}

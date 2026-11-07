@@ -3,8 +3,8 @@ layout: week
 week: 20
 phase: 5
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-06
+version: 1.0.1
+last_reviewed: 2026-11-07
 estimated_hours: 6
 permalink: /weeks/week-20/beginner/
 title: "Keep the delivery desk useful when one service breaks"
@@ -39,6 +39,10 @@ real provider, database, API, vector store or queue.
 The [production version]({{ '/weeks/week-20/' | relative_url }}) explains
 deadline propagation, retry amplification, circuit scope, at-least-once
 delivery, idempotency and operational ownership in more depth.
+
+The [Week 20 assessment]({{ '/assessments/week-20/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 ## Learn nine small ideas
 
@@ -266,6 +270,10 @@ They prove the boundaries as well as the happy paths: strict input rejection,
 finite retry delays, `Retry-After` cap, timeout classification, circuit recovery,
 fallback selection, duplicate suppression, lease rules, partial continuation,
 minimal dead-letter records and deterministic CLI output.
+
+Try the [Week 20 assessment]({{ '/assessments/week-20/' | relative_url }}) for a
+random paper covering temporary and permanent failures, safe retries, circuit
+breakers, honest fallbacks, queue transitions and dead-letter handling.
 
 ## What this small lab cannot prove
 

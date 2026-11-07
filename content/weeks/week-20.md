@@ -3,8 +3,8 @@ layout: week
 week: 20
 phase: 5
 status: approved
-version: 1.0.0
-last_reviewed: 2026-11-06
+version: 1.0.1
+last_reviewed: 2026-11-07
 estimated_hours: 8
 permalink: /weeks/week-20/
 title: "Design failure as a controlled state, not a surprise"
@@ -37,6 +37,10 @@ as:
 
 If retries, queues and circuit breakers are new, start with the
 [beginner version]({{ '/weeks/week-20/beginner/' | relative_url }}).
+
+The [Week 20 assessment]({{ '/assessments/week-20/' | relative_url }}) draws
+10 balanced questions from a bank of 100, with explanations and browser Python
+checks.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
@@ -347,6 +351,10 @@ Before applying these patterns to a real dependency, answer:
 
 The deterministic lab answers policy questions. It does not prove real provider
 availability, cancellation, broker durability, fallback quality or capacity.
+
+Use the [Week 20 assessment]({{ '/assessments/week-20/' | relative_url }}) to
+practise failure classification, bounded retry timing, circuit transitions,
+fallback evidence, idempotent queue handling, partial failure and dead letters.
 
 ## Further reading
 

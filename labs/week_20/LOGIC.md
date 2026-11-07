@@ -1,4 +1,4 @@
-# Week 20 reliability contracts — revision 1
+# Week 20 reliability contracts — revision 2
 
 Source: `Path.md` Week 20 and the Week 19 guarded-tool boundary. These rules
 define a deterministic local simulator for safe read-like work. They do not
@@ -24,6 +24,7 @@ consequential writes safe to replay.
 | W20-NFR1 | Given the same scenarios and configuration, output order, virtual delays, circuit transitions, fallbacks and dead-letter records are deterministic. No wall clock, random source, sleep, network or external service participates. |
 | W20-NFR2 | Use only the standard library and the repository's pinned Pydantic runtime. Keep boundary models strict, frozen and closed to extra fields. |
 | W20-ER1 | Test schema rejection, retry classification and caps, `Retry-After`, timeout handling, circuit transitions and isolation, every fallback, partial batch continuation, idempotency conflicts, queue transitions, DLQ minimization, deterministic replay and all CLI paths. |
+| W20-AS1 | Publish a 100-item practice bank with 30 single-choice, 20 multiple-correct, 15 matching, 15 short-syntax and 20 self-contained Python exercises. A seeded paper draws two of each type for 100 marks. Every coding task has five executable checks and public explanatory feedback; client-side results are practice evidence, not authenticated exam records. |
 
 ## Required failure matrix
 
