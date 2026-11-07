@@ -3,8 +3,8 @@ layout: week
 week: 4
 phase: 1
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-21
+version: 1.2.0
+last_reviewed: 2026-11-07
 estimated_hours: 8
 permalink: /weeks/week-04/
 title: "Prompting and structured output: make extraction evidence defensible"
@@ -83,7 +83,10 @@ A model cannot satisfy an extraction contract that the application has not first
 
 ### Before you begin
 
-You need the Week 1 ideas of typed Python boundaries, exceptions, and tests, plus Week 3's distinction between model output and measured evidence. Bring basic JSON knowledge. SQL, a vector database, and an agent framework are not required.
+This in-depth version is for a learner with basic Python, JSON and LLM prompting
+experience. You need the Week 1 ideas of typed Python boundaries, exceptions,
+and tests, plus Week 3's distinction between model output and measured evidence.
+SQL, a vector database, and an agent framework are not required.
 
 By the end of this week, you should be able to:
 

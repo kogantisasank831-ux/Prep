@@ -1,5 +1,11 @@
 ---
 layout: week
+week: 3
+phase: 1
+status: approved
+version: 1.2.0
+last_reviewed: 2026-11-07
+estimated_hours: 8
 permalink: /weeks/week-03/beginner/
 title: "LLM foundations—a simpler introduction"
 description: Build an intuitive mental model of tokens, Transformers, generation, and controlled local-model comparison before entering the production lesson.
@@ -12,6 +18,26 @@ alternate_url: /weeks/week-03/
 ---
 
 Test your understanding with the [Week 3 assessment]({{ '/assessments/week-03/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on attention, sampling and controlled comparisons.
+
+## Before you start
+
+This version is for someone new to language models. Basic Python helps with the
+small exercises, and it is useful to recognise a vector and a probability, but
+the lesson explains the required intuition. You do not need deep-learning
+coursework, model weights, a GPU or an API key.
+
+## Beginner learning path
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | Tokens, vectors and repeated next-token prediction | Trace the supplier note from text to one selected token |
+| Hours 3–4 | Attention, order and decoder blocks | Explain what information a token may use and why future tokens are masked |
+| Hours 5–6 | Training, context, sampling and unsupported output | Separate fluency, probability and factual support in one example |
+| Hours 7–8 | Hosted/local boundaries and a controlled comparison | Write down what was fixed, measured and judged before comparing outputs |
+
+Focus on the meaning of each step before the equations. The small formulas and
+Python functions make the ideas concrete; deriving a Transformer or running the
+full local comparison is stretch work for the production version.
 
 ## Begin with one note and one request
 

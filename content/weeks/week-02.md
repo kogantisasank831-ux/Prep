@@ -3,8 +3,8 @@ layout: week
 week: 2
 phase: 1
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-07
 estimated_hours: 8
 permalink: /weeks/week-02/
 title: "SQL and data modelling: make procurement facts trustworthy"
@@ -21,7 +21,12 @@ Test your understanding with the [Week 2 assessment]({{ '/assessments/week-02/' 
 
 ## Your route through Week 2
 
-The goal is to answer the five procurement questions and explain why their numbers are trustworthy. Work from one row's meaning to joins and dates, then build the supplier measures. Keep your own query results, a short metric-definition note and answers to the eight medium SQL and two product-analytics problems below.
+This in-depth version is for a learner with basic SQL and relational-table
+experience. The goal is to answer the five procurement questions and explain why
+their numbers are trustworthy. Work from one row's meaning to joins and dates,
+then build the supplier measures. Keep your own query results, a short
+metric-definition note and answers to the eight medium SQL and two
+product-analytics problems below.
 
 | Time | Focus | Evidence to keep |
 | --- | --- | --- |

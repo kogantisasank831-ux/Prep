@@ -1,6 +1,24 @@
 
 # Phase 1: Foundations for Applied GenAI
 
+## Learning and assessment contract
+
+Every week has two depths with different starting assumptions:
+
+- The **beginner version** assumes the topic is new. It states prerequisites,
+  introduces one idea at a time in plain language, follows one concrete example,
+  and separates the core route from optional stretch material.
+- The **production version** assumes basic familiarity or relevant experience. It
+  focuses on trade-offs, failure modes, testing, operational limits and evidence
+  that another engineer can review.
+
+Weekly assessments check whether the learner understands the lesson: first by
+recognising and explaining a concept, then by predicting behavior and applying
+it to a small problem. Exact syntax remains a small, explicit part of technical
+fluency; it is not a substitute for reasoning. These learning checks are separate
+from the role-specific Data Scientist and AI Engineer interview banks and topic
+cheat sheets that will be added after the weekly validation batches.
+
 ## Week 1 — Python for production AI systems
 
 ### Learn

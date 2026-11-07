@@ -3,8 +3,8 @@ layout: week
 week: 2
 phase: 1
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-07
 estimated_hours: 8
 permalink: /weeks/week-02/beginner/
 title: "SQL and data modelling: a beginner's introduction"
@@ -19,9 +19,23 @@ alternate_url: /weeks/week-02/
 
 Test your understanding with the [Week 2 assessment]({{ '/assessments/week-02/' | relative_url }}): a random ten-question paper from 100 questions, including written PostgreSQL queries with automatic checks.
 
-## Your route through Week 2
+## Beginner learning path
 
-Start with the order story and explain each table's row meaning before trying the full queries. Use the same eight-hour plan as the production lesson: one hour for grains and keys, two for aggregation/joins/dates, one for nested queries and windows, one for indexes and transactions, two for the lab, and one for practice.
+This version assumes only that you have seen a table or spreadsheet and can read
+a simple `SELECT`. Joins, window functions, indexes and transactions are not
+prerequisites.
+
+Start with the order story and explain each table's row meaning before trying the
+full queries. The first pass is deliberately smaller than the complete production
+lesson:
+
+| Time | Route | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | Tables, row grain, keys, order headers and lines | State what one row represents in each table |
+| Hours 3–4 | Filtering, grouping, joins and fan-out | Reproduce a duplicated total and explain the correction |
+| Hour 5 | Cutoff dates and the five procurement questions | State the time boundary, unit, currency and result grain |
+| Hours 6–7 | Guided lab and practice queries | Run the core analyses and predict each result before executing it |
+| Hour 8 | Nested queries, windows, indexes and transactions as a preview | Explain the problem each tool solves; syntax mastery can wait for the production lesson |
 
 Your goal is to run the five procurement analyses and explain the result of each. Keep an order trace, one example of a duplicated total, a corrected query and a short note describing the date, unit and currency of every measure. The exercises near the end give you smaller steps toward that handoff.
 

@@ -3,8 +3,8 @@ layout: week
 week: 4
 phase: 1
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-21
+version: 1.2.0
+last_reviewed: 2026-11-07
 estimated_hours: 8
 permalink: /weeks/week-04/beginner/
 title: "Prompting and structured output: a beginner's introduction"
@@ -61,6 +61,19 @@ We will follow that document through the whole process: define the fields, ask f
 You should recognise a Python function, a JSON object, and a basic test. Week 1 introduces the validation habits; Week 3 explains why a model can produce a plausible but unsupported answer. You can run this week's offline lab without a GPU or an API key.
 
 Your target is to explain five things in your own words: what message roles do, how examples affect prompting, why a schema helps, why evidence checks are separate, and when to stop retrying. Spend about two hours on the explanations, then use the practical work in the production version for the rest of your eight-hour week.
+
+## Beginner learning path
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | Output contract, missing values and message roles | Explain why valid JSON can still contain an unsupported fact |
+| Hours 3–4 | Zero-shot/few-shot prompting and structured output | Compare two prompt versions without treating a role as authority |
+| Hours 5–6 | Schema validation, evidence checks and bounded recovery | Classify one structural failure, one evidence failure and one transport failure |
+| Hours 7–8 | Offline lab, sensitivity cases and assessment | Record a valid outcome or a reviewable failure with its reason |
+
+The core route is contract → messages → candidate → validation → evidence →
+outcome. Exact Pydantic constraints, request fingerprints and recovery traces are
+stretch details for the production version after that flow is clear.
 
 ## The extraction contract comes before the prompt
 

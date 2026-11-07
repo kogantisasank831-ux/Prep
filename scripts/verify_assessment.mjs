@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import {
-  TYPES, MAX_SOURCE, answered, buildPaper, gradeObjective, randomSeed,
+  DIFFICULTIES, TYPES, MAX_SOURCE, answered, buildPaper, gradeObjective, randomSeed,
   restoreAttempt, sanitizeAnswer, scorePaper, validCodeResult, validateBank,
 } from "../assessment-core.mjs";
 
@@ -16,6 +16,16 @@ for (let i = 0; i < 1000; i++) {
   assert.equal(paper.length, 10);
   assert.equal(new Set(paper.map(q => q.id)).size, 10);
   for (const type of TYPES) assert.equal(paper.filter(q => q.type === type).length, 2);
+  if (bank.paper_policy.difficulty_per_type !== undefined) {
+    for (const type of TYPES) {
+      for (const difficulty of DIFFICULTIES) {
+        assert.equal(
+          paper.filter(q => q.type === type && q.difficulty === difficulty).length,
+          bank.paper_policy.difficulty_per_type[type][difficulty],
+        );
+      }
+    }
+  }
   paper.forEach(q => coverage.add(q.id));
 }
 assert.equal(coverage.size, 100);
@@ -28,6 +38,7 @@ for (const mutate of [
   b => b.questions.pop(),
   b => b.questions[1].id = b.questions[0].id,
   b => b.questions[0].correct = ["not-an-option"],
+  b => b.questions[0].difficulty = "expert",
   b => b.questions[0].correct = [],
   b => b.questions.find(q => q.type === "multiple").correct = ["o1"],
   b => b.questions.find(q => q.type === "match").correct = {},
@@ -35,6 +46,14 @@ for (const mutate of [
   b => b.questions.find(q => q.type === "code").checks.pop(),
 ]) {
   const malformed = clone(bank); mutate(malformed); assert.throws(() => validateBank(malformed));
+}
+if (bank.paper_policy.difficulty_per_type !== undefined) {
+  for (const mutate of [
+    b => delete b.paper_policy.difficulty_per_type.single,
+    b => b.paper_policy.difficulty_per_type.single.foundation = 3,
+  ]) {
+    const malformed = clone(bank); mutate(malformed); assert.throws(() => validateBank(malformed));
+  }
 }
 
 for (const q of bank.questions) {
@@ -99,4 +118,7 @@ assert.equal(restoreAttempt(bank, seed, { ...state, bank_version: "old" }).submi
 assert.deepEqual(restoreAttempt(bank, seed, { ...state, bank_version: "old" }).answers, {});
 const invalidSource = restoreAttempt(bank, seed, { ...state, answers: stale });
 assert.equal(invalidSource.code_results[codeQuestion.id], undefined);
-console.log("PASS: bank validation; 1,000 balanced reproducible papers; all objective keys; exact/partial/pending scoring; stale-code rejection; restored attempts.");
+const difficultyEvidence = bank.paper_policy.difficulty_per_type === undefined
+  ? ""
+  : " and declared difficulty quotas";
+console.log(`PASS: bank validation; 1,000 balanced reproducible papers${difficultyEvidence}; all objective keys; exact/partial/pending scoring; stale-code rejection; restored attempts.`);
