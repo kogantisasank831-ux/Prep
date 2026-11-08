@@ -3,8 +3,8 @@ layout: week
 week: 6
 phase: 2
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-06/beginner/
 title: "Document parsing and chunking: a beginner's introduction"
@@ -23,9 +23,26 @@ Test your understanding with the [Week 6 assessment]({{ '/assessments/week-06/' 
 
 Week 5 showed how to rank short documents. This week asks what happens when a document is too long, or when a table and a condition live in different sections. Think of a chunk as the piece of evidence you put on a reviewer's desk. It must be small enough to find and large enough to make sense.
 
-By the end, you will be able to explain six boundary strategies, keep a table row linked to its source, run a policy comparison, and tell the difference between a document hit and a complete answer. You need basic Python functions, lists, dataclasses, and the Week 5 idea of a vector search. The short functions below build intuition; the runnable lab adds the stricter identities, parser statuses, authorization, and manifest checks.
+This version is for someone new to parsing and chunking. You need basic Python
+functions and lists plus the Week 5 idea that retrieval ranks bounded text. The
+lesson introduces parser status, source locations, chunk policies and
+parent-child context; dataclass and manifest details do not need to be familiar
+already.
 
-Allow about eight hours: one for the P-105 story, two for the four small splitters, one for semantic and parent-child ideas, two for the lab, and two for exercises and a short explanation in your own words. Read each strategy with the same question in mind: **what useful evidence could this boundary separate?**
+## Beginner learning path
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | P-105, parser output and source locations | Identify the table row, payment clause and cross-reference needed for the answer |
+| Hours 3–4 | Fixed, overlap, sentence and structure-aware chunks | Predict what evidence each boundary can split or duplicate |
+| Hours 5–6 | Parent-child context and one policy comparison | Trace a returned child back to its authorized source |
+| Hours 7–8 | Lab, one parameter change and the assessment | Defend a policy using quality, storage and context evidence |
+
+The first-pass core is parsing status, traceable source locations, boundary
+trade-offs and complete evidence. Semantic-boundary heuristics, representation
+checksums, manifest compatibility and detailed storage accounting are stretch
+topics for the production version. Keep asking: **what useful evidence could
+this boundary separate?**
 
 ## A search result is only as useful as the text unit behind it
 
