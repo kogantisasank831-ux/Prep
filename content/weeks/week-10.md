@@ -3,8 +3,8 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-25
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-10/
 title: "LLM observability: follow a request and explain what changed"
@@ -31,6 +31,8 @@ You will build a local tracing lab around the actual Week 7–8 retrieval compon
 
 Bring source/version lineage from Week 6, authorized retrieval from Week 7, context and citation contracts from Week 8, and quality boundaries from Week 9.
 
+This in-depth version assumes you can already follow a retrieval request through search, reranking and context selection and can read small Python records. It focuses on operational evidence: trace structure, measurement boundaries, version identity, failure cleanup and controlled diagnosis. Use the beginner route first if logs, metrics, traces or elapsed-time calculations are unfamiliar.
+
 | Time | Work | Evidence to retain |
 | --- | --- | --- |
 | Hour 1 | Distinguish logs, metrics, traces and evaluation | A precise question for each signal |
@@ -40,6 +42,8 @@ Bring source/version lineage from Week 6, authorized retrieval from Week 7, cont
 | Hours 5–6 | Run the tracing scenarios | Trace files, optional synthetic capture and cost calculation |
 | Hour 7 | Diagnose the context regression | First differing stage and a controlled verification |
 | Hour 8 | Complete exercises and interview practice | A short incident explanation with remaining uncertainty |
+
+The core path is to distinguish the four signal types, build and read one trace, calculate elapsed time correctly, retain behavior-changing identities and locate the first differing stage in a paired run. Cost rate cards, OpenTelemetry translation, sampling, cardinality and retention are deeper operational extensions after that request-level explanation is sound.
 
 ## Choose the signal that answers your question
 

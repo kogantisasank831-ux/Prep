@@ -1,14 +1,21 @@
 {
   "schema_version": 1,
   "week": 10,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Observability and tracing",
   "source_lesson": "/weeks/week-10/",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -1489,7 +1496,7 @@
       "id": "W10-Q051",
       "type": "match",
       "topic": "Observation signals",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each signal to its primary question.",
       "explanation": "Each signal supports a different claim. Execution completion and task success must remain distinguishable.",
       "left": [
@@ -1539,7 +1546,7 @@
       "id": "W10-Q052",
       "type": "match",
       "topic": "Identity fields",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each field to its purpose.",
       "explanation": "These identifiers reconstruct and correlate execution; none independently grants source access.",
       "left": [
@@ -1589,7 +1596,7 @@
       "id": "W10-Q053",
       "type": "match",
       "topic": "Local stages",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each stage to the operation it observes.",
       "explanation": "Stage boundaries separate scope, query expansion, ranking and evidence admission so failures can be localized.",
       "left": [
@@ -1639,7 +1646,7 @@
       "id": "W10-Q054",
       "type": "match",
       "topic": "Timing quantities",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each quantity to its interpretation.",
       "explanation": "Calendar placement, elapsed work and missing data are different facts. Inclusive timing cannot be summed blindly.",
       "left": [
@@ -1739,7 +1746,7 @@
       "id": "W10-Q056",
       "type": "match",
       "topic": "Usage sources",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each source label to its declared meaning.",
       "explanation": "Provenance prevents fixture or missing values from being misrepresented as measured provider usage.",
       "left": [
@@ -2239,7 +2246,7 @@
       "id": "W10-Q066",
       "type": "short",
       "topic": "Performance counter",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Enter the Python time-module function that returns the integer-nanosecond performance counter used for elapsed intervals. Function name only.",
       "explanation": "perf_counter_ns provides integer readings for interval differences. Its reference point is not a calendar timestamp.",
       "accepted": [
@@ -2251,7 +2258,7 @@
       "id": "W10-Q067",
       "type": "short",
       "topic": "Time conversion",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete duration_ms = duration_ns / ___. Enter the integer divisor in decimal digits, without underscores.",
       "explanation": "There are one million nanoseconds per millisecond. The conversion changes units, not hardware clock accuracy.",
       "accepted": [
@@ -2263,7 +2270,7 @@
       "id": "W10-Q068",
       "type": "short",
       "topic": "Monotonic syntax",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "With integers start_ns and end_ns, complete elapsed_ns = ___ - start_ns. Variable name only.",
       "explanation": "Elapsed time is end minus start under a valid nondecreasing clock. Validate missing/backwards readings before claiming a duration.",
       "accepted": [
@@ -2275,7 +2282,7 @@
       "id": "W10-Q069",
       "type": "short",
       "topic": "Unknown value",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Enter the Python singleton literal used for an unavailable duration or token count.",
       "explanation": "None preserves a missing observation. Zero instead asserts a measured numeric value and is not an equivalent substitute.",
       "accepted": [
@@ -2287,7 +2294,7 @@
       "id": "W10-Q070",
       "type": "short",
       "topic": "Exact integer type",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete the bool-rejecting check: type(count) is ___. Built-in type name only.",
       "explanation": "Exact type identity excludes True/False even though isinstance(True, int) is true. The token contract requires actual integers.",
       "accepted": [
@@ -2451,7 +2458,7 @@
       "id": "W10-Q082",
       "type": "code",
       "topic": "Null-aware interval conversion",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement elapsed_ms(start_ns, end_ns). Each input must be None or an EXACT int in [0,10**18]; validate BOTH inputs even when one is None. Invalid values raise ValueError. If either valid input is None return None. Otherwise reject end_ns < start_ns and return (end_ns-start_ns)/1000000 as a float. Known zero duration must remain 0.0. Do not use absolute values, wall time or a real clock.",
       "explanation": "Validate tick types/ranges before the missing-data branch. Subtract in the declared order and divide by one million; zero and missing remain different.",
       "starter": "def elapsed_ms(start_ns, end_ns):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
@@ -2515,7 +2522,7 @@
       "id": "W10-Q084",
       "type": "code",
       "topic": "Stable timeline order",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement timeline(spans) for TRUSTED data: a list/tuple of <=128 dicts containing id and start_ns, where start_ns is a nonnegative int or None. Return a NEW list of the same row objects, ordered by known start_ns ascending, with equal starts in original order and all missing starts last in original order. Do not mutate input or turn None into zero. No additional schema validation is required.",
       "explanation": "A stable sort can order known starts while keeping missing observations separate. Preserve the caller collection and do not infer starts from completion order.",
       "starter": "def timeline(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
@@ -2643,7 +2650,7 @@
       "id": "W10-Q088",
       "type": "code",
       "topic": "Bounded failure categories",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement error_category(error). Require a BaseException instance or raise ValueError. In this order return: cancelled for any BaseException that is NOT an Exception (for example KeyboardInterrupt/SystemExit); timeout for TimeoutError; permission for PermissionError; dependency for ConnectionError or OSError; validation for ValueError; internal for other Exceptions. Return only the category string: do not return str(error), class names, payloads or tracebacks. This simplified exercise does not add the lab-specific model_contract/identity_drift classes.",
       "explanation": "Order subtype checks before broad OSError and keep cancellation separate. Bounded categories avoid automatically exporting exception text.",
       "starter": "def error_category(error):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
@@ -2707,7 +2714,7 @@
       "id": "W10-Q090",
       "type": "code",
       "topic": "Scoped source-unit deduplication",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement source_units(spans) for TRUSTED authorized observations: spans is a list/tuple of <=128 dicts with key equal to an immutable four-string tuple (tenant, document, version, location). Several quote spans may share a source unit. Return a new list of unique FULL keys in first-seen order. Keep different tenants, versions and locations distinct; do not mutate input. This helper counts observed units and does not establish document permission or claim support.",
       "explanation": "A source-unit key must retain full scope and stable order. Counting quote spans or collapsing to document names can misrepresent context movement.",
       "starter": "def source_units(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
@@ -2739,7 +2746,7 @@
       "id": "W10-Q091",
       "type": "code",
       "topic": "First differing stage",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement first_difference(baseline, candidate) for TRUSTED bounded state dicts. Each contains all seven keys scope, queries, candidates, reranked, context, prompt, response. Values are already-normalized JSON-compatible stage observations; list order is meaningful. Compare equality in exactly that stage order and return the first differing key, or None when all agree. Do not sort candidate lists, inspect duration/ID noise or mutate inputs. A differing stage is a diagnostic lead, not proof of a universal cause.",
       "explanation": "Compare normalized stage observations in pipeline order. A final-output-first comparison misses the earlier boundary where support diverged.",
       "starter": "def first_difference(baseline, candidate):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
@@ -2803,7 +2810,7 @@
       "id": "W10-Q093",
       "type": "code",
       "topic": "Request versus span summary",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement trace_summary(spans) for TRUSTED data: a list/tuple of <=128 span dicts with parent (ID or None), status (ok/error/cancelled), duration_ns (nonnegative int or None). Nonempty input is an already-validated tree with exactly one root; completion order may put that root last. Return a new dict with span_count, error_span_count, cancelled_span_count and root_duration_ns. Count error/cancelled SPANS, not failed requests. Take duration only from the root, never sum nested durations. Empty input has counts zero and root_duration_ns=None. Do not mutate input.",
       "explanation": "The root defines the request boundary; child durations are already inside it. Span failure counts are not population request-failure rates.",
       "starter": "def trace_summary(spans):\n    raise NotImplementedError(\"Implement the stated contract\")\n",
@@ -2835,7 +2842,7 @@
       "id": "W10-Q094",
       "type": "code",
       "topic": "Bounded observation storage",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement append_bounded(records, record, limit). limit must be an EXACT int in [0,64]. records must be a list/tuple with len(records)<=limit; record and existing rows are trusted objects. Invalid capacity/collection/length raises ValueError. Return (NEW_list, dropped_bool): if capacity is available, copy existing row references then append record and return False; if full, copy existing row references without appending and return True. Capacity zero drops every record. Do not mutate records or its rows; no deep copy is required. This helper bounds observation storage, not application work.",
       "explanation": "Bounded recording must report omission while preserving caller data. Dropping an observation is separate from deciding whether application work executes.",
       "starter": "def append_bounded(records, record, limit):\n    raise NotImplementedError(\"Implement the stated contract\")\n",

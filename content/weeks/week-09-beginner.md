@@ -3,8 +3,8 @@ layout: week
 week: 9
 phase: 3
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-22
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-09/beginner/
 title: "RAG evaluation: a beginner's introduction"
@@ -19,6 +19,10 @@ alternate_url: /weeks/week-09/
 
 Test your understanding with the [Week 9 assessment]({{ '/assessments/week-09/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on ranking metrics, source audits, context loss, answer checks and review provenance.
 
+## Before you start
+
+This route assumes RAG evaluation is new to you. You need only the idea that a retrieval assistant searches stored passages before producing an answer, plus basic Python lists, dictionaries and function calls. Precision, recall, ranked metrics, evaluation labels and review rubrics are introduced here rather than treated as prior knowledge.
+
 ## Start with an answer that looks reassuring
 
 You ask: “What is the delivery date for CW-1000?” The assistant returns an Atlas Metals catalogue excerpt. It shows the correct product code, quantity and unit price, plus a genuine citation. You open the source and every quoted word is there.
@@ -31,7 +35,7 @@ You will examine seven parts of a RAG system: parsing, chunking, retrieval, cont
 
 Bring the ideas from earlier weeks: documents become traceable chunks; hybrid retrieval finds candidates; reranking and context selection choose evidence. Basic Python functions, dictionaries, lists and imports are enough for the examples. The default lab needs no paid service, GPU or downloaded evaluator model.
 
-Allow about eight hours: one for the failure story, two for metrics, one for labels, two for running and inspecting results, one for review and one for exercises. Use the [production lesson]({{ '/weeks/week-09/' | relative_url }}) when you want the fuller contracts and experiment design.
+Allow about eight hours: one for the failure story, two for metrics, one for labels, two for running and inspecting results, one for review and one for exercises. On the first pass, keep the core path to stage diagnosis, independent source labels, precision/recall/rank, context completeness and one saved evaluation run. Judge calibration, grouped dataset splits and a larger experimental design are stretch topics; return to them after you can identify the first stage that lost required evidence. Use the [production lesson]({{ '/weeks/week-09/' | relative_url }}) when you want the fuller contracts and experiment design.
 
 ## Ask a smaller question at each step
 

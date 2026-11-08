@@ -3,8 +3,8 @@ layout: week
 week: 9
 phase: 3
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-22
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-09/
 title: "RAG evaluation: find the stage that lost the answer"
@@ -31,6 +31,8 @@ The default system remains the Week 8 local assistant with teaching scorers and 
 
 Bring Week 5's ranking metrics, Week 6's parsed-source lineage, Week 7's eligible retrieval snapshot and Week 8's context/citation contracts. Start with the [beginner version]({{ '/weeks/week-09/beginner/' | relative_url }}) for a slower route through the same failures.
 
+This in-depth version is for a learner who already understands the basic RAG path and can read small Python data structures. It concentrates on choosing defensible evaluation units, separating automated proxies from semantic review, and preserving enough run identity to explain a comparison. If retrieval metrics or the distinction between retrieved evidence and an answer are new, use the beginner route first.
+
 | Time | Work | What to retain |
 | --- | --- | --- |
 | Hour 1 | Explain the missing-date failure across stages | A failure hypothesis with observable evidence |
@@ -39,6 +41,8 @@ Bring Week 5's ranking metrics, Week 6's parsed-source lineage, Week 7's eligibl
 | Hours 5–6 | Run and inspect the 30-case evaluation | Raw results, summary and exact configuration identity |
 | Hour 7 | Compare context ablations and prepare review | A paired diagnostic and an unfilled or actually completed rubric |
 | Hour 8 | Complete interview answers and exercises | A decision note explaining what improved and what remains unknown |
+
+The eight-hour core is the stage-by-stage diagnosis, source audit, retrieval and context metrics, 30-case run, and paired comparison. Judge calibration, grouped split design and extending the experiment beyond the supplied cases are deeper follow-up work after you can explain where one observed failure entered the pipeline.
 
 ## Draw a boundary around each evaluation claim
 
