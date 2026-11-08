@@ -3,8 +3,8 @@ layout: week
 week: 7
 phase: 2
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-07/beginner/
 title: "Sparse and hybrid retrieval: a beginner's introduction"
@@ -23,9 +23,24 @@ Test your understanding with the [Week 7 assessment]({{ '/assessments/week-07/' 
 
 Week 6 taught you to choose the pieces of text a search system can return. This week asks how to find those pieces when the query might be an exact product code or a sentence with different wording. Picture two colleagues: one checks the words and identifiers, while the other looks for related meaning. Hybrid retrieval gives both lists a chance to contribute.
 
-You will learn to explain BM25, calculate a simple RRF score, apply metadata filters without granting access, and run a three-way comparison. Bring basic Python functions, dataclasses, dictionaries, and the Week 5/6 ideas of a vector search and traceable chunks. Allow eight hours: one for the story, two for tokenization/BM25, one for filtering, one for fusion, two for the lab, and one for your exercises and explanation.
+This version assumes basic Python functions and dictionaries plus the Week 5/6
+ideas of vector search and traceable chunks. It introduces keyword retrieval,
+BM25 and rank fusion; you do not need to know their formulas already.
 
-As you read, keep two queries side by side: `CW-1000` and “receiving-team sign-off before payment.” The best clue for one can be weak for the other.
+## Beginner learning path
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | Exact identifiers, tokenization and sparse versus dense retrieval | Predict which path helps `CW-1000` and which helps a paraphrase |
+| Hours 3–4 | BM25 intuition and one hand-worked score | Explain rare-term weighting, saturation and length normalization |
+| Hours 5–6 | Permissions, metadata filters and RRF | Combine two short ranked lists without comparing raw score scales |
+| Hours 7–8 | Three-way lab comparison and the assessment | Diagnose one sparse, dense and hybrid failure using contributors |
+
+On the first pass, focus on identifier-preserving tokens, the purpose of BM25,
+the sparse/dense difference, authorization before scoring and RRF. Full manifest
+digests, score-normalization experiments and detailed parameter sensitivity are
+stretch work. Keep `CW-1000` and “receiving-team sign-off before payment” side
+by side: the best clue for one can be weak for the other.
 
 ## One query exposes a dense-retrieval blind spot
 

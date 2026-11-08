@@ -3,8 +3,8 @@ layout: week
 week: 7
 phase: 2
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-07/
 title: "Sparse and hybrid retrieval: preserve exact evidence and semantic recall"
@@ -20,6 +20,12 @@ alternate_url: /weeks/week-07/beginner/
 Test your understanding with the [Week 7 assessment]({{ '/assessments/week-07/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on exact codes, BM25, authorized corpus scope and reciprocal rank fusion.
 
 ## Your route through Week 7
+
+This in-depth version assumes basic familiarity with dense retrieval, traceable
+chunks and Python mappings. It is for a learner ready to calculate ranking
+behavior, diagnose hybrid results and defend index/fusion contracts. If BM25 or
+rank fusion is new, begin with the
+[beginner lesson]({{ '/weeks/week-07/beginner/' | relative_url }}).
 
 By the end of this week, you should be able to explain a BM25 score, preserve an exact product code through tokenization, combine two ranked lists with RRF, and diagnose a hybrid result from its contributors. You will compare sparse, dense, and hybrid retrieval on one frozen collection, including code, supplier, commercial-term, and paraphrase queries.
 

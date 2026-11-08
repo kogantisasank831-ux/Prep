@@ -3,8 +3,8 @@ layout: week
 week: 8
 phase: 2
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-22
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-08/beginner/
 title: "Reranking and context construction: a beginner's introduction"
@@ -31,9 +31,25 @@ The search was close. It found the right neighborhood without putting the needed
 
 By the end, you will explain why retrieval and reranking do different jobs, try a reviewed query variant, spot a harmful duplicate rule, fit source evidence into a declared context budget and run **Procurement Knowledge Assistant v1**. This local assistant ingests controlled document records, uses hybrid retrieval, reranks, returns cited source excerpts and records basic request events.
 
-Bring the Week 5 idea of ranking, Week 6's traceable chunks and Week 7's combination of keyword and dense retrieval. You need basic Python functions, lists, dictionaries and imports to follow the lab. You do not need a paid API or a downloaded model for the default examples.
+This version assumes basic Python functions, lists and dictionaries plus the
+main idea from Weeks 5–7: retrieval produces a ranked list of traceable chunks.
+Rerankers, query variants, context construction and citations are introduced
+here; no paid API or downloaded model is required for the default examples.
 
-Use about eight hours: one for the story, two for scoring and measurement, one for query variants, one for evidence selection, two for the lab and one for exercises. Pause at the checkpoints and explain your answer aloud before moving on.
+## Beginner learning path
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | Candidate pools, reranking and the missing-clause story | Explain why a reranker cannot recover a passage outside its pool |
+| Hours 3–4 | Fixed-pool comparison, pair scores and stable ordering | Separate candidate recall from reranking quality |
+| Hours 5–6 | Complete source evidence, context limits and citations | Show why a valid quote can still omit an important condition |
+| Hours 7–8 | Run the local assistant, inspect failures and take the assessment | Trace one cited result and one no-evidence or budget failure |
+
+The core route is shortlist versus reranker, fair comparison, evidence
+completeness, context budgeting and source-bound citations. Multi-query fusion,
+rewrite guards, compression policies, local cross-encoder integration and
+position experiments are stretch topics. Pause at each checkpoint and explain
+your answer before moving on.
 
 ## Retrieval makes a shortlist; reranking checks that shortlist
 

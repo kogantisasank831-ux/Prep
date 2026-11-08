@@ -3,8 +3,8 @@ layout: week
 week: 5
 phase: 2
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-05/beginner/
 title: "Embeddings and vector retrieval: a beginner's introduction"
@@ -69,9 +69,24 @@ There is no answer-generation step in this lesson. We will not ask a language mo
 
 ### Before you start
 
-You need basic Python and JSON familiarity, plus the idea that a vector is a list of numbers. The next sections refresh the vector intuition. You can use the teaching lab without downloading a model or setting up a database.
+This version assumes only basic Python and JSON familiarity. You should know
+that a list stores values; the lesson introduces embeddings, similarity and
+retrieval from that starting point. You can use the teaching lab without
+downloading a model or setting up a database.
 
-Your target is to explain how the document becomes a vector, how a query is compared with it, what top-k means, and why the first result can still be the wrong evidence. Spend roughly two hours on the concepts, then use the production version's guided build and exercises for the rest of your eight-hour week.
+## Beginner learning path
+
+| Time | Core focus | Evidence that you understand it |
+| --- | --- | --- |
+| Hours 1–2 | Text, vectors, cosine similarity and top-k | Explain in plain language why a similar passage is a candidate rather than proof |
+| Hours 3–4 | Query/document roles, dimensions and an exact in-memory search | Predict which inputs must be rejected and why |
+| Hours 5–6 | Source identity, permission checks and a small teaching run | Trace one query from an allowed document to a ranked result |
+| Hours 7–8 | Precision, recall, common retrieval errors and the assessment | Explain one false positive and one missed result before checking the answer |
+
+On the first pass, prioritise embeddings, cosine similarity, top-k, source
+identity and the candidate-versus-fact distinction. Packed-storage arithmetic,
+complete manifests, ANN tuning and a real embedding model are stretch topics;
+return to them after you can explain the exact-search flow.
 
 ## An embedding is a numeric representation of text
 

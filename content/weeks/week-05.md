@@ -3,8 +3,8 @@ layout: week
 week: 5
 phase: 2
 status: approved
-version: 1.1.0
-last_reviewed: 2026-10-22
+version: 1.2.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-05/
 title: "Embeddings and vector retrieval: find useful source passages"
@@ -82,7 +82,13 @@ The scope stops at retrieval. Detailed long-document splitting is deferred to We
 
 ### Before you begin
 
-You need basic Python, frozen dataclasses, exceptions, and tests from Week 1, plus the vector intuition from Week 3. Week 4's separation of a candidate from a verified fact is useful here too. The core lab uses the standard library and an injected embedding interface; no orchestration framework, vector database service, GPU, or API key is needed for the teaching run.
+This in-depth version is for a learner who already understands basic Python,
+frozen dataclasses, exceptions and tests, plus the vector intuition from Week 3.
+Week 4's separation of a candidate from a verified fact is useful here too. If
+vectors, cosine similarity or top-k ranking are new, begin with the
+[beginner lesson]({{ '/weeks/week-05/beginner/' | relative_url }}). The core lab
+uses the standard library and an injected embedding interface; no orchestration
+framework, vector database service, GPU or API key is needed for the teaching run.
 
 By the end, you should be able to:
 
@@ -93,7 +99,16 @@ By the end, you should be able to:
 - evaluate a model and a value of `k` on the intended procurement task;
 - explain why a fluent semantic match can still miss an entity, negation, number, or payment condition.
 
-Plan for eight hours: two on concepts, one on interview and recall practice, three on the guided lab, and two on tests, metrics, and your evaluation log. Read the vector intuition before assembling the index. Treat an actual model run as an additional integration step when you already have an approved local embedding artifact.
+| Time | Production focus | Evidence to keep |
+| --- | --- | --- |
+| Hours 1–2 | Embedding roles, dimensions, metrics and vector invariants | A checked cosine example and a written score interpretation |
+| Hours 3–4 | Source identity, authorization, embedding compatibility and exact search | One accepted query trace and one rejected boundary case |
+| Hours 5–6 | Guided lab, top-k behavior and retrieval metrics | A reproducible baseline with labelled errors |
+| Hours 7–8 | ANN comparison, tests, assessment and decision note | Exact-versus-approximate evidence and stated operational limits |
+
+Treat an actual model run and ANN index as measured integration steps after the
+exact baseline is trustworthy; neither is required to understand the core
+retrieval contract.
 
 The [Week 5 lab](https://github.com/kogantisasank831-ux/Prep/tree/main/labs/week_05) contains the four-document JSONL corpus, twelve labelled practice queries, exact retrieval, metric calculations, tests, and an optional local Sentence Transformers adapter. The default teaching embedder uses hand-written features; its rankings are fixtures, not a learned semantic model's accuracy.
 

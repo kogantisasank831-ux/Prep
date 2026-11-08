@@ -3,8 +3,8 @@ layout: week
 week: 8
 phase: 2
 status: approved
-version: 1.0.0
-last_reviewed: 2026-10-22
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-08/
 title: "Reranking and context construction: turn candidates into cited evidence"
@@ -29,7 +29,11 @@ Week 8 adds that second stage. You will compare a bi-encoder with a cross-encode
 
 The included assistant is a local, in-memory teaching CLI. Its answers are **cited source excerpts**. A deterministic pair scorer lets you inspect the pipeline without downloading a model; an optional adapter accepts a reviewed local scalar cross-encoder. Neither the default dense scorer nor the default reranker is a trained model. Keep that distinction attached to every result you report.
 
-Bring Week 5's ranking metrics, Week 6's source identities and chunk boundaries, and Week 7's authorized hybrid snapshot. The [beginner lesson]({{ '/weeks/week-08/beginner/' | relative_url }}) develops the same ideas more slowly.
+This in-depth version is for a learner who already understands ranking metrics,
+traceable chunks and sparse/dense retrieval. Bring Week 5's ranking metrics,
+Week 6's source identities and chunk boundaries, and Week 7's authorized hybrid
+snapshot. If those foundations or two-stage retrieval are unfamiliar, begin
+with the [beginner lesson]({{ '/weeks/week-08/beginner/' | relative_url }}).
 
 | Time | Work | Evidence of understanding |
 | --- | --- | --- |
