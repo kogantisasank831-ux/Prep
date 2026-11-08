@@ -1,21 +1,28 @@
 {
   "schema_version": 1,
   "week": 12,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Deploying the RAG service",
   "source_lesson": "/weeks/week-12/",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
       "id": "W12-Q001",
       "type": "single",
       "topic": "Service boundary",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "A colleague wants to call your already-running assistant from another program. What does the Week 12 API primarily add?",
       "explanation": "The API gives clients a repeatable transport contract. The scripted responder and source authorization remain explicit components; a framework does not supply a trained model or broader permissions.",
       "options": [
@@ -44,7 +51,7 @@
       "id": "W12-Q002",
       "type": "single",
       "topic": "Transport versus outcome",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "POST /v1/ask returns HTTP 200 with status='refused'. How should a client record this?",
       "explanation": "Transport success and answer outcome are separate fields. A deliberate refusal is a normal response under this contract and should not count as an answered quality success.",
       "options": [
@@ -73,7 +80,7 @@
       "id": "W12-Q003",
       "type": "single",
       "topic": "Trusted scope",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "An authenticated North request includes tenant_id='South' alongside question in its JSON body. What does the lab do?",
       "explanation": "The accepted body has only question. Trusted application code maps the credential to a fixed identity, and source grants are checked separately.",
       "options": [
@@ -102,7 +109,7 @@
       "id": "W12-Q004",
       "type": "single",
       "topic": "Authentication order",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "A request has no valid bearer credential and carries a large untrusted body. Which application boundary is checked first in the lab?",
       "explanation": "The manual Request path lets identity validation precede the application's body parser and database work. This does not claim that the network server never receives bytes.",
       "options": [
@@ -218,7 +225,7 @@
       "id": "W12-Q008",
       "type": "single",
       "topic": "Async waiting",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "The API awaits an actual psycopg asynchronous database operation. What can the event loop do while that operation waits for I/O?",
       "explanation": "Awaiting cooperative asynchronous I/O allows other tasks to run. Declaring an endpoint async does not make synchronous computation nonblocking or guarantee CPU parallel speedup.",
       "options": [
@@ -247,7 +254,7 @@
       "id": "W12-Q009",
       "type": "single",
       "topic": "Blocking computation",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Why does the lab move the bounded synchronous guarded computation through asyncio.to_thread?",
       "explanation": "Offloading keeps that synchronous function off the event-loop thread. Thread lifetime, exceptions, GIL-related CPU limits and resource ownership still need explicit handling.",
       "options": [
@@ -363,7 +370,7 @@
       "id": "W12-Q013",
       "type": "single",
       "topic": "Vector baseline",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "What does the supplied 32-dimensional token-hash encoder represent?",
       "explanation": "Signed token hashing supplies reproducible small vectors for the local storage exercise. Collisions and lexical limitations remain, and vector relevance confers no authorization or truth.",
       "options": [
@@ -392,7 +399,7 @@
       "id": "W12-Q014",
       "type": "single",
       "topic": "Exact search",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "The lab's pgvector query orders eligible rows by cosine distance and has no ANN index. How should its search be described?",
       "explanation": "The supplied query uses exact distance ordering and an eligible-ID restriction. The small scoped corpus and absence of an ANN index matter when discussing scale or recall.",
       "options": [
@@ -682,7 +689,7 @@
       "id": "W12-Q024",
       "type": "single",
       "topic": "Health signals",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "The process responds to /health/live, but PostgreSQL is unavailable. What should happen to the two health signals?",
       "explanation": "Liveness asks whether this process responds. Readiness exercises the real database/schema/extension path and can fail separately without exposing driver payloads or credentials.",
       "options": [
@@ -740,7 +747,7 @@
       "id": "W12-Q026",
       "type": "single",
       "topic": "Container DNS",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Inside the API container, why is db:5432 the documented database address rather than localhost:5432?",
       "explanation": "Containers have their own network namespaces. Compose service discovery provides the database service name to peers on the appropriate network.",
       "options": [
@@ -885,7 +892,7 @@
       "id": "W12-Q031",
       "type": "multiple",
       "topic": "HTTP contract",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements match the published ask interface?",
       "explanation": "The small public projection separates correlation, application outcome and internal diagnosis. Neither a request ID nor transport success grants evidence access.",
       "options": [
@@ -947,7 +954,7 @@
       "id": "W12-Q033",
       "type": "multiple",
       "topic": "Credential scope",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which choices fit the lab's identity design?",
       "explanation": "Credential checks establish the synthetic identity, while source grants still control individual reads. Constant-time comparison does not itself implement source authorization or secret rotation.",
       "options": [
@@ -978,7 +985,7 @@
       "id": "W12-Q034",
       "type": "multiple",
       "topic": "Async boundaries",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements about async work in this lab are correct?",
       "explanation": "Cooperative I/O and explicit offloading address event-loop blocking at different boundaries. Thread completion and cancellation remain separate lifecycle events.",
       "options": [
@@ -1100,7 +1107,7 @@
       "id": "W12-Q038",
       "type": "multiple",
       "topic": "Vector contracts",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements correctly describe this encoder and search setup?",
       "explanation": "The deterministic synthetic encoder supports a reproducible database exercise. Zero vectors, collisions, corpus bounds and the absence of a trained semantic model limit the conclusions.",
       "options": [
@@ -1255,7 +1262,7 @@
       "id": "W12-Q043",
       "type": "multiple",
       "topic": "Capacity layers",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which distinctions are accurate?",
       "explanation": "Rate, application admission and server concurrency control different resources and can refuse independently. One process still does not create an environment-wide quota.",
       "options": [
@@ -1317,7 +1324,7 @@
       "id": "W12-Q045",
       "type": "multiple",
       "topic": "Health and diagnosis",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which observations are appropriate?",
       "explanation": "Health probes and bounded diagnostics answer specific operational questions. A prepared response is not completed delivery, and logging code alone does not configure collector retention.",
       "options": [
@@ -1410,7 +1417,7 @@
       "id": "W12-Q048",
       "type": "multiple",
       "topic": "Container boundary",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which facts describe the ordinary Compose file?",
       "explanation": "The API connects to backend and frontend networks; the ordinary database remains private to backend. Bootstrap and API receive different secret sets and capabilities.",
       "options": [
@@ -1503,7 +1510,7 @@
       "id": "W12-Q051",
       "type": "match",
       "topic": "Public interfaces",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each endpoint to the question it answers.",
       "explanation": "Transport, framed delivery, liveness and readiness are distinct interfaces. A healthy process does not imply usable storage or an answered evidence result.",
       "left": [
@@ -1553,7 +1560,7 @@
       "id": "W12-Q052",
       "type": "match",
       "topic": "Expected HTTP errors",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each lab response status to its application-level cause.",
       "explanation": "Authentication, representation size, rate and active-work admission fail at different boundaries. The status should preserve that distinction for clients.",
       "left": [
@@ -1603,7 +1610,7 @@
       "id": "W12-Q053",
       "type": "match",
       "topic": "Input representations",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each request concern to the relevant measurement or validation.",
       "explanation": "Byte count, decoded schema, decoder ambiguity and elapsed time constrain different things. A check on one representation does not silently bound the others.",
       "left": [
@@ -1653,7 +1660,7 @@
       "id": "W12-Q054",
       "type": "match",
       "topic": "Authority ownership",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each value to its role in the published service.",
       "explanation": "Authority follows the producing boundary. Strings in task text and correlation identifiers do not replace credential or resource authorization checks.",
       "left": [
@@ -2103,7 +2110,7 @@
       "id": "W12-Q063",
       "type": "match",
       "topic": "Container concepts",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each deployment object to its purpose in this build.",
       "explanation": "Packaging, execution, persistence and networking are different parts of the runnable system. Rebuilding an image does not inherently delete the named data volume.",
       "left": [
@@ -2253,7 +2260,7 @@
       "id": "W12-Q066",
       "type": "short",
       "topic": "Async syntax",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Inside async def, complete: result = ____ repository.snapshot(context, question). Enter the Python keyword only.",
       "explanation": "await suspends this coroutine while the asynchronous operation progresses. It does not make an ordinary blocking function cooperative by itself.",
       "accepted": [
@@ -2265,7 +2272,7 @@
       "id": "W12-Q067",
       "type": "short",
       "topic": "Thread offloading",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete asyncio.____(compute, context, question) to create an awaitable that runs the ordinary function in a separate thread. Function name only.",
       "explanation": "to_thread moves the synchronous call off the event-loop thread. It does not supply a hard thread-kill mechanism or guarantee CPU parallel speedup.",
       "accepted": [
@@ -2277,7 +2284,7 @@
       "id": "W12-Q068",
       "type": "short",
       "topic": "Task scheduling",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete asyncio.____(coroutine) to schedule that coroutine as a Task. Function name only.",
       "explanation": "create_task schedules the coroutine. The application must retain needed ownership and handle its eventual completion, failure or cancellation.",
       "accepted": [
@@ -2289,7 +2296,7 @@
       "id": "W12-Q069",
       "type": "short",
       "topic": "Shielded await",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete await asyncio.____(worker) so cancellation of this await does not cancel the inner worker task through that await. Function name only.",
       "explanation": "shield changes cancellation propagation to the inner task; the outer await can still be cancelled, and an already-running Python thread needs separate lifetime management.",
       "accepted": [
@@ -2301,7 +2308,7 @@
       "id": "W12-Q070",
       "type": "short",
       "topic": "Async deadline",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete async with asyncio.____(3): for the Python asynchronous deadline context manager. Function name only.",
       "explanation": "timeout bounds the asynchronous block through cancellation semantics. It does not forcibly terminate an arbitrary running Python thread.",
       "accepted": [
@@ -2433,7 +2440,7 @@
       "id": "W12-Q081",
       "type": "code",
       "topic": "Strict integer configuration",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement config_integer(raw, minimum, maximum). minimum and maximum are trusted exact ints with 1 <= minimum <= maximum <= 65535. Accept raw only when it is a str of 1 through 5 ASCII decimal digits whose integer value is in that inclusive range. Leading zeros are allowed; whitespace, signs, decimal points, Unicode digits and non-str inputs are not. Return the int, or raise ValueError('configuration_invalid') without including raw. Do not clamp, strip or coerce other types. This is one configuration component, not the entire Settings loader.",
       "explanation": "Validate representation before conversion, then check the declared inclusive range. An exact local grammar avoids silently accepting alternate spellings or changing invalid values.",
       "starter": "def config_integer(raw, minimum, maximum):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2497,7 +2504,7 @@
       "id": "W12-Q083",
       "type": "code",
       "topic": "Compact question handoff",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement question_bytes(question). Accept only a nonblank str of at most 1000 characters that encodes as valid UTF-8. Preserve its original text. Serialize {'question': question} with json.dumps(ensure_ascii=False, separators=(',', ':'), allow_nan=False), encode UTF-8 and return those bytes only if their length is at most 4096. Otherwise raise ValueError('invalid_request'), including for unpaired surrogates and non-str inputs. Do not add spaces or trim accepted text. This is serialization of an already-decoded value, not a raw JSON parser or authentication check.",
       "explanation": "The forwarded representation needs its own byte accounting. Compact punctuation preserves a valid 4096-byte handoff that default serialization could expand beyond the bound.",
       "starter": "def question_bytes(question):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2561,7 +2568,7 @@
       "id": "W12-Q085",
       "type": "code",
       "topic": "Vector normalization",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement unit_vector(values). Accept a list or tuple of exactly 32 finite exact int/float values (bool is disallowed), each with absolute value at most 1000000. Reject other shapes, types or nonfinite values with ValueError('vector_invalid'). Return the 32-float L2-normalized tuple, or the empty tuple () when all features are zero. Do not mutate values or hash/tokenize text. This is one numeric component of a synthetic encoder; a zero result must not be treated as a usable cosine query.",
       "explanation": "Validate the declared numeric domain before computing length. Preserve sign and dimension, normalize only a nonzero vector, and make the zero-feature case explicit.",
       "starter": "def unit_vector(values):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2689,7 +2696,7 @@
       "id": "W12-Q089",
       "type": "code",
       "topic": "Fresh response correlation",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement renew_request(cached, request_id). cached is a trusted JSON-compatible dict representing an internal result, possibly with nested citation lists/dicts. Return an independent deep copy with request_id replaced by the supplied trusted str. Preserve every other field and leave cached unchanged. Neither later nested mutations to the returned object nor to cached may affect the other. This copies state for a fresh response; it does not revalidate sources, authenticate request IDs or implement the whole cache.",
       "explanation": "A cache hit belongs to the current request even when answer computation is reused. Independent copies avoid accidental mutation of retained state; authorization is still checked separately.",
       "starter": "def renew_request(cached, request_id):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2817,7 +2824,7 @@
       "id": "W12-Q093",
       "type": "code",
       "topic": "Closed public projection",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement public_result(result, request_id, cache_hit). Inputs are trusted internal data: result is a dict containing reason (str), answer (str) and citation_ids (a list or tuple of str), plus arbitrary internal fields; request_id is a trusted str and cache_hit a bool. Return a NEW dict with EXACTLY request_id, status, answer, citation_ids and cache_hit. status is 'answered' iff reason == 'ok', otherwise 'refused'. citation_ids must be a NEW list in original order. Copy answer exactly, omit all internal fields and leave inputs unchanged. Prior guarded validation decides whether the answer is allowed; this helper does not make unsafe text safe.",
       "explanation": "An allowlist projection prevents internal diagnostics from leaking through a dictionary copy. The public envelope still relies on upstream evidence checks and safe handling by later consumers.",
       "starter": "def public_result(result, request_id, cache_hit):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2849,7 +2856,7 @@
       "id": "W12-Q094",
       "type": "code",
       "topic": "SSE JSON framing",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement sse_frame(event, payload). event must be a str equal to meta, result or done; otherwise raise ValueError('event_invalid'). payload is trusted finite JSON-compatible data with valid Unicode. Serialize it with json.dumps(ensure_ascii=False, separators=(',', ':'), allow_nan=False), then return exactly 'event: ' + event + '\\n' + 'data: ' + serialized + '\\n\\n'. Keep embedded CR/LF in payload strings as escaped JSON data; do not interpolate raw payload text or add extra data/event lines. This frames an already validated object; it does not authenticate events or generate model tokens.",
       "explanation": "Serialize structured data before placing it on a single SSE data line, and restrict event names. JSON escaping preserves embedded line breaks without turning them into protocol delimiters.",
       "starter": "def sse_frame(event, payload):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2945,7 +2952,7 @@
       "id": "W12-Q097",
       "type": "code",
       "topic": "One asynchronous attempt",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement async attempt_once(send). send is a trusted async zero-argument callback. Invoke it exactly once, await it, and return its ORIGINAL result, including None, False or an empty container. Propagate its original exceptions and asyncio.CancelledError without wrapping, retrying or fabricating a success. Do not schedule a second call. Each check can use top-level await in the provided checker. This is a callback contract exercise, not a retry policy, thread wrapper or complete HTTP request handler.",
       "explanation": "A simple await preserves the callback's outcome and failure semantics. Hidden retries or broad exception fallbacks can change a service contract even when an example succeeds.",
       "starter": "async def attempt_once(send):\n    raise NotImplementedError('Implement the stated contract')\n",

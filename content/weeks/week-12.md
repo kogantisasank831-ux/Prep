@@ -3,8 +3,8 @@ layout: week
 week: 12
 phase: 3
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-25
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-12/
 title: "Deploy the guarded assistant as a service"
@@ -25,6 +25,8 @@ The useful starting point is the assistant you already have. [Week 11]({{ '/week
 
 Bring the Python/API ideas from Week 1, source lineage from Week 6, retrieval/context from Weeks 7–8, evaluation from Week 9 and the operational/security boundaries from Weeks 10–11. The [beginner version]({{ '/weeks/week-12/beginner/' | relative_url }}) follows the same build with smaller steps.
 
+This in-depth version assumes basic familiarity with HTTP APIs, Python async code, RAG source controls and container terminology. It is for a learner ready to reason about database permissions, cancellation ownership, cache scope, streaming completion and operational health. Use the beginner route first if client/server requests, bearer credentials or persistent storage are new.
+
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |
 | Hour 1 | Read the request/response and identity boundaries | One valid request and a rejected forged-tenant request |
@@ -36,6 +38,8 @@ Bring the Python/API ideas from Week 1, source lineage from Week 6, retrieval/co
 | Hour 8 | Present the service and defend its limits | A short interview demo and a deployment decision note |
 
 Use the supplied lab as the working reference; the eight hours are for understanding, running, changing and explaining it. The full implementation does not need to be retyped.
+
+The core path is the public API contract, trusted identity, scoped PostgreSQL read, async-versus-blocking boundary, health checks and one reproducible container smoke. Cancellation races, cache and rate-limit design, streaming framing and production credential/retention decisions are deeper extensions after you can trace one request and explain every permission check.
 
 The [Week 12 assessment]({{ '/assessments/week-12/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 

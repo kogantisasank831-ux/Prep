@@ -3,8 +3,8 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-25
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-10/beginner/
 title: "LLM observability: see what happened inside one answer"
@@ -18,6 +18,10 @@ alternate_url: /weeks/week-10/
 ---
 
 Test your understanding with the [Week 10 assessment]({{ '/assessments/week-10/' | relative_url }}): a random ten-question paper from 100 questions, including Python exercises on trace structure, timing, usage, costs, failure handling and paired diagnosis.
+
+## Before you start
+
+This route is for someone new to observability. You need only basic Python functions, context managers and dictionaries, plus the idea that the assistant searches evidence before constructing a response. Logs, metrics, traces, spans, timing boundaries and usage records are explained from the beginning.
 
 ## Start with a question you can investigate
 
@@ -38,6 +42,8 @@ If retrieval, context or citations are unfamiliar, revisit [Week 8]({{ '/weeks/w
 | Hours 5–6 | Run the local scenarios | Trace files and an optional synthetic capture |
 | Hour 7 | Compare full and smaller context | Evidence for the stage that lost support |
 | Hour 8 | Exercises and interview practice | A reproducible diagnostic note |
+
+For the first pass, focus on telling logs, metrics, traces and evaluation apart; reading a parent/child span tree; converting elapsed time; recording version and usage unknowns honestly; and comparing the full-context and small-context runs. Cost models, OpenTelemetry vocabulary, sampling, metric-cardinality and retention choices are stretch topics for the production lesson.
 
 ## A log, a metric and a trace answer different questions
 

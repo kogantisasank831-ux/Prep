@@ -3,8 +3,8 @@ layout: week
 week: 11
 phase: 3
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-25
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-11/beginner/
 title: "RAG security: decide what a document is allowed to influence"
@@ -19,6 +19,9 @@ alternate_url: /weeks/week-11/
 
 Try the [Week 11 assessment]({{ '/assessments/week-11/' | relative_url }}): ten randomly selected questions from a bank of 100, with concept checks, matching, short syntax answers and small Python tasks.
 
+## Before you start
+
+This route assumes AI security is new to you. You need only the basic idea that a RAG assistant receives a question, searches documents and returns evidence. Prompt injection, trusted identity, source permission, integrity checks, bounded input and safe refusal are introduced in plain language.
 
 ## A useful document can contain an unsafe request
 
@@ -39,6 +42,8 @@ Revisit [Week 7 retrieval]({{ '/weeks/week-07/beginner/' | relative_url }}) and 
 | Hours 5–6 | Run the local security cases | Saved metadata events and allowed answers |
 | Hour 7 | Validate output and changed permissions | Refused unsafe proposals with a working clean case |
 | Hour 8 | Exercises and interview practice | A short explanation of controls and their limits |
+
+On the first pass, focus on recognizing untrusted instructions, keeping identity on a trusted path, filtering permitted sources before search, bounding accepted input and validating exact output evidence. Representation pin design, detector false-positive/false-negative analysis, permission races, caches and downstream rendering are stretch topics for the production lesson.
 
 ## First identify who controls each input
 

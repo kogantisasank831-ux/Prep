@@ -3,8 +3,8 @@ layout: week
 week: 11
 phase: 3
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-25
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-11/
 title: "RAG security: keep document content inside its authority"
@@ -30,6 +30,8 @@ Last week you made the request observable. This week you put explicit controls a
 
 Bring Week 6's source/version lineage, Week 7's eligible retrieval snapshot, Week 8's exact citations and Week 10's distinction between execution evidence and quality. Use the [beginner version]({{ '/weeks/week-11/beginner/' | relative_url }}) for a slower route through the same lab.
 
+This in-depth version assumes you already understand the RAG request path, source lineage and structured outputs. It is for a learner ready to reason about threat boundaries, authorization, integrity pins, detector errors, output validation and revocation limits. Start with the beginner route if authentication versus authorization or direct versus indirect prompt injection is still unfamiliar.
+
 | Time | Work | What to retain |
 | --- | --- | --- |
 | Hour 1 | Trace the malicious-invoice example across trust boundaries | Assets, actors and one concrete abuse path |
@@ -39,6 +41,8 @@ Bring Week 6's source/version lineage, Week 7's eligible retrieval snapshot, Wee
 | Hours 5–6 | Run the guarded retrieval/output lab | Synthetic outcomes with safe diagnostic events |
 | Hour 7 | Test permission changes and output handling | Revocation and exact-quote checks with stated limits |
 | Hour 8 | Explain the design and complete exercises | A short security review and interview answers |
+
+The core path is to keep identity outside request content, filter approved source versions before retrieval, bound untrusted input, validate exact selected evidence and refuse unsafe output. Representation pins, detector error analysis, cache/revocation races and downstream consumer hardening are deeper controls to study after you can explain the basic trust boundary and its remaining limits.
 
 ## Start with the asset and the boundary
 

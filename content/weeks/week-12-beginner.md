@@ -3,8 +3,8 @@ layout: week
 week: 12
 phase: 3
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-25
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-12/beginner/
 title: "Run your assistant through a local API"
@@ -16,6 +16,10 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-12/
 ---
+
+## Before you start
+
+This route is for someone new to deploying an AI-backed service. You need basic Python functions and the idea that the Week 11 assistant searches permitted documents. API requests, bearer credentials, databases, vectors, async waiting, containers and health checks are introduced here; prior FastAPI, PostgreSQL or Docker experience is not required.
 
 ## A colleague wants to call your assistant
 
@@ -36,6 +40,8 @@ The practical build is a local demonstration with synthetic invoice text. It use
 | Hour 8 | Rehearse the project demonstration | Present the working path and its remaining limits |
 
 Use this as an alternative eight-hour route through the same week. Revisit [Week 1's API material]({{ '/weeks/week-01/beginner/' | relative_url }}) or [Week 11's security lesson]({{ '/weeks/week-11/beginner/' | relative_url }}) when a boundary feels unfamiliar.
+
+For the first pass, focus on the request/response contract, how the credential establishes identity, where permitted sources are stored, why database waiting differs from Python computation, and how liveness/readiness plus one container smoke prove the local path works. Cancellation ownership, cache and rate-limit internals, streaming edge cases and production operations are stretch topics for the main lesson.
 
 The [Week 12 assessment]({{ '/assessments/week-12/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 

@@ -1,21 +1,28 @@
 {
   "schema_version": 1,
   "week": 11,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "RAG security",
   "source_lesson": "/weeks/week-11/",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
       "id": "W11-Q001",
       "type": "single",
       "topic": "Authority",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "An approved invoice contains a paragraph telling the assistant to export other invoices. What authority does that paragraph have?",
       "explanation": "Source approval permits a controlled read. It does not let a document author change the application's capabilities or authorization policy.",
       "options": [
@@ -44,7 +51,7 @@
       "id": "W11-Q002",
       "type": "single",
       "topic": "Injection entry points",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "The user types an instruction to override application rules directly into the question. Which entry point is this?",
       "explanation": "Direct injection enters through user input. Indirect injection enters through material the application reads, such as a document or tool result.",
       "options": [
@@ -73,7 +80,7 @@
       "id": "W11-Q003",
       "type": "single",
       "topic": "Indirect injection",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "A supplier PDF includes instructions aimed at the assistant, and those instructions enter through retrieval. How should the attempt be classified?",
       "explanation": "The attempted instruction arrived through retrieved content. Relevance and a readable document do not convert it into a trusted control message.",
       "options": [
@@ -102,7 +109,7 @@
       "id": "W11-Q004",
       "type": "single",
       "topic": "Trusted identity",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "In the Week 11 lab, which component is responsible for supplying the tenant and principal used for authorization?",
       "explanation": "SecurityContext is injected by trusted application code. The local constructor validates shape and supplies no authentication service.",
       "options": [
@@ -131,7 +138,7 @@
       "id": "W11-Q005",
       "type": "single",
       "topic": "Authentication",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "A SecurityContext dataclass accepts well-formed tenant and principal identifiers. What has this alone established?",
       "explanation": "Syntactically valid identifiers are not evidence that a caller controls the identity or is allowed to use a tenant.",
       "options": [
@@ -160,7 +167,7 @@
       "id": "W11-Q006",
       "type": "single",
       "topic": "Request schema",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "A valid question body also contains principal_id='admin'. Under the published Week 11 request contract, what should happen?",
       "explanation": "A closed request schema rejects extra authority fields. Authentication and scope decisions stay outside untrusted question data.",
       "options": [
@@ -218,7 +225,7 @@
       "id": "W11-Q008",
       "type": "single",
       "topic": "Tenant isolation",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Both North and South use principal name analyst and document name invoice. Which source key keeps their versions separate?",
       "explanation": "The tenant/document/version tuple distinguishes sources even when human-readable names coincide across tenants.",
       "options": [
@@ -537,7 +544,7 @@
       "id": "W11-Q019",
       "type": "single",
       "topic": "Context budget",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "A two-character serialized-context budget admits only []. What does the lab do?",
       "explanation": "No selected evidence means no responder invocation. The small character budget is not a real model token or memory limit.",
       "options": [
@@ -566,7 +573,7 @@
       "id": "W11-Q020",
       "type": "single",
       "topic": "Closed output",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "The proposal has valid quotes plus an extra tool_call field. What does the Week 11 output validator do?",
       "explanation": "The envelope permits only quotes. Unknown fields cannot extend application capabilities, and the lab has no action dispatcher.",
       "options": [
@@ -624,7 +631,7 @@
       "id": "W11-Q022",
       "type": "single",
       "topic": "Citation authority",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "What does a citation label such as S1 authorize a client to read?",
       "explanation": "Labels identify selected evidence within a response. They are neither bearer access tokens nor permanent public document URLs.",
       "options": [
@@ -885,7 +892,7 @@
       "id": "W11-Q031",
       "type": "multiple",
       "topic": "Threat boundaries",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which inputs remain untrusted as instructions even when relevant to the user's task?",
       "explanation": "Retrieved text and tool results can contain useful data while still lacking control authority. The catalogue has an explicitly different trusted ownership assumption.",
       "options": [
@@ -916,7 +923,7 @@
       "id": "W11-Q032",
       "type": "multiple",
       "topic": "Identity and authorization",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements correctly separate authentication, scope and source permission?",
       "explanation": "Authentication is distinct from tenant membership and resource authorization. Shape checks and body assertions do not replace those decisions.",
       "options": [
@@ -946,7 +953,7 @@
       "id": "W11-Q033",
       "type": "multiple",
       "topic": "Eligibility",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which conditions are required by the lab's can_read decision?",
       "explanation": "Eligibility depends on current protected policy and pinned source identity/representation. Retrieval ranking is not an authorization signal.",
       "options": [
@@ -1008,7 +1015,7 @@
       "id": "W11-Q035",
       "type": "multiple",
       "topic": "Protected baselines",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which claims correctly describe representation digests?",
       "explanation": "Pins protect consistency with an independently controlled baseline, including provenance metadata. They cannot decide truth or protect a compromised approval authority.",
       "options": [
@@ -1069,7 +1076,7 @@
       "id": "W11-Q037",
       "type": "multiple",
       "topic": "Screening limits",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements about the Week 11 findings scanner are accurate?",
       "explanation": "The fixed patterns are teaching signals with explicit failure cases. Neither normalization nor an email-like match establishes comprehensive detection.",
       "options": [
@@ -1130,7 +1137,7 @@
       "id": "W11-Q039",
       "type": "multiple",
       "topic": "Bounded JSON",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which checks serve distinct parts of the strict input contract?",
       "explanation": "Representation bounds, decoder ambiguity and decoded schema are separate checks. The local contract explicitly rejects nonfinite constants.",
       "options": [
@@ -1223,7 +1230,7 @@
       "id": "W11-Q042",
       "type": "multiple",
       "topic": "Quote limits",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which properties are not established merely by validating exact selected quotations?",
       "explanation": "Exact text validation establishes a bounded provenance property. Truth, completeness and broader generated claims need separate evidence.",
       "options": [
@@ -1501,7 +1508,7 @@
       "id": "W11-Q051",
       "type": "match",
       "topic": "Threat terms",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each security term to the specific situation it describes.",
       "explanation": "Entry point, byte consistency and factual quality are different dimensions; one favorable check does not settle the others.",
       "left": [
@@ -1551,7 +1558,7 @@
       "id": "W11-Q052",
       "type": "match",
       "topic": "Trust ownership",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each input to its authority under the lab's explicit trust assumptions.",
       "explanation": "The authority depends on the originating boundary, not on strings claiming a role inside content.",
       "left": [
@@ -1601,7 +1608,7 @@
       "id": "W11-Q053",
       "type": "match",
       "topic": "Access decisions",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each source condition to the corresponding required check.",
       "explanation": "Tenant, principal, version and state each contribute to eligibility. A matching title or historical grant is insufficient.",
       "left": [
@@ -1701,7 +1708,7 @@
       "id": "W11-Q055",
       "type": "match",
       "topic": "Filter stages",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each gate to the input on which it should act in the published flow.",
       "explanation": "Gates protect distinct boundaries. A later output filter cannot substitute for an earlier denied read.",
       "left": [
@@ -1801,7 +1808,7 @@
       "id": "W11-Q057",
       "type": "match",
       "topic": "Limit units",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each bound to the representation measured by the local lab.",
       "explanation": "Bytes, decoded characters, serialized characters and item counts are distinct units. None silently becomes a provider token count.",
       "left": [
@@ -2251,7 +2258,7 @@
       "id": "W11-Q066",
       "type": "short",
       "topic": "Identifier syntax",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete re.____(r'[A-Za-z0-9_-]{1,64}', value) so the entire string must match. Function name only.",
       "explanation": "fullmatch checks the whole value; a prefix match can leave unvalidated trailing characters.",
       "accepted": [
@@ -2263,7 +2270,7 @@
       "id": "W11-Q067",
       "type": "short",
       "topic": "Duplicate keys",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which json.loads keyword passes ordered object-member pairs to a custom function that can reject repeated keys? Keyword name only.",
       "explanation": "object_pairs_hook exposes the pairs before conversion into a dictionary would discard repeated-key information.",
       "accepted": [
@@ -2275,7 +2282,7 @@
       "id": "W11-Q068",
       "type": "short",
       "topic": "Nonfinite JSON",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which json.loads keyword accepts a callback for the spellings NaN, Infinity and -Infinity? Keyword name only.",
       "explanation": "parse_constant lets the strict local contract reject these extensions; it is separate from ordinary finite-number decoding.",
       "accepted": [
@@ -2287,7 +2294,7 @@
       "id": "W11-Q069",
       "type": "short",
       "topic": "UTF-8",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete len(raw.____('utf-8')) to measure the string's UTF-8 byte representation. Method name only.",
       "explanation": "encode produces the byte representation. Python len(raw) alone measures string characters rather than encoded bytes.",
       "accepted": [
@@ -2299,7 +2306,7 @@
       "id": "W11-Q070",
       "type": "short",
       "topic": "Canonical serialization",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete json.dumps(record, ____=True) so dictionary keys are emitted in sorted order. Keyword name only.",
       "explanation": "Sorted keys make dictionary insertion order irrelevant to this explicitly defined canonical digest representation.",
       "accepted": [
@@ -2431,7 +2438,7 @@
       "id": "W11-Q081",
       "type": "code",
       "topic": "Identifier validation",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement safe_identifier(value). Return True exactly for str values of 1 through 64 ASCII letters, digits, underscores or hyphens; otherwise return False. Do not strip, coerce or accept Unicode lookalikes. This checks shape only, not identity or permission.",
       "explanation": "Use a full ASCII allowlist and exact length bounds. Syntax validation deliberately confers no authenticated identity.",
       "starter": "def safe_identifier(value):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2495,7 +2502,7 @@
       "id": "W11-Q083",
       "type": "code",
       "topic": "Duplicate-object hook",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement unique_object(pairs), a json.loads object_pairs_hook. pairs is an ordered list of (str key, arbitrary decoded value) pairs. Return a new dict retaining insertion order and original value objects. Raise ValueError('duplicate') if ANY key repeats, even when its values are equal. Empty objects are valid. Do not mutate pairs or recursively inspect values; json.loads invokes this hook separately for nested objects.",
       "explanation": "Reject repeated member names before a dict loses them. The decoder applies the hook at every object, so the helper need not traverse already-decoded values.",
       "starter": "def unique_object(pairs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2559,7 +2566,7 @@
       "id": "W11-Q085",
       "type": "code",
       "topic": "Screening normalization",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement screening_copy(text) for a trusted str. Apply Unicode NFKC normalization, then casefold(), then collapse all whitespace runs to one ASCII space with no leading/trailing space. Return the resulting str. Do not alter the caller's original source or claim this transformation detects arbitrary attacks. An empty/whitespace-only string becomes ''.",
       "explanation": "NFKC, case folding and whitespace collapse reveal some variants while preserving a separate original for quotation. Spaced letters remain a known limitation.",
       "starter": "def screening_copy(text):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2815,7 +2822,7 @@
       "id": "W11-Q093",
       "type": "code",
       "topic": "HTML text consumer",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement html_text(answer) for a trusted Python str that may contain untrusted source characters. Return html.escape(answer, quote=True) exactly. Escape &, <, >, double quotes and single quotes; do not unescape pre-existing entities or interpret markup. Preserve ordinary Unicode and whitespace. This is for HTML text/quoted-attribute escaping, not URL approval, rich HTML sanitization or shell safety.",
       "explanation": "The next consumer needs its own escaping rules even for authorized exact evidence. HTML text escaping does not authorize a URL or another operation.",
       "starter": "def html_text(answer):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2879,7 +2886,7 @@
       "id": "W11-Q095",
       "type": "code",
       "topic": "One responder attempt",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement propose_once(question, context, propose). question is a trusted accepted str; context is a trusted tuple of selected evidence. propose is a trusted synchronous callable accepting those two arguments. If context is empty, return None and do NOT call it. Otherwise call it exactly once with the ORIGINAL arguments and return the identical result, even falsey results. Propagate the SAME exception/cancellation instance unchanged, without retry, logging payloads or fabricating an answer. Returned data still needs separate schema validation; this helper does not sandbox callable code.",
       "explanation": "Evidence absence skips generation. A real attempted callback preserves its result or failure semantics; an untrusted return string is a later validation concern.",
       "starter": "def propose_once(question, context, propose):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2975,7 +2982,7 @@
       "id": "W11-Q098",
       "type": "code",
       "topic": "Exact context-limit configuration",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement context_limit(value). Return the original value if and only if type(value) is int and 2 <= value <= 1400. Otherwise raise ValueError('context_limit'). Do not coerce strings/floats, accept bool, clamp or substitute a default. This validates a trusted configuration value in serialized characters, not model tokens or a memory cap.",
       "explanation": "Keep configuration validation explicit. An exact type check distinguishes bool from an int under this local contract.",
       "starter": "def context_limit(value):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3039,7 +3046,7 @@
       "id": "W11-Q100",
       "type": "code",
       "topic": "Protected-baseline copy semantics",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement catalogue_snapshot(catalogue). catalogue is a trusted small dict mapping full (tenant, document, version) tuple keys to normalized policy dicts containing nested JSON-like lists/dicts and primitive values. Return an EQUAL, deeply independent copy using standard-library copy semantics, so later nested edits to either structure do not affect the other. Preserve tuple keys, list ordering and value types; do not serialize through JSON. This tests copy independence only: it does NOT protect storage from an attacker, provide concurrent atomicity, or replace current permission rechecks.",
       "explanation": "Deep copy prevents accidental mutable aliasing across a baseline snapshot. Authority, protected storage and revocation consistency remain separate requirements.",
       "starter": "def catalogue_snapshot(catalogue):\n    raise NotImplementedError('Implement the stated contract')\n",
