@@ -3,8 +3,8 @@ layout: week
 week: 15
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-03
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-15/
 title: "Make the control flow visible with LangGraph"
@@ -46,6 +46,12 @@ provider availability.
 
 If graphs are new, start with the [beginner version]({{ '/weeks/week-15/beginner/' | relative_url }}).
 Read Week 14 first if the workflow-versus-agent distinction is not yet clear.
+
+## Before you start
+
+This route is for someone who already understands typed Python state, tool boundaries and why workflows own known transitions. It concentrates on LangGraph's executable state contract: reducers, closed routes, checkpoints, interrupts and same-thread resumption.
+
+The core route is one supported and one unsupported trace, explicit reducer behavior, a checkpoint and a report-bound interrupt/resume. Treat durable checkpointers, concurrent updates, replay analysis and provider integration as stretch work rather than prerequisites.
 
 The [Week 15 assessment]({{ '/assessments/week-15/' | relative_url }}) draws
 10 balanced questions from a bank of 100, with explanations and browser Python

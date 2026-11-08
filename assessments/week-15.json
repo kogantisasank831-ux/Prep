@@ -2,12 +2,19 @@
   "schema_version": 1,
   "week": 15,
   "title": "LangGraph fundamentals",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -2434,7 +2441,7 @@
     {
       "type": "short",
       "topic": "Thread configuration",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact configuration key used to select checkpoint state.",
       "explanation": "LangGraph receives thread_id inside configurable runtime data to identify a checkpoint thread.",
       "accepted": [
@@ -2458,7 +2465,7 @@
     {
       "type": "short",
       "topic": "Pause API",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the function call name used to pause a graph for external input, including parentheses.",
       "explanation": "interrupt() pauses the current node and exposes a resumable payload.",
       "accepted": [
@@ -2530,7 +2537,7 @@
     {
       "type": "short",
       "topic": "Approval status",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact status stored immediately before the human-review interrupt.",
       "explanation": "awaiting_approval means the report passed validation and is paused for a reviewer.",
       "accepted": [
@@ -2554,7 +2561,7 @@
     {
       "type": "code",
       "topic": "Additive reducer",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement append_channel(current, update). Both arguments must be exact lists whose members are exact strings. Return a new list containing current followed by update. Raise TypeError for any invalid container or member. Do not mutate or alias either input.",
       "explanation": "This isolates the observable behavior of an additive evidence or trace reducer: ordered accumulation with strict input validation and no caller mutation.",
       "starter": "def append_channel(current, update):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2586,7 +2593,7 @@
     {
       "type": "code",
       "topic": "Partial state updates",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement apply_state_update(state, update). Both inputs must be exact dicts using only evidence, trace, recommendation and valid. evidence and trace are strict list[str] additive channels; recommendation and valid replace their previous values. Return a deep independent result and never mutate either input. Raise TypeError for invalid containers/channel values and ValueError for unknown keys.",
       "explanation": "Graph nodes return partial updates. This exercise keeps additive and replacement semantics explicit while preventing accidental input mutation.",
       "starter": "def apply_state_update(state, update):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2618,7 +2625,7 @@
     {
       "type": "code",
       "topic": "Classification route",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement route_after_classification(state). state must be an exact dict containing intent. Return retrieve_documents for procurement_price_investigation and unsupported_query for unsupported. Raise TypeError when intent is not an exact string and ValueError when intent is missing or unknown. Do not mutate state.",
       "explanation": "A conditional edge should map validated state to a closed destination set and reject states outside that contract.",
       "starter": "def route_after_classification(state):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2650,7 +2657,7 @@
     {
       "type": "code",
       "topic": "Validation route",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement route_after_validation(state). state must be an exact dict containing valid as an exact bool. Return human_approval only for True and __end__ for False. Raise TypeError for invalid types and ValueError when valid is absent. Do not use truthiness.",
       "explanation": "Fail-closed routing depends on a validated boolean, not on the truthiness of arbitrary values such as non-empty strings.",
       "starter": "def route_after_validation(state):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2874,7 +2881,7 @@
     {
       "type": "code",
       "topic": "Thread configuration",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement thread_config(thread_id). thread_id must be an exact string, nonblank after strip and no more than 200 characters in its supplied form. Return {'configurable': {'thread_id': thread_id}} without trimming or otherwise normalizing it. Raise TypeError for non-strings and ValueError for blank or oversized values.",
       "explanation": "A thread identifier is an opaque checkpoint selector. Preserving it exactly avoids silently switching to a different stored thread.",
       "starter": "def thread_config(thread_id):\n    raise NotImplementedError('Implement the stated contract')\n",
