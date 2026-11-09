@@ -22,6 +22,10 @@ Approved Batch 2 adds Deep Learning and Neural Networks, NLP, Transformers,
 and LLM/Generative AI revision guides. Each role bank now contains 40 guided
 questions while preserving stable Batch 1 IDs.
 
+Approved Batch 3 adds embeddings and vector search, document ingestion and indexing, RAG
+architecture, and RAG evaluation/security/production. Each role bank grows to
+60 guided questions while preserving all earlier IDs.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than

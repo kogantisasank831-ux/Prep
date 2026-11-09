@@ -22,11 +22,11 @@
       </a>
       <nav class="app-nav" aria-label="Roadmap and lessons">
         <p class="app-nav-label">Contents</p>
-        <a class="app-nav-link app-content-link" href="{{ '/#roadmap' | relative_url }}">
+        <a class="app-nav-link app-content-link" data-nav-section="roadmap" href="{{ '/#roadmap' | relative_url }}">
           <span aria-hidden="true">⌂</span>
           <span>Roadmap</span>
         </a>
-        <a class="app-nav-link app-content-link{% if page.url contains '/interview-prep/' %} active{% endif %}" href="{{ '/interview-prep/' | relative_url }}"{% if page.url contains '/interview-prep/' %} aria-current="page"{% endif %}>
+        <a class="app-nav-link app-content-link{% if page.url contains '/interview-prep/' %} active{% endif %}" data-nav-section="interview-prep" href="{{ '/interview-prep/' | relative_url }}"{% if page.url contains '/interview-prep/' %} aria-current="page"{% endif %}>
           <span aria-hidden="true">◎</span>
           <span>Interview prep</span>
         </a>

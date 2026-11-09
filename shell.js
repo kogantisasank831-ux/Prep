@@ -9,7 +9,7 @@ const shellSidebar = document.querySelector("#app-sidebar");
 const shellOverlay = document.querySelector("#app-overlay");
 const shellToggles = [...document.querySelectorAll("[data-app-menu-toggle]")];
 const weekNavigation = document.querySelector("#app-week-navigation");
-const contentNavigationLink = document.querySelector(".app-content-link");
+const roadmapNavigationLink = document.querySelector('[data-nav-section="roadmap"]');
 const desktopQuery = window.matchMedia("(min-width: 1100px)");
 
 function setApplicationMenuOpen(open) {
@@ -58,12 +58,17 @@ function currentWeekNumber() {
   return hashMatch ? Number(hashMatch[1]) : null;
 }
 
+function isInterviewPrepPage() {
+  return /\/interview-prep(?:\/|$)/.test(window.location.pathname);
+}
+
 function updateActiveNavigation() {
   const activeWeek = currentWeekNumber();
-  contentNavigationLink?.classList.toggle("active", activeWeek === null);
-  if (contentNavigationLink) {
-    if (activeWeek === null) contentNavigationLink.setAttribute("aria-current", "page");
-    else contentNavigationLink.removeAttribute("aria-current");
+  const roadmapActive = activeWeek === null && !isInterviewPrepPage();
+  roadmapNavigationLink?.classList.toggle("active", roadmapActive);
+  if (roadmapNavigationLink) {
+    if (roadmapActive) roadmapNavigationLink.setAttribute("aria-current", "page");
+    else roadmapNavigationLink.removeAttribute("aria-current");
   }
   for (const link of weekNavigation?.querySelectorAll(".app-week-link") ?? []) {
     const active = Number(link.dataset.week) === activeWeek;

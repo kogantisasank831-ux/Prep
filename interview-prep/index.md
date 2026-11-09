@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.1.0"
+version: "1.2.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -21,11 +21,11 @@ current_label: "Interview prep hub"
 
 | Role bank | Best for | Current coverage |
 | --- | --- | --- |
-| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production Python, SQL state, deep learning, NLP, transformers, LLM systems, evaluation, reliability and incidents |
-| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, experimentation, ML, deep-learning, NLP and LLM decisions, governance and leadership |
-| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | SQL, statistics, ML, deep learning, NLP, transformers, LLM evaluation and business impact |
+| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, embeddings, ingestion, RAG architecture, evaluation, security, reliability and incidents |
+| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
+| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 40 guided questions across Batches 1–2, with strong-answer signals, a deeper follow-up probe, and direct revision links. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 60 guided questions across Batches 1–3, with strong-answer signals, a deeper follow-up probe, and direct revision links. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -44,6 +44,15 @@ Each role bank now contains 40 guided questions across Batches 1–2, with stron
 | [Natural language processing]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }}) | Text data, tokenization, representations, classification, extraction, evaluation and multilingual systems |
 | [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }}) | Attention, masks, position, architecture families, KV cache, GQA/MQA and efficiency |
 | [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }}) | Generation, prompting, structured output, fine-tuning, evaluation, safety and serving decisions |
+
+## Batch 3 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }}) | Similarity, sparse/dense/hybrid retrieval, bi-encoders, reranking, ANN indexes, filtering and search failures |
+| [Document ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }}) | Parsing, provenance, chunking, idempotency, updates, deletions, backfills and index operations |
+| [RAG architecture, retrieval, and generation]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) | Query transformation, staged retrieval, reranking, context assembly, grounded generation, citations and abstention |
+| [RAG evaluation, security, and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }}) | Retrieval and generation metrics, release gates, prompt injection defenses, observability, SLOs and incidents |
 
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
@@ -73,8 +82,7 @@ A senior answer should normally cover:
 
 | Batch | Planned scope |
 | --- | --- |
-| 3 | NLP, transformers, LLM engineering, fine-tuning, inference and evaluation |
-| 4 | RAG, LangGraph and other agent frameworks, tools, memory, multi-agent workflows and guardrails |
+| 4 | LangGraph and other agent frameworks, tools, memory, multi-agent workflows and guardrails |
 | 5 | AI system design, MLOps, observability, security, leadership, project storytelling and mock rounds |
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

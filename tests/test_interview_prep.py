@@ -25,7 +25,16 @@ BATCH_TWO_CHEAT_SHEETS = (
     ROOT / "interview-prep/cheat-sheets/llm-generative-ai.md",
 )
 
-ALL_CHEAT_SHEETS = BATCH_ONE_CHEAT_SHEETS + BATCH_TWO_CHEAT_SHEETS
+BATCH_THREE_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/embeddings-vector-search.md",
+    ROOT / "interview-prep/cheat-sheets/document-ingestion-chunking-indexing.md",
+    ROOT / "interview-prep/cheat-sheets/rag-architecture-retrieval-generation.md",
+    ROOT / "interview-prep/cheat-sheets/rag-evaluation-security-production.md",
+)
+
+ALL_CHEAT_SHEETS = (
+    BATCH_ONE_CHEAT_SHEETS + BATCH_TWO_CHEAT_SHEETS + BATCH_THREE_CHEAT_SHEETS
+)
 
 
 def read(path: Path) -> str:
@@ -36,6 +45,30 @@ def page_status(content: str) -> str:
     match = re.search(r'^status: "([^"]+)"$', content, re.MULTILINE)
     assert match is not None
     return match.group(1)
+
+
+def markdown_h1_lines_outside_fences(content: str) -> list[str]:
+    fence: str | None = None
+    headings: list[str] = []
+    for line in content.splitlines():
+        stripped = line.lstrip()
+        marker = next(
+            (
+                candidate
+                for candidate in ("```", "~~~")
+                if stripped.startswith(candidate)
+            ),
+            None,
+        )
+        if marker is not None:
+            if fence is None:
+                fence = marker
+            elif fence == marker:
+                fence = None
+            continue
+        if fence is None and line.startswith("# "):
+            headings.append(line)
+    return headings
 
 
 def test_public_pages_have_required_front_matter() -> None:
@@ -58,32 +91,29 @@ def test_public_pages_have_required_front_matter() -> None:
     assert len(permalinks) == len(set(permalinks))
 
 
-def test_role_banks_have_two_stable_complete_batches() -> None:
+def test_role_banks_have_stable_complete_batches() -> None:
     for prefix, path in ROLE_BANKS.items():
         content = read(path)
-        for batch in (1, 2):
+        for batch in (1, 2, 3):
             ids = re.findall(
                 rf"^### ({prefix}-B{batch}-\d{{2}}) — ",
                 content,
                 re.MULTILINE,
             )
-            expected = [
-                f"{prefix}-B{batch}-{index:02d}"
-                for index in range(1, 21)
-            ]
+            expected = [f"{prefix}-B{batch}-{index:02d}" for index in range(1, 21)]
             assert ids == expected
             assert len(ids) == len(set(ids)) == 20
-        assert content.count("**Strong answer signals**") == 40
-        assert content.count("**Follow-up probe:**") == 40
-        assert content.count("**Revision links:**") == 40
-        assert "question_count: 40" in content
+        assert content.count("**Strong answer signals**") == 60
+        assert content.count("**Follow-up probe:**") == 60
+        assert content.count("**Revision links:**") == 60
+        assert "question_count: 60" in content
 
 
 def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
     for path in ALL_CHEAT_SHEETS:
         content = read(path)
         assert "## 1. Thirty-second revision" in content
-        assert content.count("\n# ") == 0
+        assert markdown_h1_lines_outside_fences(content) == []
 
 
 def test_hub_links_every_interview_artifact() -> None:
@@ -98,6 +128,10 @@ def test_hub_links_every_interview_artifact() -> None:
         "/interview-prep/cheat-sheets/nlp/",
         "/interview-prep/cheat-sheets/transformers/",
         "/interview-prep/cheat-sheets/llm-generative-ai/",
+        "/interview-prep/cheat-sheets/embeddings-vector-search/",
+        "/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/",
+        "/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/",
+        "/interview-prep/cheat-sheets/rag-evaluation-security-production/",
         "/interview-prep/roles/agentic-ai-engineer/",
         "/interview-prep/roles/data-science-technical-lead/",
         "/interview-prep/roles/senior-data-scientist/",
@@ -107,8 +141,12 @@ def test_hub_links_every_interview_artifact() -> None:
 
 
 def test_shared_navigation_exposes_interview_prep() -> None:
-    assert "interview-prep/" in read(ROOT / "index.html")
+    home = read(ROOT / "index.html")
     layout = read(ROOT / "_layouts/week.html")
+    for content in (home, layout):
+        assert 'data-nav-section="roadmap"' in content
+        assert 'data-nav-section="interview-prep"' in content
+    assert "interview-prep/" in home
     assert "interview-prep/" in layout
     assert "page.back_url" in layout
     assert "page.pagination_url" in layout
