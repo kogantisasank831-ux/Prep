@@ -33,9 +33,7 @@ BATCH_THREE_CHEAT_SHEETS = (
 )
 
 ALL_CHEAT_SHEETS = (
-    BATCH_ONE_CHEAT_SHEETS
-    + BATCH_TWO_CHEAT_SHEETS
-    + BATCH_THREE_CHEAT_SHEETS
+    BATCH_ONE_CHEAT_SHEETS + BATCH_TWO_CHEAT_SHEETS + BATCH_THREE_CHEAT_SHEETS
 )
 
 
@@ -78,10 +76,7 @@ def test_role_banks_have_two_stable_complete_batches() -> None:
                 content,
                 re.MULTILINE,
             )
-            expected = [
-                f"{prefix}-B{batch}-{index:02d}"
-                for index in range(1, 21)
-            ]
+            expected = [f"{prefix}-B{batch}-{index:02d}" for index in range(1, 21)]
             assert ids == expected
             assert len(ids) == len(set(ids)) == 20
         assert content.count("**Strong answer signals**") == 60
