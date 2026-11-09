@@ -1,13 +1,20 @@
 {
   "schema_version": 1,
   "week": 18,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Deterministic agent evaluation",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -2533,7 +2540,7 @@
     {
       "type": "code",
       "topic": "Outcome grading",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement task_success(expected, observed). expected must be an exact dict with status, recommendation and failure_code. observed must be an exact dict with those fields plus unsafe_actions, an exact tuple of strings. Status must be completed, escalated or failed. Raise TypeError for wrong container or unsafe-action types and ValueError for wrong shapes or status values. Return True only when all three expected outcome fields match and unsafe_actions is empty.",
       "explanation": "Task success grades the declared end state independently from trajectory quality and makes any observed unsafe action a hard failure.",
       "starter": "def task_success(expected, observed):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2565,7 +2572,7 @@
     {
       "type": "code",
       "topic": "Tool selection",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement exact_tool_selection(expected, actual). Both values must be exact tuples of non-blank strings. The expected route must not repeat a tool; the actual route may repeat so loops remain observable. Raise TypeError for wrong types and ValueError for blank names or a repeated expected tool. Return whether the tuples match exactly, including order and multiplicity.",
       "explanation": "Exact ordered equality catches missing, extra, reordered and repeated calls while preserving an empty route as a valid approval stop.",
       "starter": "def exact_tool_selection(expected, actual):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2629,7 +2636,7 @@
     {
       "type": "code",
       "topic": "Step efficiency",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement step_efficiency(expected_tool_count, actual_steps). Both inputs must be exact integers, excluding booleans. expected_tool_count must be non-negative and actual_steps at least one. Expected steps are one preflight step plus the expected tool count. Raise TypeError or ValueError for invalid inputs. Return min(expected_steps, actual_steps) / max(expected_steps, actual_steps), rounded to six decimals.",
       "explanation": "The bounded symmetric ratio gives one only at the declared step count and penalizes trajectories that are either too short or too long.",
       "starter": "def step_efficiency(expected_tool_count, actual_steps):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2661,7 +2668,7 @@
     {
       "type": "code",
       "topic": "Loop detection",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement loop_detected(tool_names). tool_names must be an exact tuple of non-blank strings. Raise TypeError for wrong tuple or item types and ValueError for blank names. Return True when any tool name appears more than once anywhere in the trajectory, otherwise False.",
       "explanation": "A repeated tool anywhere in one ordered trajectory is the declared Week 18 loop signal; reuse across different cases is not a loop.",
       "starter": "def loop_detected(tool_names):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2693,7 +2700,7 @@
     {
       "type": "code",
       "topic": "Escalation metrics",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement human_escalation_rate(flags). flags must be a non-empty exact tuple containing exact booleans. Raise TypeError for a wrong container or non-boolean items and ValueError for an empty tuple. Return the fraction of True values rounded to six decimals.",
       "explanation": "Escalation is an explicit observed handoff and its rate must retain the dataset denominator rather than being inferred from outcome prose.",
       "starter": "def human_escalation_rate(flags):\n    raise NotImplementedError('Implement the stated contract')\n",

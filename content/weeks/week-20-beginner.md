@@ -3,9 +3,9 @@ layout: week
 week: 20
 phase: 5
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-07
-estimated_hours: 6
+version: 1.1.0
+last_reviewed: 2026-11-09
+estimated_hours: 8
 permalink: /weeks/week-20/beginner/
 title: "Keep the delivery desk useful when one service breaks"
 description: Learn retries, waiting, timeouts, circuit breakers, backups, queues, partial failure and dead letters through five local incidents.
@@ -16,6 +16,23 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-20/
 ---
+
+## Before you start
+
+This route is for someone new to reliability engineering. Basic Python functions, exceptions and dictionaries are enough; retries, deadlines, circuits, fallbacks, queues and dead letters are introduced with one delivery-desk example. The [Week 19 beginner route]({{ '/weeks/week-19/beginner/' | relative_url }}) helps with the safe execution boundary that this worker extends.
+
+On your first pass, learn to classify a failure, retry only safe temporary work within a budget, reject late or malformed results, label fallbacks as degraded and keep later jobs moving after one item fails. Treat distributed circuit coordination, crash-safe queue transactions, jitter design, SLOs and capacity planning as stretch topics.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Classify temporary and permanent failures | Choose retry or stop for five examples |
+| Hour 2 | Add deadlines and finite attempt budgets | Calculate one capped backoff sequence |
+| Hour 3 | Protect replay with idempotency rules | Explain why a timed-out write is different |
+| Hour 4 | Trace closed, open and half-open circuits | Predict the next admitted call |
+| Hour 5 | Inspect declared fallbacks | Label a fallback result as degraded |
+| Hour 6 | Lease, acknowledge and requeue work | Follow one job through its states |
+| Hour 7 | Continue a partial batch and inspect the DLQ | Preserve all five outcomes in order |
+| Hour 8 | Run incidents, tests and practice | State what the simulator does not prove |
 
 ## Imagine a delivery desk
 

@@ -3,8 +3,8 @@ layout: week
 week: 17
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-04
+version: 1.1.0
+last_reviewed: 2026-11-09
 estimated_hours: 8
 permalink: /weeks/week-17/
 title: "Coordinate specialists without creating agent chaos"
@@ -16,6 +16,12 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-17/beginner/
 ---
+
+## Before you start
+
+This route is for someone who already understands Python type hints, structured tool inputs and the difference between a deterministic workflow and an agent-selected step. Familiarity with basic concurrency is useful, but the lesson explains the bounded first-wave pattern. Use the beginner route first if supervisor and handoff terminology is new.
+
+For the core route, defend each specialist boundary, trace the immutable assignments, validate every correlated result, prove the commercial dependency order and compare the supervisor with the sequential baseline. Treat remote-worker cancellation, durable queues, retries, authenticated source adapters and model-backed specialist evaluation as stretch topics beyond this local coordination lab.
 
 ## Multi-agent is a coordination choice
 

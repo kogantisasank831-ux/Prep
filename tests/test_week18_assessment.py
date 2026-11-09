@@ -28,11 +28,24 @@ class Question(TypedDict, total=False):
     checks: list[Check]
 
 
+class DifficultyQuota(TypedDict):
+    foundation: int
+    applied: int
+
+
+class PaperPolicy(TypedDict):
+    questions: int
+    per_type: int
+    points_each: int
+    difficulty_per_type: dict[str, DifficultyQuota]
+
+
 class Bank(TypedDict):
     schema_version: int
     week: int
     version: str
     code_language: str
+    paper_policy: PaperPolicy
     questions: list[Question]
 
 
@@ -70,7 +83,7 @@ def exercise(question: Question) -> Exercise:
 def test_bank_distribution_and_teaching_context() -> None:
     assert BANK["schema_version"] == 1
     assert BANK["week"] == 18
-    assert BANK["version"] == "1.0.0"
+    assert BANK["version"] == "1.1.0"
     assert BANK["code_language"] == "python"
     assert len(BANK["questions"]) == 100
     assert Counter(question["type"] for question in BANK["questions"]) == {
@@ -89,6 +102,24 @@ def test_bank_distribution_and_teaching_context() -> None:
         question["difficulty"] in {"foundation", "applied"}
         for question in BANK["questions"]
     )
+    assert BANK["paper_policy"]["difficulty_per_type"] == {
+        question_type: {"foundation": 1, "applied": 1}
+        for question_type in {"single", "multiple", "match", "short", "code"}
+    }
+    assert {
+        question_type: Counter(
+            question["difficulty"]
+            for question in BANK["questions"]
+            if question["type"] == question_type
+        )
+        for question_type in {"single", "multiple", "match", "short", "code"}
+    } == {
+        "single": Counter(foundation=21, applied=9),
+        "multiple": Counter(foundation=9, applied=11),
+        "match": Counter(foundation=10, applied=5),
+        "short": Counter(foundation=9, applied=6),
+        "code": Counter(foundation=5, applied=15),
+    }
     assert set(MUTANTS) == {question["id"] for question in CODING}
 
 
