@@ -3,8 +3,8 @@ layout: week
 week: 16
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-03
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-16/beginner/
 title: "Give the agent a careful case notebook"
@@ -16,6 +16,10 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-16/
 ---
+
+## Before you start
+
+This route is for someone new to agent memory. You only need basic Python dictionaries and the idea that a database keeps rows after a program stops. Memory scopes, provenance, expiry and context budgets are introduced here; vector-database experience is not required.
 
 ## Think of a controlled case notebook
 
@@ -39,9 +43,22 @@ The notebook has:
 The [production version]({{ '/weeks/week-16/' | relative_url }}) explains the
 schemas, transactions, context budget and incorrect-memory controls in more depth.
 
+For a first pass, learn the memory scopes, save only the named case facts, restart and recall them, and demonstrate expiry or forgetting. Encryption, migrations, backup, concurrent writers and vector-memory consolidation are stretch topics.
+
 The [Week 16 assessment]({{ '/assessments/week-16/' | relative_url }}) draws
 10 balanced questions from a bank of 100, with explanations and browser Python
 checks.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Separate runtime, checkpoint and long-term scopes | Match each fact to one scope |
+| Hour 2 | Compare semantic facts with episodic events | Write one example of each |
+| Hour 3 | Inspect minimised records and provenance | Name what the lab deliberately does not store |
+| Hour 4 | Seed, restart and recall a scoped case | Recover the same case after restart |
+| Hour 5 | Select a bounded context | Explain why every saved item is not recalled |
+| Hour 6 | Expire, purge and forget records | Show the difference between the three actions |
+| Hour 7 | Revise safely and reject stale replay | Explain one revision failure |
+| Hour 8 | Run lifecycle tests and the assessment | Defend one retention and recall choice |
 
 ## Learn the four memory words
 

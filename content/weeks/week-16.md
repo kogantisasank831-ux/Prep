@@ -3,8 +3,8 @@ layout: week
 week: 16
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-03
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-16/
 title: "Engineer memory instead of saving everything"
@@ -37,6 +37,12 @@ episodic events to SQLite, then selects a bounded context for a later turn.
 
 If this vocabulary is new, start with the
 [beginner version]({{ '/weeks/week-16/beginner/' | relative_url }}).
+
+## Before you start
+
+This route is for someone who already understands Week 15 checkpoints, typed records and basic SQLite persistence. It goes beyond “remember the chat” to governed memory scopes, data minimisation, bounded recall, retention, revisions and replay-safe updates.
+
+The core route separates runtime, checkpoint and long-term scopes; persists minimal scoped records; recalls within a hard budget; and proves expiry, forgetting and revision behavior. Treat production encryption, schema migration, backup, concurrent writers, legal hold and conflict arbitration as stretch work.
 
 The [Week 16 assessment]({{ '/assessments/week-16/' | relative_url }}) draws
 10 balanced questions from a bank of 100, with explanations and browser Python

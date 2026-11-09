@@ -1,14 +1,21 @@
 {
   "schema_version": 1,
   "week": 13,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Tool calling",
   "source_lesson": "/weeks/week-13/",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -885,7 +892,7 @@
       "id": "W13-Q031",
       "type": "multiple",
       "topic": "Application ownership",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which responsibilities stay in application code even when a model proposes well-formed calls?",
       "explanation": "A model proposes data, while the application owns capability, permission and resource decisions. Prose cannot independently supply approval.",
       "options": [
@@ -916,7 +923,7 @@
       "id": "W13-Q032",
       "type": "multiple",
       "topic": "Schema boundaries",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements correctly describe the lab's strict validation?",
       "explanation": "Closed shapes, exact types, decoder ambiguity and business comparability are distinct checks. None authenticates a caller.",
       "options": [
@@ -978,7 +985,7 @@
       "id": "W13-Q034",
       "type": "multiple",
       "topic": "SQL capability",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which controls are actually present in the supplied SQL tool?",
       "explanation": "The small capability combines named statements, parameter binding and scoped read-only access. It is not a general SQL safety parser.",
       "options": [
@@ -1009,7 +1016,7 @@
       "id": "W13-Q035",
       "type": "multiple",
       "topic": "Caller scope",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which observations are consistent with the local authorization design?",
       "explanation": "Identity origin, catalogue visibility, resource access and replay authority are separate boundaries. The local constructors are not authentication.",
       "options": [
@@ -1071,7 +1078,7 @@
       "id": "W13-Q037",
       "type": "multiple",
       "topic": "Numeric meaning",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Which statements about the price calculation are correct?",
       "explanation": "Numeric representation, formula and rounding are explicit. The relationship between proposed values and business evidence is a separate check.",
       "options": [
@@ -1504,7 +1511,7 @@
       "id": "W13-Q051",
       "type": "match",
       "topic": "Tool selection",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each task to the most directly relevant read tool.",
       "explanation": "The operation should fit the information need. Selection does not yet establish correct argument values, authority or evidence quality.",
       "left": [
@@ -1554,7 +1561,7 @@
       "id": "W13-Q052",
       "type": "match",
       "topic": "Application gates",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each gate to the decision it owns.",
       "explanation": "These gates protect different boundaries. A later successful check cannot repair an earlier unauthorized execution.",
       "left": [
@@ -1604,7 +1611,7 @@
       "id": "W13-Q053",
       "type": "match",
       "topic": "Identity and correlation",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each identifier to its role.",
       "explanation": "Conversation correlation, durable intent identity, caller scope and final references are distinct uses of identifiers.",
       "left": [
@@ -1654,7 +1661,7 @@
       "id": "W13-Q054",
       "type": "match",
       "topic": "Strict argument failures",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each rejected proposal to the most specific concern.",
       "explanation": "Type, closed shape, decoder ambiguity and business comparability are separate checks. None is delegated to a model's assertion of validity.",
       "left": [
@@ -1704,7 +1711,7 @@
       "id": "W13-Q055",
       "type": "match",
       "topic": "Sources of authority",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Match each item to what it can supply in this lab.",
       "explanation": "Authority follows the trusted producing boundary. The local approval fixture still does not establish a real authenticated human workflow.",
       "left": [
@@ -2254,7 +2261,7 @@
       "id": "W13-Q066",
       "type": "short",
       "topic": "Async function",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete ____ def next_turn(messages, tools): with the Python keyword that declares a coroutine function. Keyword only.",
       "explanation": "async def declares a coroutine function. Execution still requires awaiting or scheduling it, and ordinary blocking work inside remains blocking.",
       "accepted": [
@@ -2266,7 +2273,7 @@
       "id": "W13-Q067",
       "type": "short",
       "topic": "Awaiting execution",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Inside a coroutine, complete result = ____ handler(actor, arguments) to await the asynchronous handler. Keyword only.",
       "explanation": "await suspends this coroutine while the awaited operation progresses under its cooperative semantics.",
       "accepted": [
@@ -2278,7 +2285,7 @@
       "id": "W13-Q068",
       "type": "short",
       "topic": "Pydantic input",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete SupplierArgs.____(decoded_arguments) with the Pydantic method used to validate an already-decoded Python object. Method name only.",
       "explanation": "model_validate applies the declared model contract to the decoded object. This remains separate from strict raw JSON decoding and execution authority.",
       "accepted": [
@@ -2290,7 +2297,7 @@
       "id": "W13-Q069",
       "type": "short",
       "topic": "Schema export",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete SupplierArgs.____() with the Pydantic method that exports the model's JSON Schema. Method name only.",
       "explanation": "model_json_schema exports a schema description. It does not execute a handler or ensure compatibility with every provider's supported schema subset.",
       "accepted": [
@@ -2302,7 +2309,7 @@
       "id": "W13-Q070",
       "type": "short",
       "topic": "Closed model",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Complete ConfigDict(strict=True, extra='____') with the setting used to reject extra fields. Value only.",
       "explanation": "extra='forbid' rejects unknown fields instead of silently accepting or discarding them. Permission and business rules still remain separate.",
       "accepted": [
@@ -2434,7 +2441,7 @@
       "id": "W13-Q081",
       "type": "code",
       "topic": "Registered-name shape",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement tool_name(value). Return True exactly for str values containing 1 through 40 ASCII lowercase letters or underscores; otherwise return False. Do not strip, lowercase, coerce or accept a prefix/Unicode lookalike. This checks the local tool-name grammar only: a name that passes can still be absent from the fixed registry and has no execution authority.",
       "explanation": "Use a complete ASCII match with the declared bound. Registry membership and caller authority remain separate application decisions.",
       "starter": "def tool_name(value):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2562,7 +2569,7 @@
       "id": "W13-Q085",
       "type": "code",
       "topic": "Closed local tool definition",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement tool_definition(name, description, properties, required, effect). All inputs are trusted application definitions: name/description are str, effect is 'read' or 'write', properties is a finite JSON-compatible dict, and required is a list of unique property names present in properties (it may be empty). Return EXACTLY {'name':name,'description':description,'effect':effect,'parameters':{'type':'object','properties':deep_copy(properties),'required':copy_of_required,'additionalProperties':False}}. Preserve all nested definitions and input ordering without mutation or aliasing. This local catalogue object neither executes a function nor claims compatibility with a provider API.",
       "explanation": "Export a precise deep-copied description of the local contract. The executable registry and authority checks remain separate from this catalogue data.",
       "starter": "def tool_definition(name, description, properties, required, effect):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2594,7 +2601,7 @@
       "id": "W13-Q086",
       "type": "code",
       "topic": "Catalogue visibility",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement visible_tools(definitions, writable). definitions is an ordered list of trusted JSON-compatible tool-definition dicts with unique names and effect equal to 'read' or 'write'. writable may be any object: expose write definitions only if writable is the boolean True, and always expose read definitions. Return a NEW list of independent deep copies in original order, without changing definitions. This is catalogue visibility, not execution authorization; a hidden tool must still be checked independently if a call is proposed.",
       "explanation": "Preserve ordering and copy ownership while using an exact capability boolean. Catalogue filtering helps the planner but cannot replace an execution-time permission gate.",
       "starter": "def visible_tools(definitions, writable):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2626,7 +2633,7 @@
       "id": "W13-Q087",
       "type": "code",
       "topic": "Correlated result envelope",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement correlated_reply(expected_call_id, reply). expected_call_id is a trusted validated str. reply must be a dict with EXACTLY call_id, name, status, data, error and attempts, and its call_id must equal expected_call_id. Otherwise raise ValueError('result_invalid'). The other five values are guaranteed already valid under the relevant result contracts and may contain nested JSON data. Return an independent deep copy of the full accepted envelope. Do not mutate input or infer authorization from a matching ID. This helper checks top-level fields/correlation; separate validators own data and status semantics.",
       "explanation": "Correlation prevents a valid result from being associated with another call. Closed envelopes and independent copies preserve the boundary without pretending that an ID grants access.",
       "starter": "def correlated_reply(expected_call_id, reply):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2690,7 +2697,7 @@
       "id": "W13-Q089",
       "type": "code",
       "topic": "Successful final evidence",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement evidence_ok(references, outcomes). outcomes is a trusted list of validated dicts with unique str call_id values and status equal to ok, error or unknown. Other fields are irrelevant. references may be any object. Return True only when it is a list of at most six UNIQUE str IDs and every ID belongs to an outcome whose status is 'ok'. Empty references are valid. Otherwise return False without mutation or exceptions on unhashable reference elements. This checks membership only, not whether a final summary is entailed, complete or true.",
       "explanation": "Only distinct successful IDs from the current run can be cited under this check. A passing reference list supplies no semantic proof about the text that cites it.",
       "starter": "def evidence_ok(references, outcomes):\n    raise NotImplementedError('Implement the stated contract')\n",

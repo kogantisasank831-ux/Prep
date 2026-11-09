@@ -3,8 +3,8 @@ layout: week
 week: 13
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-28
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-13/beginner/
 title: "Give your assistant a tool it can propose"
@@ -17,6 +17,10 @@ alternate_label: Production version
 alternate_url: /weeks/week-13/
 ---
 
+## Before you start
+
+This route is for someone new to tool calling. Basic Python functions and dictionary-shaped data are enough; schemas, async waiting, retries and idempotency are introduced as they are needed. Revisit [Week 1]({{ '/weeks/week-01/beginner/' | relative_url }}) if reading a function signature is still difficult.
+
 ## A question now needs more than a paragraph
 
 Your assistant already finds invoice evidence. A colleague now asks, “Which supplier is this, and how much did its unit price change?” The answer needs a structured lookup and arithmetic. Asking a language model to write a convincing paragraph does not make either operation happen.
@@ -26,6 +30,8 @@ A tool is a named operation the application knows how to perform. The assistant 
 This week uses five tools: a SQL query, a price-variance calculation, a supplier lookup, a commodity-price lookup and document search. There is also an optional local tool that records a synthetic request for review. It lets you learn duplicate-write protection without contacting anyone or changing a real purchase.
 
 The lab uses fictional records, a real local SQLite file and a scripted planner. A script supplies the proposed calls, so you can inspect the mechanics without an API key. It is not a test of a real model's judgment. The [main lesson]({{ '/weeks/week-13/' | relative_url }}) explains the deeper contract and transaction choices.
+
+On your first pass, learn the proposal → validation → authority → execution → result sequence, run the read-only examples and explain one rejected call. Treat approval-ledger internals, provider adapters and lost-response write recovery as stretch work once that sequence feels natural.
 
 | Time | Work | A small success to show |
 | --- | --- | --- |

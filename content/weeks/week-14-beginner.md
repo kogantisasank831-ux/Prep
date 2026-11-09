@@ -3,8 +3,8 @@ layout: week
 week: 14
 phase: 4
 status: approved
-version: 1.0.2
-last_reviewed: 2026-11-02
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-14/beginner/
 title: "Workflows and agents, one step at a time"
@@ -16,6 +16,10 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-14/
 ---
+
+## Before you start
+
+This route is for someone new to agents. You only need to recognise a Python function and a dictionary of facts. State machines, planner loops and human approval are introduced here; prior agent-framework experience is not required.
 
 ## Start with a recipe
 
@@ -43,7 +47,20 @@ This week builds both versions over the same fictional data. There is no model d
 
 The [production version]({{ '/weeks/week-14/' | relative_url }}) adds deeper design and evaluation guidance. Use this version to build the mental model first.
 
+For a first pass, learn who owns the next step, follow one fixed workflow and one bounded agent, and explain why application limits and human approval still apply. Treat multi-step orchestration patterns, real-model comparisons and detailed cost modelling as stretch topics.
+
 The [Week 14 assessment]({{ '/assessments/week-14/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Compare a recipe with an uncertain route | Name who chooses each next step |
+| Hour 2 | List business facts and control facts | Build one state table |
+| Hour 3 | Run the deterministic workflow | Trace its fixed route |
+| Hour 4 | Run the bounded agent | Trace one proposal and checked action |
+| Hour 5 | Compare common controller patterns | Choose a controller for one scenario |
+| Hour 6 | Pause for human approval | Explain what the report digest protects |
+| Hour 7 | Run failures and compare outcomes | Identify a loop, early finish and unsupported action |
+| Hour 8 | Complete the assessment and explain the design | Defend one workflow-versus-agent choice |
 
 ## Know the shared task
 

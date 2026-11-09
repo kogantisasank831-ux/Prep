@@ -3,8 +3,8 @@ layout: week
 week: 13
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-10-28
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-13/
 title: "Let the assistant propose a tool call"
@@ -26,6 +26,12 @@ A tool gives the assistant a named operation it can propose. The application sti
 This week builds five tools: SQL queries, price-variance calculation, supplier lookup, commodity-price lookup and document search. A sixth, optional tool creates a local synthetic review record so duplicate-write protection has something observable to protect. It cannot place orders, make payments, contact suppliers or send messages.
 
 The runnable lab uses a scripted planner, actual SQLite records and the existing guarded document assistant. No provider key or model download is needed. The planner's fixed proposals exercise the protocol; they do not measure whether a real model would choose the right tool, arguments or final answer. The [beginner version]({{ '/weeks/week-13/beginner/' | relative_url }}) follows the same build in smaller steps.
+
+## Before you start
+
+This route is for someone who already understands Python functions, JSON-shaped API data and basic asynchronous calls. It moves quickly from those foundations to trust boundaries, retries, cancellation, idempotent writes and provider-adapter limits. If schemas or async functions are still new, use the beginner route first.
+
+For a first pass, concentrate on the proposal → validation → authority → execution → correlated-result boundary, the five read tools and one failure/recovery trace. Treat approval ledgers, lost-response write recovery, provider adapters and model-selection evaluation as stretch work after that core is clear.
 
 | Time | Focus | Evidence to retain |
 | --- | --- | --- |

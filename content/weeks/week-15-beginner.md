@@ -3,8 +3,8 @@ layout: week
 week: 15
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-03
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-15/beginner/
 title: "Build your first stateful graph"
@@ -16,6 +16,10 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-15/
 ---
+
+## Before you start
+
+This route is for someone new to LangGraph. Basic Python functions and dictionaries are enough. The lesson introduces state, nodes, edges, reducers, checkpoints and interrupts through one visible route; you do not need prior graph-framework experience.
 
 ## Think of a case moving through workstations
 
@@ -45,9 +49,22 @@ That is the mental model for this week’s graph.
 The [production version]({{ '/weeks/week-15/' | relative_url }}) adds deeper
 design, persistence and testing guidance. Start here if the vocabulary is new.
 
+On a first pass, identify the graph parts, run a supported and unsupported case, inspect one checkpoint and resume one paused thread. Durable database checkpointers, concurrent branches, replay behavior and framework internals are stretch topics.
+
 The [Week 15 assessment]({{ '/assessments/week-15/' | relative_url }}) draws
 10 balanced questions from a bank of 100, with explanations and browser Python
 checks.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Learn the graph vocabulary and route | Sketch the named nodes and arrows |
+| Hour 2 | Read state and reducer rules | Explain replace versus append |
+| Hour 3 | Follow nodes and conditional edges | Trace supported and unsupported cases |
+| Hour 4 | Run the document, SQL and calculation nodes | Identify both evidence sources |
+| Hour 5 | Validate and compile the graph | Show one fail-closed result |
+| Hour 6 | Inspect a checkpointed thread | Find its saved state and identity |
+| Hour 7 | Interrupt and resume the same thread | Complete one approve or reject path |
+| Hour 8 | Run boundary tests and the assessment | Explain why a wrong thread or digest fails |
 
 ## See the route before reading code
 

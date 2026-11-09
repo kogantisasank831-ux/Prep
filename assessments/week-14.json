@@ -1,14 +1,21 @@
 {
   "schema_version": 1,
   "week": 14,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Workflows versus agents",
   "source_lesson": "/weeks/week-14/",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -2552,7 +2559,7 @@
       "id": "W14-Q080",
       "type": "short",
       "topic": "Lifecycle value",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Give the exact RunStatus string for a successful investigation that is waiting for a person. Lowercase value only.",
       "explanation": "awaiting_approval keeps investigation completion separate from a later approve or reject decision.",
       "accepted": [
@@ -2564,7 +2571,7 @@
       "id": "W14-Q081",
       "type": "code",
       "topic": "Strict action parsing",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement parse_action(value). Return value unchanged only when its exact built-in str value is one of load_order, lookup_supplier, get_reference_price, calculate_variance, search_contract_terms or finish. Return None for every other value. Do not trim, lowercase, coerce or execute anything; membership is only proposal validation, not authority.",
       "explanation": "A strict closed action vocabulary prevents normalization from turning a different proposal into an allowed operation. Execution policy remains a separate step.",
       "starter": "def parse_action(value):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2596,7 +2603,7 @@
       "id": "W14-Q082",
       "type": "code",
       "topic": "Deterministic transition",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement workflow_next(completed). completed must be an exact set of action strings forming a prefix of the fixed five-action workflow. Return the first remaining action, or finish when all five are complete. Raise TypeError for a non-set or non-string member and ValueError for unknown actions or a gap such as calculate_variance completed before lookup_supplier. Do not mutate completed.",
       "explanation": "A workflow transition table accepts only reachable prefix states. Rejecting gaps prevents an apparently valid set from hiding an impossible route.",
       "starter": "def workflow_next(completed):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2660,7 +2667,7 @@
       "id": "W14-Q084",
       "type": "code",
       "topic": "Action prerequisites",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement prerequisite_ok(action, state). state must be an exact dict containing exactly order, supplier, reference, variance and contract with exact bool values that indicate fact presence. Return whether the action's data prerequisites are met: load_order needs none; lookup_supplier, get_reference_price and search_contract_terms need order; calculate_variance needs order and reference; finish needs every fact. Raise TypeError for malformed state and ValueError for an unknown action. Do not mutate state.",
       "explanation": "Action membership does not prove that its required business facts exist. Explicit prerequisites keep dependency enforcement deterministic.",
       "starter": "def prerequisite_ok(action, state):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3012,7 +3019,7 @@
       "id": "W14-Q095",
       "type": "code",
       "topic": "Controller selection rubric",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement choose_controller(stable_sequence, deterministic_rules, route_uncertainty, evaluation_ready). All inputs must be exact bools. Return workflow when the route is stable with deterministic rules and no route uncertainty. When route_uncertainty is true and evaluation_ready is true, return hybrid if deterministic_rules is true, otherwise agent_candidate. In every other case return workflow until stronger evidence exists. Raise TypeError for non-bools. This is the exercise's explicit conservative rubric, not a universal law.",
       "explanation": "A conservative controller rubric keeps known decisions deterministic and treats evaluation evidence as a prerequisite for broader model-directed routing.",
       "starter": "def choose_controller(stable_sequence, deterministic_rules, route_uncertainty, evaluation_ready):\n    raise NotImplementedError('Implement the stated contract')\n",

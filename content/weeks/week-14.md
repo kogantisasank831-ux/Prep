@@ -3,8 +3,8 @@ layout: week
 week: 14
 phase: 4
 status: approved
-version: 1.0.2
-last_reviewed: 2026-11-02
+version: 1.1.0
+last_reviewed: 2026-11-08
 estimated_hours: 8
 permalink: /weeks/week-14/
 title: "Choose the controller before you build the agent"
@@ -40,6 +40,12 @@ The important design question is therefore not “How do I add an agent?” It i
 Both versions use the same tools, facts, price calculation, recommendation rule and approval boundary. Keeping those parts equal makes control flow the independent variable. The runnable lab uses a scripted planner so every route and failure is reproducible without a provider key. It tests orchestration behavior; it does not measure a real model.
 
 If agent terminology is new, use the [beginner version]({{ '/weeks/week-14/beginner/' | relative_url }}) first. Week 13’s tool contracts remain the boundary underneath this lesson: a model can propose an operation, but application code still owns authority and execution.
+
+## Before you start
+
+This route is for someone comfortable with Week 13's tool contracts, typed application state and a basic planner loop. The focus is not agent vocabulary; it is choosing a controller from evidence, defending state transitions and measuring the extra cost and failure surface of model-directed routing.
+
+The core route compares a deterministic workflow with a bounded agent, enforces prerequisites and binds one report to human approval. Treat evaluator–optimizer and orchestrator–worker patterns, cost assumptions and real-model evaluation as stretch work after you can justify the basic controller choice.
 
 The [Week 14 assessment]({{ '/assessments/week-14/' | relative_url }}) draws 10 balanced questions from a bank of 100, with explanations and browser Python checks.
 
