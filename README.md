@@ -6,6 +6,18 @@ render approved weekly Markdown lessons. The site provides responsive sidebar
 navigation, phase filtering, full-text search, light/dark and focused reading
 modes, weekly completion tracking, and private browser-local notes.
 
+## Interview preparation
+
+Role-specific interview banks and reusable revision guides live under
+[`interview-prep/`](interview-prep/). They are deliberately separate from the
+weekly learning assessments: the weekly banks check lesson understanding, while
+the interview banks test decisions, trade-offs, communication and project evidence.
+
+Batch 1 covers Python, SQL, probability/statistics and machine-learning
+fundamentals, with guided banks for Agentic AI Engineer, Data Science Technical
+Lead and Senior Data Scientist roles. Public candidates use `status: review`
+until human review is complete.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than
