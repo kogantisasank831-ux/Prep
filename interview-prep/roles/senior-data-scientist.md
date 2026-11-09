@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
+version: "1.1.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "Twenty guided foundation questions for Senior Data Scientist interviews."
-summary: "Practise SQL, statistics, leakage-safe ML, metrics, cases, explainability, monitoring, and defensible business impact."
+description: "Forty guided questions for Senior Data Scientist interviews."
+summary: "Practise SQL, statistics, leakage-safe ML, deep learning, NLP, transformers, LLM evaluation, monitoring, and defensible business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batch 1 · 20 guided questions"
+kicker_secondary: "Batches 1–2 · 40 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 20
+question_count: 40
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 20 questions · **Batch:** 1 core foundations · **Status:** approved
+**Bank size:** 40 questions across Batches 1–2 · **Status:** Batches 1–2 approved
 
 ## SQL and data
 
@@ -322,9 +322,298 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 
 **Revision links:** [Probability and statistics]({{ '/interview-prep/cheat-sheets/probability-statistics/' | relative_url }}) · [Machine learning]({{ '/interview-prep/cheat-sheets/machine-learning/' | relative_url }})
 
+## Batch 2 · Deep learning
+
+### SDS-B2-01 — What does a neuron compute, and why is a nonlinear activation necessary?
+
+**Round:** Deep learning · **Depth:** Foundation
+
+**Strong answer signals**
+
+- A neuron applies an affine transformation `wᵀx+b` followed by an activation.
+- Without nonlinearity, stacked linear layers collapse to one linear transformation.
+- Activation choice affects gradient flow, output range, sparsity, and task compatibility.
+
+**Follow-up probe:** Where would sigmoid, softmax, ReLU, and GELU typically appear?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### SDS-B2-02 — Choose among binary cross-entropy, categorical cross-entropy, and MSE.
+
+**Round:** Loss functions · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Binary cross-entropy fits independent binary labels with logits/sigmoid; categorical cross-entropy fits one mutually exclusive class with softmax logits.
+- MSE is common for continuous regression and is sensitive to large errors.
+- Match output shape, target encoding, likelihood assumptions, and numerical-stability APIs.
+
+**Follow-up probe:** Why should loss functions often consume logits rather than probabilities?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### SDS-B2-03 — Explain backpropagation to a mathematically comfortable interviewer.
+
+**Round:** Backpropagation · **Depth:** Applied
+
+**Strong answer signals**
+
+- It applies the chain rule through the computation graph from loss to parameters.
+- Local derivatives are multiplied/accumulated along paths; autodiff records operations and propagates vector-Jacobian products.
+- Gradient computation is separate from the optimizer update and can fail through saturation, detachment, or numerical instability.
+
+**Follow-up probe:** What is the difference between a gradient and a parameter update?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### SDS-B2-04 — Compare weight decay, dropout, early stopping, and data augmentation.
+
+**Round:** Regularization · **Depth:** Applied
+
+**Strong answer signals**
+
+- Weight decay penalizes/shrinks parameters; dropout stochastically removes activations during training.
+- Early stopping limits fitting time using validation evidence; augmentation encodes label-preserving transformations.
+- They address different failure modes and must be validated for the data and architecture.
+
+**Follow-up probe:** Why can inappropriate augmentation reduce generalization?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### SDS-B2-05 — Why do training and evaluation modes matter?
+
+**Round:** Training behavior · **Depth:** Applied
+
+**Strong answer signals**
+
+- Dropout is active only during training; BatchNorm updates/uses statistics differently.
+- Evaluation should disable gradient tracking where appropriate and use deterministic preprocessing.
+- A mode mismatch causes unstable or biased validation and production predictions.
+
+**Follow-up probe:** Which layers remain numerically active in both modes?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+## Batch 2 · NLP
+
+### SDS-B2-06 — Compare bag-of-words, TF-IDF, static embeddings, and contextual embeddings.
+
+**Round:** NLP · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Bag-of-words counts terms; TF-IDF downweights globally common terms.
+- Static embeddings assign one vector per token; contextual embeddings change with surrounding text.
+- Complexity, data, semantics, latency, interpretability, and transfer determine the choice.
+
+**Follow-up probe:** Which representation would you try first for a small labeled text dataset?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### SDS-B2-07 — Compare word, character, and subword tokenization.
+
+**Round:** Tokenization · **Depth:** Applied
+
+**Strong answer signals**
+
+- Word tokens are interpretable but suffer large vocabularies and unknown words.
+- Characters handle arbitrary text but produce long sequences; subwords balance vocabulary and sequence length.
+- Evaluate domain terms, morphology, languages, noise, cost, and checkpoint compatibility.
+
+**Follow-up probe:** Why might a code or medical tokenizer outperform a general tokenizer?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### SDS-B2-08 — Design evaluation for an imbalanced multilabel text classifier.
+
+**Round:** Classification · **Depth:** Applied
+
+**Strong answer signals**
+
+- Use per-label and macro/micro precision, recall, F1, PR curves, and calibration.
+- Tune label-specific thresholds with costs and capacity on validation data.
+- Audit rare labels, co-occurrence, unknown cases, source/time/language slices, and annotation quality.
+
+**Follow-up probe:** Why can micro F1 hide poor minority-label behavior?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### SDS-B2-09 — Why is entity-level F1 preferred over token accuracy for NER?
+
+**Round:** Sequence labeling · **Depth:** Applied
+
+**Strong answer signals**
+
+- Token accuracy is dominated by non-entity tokens and can reward broken spans.
+- Entity-level scoring checks declared boundary and type correctness.
+- Report precision/recall by entity type and define exact versus partial/nested matching.
+
+**Follow-up probe:** How would annotation disagreement affect the apparent ceiling?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### SDS-B2-10 — How do duplicates and templated text distort NLP validation?
+
+**Round:** Data quality · **Depth:** Applied
+
+**Strong answer signals**
+
+- Near-duplicates across splits let the model memorize lexical patterns and inflate performance.
+- Templates can make random splits easier than future/source-generalization conditions.
+- Deduplicate with normalized and semantic checks, group by source/entity/template, and use temporal holdouts.
+
+**Follow-up probe:** What useful signal might aggressive deduplication accidentally remove?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+## Batch 2 · Transformers
+
+### SDS-B2-11 — Why divide attention logits by the square root of key dimension?
+
+**Round:** Attention · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Dot-product variance grows with dimension under common assumptions.
+- Large logits saturate softmax, producing tiny gradients and unstable learning.
+- Scaling keeps scores in a more useful range before masking and softmax.
+
+**Follow-up probe:** Why must masked positions be excluded before softmax?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### SDS-B2-12 — Compare self-attention and cross-attention.
+
+**Round:** Architecture · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Self-attention derives Q, K, and V from the same sequence to relate its tokens.
+- Cross-attention uses queries from one sequence and keys/values from another source.
+- Masks, shapes, and computational cost depend on the two sequence lengths.
+
+**Follow-up probe:** Where does cross-attention appear in encoder-decoder models?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### SDS-B2-13 — Why do transformers need positional information?
+
+**Round:** Position · **Depth:** Applied
+
+**Strong answer signals**
+
+- Attention without position is permutation-equivariant and cannot distinguish order by itself.
+- Absolute, relative, or rotary schemes inject order/distance in different ways.
+- Extrapolation beyond trained lengths and implementation compatibility must be evaluated.
+
+**Follow-up probe:** Why does a larger configured context not prove long-range reasoning?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### SDS-B2-14 — Choose an architecture for classification, generation, and translation.
+
+**Round:** Model families · **Depth:** Applied
+
+**Strong answer signals**
+
+- Encoder-only for bidirectional representations/classification, decoder-only for causal generation, encoder-decoder for explicit source-to-target mapping.
+- Compare pretrained checkpoints, data, output constraints, latency, and serving ecosystem.
+- Validate on the actual task; family labels are strong priors, not guarantees.
+
+**Follow-up probe:** When can a generative model be wasteful for classification?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }}) · [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### SDS-B2-15 — Why is autoregressive generation slow even with a KV cache?
+
+**Round:** Inference · **Depth:** Applied
+
+**Strong answer signals**
+
+- Output tokens are generated sequentially, limiting parallelism across time.
+- Each step reads model weights and KV state; memory bandwidth and batching matter.
+- KV cache removes prefix recomputation but consumes memory and does not eliminate per-token layer computation.
+
+**Follow-up probe:** How do output length and concurrency interact?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+## Batch 2 · LLM and Generative AI
+
+### SDS-B2-16 — Explain temperature and top-p without claiming they improve knowledge.
+
+**Round:** Generation · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Temperature rescales logits; lower values sharpen and higher values flatten the distribution.
+- Top-p restricts sampling to a probability-mass nucleus that changes by step.
+- They alter variability and determinism, not training data, grounding, or factual capability.
+
+**Follow-up probe:** Why can temperature zero still produce wrong answers?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### SDS-B2-17 — When would you use few-shot prompting, RAG, or fine-tuning?
+
+**Round:** Model adaptation · **Depth:** Applied
+
+**Strong answer signals**
+
+- Few-shot prompting teaches a pattern within context; RAG supplies current/private evidence; fine-tuning changes learned behavior.
+- Diagnose the failure and start with the least complex intervention.
+- Compare quality, freshness, data/privacy, latency, cost, serving, and rollback.
+
+**Follow-up probe:** Which one best addresses a new output style versus new facts?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### SDS-B2-18 — How do you evaluate hallucination or factuality?
+
+**Round:** Evaluation · **Depth:** Applied
+
+**Strong answer signals**
+
+- Define claim-level support against authoritative evidence and separate unsupported, contradicted, and unverifiable claims.
+- Use representative and adversarial cases, deterministic checks where possible, and blinded human review.
+- Measure citation correctness/coverage, abstention, task success, and severity-weighted failures; judges need calibration.
+
+**Follow-up probe:** How can a fluent answer score well while being unsafe?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### SDS-B2-19 — Design an LLM-based document classifier and decide whether an LLM is justified.
+
+**Round:** Case · **Depth:** Applied
+
+**Strong answer signals**
+
+- Define labels, unknown/escalation behavior, privacy, latency, throughput, and current baseline.
+- Compare TF-IDF/linear, encoder classifier, and prompted LLM on the same cases and costs.
+- Use structured output plus semantic validation, caching/batching where safe, monitoring, human review, and rollback.
+
+**Follow-up probe:** What result would make you deploy the classical model instead?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }}) · [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### SDS-B2-20 — Explain an LLM experiment so the interviewer can separate evidence from enthusiasm.
+
+**Round:** Project deep dive · **Depth:** Lead
+
+**Strong answer signals**
+
+- State the decision, baseline, dataset/version, model/prompt/config, metrics, and representative failures.
+- Quantify quality, safety, latency, cost, and uncertainty; describe human/judge procedures and limits.
+- Explain alternatives, deployment boundary, rollback, and what was not proven.
+
+**Follow-up probe:** Which claim in your story is most vulnerable to evaluation leakage?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+
 ## Completion evidence
 
-- You can answer at least 16 of 20 questions without reading the signals first.
+- You can answer at least 16 of 20 questions in each batch without reading the signals first.
 - Every answer includes one relevant metric, constraint, failure mode, or project example.
 - You can compress an applied answer from two minutes to 45 seconds without losing the decision.
 - You have recorded weak areas against the stable question IDs for later re-testing.

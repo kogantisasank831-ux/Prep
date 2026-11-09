@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
+version: "1.1.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -19,13 +19,13 @@ current_label: "Interview prep hub"
 ---
 ## Start with your target role
 
-| Role bank | Best for | Batch 1 coverage |
+| Role bank | Best for | Current coverage |
 | --- | --- | --- |
-| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production Python, SQL state, evaluation, reliability, architecture and incidents |
-| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, experimentation, model decisions, governance and leadership |
-| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | SQL, statistics, ML cases, monitoring and business impact |
+| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production Python, SQL state, deep learning, NLP, transformers, LLM systems, evaluation, reliability and incidents |
+| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, experimentation, ML, deep-learning, NLP and LLM decisions, governance and leadership |
+| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | SQL, statistics, ML, deep learning, NLP, transformers, LLM evaluation and business impact |
 
-Each role bank contains 20 guided questions with strong-answer signals, a deeper follow-up probe, and direct revision links. The stable IDs let you track weak areas now and support random-paper conversion in a later batch.
+Each role bank now contains 40 guided questions across Batches 1–2, with strong-answer signals, a deeper follow-up probe, and direct revision links. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -35,6 +35,15 @@ Each role bank contains 20 guided questions with strong-answer signals, a deeper
 | [SQL]({{ '/interview-prep/cheat-sheets/sql/' | relative_url }}) | Query correctness, joins, windows, analytics, transactions and optimization |
 | [Probability and statistics]({{ '/interview-prep/cheat-sheets/probability-statistics/' | relative_url }}) | Probability, estimation, inference, power, experiments and causal interpretation |
 | [Machine-learning fundamentals]({{ '/interview-prep/cheat-sheets/machine-learning/' | relative_url }}) | Framing, algorithms, metrics, validation, leakage, deployment and monitoring |
+
+## Batch 2 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Deep learning and neural networks]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }}) | Forward/backpropagation, losses, optimization, regularization, architectures and training failures |
+| [Natural language processing]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }}) | Text data, tokenization, representations, classification, extraction, evaluation and multilingual systems |
+| [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }}) | Attention, masks, position, architecture families, KV cache, GQA/MQA and efficiency |
+| [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }}) | Generation, prompting, structured output, fine-tuning, evaluation, safety and serving decisions |
 
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
@@ -64,7 +73,6 @@ A senior answer should normally cover:
 
 | Batch | Planned scope |
 | --- | --- |
-| 2 | Linear algebra, optimization, experimentation, causal inference, deep learning and neural networks |
 | 3 | NLP, transformers, LLM engineering, fine-tuning, inference and evaluation |
 | 4 | RAG, LangGraph and other agent frameworks, tools, memory, multi-agent workflows and guardrails |
 | 5 | AI system design, MLOps, observability, security, leadership, project storytelling and mock rounds |

@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
+version: "1.1.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "Twenty guided foundation questions for AI and Agentic AI engineering interviews."
-summary: "Practise production Python, SQL state, evaluation, reliability, system design, code review, incidents, and evidence-based architecture decisions."
+description: "Forty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production Python, SQL state, neural-network and NLP systems, transformer and LLM design, evaluation, reliability, safety, architecture, and incidents."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batch 1 · 20 guided questions"
+kicker_secondary: "Batches 1–2 · 40 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 20
+question_count: 40
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 20 questions · **Batch:** 1 core foundations · **Status:** approved
+**Bank size:** 40 questions across Batches 1–2 · **Status:** Batches 1–2 approved
 
 ## Python and service engineering
 
@@ -324,9 +324,298 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 
 **Revision links:** [Machine learning]({{ '/interview-prep/cheat-sheets/machine-learning/' | relative_url }}) · [Probability and statistics]({{ '/interview-prep/cheat-sheets/probability-statistics/' | relative_url }})
 
+## Batch 2 · Deep learning
+
+### AIE-B2-01 — Walk through the forward pass, loss, backpropagation, and optimizer step.
+
+**Round:** Deep learning · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Affine layers and nonlinearities produce activations and a prediction.
+- The loss converts prediction error into a scalar objective; backprop applies the chain rule to compute parameter gradients.
+- The optimizer updates parameters, gradients are cleared deliberately, and train/eval modes must be handled correctly.
+
+**Follow-up probe:** What symptom would you see if gradients were never cleared?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### AIE-B2-02 — Training loss falls while validation loss rises. How do you investigate?
+
+**Round:** Training debugging · **Depth:** Applied
+
+**Strong answer signals**
+
+- Confirm split integrity, label quality, preprocessing parity, and duplicate or entity leakage before calling it overfitting.
+- Inspect learning curves, capacity, regularization, augmentation, early stopping, and distribution mismatch.
+- Re-evaluate on slices and a protected holdout; do not tune repeatedly on the test set.
+
+**Follow-up probe:** How would you distinguish overfitting from train/validation preprocessing drift?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### AIE-B2-03 — Compare BatchNorm, LayerNorm, and RMSNorm for an interview answer.
+
+**Round:** Architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- BatchNorm uses batch statistics and behaves differently in training and evaluation, making batch composition relevant.
+- LayerNorm normalizes features per example/token and is common in transformers.
+- RMSNorm scales by root-mean-square without mean subtraction; choice depends on architecture, kernels, and verified quality.
+
+**Follow-up probe:** Why can very small batches make BatchNorm unreliable?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }}) · [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### AIE-B2-04 — A model has unstable or exploding gradients. What do you check?
+
+**Round:** Optimization · **Depth:** Applied
+
+**Strong answer signals**
+
+- Verify inputs, targets, loss scale, learning rate, initialization, and numerical precision.
+- Inspect gradient norms and activation distributions; use residuals, normalization, suitable activations, and stable losses.
+- Clipping can bound updates but should not hide the underlying cause.
+
+**Follow-up probe:** How do vanishing gradients require a different response?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### AIE-B2-05 — Explain mixed precision, quantization, and gradient accumulation without treating them as interchangeable.
+
+**Round:** Efficiency · **Depth:** Applied
+
+**Strong answer signals**
+
+- Mixed precision accelerates training/inference with selected lower-precision operations and loss scaling where needed.
+- Quantization stores or computes weights/activations at lower precision, mainly reducing memory/bandwidth with kernel and quality trade-offs.
+- Gradient accumulation emulates a larger effective batch across micro-batches but does not reduce total compute and changes optimizer-step frequency.
+
+**Follow-up probe:** Which technique helps when activations, not weights, dominate memory?
+
+**Revision links:** [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }}) · [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+## Batch 2 · NLP
+
+### AIE-B2-06 — Why is TF-IDF plus a linear model still a serious NLP baseline?
+
+**Round:** NLP · **Depth:** Foundation
+
+**Strong answer signals**
+
+- It is fast, sparse, interpretable, and strong for many classification tasks with enough lexical signal.
+- It provides a low-cost reference for accuracy, latency, memory, and debugging.
+- Its limitations include weak context, word order, semantics, and vocabulary transfer.
+
+**Follow-up probe:** Which error pattern would justify moving to contextual embeddings?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### AIE-B2-07 — Why is the tokenizer part of the model contract?
+
+**Round:** Tokenization · **Depth:** Applied
+
+**Strong answer signals**
+
+- It defines token IDs, boundaries, special tokens, truncation, and input length.
+- Changing tokenizer or normalization can invalidate checkpoint embeddings and training-serving parity.
+- Version model and tokenizer together and test multilingual, numeric, whitespace, and adversarial edge cases.
+
+**Follow-up probe:** How can tokenization increase latency and cost for one language?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }}) · [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### AIE-B2-08 — Design evaluation for a multilingual intent classifier with an unknown-intent route.
+
+**Round:** Evaluation · **Depth:** Applied
+
+**Strong answer signals**
+
+- Use per-language and macro metrics, calibration, reject/unknown accuracy, and confusion analysis.
+- Build representative language, dialect, code-switching, short-text, and rare-intent slices.
+- Choose rejection thresholds from business risk and review capacity; monitor language mix and preprocessing drift.
+
+**Follow-up probe:** How would you evaluate a language with very few labels?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### AIE-B2-09 — How should named-entity recognition be evaluated?
+
+**Round:** Information extraction · **Depth:** Applied
+
+**Strong answer signals**
+
+- Prefer entity-level exact or declared partial span precision, recall, and F1, not only token accuracy.
+- Define boundary and type matching, nested entities, discontinuous spans, and annotation policy.
+- Audit errors by entity type, document source, language, length, and downstream consequence.
+
+**Follow-up probe:** Why can token accuracy look excellent while entity extraction is poor?
+
+**Revision links:** [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+## Batch 2 · Transformers
+
+### AIE-B2-10 — Explain scaled dot-product attention using Q, K, and V.
+
+**Round:** Transformers · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Queries score compatibility with keys; softmax converts scaled scores into weights; weights combine values.
+- Scaling by the square root of key dimension prevents dot products from driving softmax into saturation.
+- State tensor shapes, mask semantics, and quadratic sequence interaction cost.
+
+**Follow-up probe:** What changes between self-attention and cross-attention?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### AIE-B2-11 — Choose among encoder-only, decoder-only, and encoder-decoder models.
+
+**Round:** Architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- Encoder-only models suit bidirectional representation tasks such as classification or retrieval.
+- Decoder-only models suit causal generation and flexible instruction following.
+- Encoder-decoder models naturally map a source sequence to a target sequence; compare quality, latency, data, and serving constraints.
+
+**Follow-up probe:** Why might a decoder-only model still be used for classification?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }}) · [NLP]({{ '/interview-prep/cheat-sheets/nlp/' | relative_url }})
+
+### AIE-B2-12 — What masking bugs commonly break transformer systems?
+
+**Round:** Masking · **Depth:** Applied
+
+**Strong answer signals**
+
+- Confusing causal and padding masks can leak future tokens or attend to padding.
+- Incorrect shape, broadcast, dtype, or sign can silently change attention.
+- Test tiny sequences with known visibility and inspect logits/attention behavior rather than trusting the API call.
+
+**Follow-up probe:** How would future-token leakage appear during training and inference?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### AIE-B2-13 — What does the KV cache save, and what does it cost?
+
+**Round:** Inference · **Depth:** Applied
+
+**Strong answer signals**
+
+- It reuses previous-layer keys and values so autoregressive decoding avoids recomputing the entire prefix.
+- Memory grows with layers, sequence length, batch/concurrency, KV heads, head dimension, and precision.
+- It improves decode compute but introduces memory pressure, paging, eviction, and concurrency limits.
+
+**Follow-up probe:** Why do GQA and MQA help serving concurrency?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }}) · [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### AIE-B2-14 — Differentiate FlashAttention, GQA/MQA, and quantization.
+
+**Round:** Efficiency · **Depth:** Lead
+
+**Strong answer signals**
+
+- FlashAttention changes the exact-attention execution to reduce memory traffic and intermediate storage.
+- GQA/MQA reduce the number of KV heads and therefore KV-cache memory, with architecture/quality trade-offs.
+- Quantization reduces representation precision for weights and possibly activations/cache; each technique targets a different bottleneck.
+
+**Follow-up probe:** Which one helps prefill latency versus decode concurrency?
+
+**Revision links:** [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }}) · [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+## Batch 2 · LLM and Generative AI
+
+### AIE-B2-15 — Compare prompting, RAG, and fine-tuning.
+
+**Round:** LLM engineering · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Prompting changes instructions/context, RAG supplies external evidence, and fine-tuning changes model behavior or parameters.
+- Choose the least complex option that addresses the observed error: knowledge freshness often favors retrieval; consistent behavior/style may favor adaptation.
+- Evaluate combinations against a fixed baseline, data boundary, latency, cost, and maintenance plan.
+
+**Follow-up probe:** Which approach would you choose for rapidly changing policy documents?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### AIE-B2-16 — Why does valid JSON not prove a correct LLM answer?
+
+**Round:** Structured output · **Depth:** Applied
+
+**Strong answer signals**
+
+- Syntax/schema validation proves shape and types, not factual support or business validity.
+- Add semantic validators, allowlists, cross-field rules, evidence checks, and safe fallbacks.
+- Treat output as untrusted input and retain model/prompt/schema versions for audit.
+
+**Follow-up probe:** Which validation failures should trigger retry versus human review?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### AIE-B2-17 — Explain LoRA and QLoRA, including what they do not guarantee.
+
+**Round:** Fine-tuning · **Depth:** Applied
+
+**Strong answer signals**
+
+- LoRA learns low-rank adapter updates while the base remains frozen; QLoRA keeps the frozen base quantized during adapter training.
+- They reduce trainable parameters and memory but still need sound data, templates, evaluation, and deployment compatibility.
+- They do not automatically add reliable factual knowledge, safety, calibration, or production quality.
+
+**Follow-up probe:** When would full fine-tuning be justified despite higher cost?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }}) · [Deep learning]({{ '/interview-prep/cheat-sheets/deep-learning-neural-networks/' | relative_url }})
+
+### AIE-B2-18 — Design an LLM evaluation gate for a production release.
+
+**Round:** Evaluation · **Depth:** Applied
+
+**Strong answer signals**
+
+- Use versioned representative and adversarial cases with deterministic task metrics where possible.
+- Measure task quality, grounding, schema validity, safety, robustness, latency, cost, and failure slices against a current baseline.
+- Use human review and judges with calibrated rubrics; record judge bias/variance and block release on declared critical regressions.
+
+**Follow-up probe:** How do you prevent the evaluation set from becoming a tuning set?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+### AIE-B2-19 — Choose between a hosted model and a self-hosted open-weight model.
+
+**Round:** Serving · **Depth:** Lead
+
+**Strong answer signals**
+
+- Compare quality, data handling, latency, concurrency, regional/compliance needs, licensing, hardware, operations, and total cost.
+- Benchmark the actual workload, context lengths, output lengths, batching, and failure behavior.
+- Plan routing, observability, version pinning, rollback, and provider/model substitution rather than relying on headline tokens per second.
+
+**Follow-up probe:** At what utilization does self-hosting stop being obviously cheaper?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }}) · [Transformers]({{ '/interview-prep/cheat-sheets/transformers/' | relative_url }})
+
+### AIE-B2-20 — A new prompt improves average quality but increases unsafe outputs on one slice. Do you release?
+
+**Round:** Safety and release · **Depth:** Lead
+
+**Strong answer signals**
+
+- Do not average away a declared safety gate; quantify severity, frequency, reachability, and affected users.
+- Investigate prompt/model interaction, add deterministic controls where possible, and retest on independent cases.
+- Release only with accepted residual risk, bounded rollout, monitoring, and immediate rollback.
+
+**Follow-up probe:** Who must own the residual-risk decision?
+
+**Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
+
+
 ## Completion evidence
 
-- You can answer at least 16 of 20 questions without reading the signals first.
+- You can answer at least 16 of 20 questions in each batch without reading the signals first.
 - Every answer includes one relevant metric, constraint, failure mode, or project example.
 - You can compress an applied answer from two minutes to 45 seconds without losing the decision.
 - You have recorded weak areas against the stable question IDs for later re-testing.
