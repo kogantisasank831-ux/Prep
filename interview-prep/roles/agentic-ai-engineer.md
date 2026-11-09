@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.2.0"
+version: "1.3.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "Sixty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production Python, AI systems, embeddings, ingestion, RAG architecture, evaluation, security, reliability, and incident decisions."
+description: "Eighty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production Python, AI systems, RAG, agent design, LangGraph, framework selection, protocols, security, reliability, evaluation, and incidents."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–3 · 60 guided questions"
+kicker_secondary: "Batches 1–4 · 80 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 60
+question_count: 80
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 60 questions across Batches 1–3 · **Status:** Batches 1–3 approved
+**Bank size:** 80 questions across Batches 1–4 · **Status:** Batches 1–4 approved
 
 ## Python and service engineering
 
@@ -903,6 +903,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** How would you distinguish corpus drift from an index-build defect?
 
 **Revision links:** [Ingestion and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }}) · [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+## Agent design and workflow patterns
+
+### AIE-B4-01 — A support workflow has fixed validation and approval rules but one ambiguous triage step. Would you build an agent?
+
+**Round:** Architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- Keep validation, approval, and side effects in deterministic code; use bounded model judgment only for ambiguous triage.
+- Define allowed routes, confidence or abstention behavior, budgets, and a deterministic fallback before adding autonomy.
+- Compare the hybrid design with a rules or classifier baseline on quality, latency, cost, and recoverability.
+
+**Follow-up probe:** What evidence would justify expanding the model's control over later steps?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### AIE-B4-02 — Design a production-grade tool contract for an agent that can create a purchase request.
+
+**Round:** Tool engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use a narrow typed schema with semantic field descriptions, validation, explicit errors, and a stable version.
+- Enforce identity, authorization, amount limits, idempotency keys, timeouts, audit records, and dry-run or approval modes outside the model.
+- Return bounded structured results that distinguish validation, policy, transient, and terminal failures.
+
+**Follow-up probe:** How do you prevent a retry from creating the request twice?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### AIE-B4-03 — Separate execution state, short-term memory, and long-term memory for a troubleshooting agent.
+
+**Round:** State and memory · **Depth:** Applied
+
+**Strong answer signals**
+
+- Keep current plan, observations, budgets, and tool outputs in execution state; scope conversation memory to the thread.
+- Store only useful, consented, attributable facts across sessions with ownership, retention, correction, and deletion controls.
+- Retrieve long-term memory selectively and treat it as untrusted, stale evidence rather than authoritative instruction.
+
+**Follow-up probe:** Which data should never be promoted automatically into long-term memory?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### AIE-B4-04 — A team proposes five specialist agents for a task currently handled by one prompt. Review the design.
+
+**Round:** Multi-agent design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Ask which specialists require distinct tools, policies, context, ownership, or deployment boundaries; task decomposition alone is insufficient.
+- Compare a single agent with tools, a deterministic pipeline, and agents-as-tools before accepting peer coordination.
+- Require explicit handoff contracts, termination rules, shared-state ownership, traceability, and an ablation showing net benefit.
+
+**Follow-up probe:** What failure modes appear only after introducing agent-to-agent handoffs?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### AIE-B4-05 — Bound an iterative research agent so it cannot loop or spend indefinitely.
+
+**Round:** Reliability · **Depth:** Applied
+
+**Strong answer signals**
+
+- Set step, wall-clock, token, cost, tool-call, and repeated-action limits with a clear stop reason.
+- Detect no-progress cycles from repeated states or calls, require evidence before continuing, and preserve partial results.
+- Route exhausted or consequential cases to safe abstention, clarification, or human review rather than silently returning a guess.
+
+**Follow-up probe:** How would you choose budgets without truncating legitimate difficult cases?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+## LangGraph implementation and recovery
+
+### AIE-B4-06 — Design typed LangGraph state for parallel researchers that contribute evidence to one answer.
+
+**Round:** LangGraph state · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate immutable request context from evolving evidence, errors, budgets, and final decision fields.
+- Give concurrently updated collections an explicit associative reducer and avoid ambiguous last-write-wins behavior.
+- Keep large documents outside checkpoints and carry stable references plus provenance instead.
+
+**Follow-up probe:** What can go wrong if two workers update a field with no reducer?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### AIE-B4-07 — Explain checkpointers, stores, and `thread_id` without treating them as the same persistence mechanism.
+
+**Round:** LangGraph persistence · **Depth:** Applied
+
+**Strong answer signals**
+
+- A checkpointer persists graph execution state for a thread at boundaries; a store holds application-defined data across threads.
+- `thread_id` identifies an execution or conversation and is neither user identity nor an authorization boundary.
+- Choose durable backends, namespace by tenant and user, encrypt sensitive data, and define retention and deletion.
+
+**Follow-up probe:** How would you resume a thread safely after the user's permissions changed?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### AIE-B4-08 — Place a human approval interrupt before a payment tool and make resumption safe.
+
+**Round:** Human in the loop · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Persist the proposed action and approval context, then interrupt before the irreversible side effect.
+- Expect the interrupted node to restart; move side effects after approval or make preceding work deterministic and idempotent.
+- Bind approval to the exact operation, amount, actor, expiry, and policy version; revalidate authorization on resume.
+
+**Follow-up probe:** What if the payment amount changes while the graph is paused?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### AIE-B4-09 — When would you use conditional edges, `Command`, and `Send` in the same graph?
+
+**Round:** LangGraph control flow · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use conditional edges for explicit routing from state, and `Command` when a node must combine an update with its next route.
+- Use `Send` for dynamic fan-out with worker-specific input, then merge results through a defined reducer.
+- Bound fan-out, preserve ordering only when required, and handle partial worker failures and cancellation.
+
+**Follow-up probe:** How would you prevent one failed worker from discarding all successful evidence?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### AIE-B4-10 — Test a resumable LangGraph workflow that calls nondeterministic models and external tools.
+
+**Round:** Testing · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Unit-test nodes and routing with deterministic fixtures, typed state assertions, and controlled model or tool doubles.
+- Add integration tests for checkpoint, interrupt, resume, replay, duplicate delivery, timeout, and partial-failure paths.
+- Assert trajectory invariants and side-effect counts, then keep a small end-to-end suite against real dependencies.
+
+**Follow-up probe:** Which assertion proves that replay did not duplicate an external action?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+## Framework and library decisions
+
+### AIE-B4-11 — Select a framework for a stateful, resumable agent with branching, approvals, and long-running tools.
+
+**Round:** Framework selection · **Depth:** Applied
+
+**Strong answer signals**
+
+- Translate requirements into control flow, persistence, HITL, streaming, deployment, evaluation, and observability criteria.
+- Favor explicit graph orchestration such as LangGraph when cycles, durable state, and recovery must be visible and testable.
+- Validate the choice with a thin spike covering the hardest failure path, not a happy-path feature checklist.
+
+**Follow-up probe:** When would a simple SDK plus task queue be the better choice?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### AIE-B4-12 — Keep an agent application portable while using one framework deeply.
+
+**Round:** Software design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Put domain state, tool interfaces, policies, and acceptance tests behind application-owned typed boundaries.
+- Isolate framework messages, checkpoints, callbacks, and tracing in adapters rather than leaking them through business logic.
+- Pin versions, record serialized-state compatibility, and prove migration with contract tests and replayable cases.
+
+**Follow-up probe:** Which framework coupling is reasonable to accept rather than abstract prematurely?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### AIE-B4-13 — Compare Google ADK, OpenAI Agents SDK, and PydanticAI for a typed Python service.
+
+**Round:** Framework comparison · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Compare required agent loop, workflow agents, sessions, callbacks, handoffs, guardrails, tracing, dependency injection, and deployment fit.
+- Consider provider and cloud constraints, team skill, testing surface, maturity, and how much orchestration the application actually needs.
+- Run the same representative tool, structured-output, and failure-recovery scenario before choosing.
+
+**Follow-up probe:** Why is counting built-in integrations a weak selection method?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### AIE-B4-14 — Choose between an agent framework and LlamaIndex or Haystack for a retrieval-heavy product.
+
+**Round:** Architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- Identify whether ingestion, indexing, retrieval, and evidence pipelines or autonomous control flow dominate the problem.
+- Use a retrieval framework for data-centric pipelines and add minimal orchestration only where dynamic decisions are needed.
+- Avoid duplicating state, tracing, retries, and evaluation across overlapping frameworks; define one owner per concern.
+
+**Follow-up probe:** What signal would show that a retrieval pipeline has outgrown deterministic orchestration?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### AIE-B4-15 — A proposal says “use Nemotron as the agent framework with NeMo for everything.” Correct the architecture.
+
+**Round:** NVIDIA ecosystem · **Depth:** Applied
+
+**Strong answer signals**
+
+- Clarify that Nemotron is a model family, while NeMo Framework, Guardrails, NIM, and other NVIDIA products address different layers.
+- Map each actual requirement to model, serving, orchestration, guardrail, evaluation, and infrastructure components.
+- Select only necessary layers and retain standard interfaces so model serving and orchestration can evolve independently.
+
+**Follow-up probe:** Which experiment would determine whether a Nemotron model is suitable for the target tools?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+## Protocols, reliability, and evaluation
+
+### AIE-B4-16 — Choose MCP, A2A, or a normal service API for three agent-system boundaries.
+
+**Round:** Protocol design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use MCP for capability discovery and invocation, A2A for independently deployed agent collaboration, and HTTP/gRPC for stable known services.
+- Keep in-process calls typed and local unless deployment, reuse, or trust boundaries justify a network protocol.
+- Define identity, authorization, versioning, timeouts, error semantics, and observability beyond the protocol's wire format.
+
+**Follow-up probe:** When can an MCP server safely wrap an existing OpenAPI service?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### AIE-B4-17 — Secure an agent that calls a remote MCP server on behalf of multiple tenants.
+
+**Round:** Security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Authenticate workload and user context, authorize every capability and resource, and never treat `thread_id` as identity.
+- Apply least privilege, tenant-scoped credentials, egress controls, schema validation, output limits, and auditable policy decisions.
+- Treat tool descriptions and results as untrusted prompt-injection inputs; prevent them from changing higher-priority policy.
+
+**Follow-up probe:** How would you detect cross-tenant leakage in testing and production?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### AIE-B4-18 — Design retries for a remote tool that sometimes times out after completing its side effect.
+
+**Round:** Distributed reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use a stable operation or idempotency key and a status-reconciliation endpoint before repeating an ambiguous request.
+- Retry only classified transient failures within a deadline using bounded exponential backoff and jitter.
+- Persist intent and outcome, deduplicate server-side, and define compensation or human recovery for non-idempotent actions.
+
+**Follow-up probe:** Why can “exactly once” not be guaranteed by the agent runtime alone?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### AIE-B4-19 — Build an evaluation suite for a tool-using agent beyond final-answer accuracy.
+
+**Round:** Agent evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Score task success plus tool selection, argument correctness, evidence use, handoffs, recovery, stop behavior, safety, latency, and cost.
+- Use versioned realistic, edge, adversarial, and fault-injection cases with deterministic checks where possible.
+- Calibrate model judges against human labels and inspect trajectory-level failures rather than hiding them in one aggregate score.
+
+**Follow-up probe:** Which metric would reveal a correct answer reached through an unsafe tool call?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### AIE-B4-20 — A downstream agent service is slow and failing intermittently. Stabilize the caller.
+
+**Round:** Incident response · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Enforce deadlines, bounded concurrency, backpressure, rate limits, and a circuit breaker; cancel work that no longer benefits the user.
+- Use a safe fallback, partial response, queue, or explicit degradation based on request risk and freshness needs.
+- Trace attempts and dependency versions, distinguish saturation from functional errors, and recover gradually through probes or canaries.
+
+**Follow-up probe:** What measurements tell you whether retries are amplifying the outage?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
 
 ## Completion evidence
 

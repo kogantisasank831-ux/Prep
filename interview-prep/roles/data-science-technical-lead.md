@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.2.0"
+version: "1.3.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "Sixty guided questions for Data Science Technical Lead interviews."
-summary: "Practise framing, experimentation, ML and LLM decisions, retrieval and RAG leadership, governance, security, delivery, and operating-model choices."
+description: "Eighty guided questions for Data Science Technical Lead interviews."
+summary: "Practise framing, ML and LLM decisions, RAG leadership, agent strategy, LangGraph governance, framework portfolios, protocols, security, and operating models."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–3 · 60 guided questions"
+kicker_secondary: "Batches 1–4 · 80 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 60
+question_count: 80
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 60 questions across Batches 1–3 · **Status:** Batches 1–3 approved
+**Bank size:** 80 questions across Batches 1–4 · **Status:** Batches 1–4 approved
 
 ## Problem framing
 
@@ -905,6 +905,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** What evidence would support launching only the low-risk use cases?
 
 **Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+## Agent strategy and operating model
+
+### DSTL-B4-01 — A product team asks for an autonomous agent because competitors have one. Frame the decision.
+
+**Round:** Product architecture · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start from user outcome, decision uncertainty, consequences, latency, cost, and compliance rather than the requested label.
+- Compare deterministic software, an LLM-enhanced workflow, a bounded agent, and a human-assisted baseline.
+- Approve autonomy only where model judgment adds measured value within explicit policy, budget, evaluation, and rollback boundaries.
+
+**Follow-up probe:** What evidence would make you reject the agent even if its average task score is higher?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### DSTL-B4-02 — Define autonomy tiers and human approval rules for an enterprise agent portfolio.
+
+**Round:** Governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Classify actions by reversibility, financial or legal consequence, data sensitivity, blast radius, and confidence.
+- Map each tier to allowed tools, limits, evidence, approval, logging, monitoring, and incident ownership.
+- Make approval protect consequential actions while keeping low-risk tasks efficient; bind it to an exact, expiring operation.
+
+**Follow-up probe:** How should an agent behave when risk classification is uncertain?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-03 — Establish ownership for a cross-team agent that uses shared tools and customer data.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Name owners for product outcome, prompts and policies, models, tools, data, identity, infrastructure, evaluation, and incidents.
+- Define versioned contracts, approval paths, SLOs, error budgets, escalation, and change notification across boundaries.
+- Keep a service and risk inventory so no shared capability becomes an unaudited source of authority.
+
+**Follow-up probe:** Who owns a failure caused jointly by a model decision and a stale tool policy?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-04 — Decide whether a complex workflow needs multiple agents.
+
+**Round:** Architecture review · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Require a concrete need for separate tools, context, policy, ownership, scale, or deployment boundaries.
+- Compare with one agent using tools and with deterministic orchestration; account for handoff errors, latency, cost, and observability.
+- Demand an ablation, stable contracts, termination rules, and a clear owner for shared state before production use.
+
+**Follow-up probe:** When is a specialist implemented as a tool better than a peer agent?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### DSTL-B4-05 — Define success criteria for a customer-service agent pilot.
+
+**Round:** Evaluation strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Link task resolution and user outcome to safety, escalation quality, containment, latency, cost, and agent-assist adoption.
+- Build versioned offline cases from real distributions, edge cases, failures, and adversarial scenarios, then validate in shadow or bounded rollout.
+- Set slice-specific release gates and stop conditions; an average score cannot offset a critical-policy regression.
+
+**Follow-up probe:** How would you measure whether automation merely shifts work to downstream teams?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+## LangGraph architecture and durable execution
+
+### DSTL-B4-06 — Review a proposal to use LangGraph for a three-step acyclic summarization pipeline.
+
+**Round:** Architecture review · **Depth:** Applied
+
+**Strong answer signals**
+
+- Ask whether branching, cycles, persistent state, interruption, replay, or dynamic fan-out is actually required.
+- Prefer a simple function pipeline or task queue if the flow is short and deterministic.
+- Accept LangGraph only when its explicit state and recovery model solves expected complexity at an acceptable operating cost.
+
+**Follow-up probe:** Which future requirement would most strongly change your recommendation?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### DSTL-B4-07 — Set standards for LangGraph state schemas and reducers across teams.
+
+**Round:** Platform governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Require typed, minimal state with documented ownership, lifecycle, sensitivity, and serialization compatibility.
+- Make concurrent fields use explicit deterministic reducers and keep bulky or regulated payloads behind references.
+- Version schemas and migrations, test replay compatibility, and prohibit hidden mutation outside declared updates.
+
+**Follow-up probe:** How would you review a reducer that appears correct only for one update order?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### DSTL-B4-08 — Govern checkpointing, stores, and identity for a multi-tenant LangGraph platform.
+
+**Round:** Data governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate execution checkpoints from application long-term memory and from authoritative business records.
+- Namespace by tenant and subject, enforce authorization independently of `thread_id`, and revalidate access on every resume.
+- Define encryption, retention, deletion, legal hold, backup, residency, and restore testing with named owners.
+
+**Follow-up probe:** What should happen to paused threads after a user requests deletion?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### DSTL-B4-09 — A team claims checkpointing gives exactly-once business actions. Challenge the claim.
+
+**Round:** Reliability review · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain that durable graph state can replay nodes while a remote side effect may have succeeded before its acknowledgement was lost.
+- Require operation IDs, server-side idempotency or deduplication, status reconciliation, and compensation.
+- Test crash points around every consequential side effect and document residual ambiguity and manual recovery.
+
+**Follow-up probe:** Which business actions cannot be made safely idempotent and how would you control them?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-10 — Define observability and recovery evidence for a long-running LangGraph workflow.
+
+**Round:** Production readiness · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Trace graph and node versions, routes, state deltas, tool attempts, interrupts, budgets, errors, and side-effect identifiers with privacy controls.
+- Provide replay or simulation tooling, checkpoint inspection, runbooks, SLOs, alerts, and bounded diagnostic access.
+- Prove recovery through fault injection, dependency outages, schema upgrades, pause/resume, and rollback drills.
+
+**Follow-up probe:** Which trace fields are essential for explaining an unexpected routing decision?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+## Framework portfolio and migration
+
+### DSTL-B4-11 — Lead a framework-selection RFC for several agent products.
+
+**Round:** Technical strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Inventory common and product-specific needs across control flow, state, HITL, protocols, deployment, evaluation, tracing, security, and support.
+- Weight criteria and test representative hard paths with the same fixtures instead of comparing marketing feature counts.
+- Record the decision, rejected options, assumptions, exit strategy, ownership, and review triggers.
+
+**Follow-up probe:** When should one organization deliberately support more than one framework?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### DSTL-B4-12 — Reduce framework lock-in without building a lowest-common-denominator platform.
+
+**Round:** Platform architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Standardize application-owned tool contracts, identity, policy, telemetry, evaluation cases, and domain state.
+- Isolate provider and framework adapters while allowing products to use valuable native orchestration features behind them.
+- Track lock-in explicitly through checkpoint formats, message types, hosted services, and migration cost; test an exit path periodically.
+
+**Follow-up probe:** Which abstractions are most likely to become expensive internal frameworks themselves?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### DSTL-B4-13 — Assess team and operational fit when choosing between Google ADK, OpenAI Agents SDK, and LangGraph.
+
+**Round:** Delivery strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Match runtime control, durability, cloud or provider constraints, debugging, deployment, and support needs to the product risk.
+- Include engineering skill, testability, learning curve, ecosystem maturity, security review, and on-call ownership.
+- Fund a time-boxed spike and production-readiness review for the highest-risk workflow before standardizing.
+
+**Follow-up probe:** How would you avoid a prototype benchmark that unfairly favors the team's familiar framework?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### DSTL-B4-14 — Choose the primary stack for a data-centric assistant with complex ingestion but limited autonomy.
+
+**Round:** System architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Prioritize ingestion, provenance, retrieval, evaluation, and data operations through LlamaIndex, Haystack, or application-owned pipelines.
+- Keep workflow control simple and add an agent SDK only for bounded decisions that show measurable value.
+- Define ownership so retrieval, orchestration, caching, observability, and policy are not duplicated across libraries.
+
+**Follow-up probe:** What change in requirements would justify introducing graph orchestration?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### DSTL-B4-15 — Plan a safe migration from a deprecated agent framework.
+
+**Round:** Migration leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Inventory APIs, serialized state, prompts, tools, traces, hosted dependencies, and behavior relied on implicitly.
+- Freeze a replayable acceptance suite, introduce adapters, migrate low-risk flows first, and run shadow comparisons on identical cases.
+- Define compatibility, rollback, data migration, dual-run duration, owner communication, and decommission evidence.
+
+**Follow-up probe:** How would you handle in-flight conversations whose checkpoints use the old framework format?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+## Protocol governance, reliability, and release
+
+### DSTL-B4-16 — Define an enterprise policy for adopting MCP and A2A.
+
+**Round:** Protocol governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Use MCP for governed capability access and A2A for independently deployed agent collaboration only where those boundaries exist.
+- Require registry ownership, identity, authorization, versioning, data classification, audit, testing, deprecation, and incident controls.
+- Prefer normal APIs or local interfaces for stable services; protocol adoption must reduce integration cost without widening trust implicitly.
+
+**Follow-up probe:** What evidence should a team provide before publishing an MCP server company-wide?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-17 — Prevent cross-tenant access across tools, agents, checkpoints, and caches.
+
+**Round:** Security governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Propagate authenticated tenant and user context explicitly and authorize at every resource boundary.
+- Partition credentials, stores, caches, queues, indexes, and telemetry; do not rely on prompts, model behavior, or thread IDs.
+- Add negative isolation tests, policy-decision logs, anomaly detection, and rapid credential revocation.
+
+**Follow-up probe:** Which shared caches are most likely to create subtle tenant leakage?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-18 — Set SLOs and resilience requirements for an agent platform with many downstream tools.
+
+**Round:** Reliability leadership · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define user-facing availability, latency, correctness or safety guardrails, freshness, and cost, then allocate dependency budgets.
+- Require deadlines, load shedding, backpressure, circuit breakers, bounded retries, idempotency, and graceful degradation.
+- Test capacity, spike, partial outage, recovery, and retry storms; tie error-budget policy to change velocity.
+
+**Follow-up probe:** How do you define success when a response is available but a consequential tool action failed?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-19 — Establish release gates for a new agent version.
+
+**Round:** Model and system governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Gate versioned offline task, trajectory, safety, adversarial, latency, and cost suites with critical-slice thresholds.
+- Calibrate model-based judges, retain deterministic checks and human review, and compare paired cases to the release baseline.
+- Use shadow or canary rollout, monitored rollback criteria, exact artifact versions, and accountable approval.
+
+**Follow-up probe:** Which regression should block release even when overall task success improves?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### DSTL-B4-20 — Lead an incident where agent retries amplified a downstream outage.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop amplification through retry suppression, concurrency limits, circuit breaking, queue control, or safe degradation.
+- Establish user and data impact, preserve traces, communicate owners and decisions, and recover through bounded probes.
+- Correct retry classification, budgets, idempotency, alerts, capacity assumptions, and runbooks; verify with a recurrence test.
+
+**Follow-up probe:** What telemetry would have detected the retry storm before the dependency collapsed?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
 
 ## Completion evidence
 
