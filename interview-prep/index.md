@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.2.0"
+status: "review"
+version: "1.3.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 60 guided questions across Batches 1–3, with strong-answer signals, a deeper follow-up probe, and direct revision links. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 80 guided questions across Batches 1–4, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 4 is a review candidate; Batches 1–3 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -53,6 +53,15 @@ Each role bank now contains 60 guided questions across Batches 1–3, with stron
 | [Document ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }}) | Parsing, provenance, chunking, idempotency, updates, deletions, backfills and index operations |
 | [RAG architecture, retrieval, and generation]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) | Query transformation, staged retrieval, reranking, context assembly, grounded generation, citations and abstention |
 | [RAG evaluation, security, and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }}) | Retrieval and generation metrics, release gates, prompt injection defenses, observability, SLOs and incidents |
+
+## Batch 4 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Agent fundamentals and workflow patterns]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) | Agent boundaries, tool contracts, state, memory, routing, multi-agent patterns, budgets and human approval |
+| [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }}) | Typed state, reducers, routing, fan-out, checkpoints, stores, interrupts, replay, caching and tests |
+| [Agent frameworks and libraries comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }}) | LangGraph, Google ADK, OpenAI Agents SDK, PydanticAI, DSPy, retrieval frameworks, Microsoft and NVIDIA layers |
+| [Agent protocols, reliability, security, and evaluation]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }}) | MCP, A2A, identity, idempotency, retries, resilience, trajectory evaluation, SLOs and release gates |
 
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
@@ -82,7 +91,6 @@ A senior answer should normally cover:
 
 | Batch | Planned scope |
 | --- | --- |
-| 4 | LangGraph and other agent frameworks, tools, memory, multi-agent workflows and guardrails |
 | 5 | AI system design, MLOps, observability, security, leadership, project storytelling and mock rounds |
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

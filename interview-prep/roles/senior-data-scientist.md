@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.2.0"
+status: "review"
+version: "1.3.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "Sixty guided questions for Senior Data Scientist interviews."
-summary: "Practise statistics, leakage-safe ML, embeddings, retrieval experiments, RAG evaluation, security testing, monitoring, and defensible business impact."
+description: "Eighty guided questions for Senior Data Scientist interviews."
+summary: "Practise statistics, ML, RAG, agent experiments, LangGraph analysis, framework benchmarks, protocol evaluation, resilience, and defensible business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–3 · 60 guided questions"
+kicker_secondary: "Batches 1–4 · 80 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 60
+question_count: 80
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 60 questions across Batches 1–3 · **Status:** Batches 1–3 approved
+**Bank size:** 80 questions across Batches 1–4 · **Status:** Batches 1–3 approved · Batch 4 review candidate
 
 ## SQL and data
 
@@ -901,6 +901,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** What evidence would show that the evaluator, not the RAG system, caused the apparent decline?
 
 **Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }}) · [Ingestion and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+## Agent behavior and experimental design
+
+### SDS-B4-01 — Compare a deterministic workflow with a bounded agent for the same analytical task.
+
+**Round:** Experimental design · **Depth:** Applied
+
+**Strong answer signals**
+
+- Use identical representative cases and define task quality, failure severity, latency, token or tool cost, and human effort.
+- Analyze paired outcomes and slices, including abstention, invalid actions, and long-tail cases hidden by averages.
+- Prefer the simpler workflow unless the agent's adaptive behavior yields a practically meaningful gain within risk limits.
+
+**Follow-up probe:** How would you prevent evaluator bias toward longer agent answers?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### SDS-B4-02 — Evaluate a model-based router that selects one of five specialist workflows.
+
+**Round:** Classification and routing · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define mutually understandable route labels, ambiguous or multi-intent cases, and an abstain or fallback path.
+- Report confusion by route, cost-sensitive errors, calibration, coverage, downstream task success, latency, and drift.
+- Compare against rules and a lightweight classifier; inspect whether routing gains survive end-to-end evaluation.
+
+**Follow-up probe:** When can high routing accuracy still produce poor product outcomes?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### SDS-B4-03 — Test whether long-term memory improves a personal assistant.
+
+**Round:** Memory evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define useful recall, correction, contradiction, staleness, provenance, privacy, and deletion behavior before measuring answer preference.
+- Compare no-memory, session-only, and long-term-memory variants on consented longitudinal cases.
+- Measure both utility and harms such as irrelevant personalization, sensitive recall, cross-user leakage, and persistent false facts.
+
+**Follow-up probe:** How would you distinguish retrieval failure from a model ignoring correctly retrieved memory?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+### SDS-B4-04 — Analyze tool-selection quality for an agent with overlapping tools.
+
+**Round:** Agent evaluation · **Depth:** Applied
+
+**Strong answer signals**
+
+- Label acceptable tool sets, necessary order, argument constraints, and cases where no tool should be called.
+- Measure selection precision and recall, invalid calls, redundant calls, argument accuracy, recovery, task success, and cost.
+- Slice by intent ambiguity and tool-description similarity, then improve contracts or routing rather than only changing prompts.
+
+**Follow-up probe:** How would you score a successful answer that used an unnecessary sensitive tool?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### SDS-B4-05 — Determine whether a multi-agent design outperforms one agent with tools.
+
+**Round:** Ablation study · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Hold model, tools, information, budgets, and evaluation cases constant while changing coordination design.
+- Compare paired task success, handoff loss, duplicated work, latency, cost, variance, safety, and recovery.
+- Inspect trajectories to identify which specialist or handoff creates value; reject complexity without a robust slice-level gain.
+
+**Follow-up probe:** What confound appears if the multi-agent design receives a larger token budget?
+
+**Revision links:** [Agent fundamentals]({{ '/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/' | relative_url }})
+
+## LangGraph state, replay, and measurement
+
+### SDS-B4-06 — Design a LangGraph state schema for an iterative data-analysis assistant.
+
+**Round:** State modeling · **Depth:** Applied
+
+**Strong answer signals**
+
+- Separate request context, hypotheses, evidence, executed analysis references, validation results, budgets, and final conclusion.
+- Store provenance and stable artifact IDs rather than copying full datasets into checkpoints.
+- Specify reducers for accumulated evidence and errors, with deterministic semantics under parallel updates.
+
+**Follow-up probe:** Which state fields should be excluded from model context even though the runtime needs them?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### SDS-B4-07 — Results vary depending on the completion order of parallel LangGraph workers. Diagnose it.
+
+**Round:** Debugging · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Check for non-associative reducers, list-order dependence, shared mutable data, last-write-wins fields, and nondeterministic prompts.
+- Replay the same worker outputs in different orders and compare state deltas to isolate orchestration from model variance.
+- Define order-independent aggregation or an explicit stable sort and add property-based reducer tests.
+
+**Follow-up probe:** Why must a parallel reducer ideally be associative and commutative?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### SDS-B4-08 — Evaluate recovery after interrupting and resuming a LangGraph workflow.
+
+**Round:** Reliability experiment · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Inject pauses and crashes before, during, and after model, tool, and side-effect boundaries.
+- Compare final state, tool-call counts, external records, latency, and errors against uninterrupted baseline runs.
+- Verify authorization recheck, checkpoint integrity, idempotency, expiry, and behavior after code or schema version changes.
+
+**Follow-up probe:** Which crash point is most likely to reveal duplicate side effects?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }}) · [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### SDS-B4-09 — Measure whether node caching helps a LangGraph application without corrupting results.
+
+**Round:** Performance evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Identify pure or safely cacheable nodes and include all behavior-changing inputs, model, prompt, tool, policy, and data versions in the key.
+- Compare hit rate, latency, tokens, cost, freshness, and output equivalence against an uncached baseline.
+- Test invalidation, tenant isolation, sensitive-data handling, stampedes, and stale or failed-result caching.
+
+**Follow-up probe:** Why is a semantic response cache riskier than deterministic node-result caching?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+### SDS-B4-10 — Build a trajectory analysis for LangGraph failures.
+
+**Round:** Observability and analytics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Capture versioned nodes, routes, state deltas, tool calls, interrupts, errors, budgets, and final outcomes with privacy-safe identifiers.
+- Derive route frequency, loop depth, recovery rate, tool error, abandonment, latency, and cost by task slice.
+- Cluster recurring paths and compare good and bad paired cases while retaining inspectable examples for causal diagnosis.
+
+**Follow-up probe:** How would you avoid treating a common trajectory as proof that it is optimal?
+
+**Revision links:** [LangGraph deep dive]({{ '/interview-prep/cheat-sheets/langgraph-deep-dive/' | relative_url }})
+
+## Framework comparison and benchmark design
+
+### SDS-B4-11 — Design a fair benchmark for two agent frameworks.
+
+**Round:** Benchmarking · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Implement the same representative tasks, models, tools, budgets, concurrency, persistence needs, and failure injections.
+- Measure correctness, trajectory, recovery, developer effort, latency, cost, observability, and operational complexity.
+- Separate framework capability from implementation quality through review, repeated runs, and transparent configuration.
+
+**Follow-up probe:** Why is a single happy-path latency benchmark insufficient?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### SDS-B4-12 — Explain when DSPy complements rather than replaces an agent orchestration framework.
+
+**Round:** LM program optimization · **Depth:** Applied
+
+**Strong answer signals**
+
+- DSPy optimizes modular LM programs against metrics; orchestration controls state, branches, tools, persistence, and recovery.
+- Use DSPy for measurable prompt or module behavior inside a stable workflow when training and evaluation data are adequate.
+- Prevent evaluation leakage and verify optimized modules end to end because local metric gains can change system behavior.
+
+**Follow-up probe:** What dataset split is required before optimizing a module against an evaluation metric?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### SDS-B4-13 — Choose between LlamaIndex, Haystack, and a general agent framework for a research assistant.
+
+**Round:** Data and architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- Decompose ingestion, indexing, retrieval, synthesis, dynamic planning, persistence, and production constraints.
+- Prioritize a data or retrieval framework when evidence pipelines dominate; add bounded agent control only for genuinely adaptive work.
+- Test retrieval and end-to-end quality separately so orchestration changes do not hide data-pipeline regressions.
+
+**Follow-up probe:** Which requirement makes explicit graph orchestration materially useful?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### SDS-B4-14 — A framework comparison changes both the runtime and the model provider. Explain the problem.
+
+**Round:** Experimental validity · **Depth:** Applied
+
+**Strong answer signals**
+
+- Model capability, tool-calling behavior, tokenization, latency, and provider policies are confounded with framework effects.
+- Hold model and settings constant where possible, or use a factorial design and report interactions explicitly.
+- Normalize budgets and tool contracts, repeat stochastic runs, and retain raw trajectories for error analysis.
+
+**Follow-up probe:** How would you compare frameworks that do not support the same provider?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+### SDS-B4-15 — Validate a migration from one agent framework to another.
+
+**Round:** Regression evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Replay a frozen representative suite and compare paired task outcomes, trajectories, safety, latency, cost, and escalation.
+- Include in-flight state, tool errors, interrupts, retries, long contexts, and adversarial cases rather than only fresh requests.
+- Set equivalence or non-inferiority bounds for critical slices and inspect disagreements before rollout.
+
+**Follow-up probe:** When is exact trajectory equality neither possible nor desirable?
+
+**Revision links:** [Framework comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }})
+
+## Protocol, reliability, and evaluation science
+
+### SDS-B4-16 — Design data collection for evaluating MCP and A2A integrations.
+
+**Round:** Evaluation design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Log capability or agent version, identity decision, request schema, latency, error class, retries, artifacts, and final task outcome.
+- Use privacy minimization and stable correlation IDs without storing unrestricted sensitive payloads.
+- Build contract, interoperability, authorization, malformed-input, timeout, and partial-result cases for each boundary.
+
+**Follow-up probe:** Which metric distinguishes protocol success from end-to-end task success?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### SDS-B4-17 — Define reliability metrics for a tool-using agent.
+
+**Round:** Production analytics · **Depth:** Applied
+
+**Strong answer signals**
+
+- Measure task completion, valid tool-call rate, timeout and error rates, retry amplification, duplicate side effects, and recovery.
+- Add latency distributions, queue time, saturation, circuit-breaker state, cost, and safe-degradation or escalation rates.
+- Slice by tool, tenant, task, risk, version, and dependency so aggregates do not hide concentrated failures.
+
+**Follow-up probe:** Which leading indicator would warn that retries are becoming harmful?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### SDS-B4-18 — Calibrate an LLM judge for agent trajectories.
+
+**Round:** Evaluation methodology · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Create a human-labeled, blinded calibration set with explicit rubrics for outcome, tool use, evidence, safety, and efficiency.
+- Measure agreement and systematic position, verbosity, style, and self-preference bias by slice.
+- Combine the judge with deterministic checks, periodically revalidate it, and preserve uncertainty or disagreement.
+
+**Follow-up probe:** How would you detect that the judge rewards unnecessary tool calls?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### SDS-B4-19 — Build a fault-injection experiment for an agent workflow.
+
+**Round:** Resilience evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Inject timeouts, throttling, malformed results, stale data, partial completion, lost acknowledgements, and dependency outages at controlled points.
+- Define expected retry, fallback, circuit-breaker, escalation, side-effect, and recovery behavior before running tests.
+- Measure containment, user impact, recovery time, duplicate actions, and observability; turn failures into regression cases.
+
+**Follow-up probe:** How do you keep a chaos test from causing real external side effects?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+### SDS-B4-20 — Compare a new agent release statistically with the current version.
+
+**Round:** Statistical release decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Use paired cases and repeated runs where stochasticity matters; report effect sizes and uncertainty, not only p-values.
+- Predefine primary metrics, critical slices, non-inferiority safety bounds, practical thresholds, and multiple-comparison handling.
+- Combine offline evidence with guarded shadow or canary outcomes and reject average gains that violate a high-risk gate.
+
+**Follow-up probe:** When would a paired bootstrap be more useful than comparing two aggregate means?
+
+**Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
 
 ## Completion evidence
 
