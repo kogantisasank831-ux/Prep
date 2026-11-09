@@ -1,11 +1,11 @@
 # Interview preparation Batch 4 review record
 
-## Review state
+## Approval
 
-- Decision: candidate prepared for repository-owner review on 2026-11-09.
-- Candidate scope: four agent-focused revision guides and twenty new questions per role bank.
-- Publication state: not yet approved; Batch 4 pages and expanded banks use `status: review`.
-- Merge gate: explicit human approval plus content, navigation, regression, and PostgreSQL/pgvector integration checks.
+- Decision: approved for merge and publication on 2026-11-10.
+- Approved scope: four agent-focused revision guides and twenty new questions per role bank.
+- Authority: explicit repository-owner approval in the Batch 4 review conversation.
+- Merge gate: the approval candidate must pass the content, navigation, regression, and PostgreSQL/pgvector integration jobs.
 
 ## Documentation set
 
@@ -27,7 +27,7 @@ The instructional bodies are unchanged apart from removing each duplicate top-le
 
 ## Role-bank extension
 
-| Role | Approved Batches 1–3 | New Batch 4 candidate | Candidate total |
+| Role | Approved Batches 1–3 | New Batch 4 | Approved total |
 | --- | ---: | ---: | ---: |
 | Agentic AI Engineer | 60 | 20 | 80 |
 | Data Science Technical Lead | 60 | 20 | 80 |
@@ -41,9 +41,9 @@ Batch 4 separates engineering, technical-lead, and data-science perspectives acr
 - each role adds exactly `B4-01` through `B4-20` with unique IDs;
 - every new question has three strong-answer signals, one follow-up probe, and direct revision links;
 - source bodies retain their rapid-revision sections and exact instructional content;
-- existing approved sheets remain approved while Batch 4 and expanded navigation remain review candidates;
+- all Batch 4 public pages and expanded role banks use `status: approved` after human approval;
 - unique permalinks, complete hub links, Markdown structure, linting, tests, and repository integration checks are merge gates.
 
 ## Evidence boundary and handoff
 
-Automated checks establish repository consistency, not interview-market completeness, psychometric calibration, reader comprehension, or framework/API freshness. The questions are guided practice prompts rather than authenticated exams. Human review is required before approval, merge, and publication.
+Automated checks establish repository consistency, not interview-market completeness, psychometric calibration, reader comprehension, or framework/API freshness. The questions are guided practice prompts rather than authenticated exams. Post-merge publication verification remains required.

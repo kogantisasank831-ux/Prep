@@ -84,16 +84,11 @@ def markdown_h1_lines_outside_fences(content: str) -> list[str]:
 def test_public_pages_have_required_front_matter() -> None:
     approved_pages = (
         ROOT / "interview-prep/master-index.md",
-        *BATCH_ONE_CHEAT_SHEETS,
-        *BATCH_TWO_CHEAT_SHEETS,
-        *BATCH_THREE_CHEAT_SHEETS,
-    )
-    review_pages = (
         ROOT / "interview-prep/index.md",
-        *BATCH_FOUR_CHEAT_SHEETS,
+        *ALL_CHEAT_SHEETS,
         *ROLE_BANKS.values(),
     )
-    pages = approved_pages + review_pages
+    pages = approved_pages
     permalinks: list[str] = []
     for page in pages:
         content = read(page)
@@ -103,7 +98,6 @@ def test_public_pages_have_required_front_matter() -> None:
         assert match is not None, page
         permalinks.append(match.group(1))
     assert all(page_status(read(page)) == "approved" for page in approved_pages)
-    assert all(page_status(read(page)) == "review" for page in review_pages)
     assert len(permalinks) == len(set(permalinks))
 
 

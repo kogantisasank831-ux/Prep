@@ -26,9 +26,9 @@ Approved Batch 3 adds embeddings and vector search, document ingestion and index
 architecture, and RAG evaluation/security/production. Each role bank grows to
 60 guided questions while preserving all earlier IDs.
 
-Batch 4 is prepared as a review candidate with agent fundamentals, LangGraph,
-framework comparisons, and agent protocols/reliability/evaluation. It adds
-20 role-specific questions per bank, bringing each candidate bank to 80.
+Approved Batch 4 adds agent fundamentals, LangGraph, framework comparisons,
+and agent protocols/reliability/evaluation. Each role bank now contains 80
+guided questions while preserving all earlier IDs.
 
 ## Run locally
 
