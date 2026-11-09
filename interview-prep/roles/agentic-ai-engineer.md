@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.1.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
@@ -10,8 +10,8 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "Twenty guided foundation questions for AI and Agentic AI engineering interviews."
-summary: "Practise production Python, SQL state, evaluation, reliability, system design, code review, incidents, and evidence-based architecture decisions."
+description: "Forty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production Python, SQL state, neural-network and NLP systems, transformer and LLM design, evaluation, reliability, safety, architecture, and incidents."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
 kicker_secondary: "Batches 1–2 · 40 guided questions"
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 40 questions across Batches 1–2 · **Status:** Batch 1 approved; Batch 2 review candidate
+**Bank size:** 40 questions across Batches 1–2 · **Status:** Batches 1–2 approved
 
 ## Python and service engineering
 

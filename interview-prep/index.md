@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.1.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
@@ -19,11 +19,11 @@ current_label: "Interview prep hub"
 ---
 ## Start with your target role
 
-| Role bank | Best for | Batch 1 coverage |
+| Role bank | Best for | Current coverage |
 | --- | --- | --- |
-| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production Python, SQL state, evaluation, reliability, architecture and incidents |
-| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, experimentation, model decisions, governance and leadership |
-| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | SQL, statistics, ML cases, monitoring and business impact |
+| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production Python, SQL state, deep learning, NLP, transformers, LLM systems, evaluation, reliability and incidents |
+| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, experimentation, ML, deep-learning, NLP and LLM decisions, governance and leadership |
+| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | SQL, statistics, ML, deep learning, NLP, transformers, LLM evaluation and business impact |
 
 Each role bank now contains 40 guided questions across Batches 1–2, with strong-answer signals, a deeper follow-up probe, and direct revision links. Stable IDs let you track weak areas and support later random-paper conversion.
 

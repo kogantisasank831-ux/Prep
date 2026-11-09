@@ -18,8 +18,8 @@ fundamentals, with guided banks for Agentic AI Engineer, Data Science Technical
 Lead and Senior Data Scientist roles. Approved public pages use `status: approved`; future batches remain review
 candidates until their content and CI checks are accepted.
 
-Batch 2 adds Deep Learning and Neural Networks, NLP, Transformers, and LLM/
-Generative AI revision guides. Each role bank grows from 20 to 40 guided
+Approved Batch 2 adds Deep Learning and Neural Networks, NLP, Transformers,
+and LLM/Generative AI revision guides. Each role bank now contains 40 guided
 questions while preserving stable Batch 1 IDs.
 
 ## Run locally
