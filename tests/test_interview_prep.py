@@ -47,6 +47,30 @@ def page_status(content: str) -> str:
     return match.group(1)
 
 
+def markdown_h1_lines_outside_fences(content: str) -> list[str]:
+    fence: str | None = None
+    headings: list[str] = []
+    for line in content.splitlines():
+        stripped = line.lstrip()
+        marker = next(
+            (
+                candidate
+                for candidate in ("```", "~~~")
+                if stripped.startswith(candidate)
+            ),
+            None,
+        )
+        if marker is not None:
+            if fence is None:
+                fence = marker
+            elif fence == marker:
+                fence = None
+            continue
+        if fence is None and line.startswith("# "):
+            headings.append(line)
+    return headings
+
+
 def test_public_pages_have_required_front_matter() -> None:
     approved_pages = (
         ROOT / "interview-prep/master-index.md",
@@ -67,7 +91,7 @@ def test_public_pages_have_required_front_matter() -> None:
     assert len(permalinks) == len(set(permalinks))
 
 
-def test_role_banks_have_two_stable_complete_batches() -> None:
+def test_role_banks_have_stable_complete_batches() -> None:
     for prefix, path in ROLE_BANKS.items():
         content = read(path)
         for batch in (1, 2, 3):
@@ -89,7 +113,7 @@ def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
     for path in ALL_CHEAT_SHEETS:
         content = read(path)
         assert "## 1. Thirty-second revision" in content
-        assert content.count("\n# ") == 0
+        assert markdown_h1_lines_outside_fences(content) == []
 
 
 def test_hub_links_every_interview_artifact() -> None:
