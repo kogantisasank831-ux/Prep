@@ -3,9 +3,9 @@ layout: week
 week: 19
 phase: 5
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-06
-estimated_hours: 6
+version: 1.1.0
+last_reviewed: 2026-11-09
+estimated_hours: 8
 permalink: /weeks/week-19/beginner/
 title: "Give an agent a small keyring, a supervisor and an undo plan"
 description: Learn agent safety through a local procurement workshop with narrow tools, permission badges, exact write approvals, step limits, safe records and reversible actions.
@@ -16,6 +16,23 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-19/
 ---
+
+## Before you start
+
+This route is for someone new to agent safety. Basic Python functions and dictionaries are enough; permissions, approvals, step limits, safe records and reversal are introduced in plain language. If proposed tool calls are new, review the [Week 13 beginner route]({{ '/weeks/week-13/beginner/' | relative_url }}) first.
+
+On your first pass, follow one request from an agent proposal through trusted identity, permission, argument and approval checks to a closed tool. Learn why reads and writes use different keys, why a write approval matches one exact action and why failures expose controlled codes. Treat audit-chain cryptography limits, hostile-code isolation and durable production approval services as stretch topics.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Separate proposal, authority and execution | Name the trusted decision point |
+| Hour 2 | Inspect the five-tool registry | Explain why open-ended tools are absent |
+| Hour 3 | Apply tenant scope and permissions | Deny one over-privileged request |
+| Hour 4 | Validate exact arguments and step limits | Predict one blocked result |
+| Hour 5 | Bind and consume one write approval | Explain why replay fails |
+| Hour 6 | Inspect controlled failures and safe audit fields | Identify data that must not be logged |
+| Hour 7 | Set and safely reverse a review flag | Detect a stale undo conflict |
+| Hour 8 | Run scenarios, tests and practice | Explain the lab's real trust boundary |
 
 ## The agent suggests; the workshop decides
 

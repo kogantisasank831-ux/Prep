@@ -3,8 +3,8 @@ layout: week
 week: 17
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-04
+version: 1.1.0
+last_reviewed: 2026-11-09
 estimated_hours: 8
 permalink: /weeks/week-17/beginner/
 title: "Build a small specialist team with one careful supervisor"
@@ -16,6 +16,23 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-17/
 ---
+
+## Before you start
+
+This route is for someone new to multi-agent systems. Basic Python functions, lists and dictionaries are enough; specialist roles, handoffs and concurrent work are introduced from the beginning. If tool calls or workflow steps are still unfamiliar, revisit the [Week 14 beginner route]({{ '/weeks/week-14/beginner/' | relative_url }}) first.
+
+On your first pass, learn why the supervisor owns the case, why three independent specialists can run together, why the commercial specialist waits and how a missing or mismatched result stops the run. Treat thread scheduling details, source-digest checks and production queues, timeouts and retries as stretch work after that flow is clear.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Map the investigation and five roles | Explain why each specialist exists |
+| Hour 2 | Draw the three small handoff cards | Remove one field that a specialist does not need |
+| Hour 3 | Follow supervisor-owned state | Name who may update the aggregate run |
+| Hour 4 | Trace the independent first wave | Explain why commercial work must wait |
+| Hour 5 | Validate identities and failures | Predict one fail-closed result |
+| Hour 6 | Apply the commercial decision order | Distinguish `needs_human` from `review_required` |
+| Hour 7 | Run the supervisor and workflow demos | Compare their reports and handoffs |
+| Hour 8 | Run tests and complete practice | Explain when one workflow is the better design |
 
 ## Think of a small investigation team
 

@@ -3,8 +3,8 @@ layout: week
 week: 19
 phase: 5
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-06
+version: 1.1.0
+last_reviewed: 2026-11-09
 estimated_hours: 8
 permalink: /weeks/week-19/
 title: "Put enforceable guardrails between agents and tools"
@@ -16,6 +16,12 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-19/beginner/
 ---
+
+## Before you start
+
+This route is for someone who already understands tool calling, strict schemas and basic authentication-versus-authorization concepts. It moves directly into tenant-scoped capabilities, exact approval binding, audit minimization and conflict-aware reversal. Use the beginner route if permissions or execution boundaries are still unfamiliar.
+
+For the core route, trace trusted scope into the gateway, verify the closed tool and permission matrix, inspect one approved write and one denial, confirm step-budget enforcement and prove that audit events omit raw arguments. Treat hostile-code sandboxing, durable transactional approval state, signed external audit heads and downstream service authorization as stretch production work.
 
 ## Safety belongs on the execution path
 

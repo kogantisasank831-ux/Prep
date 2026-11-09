@@ -3,8 +3,8 @@ layout: week
 week: 18
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-05
+version: 1.1.0
+last_reviewed: 2026-11-09
 estimated_hours: 8
 permalink: /weeks/week-18/beginner/
 title: "Test an agent like a careful driving examiner"
@@ -16,6 +16,23 @@ current_label: Beginner version
 alternate_label: Production version
 alternate_url: /weeks/week-18/
 ---
+
+## Before you start
+
+This route is for someone new to agent evaluation. You only need basic Python data structures and a simple picture of an agent calling tools; cases, expected results, traces and metric denominators are explained from the beginning. The [Week 17 beginner route]({{ '/weeks/week-17/beginner/' | relative_url }}) provides the system used in the examples.
+
+On your first pass, learn to write an answer key before a trial, check both the result and tool route, keep every denominator visible and stop publication when an unsafe action appears. Treat model or human judges, held-out-set operations, repeated stochastic trials and production cost or latency telemetry as stretch work.
+
+| Time | Work | A small success to show |
+| --- | --- | --- |
+| Hour 1 | Define a case, candidate and expected end state | Write one pass condition |
+| Hour 2 | Add normal and failure cases | Explain why a safe refusal can pass |
+| Hour 3 | Record outcomes, calls, arguments and steps | Read one compact trace |
+| Hour 4 | Score task and tool-route accuracy | Show both numerators and denominators |
+| Hour 5 | Calculate step, loop and escalation metrics | Explain one metric without overclaiming |
+| Hour 6 | Apply the unsafe-action hard gate | Separate safety from average quality |
+| Hour 7 | Run and inspect the 28-case evaluator | Find one category-level weakness |
+| Hour 8 | Test the graders and complete practice | State what this evaluation does not prove |
 
 ## Check the result and the route
 

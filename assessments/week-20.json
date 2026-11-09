@@ -1,13 +1,20 @@
 {
   "schema_version": 1,
   "week": 20,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Reliability and controlled failure handling",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -2470,7 +2477,7 @@
     {
       "type": "short",
       "topic": "Queue evidence",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact result field that records how many times the queue delivered a job.",
       "explanation": "delivery_count exposes bounded redelivery without conflating it with dependency-attempt count.",
       "accepted": [
@@ -2482,7 +2489,7 @@
     {
       "type": "short",
       "topic": "Idempotency",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact Job field used to identify one semantic submission for duplicate suppression.",
       "explanation": "idempotency_key is bound to tenant and scenario in the deterministic queue demonstration.",
       "accepted": [
@@ -2494,7 +2501,7 @@
     {
       "type": "short",
       "topic": "Rate limits",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact dependency-response field carrying the requested wait before retry.",
       "explanation": "retry_after_ms holds the dependency-provided delay, which the worker caps before use.",
       "accepted": [
@@ -2506,7 +2513,7 @@
     {
       "type": "short",
       "topic": "Cache fallback",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact freshness value returned by the Week 20 bounded-cache fixture.",
       "explanation": "stale-45s exposes the cache age instead of presenting the data as a live database response.",
       "accepted": [
@@ -2518,7 +2525,7 @@
     {
       "type": "short",
       "topic": "Retrieval fallback",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact dependency name selected when vector retrieval falls back to keyword retrieval.",
       "explanation": "lexical-search supplies the compatible reduced retrieval result after the vector store fails.",
       "accepted": [
@@ -2562,7 +2569,7 @@
     {
       "type": "code",
       "topic": "Exponential backoff",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement capped_backoff(attempt, base_ms, cap_ms). All inputs must be exact ints, not bools. attempt, base_ms and cap_ms must be positive and base_ms cannot exceed cap_ms. Raise TypeError or ValueError for malformed input. Return min(cap_ms, base_ms * 2 ** (attempt - 1)).",
       "explanation": "Capped exponential backoff grows delay between failures without allowing unbounded waiting.",
       "starter": "def capped_backoff(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2722,7 +2729,7 @@
     {
       "type": "code",
       "topic": "Circuit success transition",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement circuit_success(state, consecutive_failures, opened_at_ms). state is closed or half_open; consecutive_failures is an exact non-negative int; opened_at_ms must be None for closed and an exact non-negative int for half_open. Raise TypeError or ValueError for malformed input. Return ('closed', 0, None) for every valid success.",
       "explanation": "Any accepted success resets consecutive failures, clears the open timestamp and closes a recovery probe.",
       "starter": "def circuit_success(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2754,7 +2761,7 @@
     {
       "type": "code",
       "topic": "Output contracts",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement required_fields_present(required_fields, data). required_fields must be an exact tuple of unique non-blank exact strings. data must be an exact dict with exact string keys. Raise TypeError or ValueError for malformed input. Return True only when every required field is a key in data; extra data keys are allowed.",
       "explanation": "Transport success is usable only after every declared output field is present; checking any one field would accept partial contracts.",
       "starter": "def required_fields_present(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2946,7 +2953,7 @@
     {
       "type": "code",
       "topic": "Redelivery budget",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement can_requeue(failure_kind, delivery_count, max_deliveries). failure_kind must be transient or permanent. Counts must be exact positive ints and delivery_count cannot exceed max_deliveries. Raise TypeError or ValueError for malformed input. Return True only for a transient failure when delivery_count is strictly less than max_deliveries.",
       "explanation": "Queue redelivery is a separate outer budget and stops when the next delivery would exceed its configured maximum.",
       "starter": "def can_requeue(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3010,7 +3017,7 @@
     {
       "type": "code",
       "topic": "Batch summaries",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement summarize_batch(statuses). statuses must be an exact tuple containing only exact strings completed, degraded or dead_letter. Raise TypeError or ValueError for malformed input. Return a dict with completed_count, degraded_count, dead_letter_count and total, each derived from statuses. Empty input is valid.",
       "explanation": "Per-state counts must be derived from the retained item results so one failure cannot overwrite or hide partial success.",
       "starter": "def summarize_batch(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",

@@ -3,8 +3,8 @@ layout: week
 week: 20
 phase: 5
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-07
+version: 1.1.0
+last_reviewed: 2026-11-09
 estimated_hours: 8
 permalink: /weeks/week-20/
 title: "Design failure as a controlled state, not a surprise"
@@ -16,6 +16,12 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-20/beginner/
 ---
+
+## Before you start
+
+This route is for someone who already understands service boundaries, exception handling and the basic semantics of queues and idempotency. It assumes safe tool execution is familiar and concentrates on finite failure policies and observable degraded states. Use the beginner route if retry or circuit-breaker terminology is new.
+
+For the core route, trace failure classification through retry and deadline budgets, verify per-dependency circuit transitions, inspect compatible fallback contracts, follow lease/acknowledge/dead-letter states and preserve independent batch results. Treat broker durability, atomic side-effect/acknowledgement design, concurrent half-open probes, jitter, SLOs and production capacity evidence as stretch work.
 
 ## Failure is part of the interface
 

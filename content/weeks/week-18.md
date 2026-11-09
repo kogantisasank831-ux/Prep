@@ -3,8 +3,8 @@ layout: week
 week: 18
 phase: 4
 status: approved
-version: 1.0.1
-last_reviewed: 2026-11-05
+version: 1.1.0
+last_reviewed: 2026-11-09
 estimated_hours: 8
 permalink: /weeks/week-18/
 title: "Evaluate agents by outcomes, trajectories and safety"
@@ -16,6 +16,12 @@ current_label: Production version
 alternate_label: Beginner version
 alternate_url: /weeks/week-18/beginner/
 ---
+
+## Before you start
+
+This route is for someone who already understands agent tool trajectories, basic evaluation metrics and why safety-sensitive outcomes need explicit contracts. It assumes the Week 17 supervisor or an equivalent bounded agent system is familiar. Use the beginner route if cases, oracles or metric denominators are new.
+
+For the core route, freeze candidate and dataset identity, inspect outcome and trajectory graders, recompute the published denominators, review category slices and require unsafe-action evidence to pass a hard gate. Treat subjective judges, stochastic confidence intervals, production traffic sampling and live token, cost and latency telemetry as stretch extensions.
 
 ## An agent can reach the right answer the wrong way
 

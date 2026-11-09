@@ -1,13 +1,20 @@
 {
   "schema_version": 1,
   "week": 19,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Enforceable agent safety guardrails",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -2483,7 +2490,7 @@
     {
       "type": "short",
       "topic": "Secret handling",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact code returned for an undeclared secret-like argument key.",
       "explanation": "secret_material_rejected stops likely credentials before the tool or audit stream receives them.",
       "accepted": [
@@ -2495,7 +2502,7 @@
     {
       "type": "short",
       "topic": "Failure handling",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact public code used for an unexpected allowed-tool exception.",
       "explanation": "tool_failure hides arbitrary exception content behind a stable caller-visible result.",
       "accepted": [
@@ -2507,7 +2514,7 @@
     {
       "type": "short",
       "topic": "Result status",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact status for a request stopped by a safety policy.",
       "explanation": "blocked separates policy prevention from an allowed tool that later fails.",
       "accepted": [
@@ -2519,7 +2526,7 @@
     {
       "type": "short",
       "topic": "Undo codes",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact code returned when old undo data would overwrite newer state.",
       "explanation": "undo_conflict requires human resolution instead of silently losing a later update.",
       "accepted": [
@@ -2531,7 +2538,7 @@
     {
       "type": "short",
       "topic": "Audit fields",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact audit field that references canonical tool arguments without storing their raw values.",
       "explanation": "argument_sha256 is the stable digest field shared by approval and audit evidence.",
       "accepted": [
@@ -2543,7 +2550,7 @@
     {
       "type": "code",
       "topic": "Least privilege",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement permission_allows(required, granted). required must be an exact non-blank string. granted must be an exact tuple of unique non-blank exact strings. Raise TypeError for wrong containers or item types and ValueError for blanks or duplicates. Return whether the exact required permission is present; do not infer broader or related permissions.",
       "explanation": "Exact permission membership prevents read, write and reversal capabilities from implying one another.",
       "starter": "def permission_allows(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2735,7 +2742,7 @@
     {
       "type": "code",
       "topic": "Step budgets",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement within_step_budget(step, max_steps). Both inputs must be exact integers, excluding booleans. max_steps must be from 1 through 20 and step must be at least 1. Raise TypeError or ValueError for invalid input. Return True when step is at or below the configured maximum and False when it is over budget.",
       "explanation": "A trusted counter creates a deterministic pre-dispatch stop that does not depend on model compliance.",
       "starter": "def within_step_budget(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3087,7 +3094,7 @@
     {
       "type": "code",
       "topic": "Approval policy",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement requires_approval(mode). mode must be an exact non-blank string and one of read or write. Raise TypeError for a wrong type and ValueError for blank or unknown values. Return False for read and True for write; do not infer from tool names or arguments.",
       "explanation": "Approval is a server-owned property of the registered operation mode, not a claim supplied by the agent.",
       "starter": "def requires_approval(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3119,7 +3126,7 @@
     {
       "type": "code",
       "topic": "Failure sanitization",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement public_failure(error_name). error_name must be an exact non-blank string. Map permission_error to {'status':'blocked','code':'permission_denied'}, approval_error to blocked/approval_required, step_error to blocked/step_limit_exceeded, and undo_conflict to failed/undo_conflict. Map every other non-blank string to failed/tool_failure without copying the input. Raise TypeError or ValueError for invalid input.",
       "explanation": "A closed public mapping preserves useful policy semantics while preventing arbitrary exception messages from escaping.",
       "starter": "def public_failure(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3151,7 +3158,7 @@
     {
       "type": "code",
       "topic": "Audit lifecycle",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement valid_lifecycle(events). events must be an exact tuple of non-blank exact strings. Raise TypeError or ValueError for malformed input. Return True only for one of these complete sequences: requested then executed; requested then failed; requested then denied; requested then step_limit; requested, approval_checked, executed; requested, approval_checked, reversed; or requested, approval_checked, failed. Return False for every other well-formed sequence.",
       "explanation": "Closed lifecycle transitions make missing policy decisions and impossible event orders visible during review.",
       "starter": "def valid_lifecycle(*args, **kwargs):\n    raise NotImplementedError('Implement the stated contract')\n",

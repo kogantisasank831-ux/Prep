@@ -1,13 +1,20 @@
 {
   "schema_version": 1,
   "week": 17,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Bounded multi-agent coordination",
   "code_language": "python",
   "paper_policy": {
     "questions": 10,
     "per_type": 2,
-    "points_each": 10
+    "points_each": 10,
+    "difficulty_per_type": {
+      "single": {"foundation": 1, "applied": 1},
+      "multiple": {"foundation": 1, "applied": 1},
+      "match": {"foundation": 1, "applied": 1},
+      "short": {"foundation": 1, "applied": 1},
+      "code": {"foundation": 1, "applied": 1}
+    }
   },
   "questions": [
     {
@@ -2533,7 +2540,7 @@
     {
       "type": "short",
       "topic": "Recommendations",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact recommendation for missing applicable terms.",
       "explanation": "needs_human preserves business uncertainty when the governing contract threshold cannot be found.",
       "accepted": [
@@ -2545,7 +2552,7 @@
     {
       "type": "short",
       "topic": "Correlation",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact field name that correlates one execution.",
       "explanation": "run_id binds every assignment and result to one declared coordination execution.",
       "accepted": [
@@ -2557,7 +2564,7 @@
     {
       "type": "short",
       "topic": "Correlation",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact field name that correlates one procurement case.",
       "explanation": "case_id prevents a finding for one procurement investigation from entering another case.",
       "accepted": [
@@ -2569,7 +2576,7 @@
     {
       "type": "short",
       "topic": "Exact arithmetic",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact Python class used for price and percentage arithmetic.",
       "explanation": "Decimal avoids binary-float drift and supports explicit two-place half-even rounding.",
       "accepted": [
@@ -2581,7 +2588,7 @@
     {
       "type": "short",
       "topic": "Bounded concurrency",
-      "difficulty": "foundation",
+      "difficulty": "applied",
       "prompt": "Write the exact Python executor class used for the first wave.",
       "explanation": "ThreadPoolExecutor provides the lab's explicit maximum worker bound for three local specialists.",
       "accepted": [
@@ -2689,7 +2696,7 @@
     {
       "type": "code",
       "topic": "Dependency planning",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement plan_stages(requested). requested must be an exact list containing each of document, sql, supplier_risk and commercial exactly once, in any input order, with exact string values and no other role. Return exactly (('document','sql','supplier_risk'),('commercial',)). Raise TypeError for the wrong container or item types and ValueError for duplicates, missing or unknown roles. Do not mutate requested.",
       "explanation": "The fixed two-stage plan makes the three independent source tasks explicit and prevents commercial synthesis from running before them.",
       "starter": "def plan_stages(requested):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2721,7 +2728,7 @@
     {
       "type": "code",
       "topic": "Bounded dispatch",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement bounded_batches(roles, max_workers). roles must be a non-empty exact list of unique exact strings selected from document, sql and supplier_risk. max_workers must be an exact integer from 1 through 3. Return a tuple of tuple batches, preserving input order, with each batch at most max_workers. Raise TypeError or ValueError for malformed input and do not mutate roles.",
       "explanation": "A deterministic batch plan makes the worker bound observable and prevents undeclared or duplicate fan-out.",
       "starter": "def bounded_batches(roles, max_workers):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -2849,7 +2856,7 @@
     {
       "type": "code",
       "topic": "Exact variance",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement price_variance(current_price, reference_price). Both values must be exact positive Decimal instances. Compute (current-reference)/reference*100 with local decimal precision 28 and return a Decimal quantized to 0.01 using ROUND_HALF_EVEN. Raise TypeError for wrong types and ValueError for non-positive values.",
       "explanation": "Exact Decimal arithmetic and explicit rounding keep threshold decisions deterministic and avoid binary-float drift.",
       "starter": "def price_variance(current_price, reference_price):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3073,7 +3080,7 @@
     {
       "type": "code",
       "topic": "Pattern selection",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement choose_architecture(requirements). requirements must be an exact dict with exactly distinct_context, separate_governance, independent_work and coordination_cost_justified, all exact booleans. Return supervisor_specialists only when at least one boundary reason is true, independent_work is true and coordination_cost_justified is true; otherwise return single_workflow. Reject wrong types or shape and do not mutate input.",
       "explanation": "Multiple agents are a deliberate architecture choice only when meaningful boundaries and independent work justify their added coordination cost.",
       "starter": "def choose_architecture(requirements):\n    raise NotImplementedError('Implement the stated contract')\n",
@@ -3105,7 +3112,7 @@
     {
       "type": "code",
       "topic": "Registry safety",
-      "difficulty": "applied",
+      "difficulty": "foundation",
       "prompt": "Implement validate_registry(registry). registry must be an exact dict with exactly document, sql, supplier_risk and commercial keys and every value callable. Return the role tuple in that exact declared order. Raise TypeError for a non-dict or non-callable value and ValueError for a missing or unexpected role. Do not mutate registry or invoke any function.",
       "explanation": "A closed complete registry keeps dispatch under supervisor control and prevents specialists from inventing roles or unbounded child work.",
       "starter": "def validate_registry(registry):\n    raise NotImplementedError('Implement the stated contract')\n",
