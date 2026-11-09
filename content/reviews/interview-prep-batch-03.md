@@ -1,5 +1,12 @@
 # Interview preparation Batch 3 review record
 
+## Approval
+
+- Decision: approved for merge and publication on 2026-11-09.
+- Approved scope: four RAG-focused revision guides and twenty new questions per role bank.
+- Authority: explicit repository-owner approval in the Batch 3 review conversation.
+- Merge gate: the approval candidate must pass the content, navigation, regression, and PostgreSQL/pgvector integration jobs.
+
 ## Documentation set
 
 - Audience: AI Engineer, Agentic AI Engineer, Data Science Technical Lead, and Senior Data Scientist candidates with foundational ML and LLM knowledge.
@@ -20,7 +27,7 @@ The instructional bodies are unchanged apart from removing each duplicate top-le
 
 ## Role-bank extension
 
-| Role | Approved Batches 1–2 | New Batch 3 | Review-candidate total |
+| Role | Approved Batches 1–2 | New Batch 3 | Approved total |
 | --- | ---: | ---: | ---: |
 | Agentic AI Engineer | 40 | 20 | 60 |
 | Data Science Technical Lead | 40 | 20 | 60 |
@@ -34,7 +41,7 @@ Batch 3 separates implementation, technical-lead, and data-science perspectives 
 - each role adds exactly `B3-01` through `B3-20` with unique IDs;
 - every new question has three strong-answer signals, one follow-up probe, and direct revision links;
 - all source bodies retain their rapid-revision section and exact instructional content;
-- public Batch 3 pages and expanded role banks remain `status: review` until human approval;
+- all Batch 3 public pages and expanded role banks use `status: approved` after human approval;
 - unique permalinks, complete hub links, Markdown structure, linting, tests, and repository integration checks are merge gates.
 
 ## Evidence boundary and handoff

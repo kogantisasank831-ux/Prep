@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.2.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"

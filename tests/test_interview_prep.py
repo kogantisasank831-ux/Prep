@@ -52,15 +52,11 @@ def page_status(content: str) -> str:
 def test_public_pages_have_required_front_matter() -> None:
     approved_pages = (
         ROOT / "interview-prep/master-index.md",
-        *BATCH_ONE_CHEAT_SHEETS,
-        *BATCH_TWO_CHEAT_SHEETS,
-    )
-    review_pages = (
         ROOT / "interview-prep/index.md",
-        *BATCH_THREE_CHEAT_SHEETS,
+        *ALL_CHEAT_SHEETS,
         *ROLE_BANKS.values(),
     )
-    pages = approved_pages + review_pages
+    pages = approved_pages
     permalinks: list[str] = []
     for page in pages:
         content = read(page)
@@ -70,7 +66,6 @@ def test_public_pages_have_required_front_matter() -> None:
         assert match is not None, page
         permalinks.append(match.group(1))
     assert all(page_status(read(page)) == "approved" for page in approved_pages)
-    assert all(page_status(read(page)) == "review" for page in review_pages)
     assert len(permalinks) == len(set(permalinks))
 
 
@@ -127,8 +122,12 @@ def test_hub_links_every_interview_artifact() -> None:
 
 
 def test_shared_navigation_exposes_interview_prep() -> None:
-    assert "interview-prep/" in read(ROOT / "index.html")
+    home = read(ROOT / "index.html")
     layout = read(ROOT / "_layouts/week.html")
+    for content in (home, layout):
+        assert 'data-nav-section="roadmap"' in content
+        assert 'data-nav-section="interview-prep"' in content
+    assert "interview-prep/" in home
     assert "interview-prep/" in layout
     assert "page.back_url" in layout
     assert "page.pagination_url" in layout
