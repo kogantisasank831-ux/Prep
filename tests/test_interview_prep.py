@@ -25,7 +25,18 @@ BATCH_TWO_CHEAT_SHEETS = (
     ROOT / "interview-prep/cheat-sheets/llm-generative-ai.md",
 )
 
-ALL_CHEAT_SHEETS = BATCH_ONE_CHEAT_SHEETS + BATCH_TWO_CHEAT_SHEETS
+BATCH_THREE_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/embeddings-vector-search.md",
+    ROOT / "interview-prep/cheat-sheets/document-ingestion-chunking-indexing.md",
+    ROOT / "interview-prep/cheat-sheets/rag-architecture-retrieval-generation.md",
+    ROOT / "interview-prep/cheat-sheets/rag-evaluation-security-production.md",
+)
+
+ALL_CHEAT_SHEETS = (
+    BATCH_ONE_CHEAT_SHEETS
+    + BATCH_TWO_CHEAT_SHEETS
+    + BATCH_THREE_CHEAT_SHEETS
+)
 
 
 def read(path: Path) -> str:
@@ -41,11 +52,15 @@ def page_status(content: str) -> str:
 def test_public_pages_have_required_front_matter() -> None:
     approved_pages = (
         ROOT / "interview-prep/master-index.md",
+        *BATCH_ONE_CHEAT_SHEETS,
+        *BATCH_TWO_CHEAT_SHEETS,
+    )
+    review_pages = (
         ROOT / "interview-prep/index.md",
-        *ALL_CHEAT_SHEETS,
+        *BATCH_THREE_CHEAT_SHEETS,
         *ROLE_BANKS.values(),
     )
-    pages = approved_pages
+    pages = approved_pages + review_pages
     permalinks: list[str] = []
     for page in pages:
         content = read(page)
@@ -55,13 +70,14 @@ def test_public_pages_have_required_front_matter() -> None:
         assert match is not None, page
         permalinks.append(match.group(1))
     assert all(page_status(read(page)) == "approved" for page in approved_pages)
+    assert all(page_status(read(page)) == "review" for page in review_pages)
     assert len(permalinks) == len(set(permalinks))
 
 
 def test_role_banks_have_two_stable_complete_batches() -> None:
     for prefix, path in ROLE_BANKS.items():
         content = read(path)
-        for batch in (1, 2):
+        for batch in (1, 2, 3):
             ids = re.findall(
                 rf"^### ({prefix}-B{batch}-\d{{2}}) — ",
                 content,
@@ -73,10 +89,10 @@ def test_role_banks_have_two_stable_complete_batches() -> None:
             ]
             assert ids == expected
             assert len(ids) == len(set(ids)) == 20
-        assert content.count("**Strong answer signals**") == 40
-        assert content.count("**Follow-up probe:**") == 40
-        assert content.count("**Revision links:**") == 40
-        assert "question_count: 40" in content
+        assert content.count("**Strong answer signals**") == 60
+        assert content.count("**Follow-up probe:**") == 60
+        assert content.count("**Revision links:**") == 60
+        assert "question_count: 60" in content
 
 
 def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
@@ -98,6 +114,10 @@ def test_hub_links_every_interview_artifact() -> None:
         "/interview-prep/cheat-sheets/nlp/",
         "/interview-prep/cheat-sheets/transformers/",
         "/interview-prep/cheat-sheets/llm-generative-ai/",
+        "/interview-prep/cheat-sheets/embeddings-vector-search/",
+        "/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/",
+        "/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/",
+        "/interview-prep/cheat-sheets/rag-evaluation-security-production/",
         "/interview-prep/roles/agentic-ai-engineer/",
         "/interview-prep/roles/data-science-technical-lead/",
         "/interview-prep/roles/senior-data-scientist/",

@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.1.0"
+status: "review"
+version: "1.2.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "Forty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production Python, SQL state, neural-network and NLP systems, transformer and LLM design, evaluation, reliability, safety, architecture, and incidents."
+description: "Sixty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production Python, AI systems, embeddings, ingestion, RAG architecture, evaluation, security, reliability, and incident decisions."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–2 · 40 guided questions"
+kicker_secondary: "Batches 1–3 · 60 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 40
+question_count: 60
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 40 questions across Batches 1–2 · **Status:** Batches 1–2 approved
+**Bank size:** 60 questions across Batches 1–3 · **Status:** Batches 1–2 approved; Batch 3 review candidate
 
 ## Python and service engineering
 
@@ -612,6 +612,297 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 
 **Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
 
+
+## Batch 3 · Embeddings and vector search
+
+### AIE-B3-01 — Retrieval quality collapsed after changing the embedding model. How do you debug it?
+
+**Round:** Vector search debugging · **Depth:** Applied
+
+**Strong answer signals**
+
+- Verify that query and document embeddings use the same model, preprocessing, dimensions, normalization, and version.
+- Check whether the index metric matches the model contract and compare exact-search recall with ANN recall before blaming generation.
+- Inspect data slices, stale vectors, deployment order, and rollback readiness; re-embed into a versioned index rather than mutating blindly.
+
+**Follow-up probe:** How would you migrate a large corpus without serving mixed embedding spaces?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### AIE-B3-02 — Design hybrid retrieval for queries containing both business meaning and exact identifiers.
+
+**Round:** Retrieval design · **Depth:** Applied
+
+**Strong answer signals**
+
+- Use sparse retrieval for exact tokens, codes, numbers, and rare terms while dense retrieval covers semantic matches.
+- Normalize or rank-fuse independent result lists, then deduplicate and rerank a bounded candidate set.
+- Evaluate lexical, dense, hybrid, and reranked variants on representative query slices instead of assuming hybrid is always better.
+
+**Follow-up probe:** When would reciprocal-rank fusion be safer than combining raw scores?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### AIE-B3-03 — Tune an HNSW-backed service that misses latency SLOs but cannot lose much recall.
+
+**Round:** ANN performance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Establish exact-search ground truth and measure recall@K, p50/p95 latency, memory, throughput, and filtered-query behavior.
+- Tune build-time and query-time parameters separately, including graph connectivity, construction effort, and search effort.
+- Profile filters, vector dimensions, concurrency, and hardware; use controlled sweeps and retain a rollbackable index artifact.
+
+**Follow-up probe:** Why can an ANN setting that works without filters fail badly after selective metadata filtering?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### AIE-B3-04 — How do you enforce tenant and document permissions in vector retrieval?
+
+**Round:** Retrieval security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Derive trusted tenant and principal scope from authenticated server-side context, never from an untrusted prompt.
+- Apply authorization-compatible metadata filters during candidate retrieval and re-check access before context assembly.
+- Test cross-tenant negatives, cache keys, filter fallbacks, and index synchronization so missing metadata fails closed.
+
+**Follow-up probe:** What can leak if permission filtering happens only after top-K retrieval?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }}) · [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### AIE-B3-05 — Choose between a bi-encoder, cross-encoder, and late-interaction retriever.
+
+**Round:** Retrieval architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use a bi-encoder for scalable first-stage retrieval because queries and documents are encoded independently.
+- Use a cross-encoder to rerank a small candidate set when quality justifies added latency and cost.
+- Consider late interaction when token-level matching quality matters, but include its larger index and operational complexity in the decision.
+
+**Follow-up probe:** How would you choose the candidate count sent to an expensive cross-encoder?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+
+## Batch 3 · Document ingestion, chunking, and indexing
+
+### AIE-B3-06 — Design an idempotent ingestion pipeline for files that can be retried, updated, or deleted.
+
+**Round:** Ingestion reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate source discovery, parsing, canonicalization, chunking, embedding, indexing, and publication with explicit stage contracts.
+- Use deterministic document and chunk IDs plus content, parser, chunker, and embedding versions so retries converge.
+- Handle tombstones and replacement atomically, quarantine failed documents, and expose replay plus reconciliation tooling.
+
+**Follow-up probe:** How would you prevent a partial re-index from leaving both old and new chunks searchable?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### AIE-B3-07 — Choose a chunking strategy for manuals containing headings, tables, code, and cross-references.
+
+**Round:** Chunking design · **Depth:** Applied
+
+**Strong answer signals**
+
+- Preserve structural units and metadata instead of applying one blind character window to every element.
+- Use token-aware limits, modest overlap only where continuity needs it, and parent-child or neighbor expansion for wider context.
+- Treat tables and code as typed content with appropriate representations, then validate retrieval and citation quality by content type.
+
+**Follow-up probe:** What failure would excessive overlap create during retrieval and generation?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### AIE-B3-08 — How do you preserve provenance precise enough for trustworthy citations?
+
+**Round:** Provenance · **Depth:** Applied
+
+**Strong answer signals**
+
+- Keep immutable source identity, version, URI, page or section coordinates, element type, and parser lineage in the canonical model.
+- Carry provenance from source elements into chunks and through reranking and context assembly without reconstructing it from generated text.
+- Validate that displayed citations resolve to the exact indexed version and fail visibly when coordinates are unavailable.
+
+**Follow-up probe:** Why is a document-level URL alone insufficient for audited answers?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }}) · [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### AIE-B3-09 — An OCR parser silently drops tables from some PDFs. How should the pipeline respond?
+
+**Round:** Data-quality incident · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Add extraction-quality signals such as page coverage, element counts, empty-page checks, table expectations, and parser warnings.
+- Quarantine or route low-confidence documents to a fallback parser or human review instead of publishing incomplete content.
+- Version parser outputs, retain samples and diagnostics, and reprocess affected documents after a verified fix.
+
+**Follow-up probe:** Which checks would distinguish a genuinely blank page from a parser failure?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### AIE-B3-10 — Plan an embedding and index backfill without disrupting online retrieval.
+
+**Round:** Index migration · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Build a versioned shadow index from a fixed source snapshot while incremental changes are captured for replay.
+- Compare document counts, deletion state, retrieval metrics, latency, and permission behavior before a controlled traffic shift.
+- Switch through an alias or routing layer, monitor the new version, and retain the old index for bounded rollback.
+
+**Follow-up probe:** How do you close the change gap between the backfill snapshot and cutover?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+
+## Batch 3 · RAG architecture, retrieval, and generation
+
+### AIE-B3-11 — Walk through a production RAG request from authenticated input to cited answer.
+
+**Round:** System design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Validate the request and trusted scope, transform the query deliberately, retrieve candidates, apply authorization, fuse or rerank, and assemble bounded context.
+- Generate with instructions that distinguish untrusted evidence from system policy, then validate answerability, citations, and structured output.
+- Emit traceable stage metrics and identities while keeping raw sensitive content out of routine logs.
+
+**Follow-up probe:** At which boundaries would you add timeouts, fallbacks, and circuit breakers?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### AIE-B3-12 — Explain `fetch_k`, reranking depth, and final `top_k` as separate controls.
+
+**Round:** Retrieval pipeline · **Depth:** Applied
+
+**Strong answer signals**
+
+- `fetch_k` controls first-stage candidate breadth and therefore the ceiling for downstream recall.
+- Reranking depth bounds the expensive scorer's work, while final `top_k` controls evidence volume sent to context assembly.
+- Tune all three against retrieval recall, reranker gains, latency, token budget, and duplicate concentration.
+
+**Follow-up probe:** Why can increasing final `top_k` reduce answer quality even when recall rises?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### AIE-B3-13 — Build context under a strict token budget without losing critical evidence.
+
+**Round:** Context engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Allocate explicit budgets for instructions, user input, conversation state, evidence, and output rather than truncating at the end.
+- Deduplicate, diversify, order, and compress evidence while preserving claim-bearing text and provenance.
+- Prefer relevance-aware selection, parent or neighbor expansion when justified, and deterministic overflow behavior with observability.
+
+**Follow-up probe:** How would you detect that context compression is removing qualifiers or exceptions?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### AIE-B3-14 — Design conversation-aware RAG without letting stale history corrupt retrieval.
+
+**Round:** Conversational RAG · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate durable user facts, recent dialogue, and retrieval query state; do not concatenate the entire transcript blindly.
+- Rewrite follow-up queries with explicit references while retaining the original query for audit and fallback.
+- Apply privacy, tenant, expiry, and correction rules to memory, and evaluate pronouns, topic shifts, and adversarial history.
+
+**Follow-up probe:** When should a query rewrite be rejected in favor of the user's original wording?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### AIE-B3-15 — How do you make a RAG system abstain and cite evidence reliably?
+
+**Round:** Grounded generation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define answerability from evidence sufficiency, not model confidence alone, and provide a clear no-answer contract.
+- Require claims to map to retrieved source identifiers and validate that citations support the nearby text.
+- Calibrate thresholds on answerable and unanswerable cases, measure false answers and false abstentions, and preserve escalation paths.
+
+**Follow-up probe:** What should happen when retrieved passages disagree with one another?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) · [RAG evaluation]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+
+## Batch 3 · RAG evaluation, security, and production
+
+### AIE-B3-16 — Design component and end-to-end evaluation for a RAG release.
+
+**Round:** Evaluation design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use a versioned dataset with answerable, unanswerable, permission-sensitive, multilingual, long-tail, and adversarial slices.
+- Measure retrieval independently with recall, ranking, and filter correctness, then measure groundedness, answer relevance, citations, abstention, latency, and cost.
+- Run controlled ablations so a system-level change can be traced to retrieval, context, prompt, model, or policy.
+
+**Follow-up probe:** Why can a strong end-to-end score hide a broken retriever?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### AIE-B3-17 — Defend a RAG pipeline against prompt injection inside retrieved documents.
+
+**Round:** AI security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Treat retrieved content as untrusted data, clearly delimit it, and keep system policy and tool permissions outside its control.
+- Use least-privilege tools, allowlisted actions, server-side authorization, output validation, and human confirmation for consequential operations.
+- Test direct and indirect injection, data exfiltration, cross-tenant retrieval, malicious citations, and encoded payloads in release gates.
+
+**Follow-up probe:** Why is an instruction such as “ignore retrieved commands” insufficient by itself?
+
+**Revision links:** [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### AIE-B3-18 — Define observability and SLOs for a production RAG service.
+
+**Round:** Operations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Track stage-level latency, errors, timeouts, candidate counts, empty retrieval, reranker behavior, token usage, cost, cache state, and dependency versions.
+- Define user-facing availability and latency SLOs plus quality guardrails such as permission correctness, groundedness samples, and abstention health.
+- Use privacy-safe traces with request, corpus, index, embedding, prompt, and model identities so incidents are reproducible.
+
+**Follow-up probe:** Which leading indicators would warn of retrieval degradation before users report bad answers?
+
+**Revision links:** [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### AIE-B3-19 — A new index is faster overall but fails one high-risk query slice. Do you release it?
+
+**Round:** Release decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Treat slice-specific permission, safety, or critical-answer regressions as release blockers even if averages improve.
+- Confirm the regression with paired cases, inspect the affected pipeline stage, and define an explicit acceptance threshold with the owner.
+- Use shadow or canary traffic only when exposure is safe, keep rollback immediate, and document the decision and residual risk.
+
+**Follow-up probe:** What evidence would justify a narrowly scoped exception rather than a full rollback?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### AIE-B3-20 — Retrieval quality drops after deployment while the generator is unchanged. Lead the incident response.
+
+**Round:** Incident response · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stabilize service through rollback, degraded-mode search, or a safe abstention policy before deep diagnosis.
+- Compare source freshness, ingestion lag, deletion state, embedding and index versions, filters, ANN settings, and query-transform changes.
+- Preserve traces and candidate sets, identify blast radius, communicate clearly, then add reconciliation and regression checks from the failure.
+
+**Follow-up probe:** How would you distinguish corpus drift from an index-build defect?
+
+**Revision links:** [Ingestion and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }}) · [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
 
 ## Completion evidence
 

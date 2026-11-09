@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.1.0"
+status: "review"
+version: "1.2.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "Forty guided questions for Data Science Technical Lead interviews."
-summary: "Practise problem framing, experimentation, deep-learning, NLP, and LLM decisions, validation, governance, prioritization, mentoring, and technical leadership."
+description: "Sixty guided questions for Data Science Technical Lead interviews."
+summary: "Practise framing, experimentation, ML and LLM decisions, retrieval and RAG leadership, governance, security, delivery, and operating-model choices."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–2 · 40 guided questions"
+kicker_secondary: "Batches 1–3 · 60 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 40
+question_count: 60
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 40 questions across Batches 1–2 · **Status:** Batches 1–2 approved
+**Bank size:** 60 questions across Batches 1–3 · **Status:** Batches 1–2 approved; Batch 3 review candidate
 
 ## Problem framing
 
@@ -614,6 +614,297 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 
 **Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
 
+
+## Batch 3 · Embeddings and vector search
+
+### DSTL-B3-01 — When should a team choose sparse, dense, or hybrid retrieval?
+
+**Round:** Technical strategy · **Depth:** Applied
+
+**Strong answer signals**
+
+- Start from query types, corpus language, exact-token needs, semantic variation, freshness, latency, and permission constraints.
+- Use sparse retrieval for strong lexical signals, dense retrieval for semantic matching, and hybrid only when evaluation shows complementary gains.
+- Define a representative benchmark and operational budget before selecting an architecture or vendor.
+
+**Follow-up probe:** Which query slices would you use to prove that hybrid retrieval adds value?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### DSTL-B3-02 — Lead the selection of an embedding model for a multilingual enterprise corpus.
+
+**Round:** Model selection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define languages, domains, query-document asymmetry, context length, vector size, licensing, hosting, privacy, and cost constraints.
+- Evaluate on in-domain relevance judgments and hard negatives by language and business slice, not only public leaderboard averages.
+- Include index size, encoding throughput, migration effort, versioning, and rollback in the decision record.
+
+**Follow-up probe:** How would you handle a model that wins overall but regresses the lowest-volume language?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### DSTL-B3-03 — Define the evaluation and acceptance criteria for a new ANN index.
+
+**Round:** Quality governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Create exact-search ground truth and measure recall@K, ranking quality, filtered-query correctness, latency percentiles, throughput, and memory.
+- Set slice-specific thresholds for tenants, languages, document types, and rare-query classes rather than relying on a single average.
+- Require repeatable index builds, versioned parameters, capacity evidence, and a rollback path before production approval.
+
+**Follow-up probe:** Why is end-to-end answer quality alone insufficient for approving an ANN change?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### DSTL-B3-04 — How do you govern authorization metadata in a retrieval platform shared by teams?
+
+**Round:** Governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define canonical ownership and semantics for tenant, principal, classification, retention, and source-access fields.
+- Make missing or invalid authorization metadata fail closed and test enforcement across ingestion, retrieval, caches, and context assembly.
+- Audit schema changes, access decisions, and index synchronization while minimizing sensitive data in logs.
+
+**Follow-up probe:** Which team should own a permission-field migration, and what evidence must they provide?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }}) · [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### DSTL-B3-05 — Make a build-versus-buy decision for the vector-search layer.
+
+**Round:** Architecture decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Compare required scale, filtering, hybrid search, consistency, tenancy, availability, observability, portability, and team operating capability.
+- Model total cost including data movement, replicas, index rebuilds, support, incident load, and exit or migration cost.
+- Run a bounded proof against the real corpus and workload, then record assumptions, rejected options, and review triggers.
+
+**Follow-up probe:** What requirement would make a seemingly cheaper managed service unacceptable?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+
+## Batch 3 · Document ingestion, chunking, and indexing
+
+### DSTL-B3-06 — Define contracts and ownership for a multi-source ingestion program.
+
+**Round:** Platform leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Inventory sources, owners, formats, update and deletion semantics, permissions, data quality, retention, and expected service levels.
+- Define a canonical document model and versioned stage contracts for parsing, provenance, chunking, embedding, indexing, and publication.
+- Assign operational ownership, reconciliation metrics, quarantine handling, replay procedures, and change-review triggers.
+
+**Follow-up probe:** What should happen when a source owner cannot provide reliable deletion events?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### DSTL-B3-07 — Design an experiment to choose chunking strategy and size.
+
+**Round:** Experimentation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Hold the corpus, embedding model, retriever, and evaluator stable while comparing structural, semantic, parent-child, and fixed-window variants.
+- Measure retrieval relevance, evidence completeness, citation precision, answer quality, latency, index size, and duplicate concentration.
+- Analyze results by document type and query class, then select a policy with explicit exceptions rather than one global number.
+
+**Follow-up probe:** How would you prevent the evaluation answers from leaking into the chunking decision?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### DSTL-B3-08 — Establish lineage, deletion, and retention controls for a RAG corpus.
+
+**Round:** Data governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Trace every chunk to source identity, source version, parser, chunker, embedding model, index version, and access policy.
+- Define deterministic deletion and replacement behavior across raw storage, derived artifacts, indexes, caches, backups, and evaluation samples.
+- Prove controls with reconciliation and negative retrieval tests, while documenting legal or policy owners for retention decisions.
+
+**Follow-up probe:** How do you demonstrate that a deleted source is no longer answerable from stale caches?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### DSTL-B3-09 — Scope support for tables, images, and scanned documents.
+
+**Round:** Product scoping · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start from user tasks and evidence requirements, then measure how often each content type affects critical answers.
+- Compare native extraction, OCR, layout-aware parsing, table serialization, multimodal models, and human fallback with quality and cost evidence.
+- Ship explicit supported and unsupported cases with confidence checks instead of implying universal document understanding.
+
+**Follow-up probe:** When is excluding a difficult document type the responsible product decision?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### DSTL-B3-10 — Plan capacity and change management for incremental indexing.
+
+**Round:** Delivery planning · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Forecast source growth, update bursts, embedding throughput, index-build time, storage, replicas, and deletion or compaction work.
+- Separate freshness SLOs from backfill objectives and reserve capacity for retries, migrations, and incident replay.
+- Use versioned shadow indexes, reconciliation gates, controlled cutover, and observable rollback for material changes.
+
+**Follow-up probe:** Which freshness metric would you present to a business owner?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+
+## Batch 3 · RAG architecture, retrieval, and generation
+
+### DSTL-B3-11 — Choose among RAG, fine-tuning, long-context prompting, and deterministic search.
+
+**Round:** Solution framing · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate knowledge freshness, behavior adaptation, reasoning, exact lookup, latency, cost, privacy, and audit requirements.
+- Prefer the simplest approach that satisfies the task, and combine techniques only when their distinct contribution is measurable.
+- Define baselines, excluded uses, evaluation criteria, and an exit path before committing to a platform.
+
+**Follow-up probe:** What problem does fine-tuning solve that document retrieval does not?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### DSTL-B3-12 — Review a proposed RAG architecture before implementation.
+
+**Round:** Architecture review · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Trace authenticated scope, ingestion lineage, retrieval, authorization, reranking, context assembly, generation, citations, and feedback end to end.
+- Challenge hidden coupling, unbounded fan-out, silent fallbacks, provider lock-in, sensitive logging, and missing deletion or rollback paths.
+- Require measurable contracts for quality, latency, cost, safety, ownership, and failure behavior at each boundary.
+
+**Follow-up probe:** Which architecture gap is most likely to appear only after the first production incident?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### DSTL-B3-13 — Set stage-level budgets and contracts across retrieval, reranking, and generation teams.
+
+**Round:** Cross-team delivery · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Translate the user SLO and quality target into bounded latency, candidate, token, cost, and error budgets for each stage.
+- Define versioned request and response schemas, provenance fields, timeout behavior, degradation modes, and owner-facing dashboards.
+- Use integration and replay tests to prevent one team's optimization from silently shifting cost or quality to another stage.
+
+**Follow-up probe:** How would you resolve a dispute between retrieval recall and generation latency owners?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### DSTL-B3-14 — Define product behavior for answerability, abstention, and citations.
+
+**Round:** Product-quality decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Agree on which tasks require evidence, which sources are authoritative, and what insufficient or conflicting evidence should look like to users.
+- Set separate costs and thresholds for false answers and false abstentions by risk tier.
+- Validate citation support and usability with domain reviewers, and provide escalation or search-result alternatives where needed.
+
+**Follow-up probe:** When should the system return sources without synthesizing an answer?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) · [RAG evaluation]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### DSTL-B3-15 — Govern conversation memory and personalization in a RAG product.
+
+**Round:** Privacy and product design · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define which data is session-only, durable, user-editable, derived, or prohibited, with explicit consent and retention rules.
+- Keep memory separate from authoritative retrieved evidence and reapply tenant and permission checks on every request.
+- Evaluate topic shifts, stale preferences, shared accounts, deletion, correction, and personalization harms across user slices.
+
+**Follow-up probe:** Who owns the decision to retain a derived user preference, and what evidence is required?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) · [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+
+## Batch 3 · RAG evaluation, security, and production
+
+### DSTL-B3-16 — Build a sustainable RAG evaluation program rather than a one-time benchmark.
+
+**Round:** Evaluation leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Create governed datasets from real tasks with representative, long-tail, unanswerable, adversarial, permission, and regression cases.
+- Assign owners for labels, metric definitions, judge calibration, slice coverage, dataset versioning, and release thresholds.
+- Connect offline component metrics, human review, online feedback, incidents, and drift monitoring without treating any one signal as truth.
+
+**Follow-up probe:** How do you prevent the benchmark from becoming overfitted and unrepresentative?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### DSTL-B3-17 — Define a release gate for a major RAG change.
+
+**Round:** Release governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Require versioned candidate identity, reproducible component and end-to-end evaluation, security tests, capacity evidence, and rollback readiness.
+- Set non-compensating thresholds for critical permissions, safety, and high-risk slices alongside aggregate quality, latency, and cost targets.
+- Use ablations, shadow traffic, or canaries where safe, and record acceptance, known limitations, and post-release monitoring owners.
+
+**Follow-up probe:** Which regression should block release even if business-success metrics improve?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### DSTL-B3-18 — Create a threat model for enterprise RAG.
+
+**Round:** AI security leadership · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Map assets, trust boundaries, actors, and data flows across sources, ingestion, indexes, retrieval, prompts, models, tools, caches, and logs.
+- Cover poisoning, indirect prompt injection, cross-tenant retrieval, exfiltration, malicious files, citation spoofing, denial of service, and supply-chain risk.
+- Assign preventive, detective, and recovery controls with owners and executable adversarial tests.
+
+**Follow-up probe:** Which control remains necessary even if the model is highly resistant to prompt injection?
+
+**Revision links:** [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### DSTL-B3-19 — Define production ownership and SLOs for a cross-team RAG platform.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Name owners for sources, ingestion, retrieval, models, prompts, policies, application behavior, incidents, and user support.
+- Define availability, latency, freshness, permission correctness, quality-sampling, cost, and recovery objectives with alert and escalation rules.
+- Provide runbooks, version inventories, replay tooling, capacity reviews, and post-incident learning rather than relying on individual expertise.
+
+**Follow-up probe:** How would you allocate an error budget when multiple dependencies contribute to one user request?
+
+**Revision links:** [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### DSTL-B3-20 — A pilot improves average answer quality but harms a regulated workflow. Make the decision.
+
+**Round:** Executive decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate the regulated slice and its failure cost from the overall average; do not trade mandatory controls for broad gains.
+- Verify evidence with domain, risk, and product owners, identify whether scope restriction or remediation can make deployment safe.
+- Document the decision, limitations, monitoring, and re-entry criteria; prefer a bounded launch or no-launch when residual risk is unacceptable.
+
+**Follow-up probe:** What evidence would support launching only the low-risk use cases?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
 
 ## Completion evidence
 

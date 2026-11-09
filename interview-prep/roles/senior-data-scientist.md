@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.1.0"
+status: "review"
+version: "1.2.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "Forty guided questions for Senior Data Scientist interviews."
-summary: "Practise SQL, statistics, leakage-safe ML, deep learning, NLP, transformers, LLM evaluation, monitoring, and defensible business impact."
+description: "Sixty guided questions for Senior Data Scientist interviews."
+summary: "Practise statistics, leakage-safe ML, embeddings, retrieval experiments, RAG evaluation, security testing, monitoring, and defensible business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–2 · 40 guided questions"
+kicker_secondary: "Batches 1–3 · 60 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 40
+question_count: 60
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 40 questions across Batches 1–2 · **Status:** Batches 1–2 approved
+**Bank size:** 60 questions across Batches 1–3 · **Status:** Batches 1–2 approved; Batch 3 review candidate
 
 ## SQL and data
 
@@ -610,6 +610,297 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 
 **Revision links:** [LLM and Generative AI]({{ '/interview-prep/cheat-sheets/llm-generative-ai/' | relative_url }})
 
+
+## Batch 3 · Embeddings and vector search
+
+### SDS-B3-01 — Compare cosine similarity, dot product, and Euclidean distance for retrieval.
+
+**Round:** Representation fundamentals · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Cosine measures direction, dot product includes vector magnitude, and Euclidean distance measures geometric separation.
+- For L2-normalized vectors, cosine equals dot product and induces a ranking closely related to Euclidean distance.
+- Use the metric expected during model training and supported consistently by the index; validate ranking on task data.
+
+**Follow-up probe:** How can missing normalization change dot-product rankings?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### SDS-B3-02 — Explain when to use a bi-encoder and when to add a cross-encoder.
+
+**Round:** Retrieval modeling · **Depth:** Applied
+
+**Strong answer signals**
+
+- A bi-encoder embeds queries and documents independently, enabling reusable document vectors and scalable candidate retrieval.
+- A cross-encoder jointly scores each query-document pair and usually improves relevance at much higher per-pair cost.
+- Use staged retrieval: broad bi-encoder candidates followed by bounded cross-encoder reranking, tuned against recall and latency.
+
+**Follow-up probe:** What training negatives would make the bi-encoder more useful before reranking?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### SDS-B3-03 — Combine lexical and dense retrieval without assuming their scores are comparable.
+
+**Round:** Hybrid retrieval · **Depth:** Applied
+
+**Strong answer signals**
+
+- Sparse and dense scores have different scales and distributions, so raw-score addition requires calibration.
+- Rank-fusion methods such as reciprocal-rank fusion combine order rather than incompatible raw values.
+- Evaluate lexical, dense, and fused systems by query slice, then rerank and deduplicate only when incremental gain is measured.
+
+**Follow-up probe:** Which queries are likely to benefit most from the sparse branch?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### SDS-B3-04 — Evaluate an approximate-nearest-neighbor configuration.
+
+**Round:** Retrieval evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use exact nearest-neighbor results as ground truth and compute ANN recall@K on representative queries.
+- Measure latency percentiles, throughput, memory, build time, and behavior under filters and concurrency.
+- Sweep parameters reproducibly and select a Pareto-appropriate setting rather than optimizing recall or latency alone.
+
+**Follow-up probe:** Why can a small average recall loss still be unacceptable?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+### SDS-B3-05 — Use maximal marginal relevance to improve result diversity.
+
+**Round:** Ranking · **Depth:** Applied
+
+**Strong answer signals**
+
+- MMR balances query relevance against similarity to already selected items, reducing redundant evidence.
+- Tune the relevance-diversity trade-off and candidate pool on tasks where multiple aspects or sources matter.
+- Measure coverage and answer quality because diversity can remove useful corroboration when overapplied.
+
+**Follow-up probe:** How would you distinguish healthy corroboration from wasteful duplication?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }})
+
+
+## Batch 3 · Document ingestion, chunking, and indexing
+
+### SDS-B3-06 — Choose the chunking unit and overlap for a new corpus.
+
+**Round:** Data preparation · **Depth:** Applied
+
+**Strong answer signals**
+
+- Start from document structure, query granularity, evidence span, embedding context limits, and citation needs.
+- Compare structural or semantic chunks with fixed token windows; add overlap only where boundary loss justifies duplication.
+- Evaluate retrieval and downstream answers by document type while monitoring index growth and redundant candidates.
+
+**Follow-up probe:** What evidence would tell you that chunks are too small?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### SDS-B3-07 — Prevent duplicate and near-duplicate documents from biasing retrieval evaluation.
+
+**Round:** Dataset quality · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Create content and source-aware fingerprints before splitting or indexing, with a documented near-duplicate policy.
+- Group versions and related documents so train, tuning, and test queries do not leak equivalent evidence across boundaries.
+- Report duplicate prevalence and evaluate both deduplicated relevance and production behavior where legitimate versions remain.
+
+**Follow-up probe:** How can duplicated chunks inflate both retrieval and generation scores?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### SDS-B3-08 — Explain parent-child retrieval and when it helps.
+
+**Round:** Chunking architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- Index small child chunks for precise matching while returning a larger parent or selected neighbors for complete context.
+- Preserve deterministic relationships and provenance so expanded context remains traceable and permission-correct.
+- Evaluate evidence completeness, noise, token cost, and duplicates against direct large-chunk and small-chunk baselines.
+
+**Follow-up probe:** When can parent expansion reduce answer quality?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### SDS-B3-09 — Represent tables and metadata for retrieval experiments.
+
+**Round:** Feature design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Preserve headers, units, row and column relationships, source coordinates, and surrounding section context.
+- Compare structured serialization, lexical fields, dense representations, and table-specific or multimodal approaches by question type.
+- Use metadata for filtering and analysis without leaking target answers or sensitive attributes into inappropriate features.
+
+**Follow-up probe:** Why does flattening every table into plain text often fail?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+### SDS-B3-10 — Detect corpus and ingestion drift after launch.
+
+**Round:** Data monitoring · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Monitor source counts, update and deletion lag, parser failures, language and document-type mix, chunk-size distributions, and embedding norms.
+- Compare retrieval coverage and quality by stable slices, linking changes to parser, chunker, model, and index versions.
+- Investigate with source samples and reconciliation before interpreting answer-quality drift as a model problem.
+
+**Follow-up probe:** Which drift signal might reveal a parser regression before evaluation labels arrive?
+
+**Revision links:** [Ingestion, chunking, and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
+
+
+## Batch 3 · RAG architecture, retrieval, and generation
+
+### SDS-B3-11 — Design a baseline and ablation plan for a RAG experiment.
+
+**Round:** Experimental design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Start with simple lexical or dense retrieval and a fixed generation setup before adding rewriting, fusion, reranking, or compression.
+- Change one stage at a time, preserve candidate and prompt traces, and evaluate component plus end-to-end outcomes on the same dataset.
+- Report effect by slice with latency, token, and cost changes so gains are attributable and operationally meaningful.
+
+**Follow-up probe:** Why is comparing two fully different pipelines a weak experiment?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) · [RAG evaluation]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### SDS-B3-12 — Tune `fetch_k` and final `top_k` using evidence rather than defaults.
+
+**Round:** Retrieval tuning · **Depth:** Applied
+
+**Strong answer signals**
+
+- Increase `fetch_k` to test whether broader candidates improve recall and reranking opportunities.
+- Tune final `top_k` for evidence coverage against duplication, context noise, token cost, and latency.
+- Plot retrieval and answer metrics jointly by query slice; choose a stable operating point rather than the highest isolated score.
+
+**Follow-up probe:** What result would show that the reranker, not `fetch_k`, is the bottleneck?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### SDS-B3-13 — Evaluate whether a reranker provides real incremental value.
+
+**Round:** Model evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Hold the retriever candidate set fixed and compare ranking metrics plus downstream grounded-answer metrics with and without reranking.
+- Analyze gains by query type, candidate depth, and hard-negative class while including latency and cost confidence intervals.
+- Check score stability, truncation effects, domain mismatch, and calibration before setting decision thresholds.
+
+**Follow-up probe:** Why might NDCG improve without improving final answer quality?
+
+**Revision links:** [Embeddings and vector search]({{ '/interview-prep/cheat-sheets/embeddings-vector-search/' | relative_url }}) · [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }})
+
+### SDS-B3-14 — Measure groundedness, answer relevance, and citation correctness separately.
+
+**Round:** Generation evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Groundedness asks whether claims are supported by supplied evidence; answer relevance asks whether the response addresses the question.
+- Citation correctness verifies that each cited passage entails the nearby claim, while citation completeness checks supported claims are cited.
+- Use claim-level labels and report dimensions separately because one aggregate score hides distinct failure modes.
+
+**Follow-up probe:** Can an answer be fully grounded but still be poor? Give an example.
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### SDS-B3-15 — Calibrate an abstention threshold for answerable and unanswerable questions.
+
+**Round:** Decision thresholds · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define evidence and answerability signals, then label both answerable and unanswerable cases across risk and query slices.
+- Choose thresholds from the relative cost of unsupported answers and unnecessary abstentions, not accuracy alone.
+- Validate calibration on a protected set and monitor coverage, selective risk, false answers, and false abstentions after launch.
+
+**Follow-up probe:** How would threshold policy differ for employee search versus medical guidance?
+
+**Revision links:** [RAG architecture]({{ '/interview-prep/cheat-sheets/rag-architecture-retrieval-generation/' | relative_url }}) · [RAG evaluation]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+
+## Batch 3 · RAG evaluation, security, and production
+
+### SDS-B3-16 — Choose among Precision@K, Recall@K, MRR, MAP, and NDCG.
+
+**Round:** Retrieval metrics · **Depth:** Foundation
+
+**Strong answer signals**
+
+- Precision@K measures relevance concentration, while Recall@K measures how much known relevant evidence is recovered.
+- MRR emphasizes the first relevant result; MAP averages precision at relevant ranks; NDCG supports graded relevance and position discounting.
+- Choose metrics from user behavior and label completeness, and report multiple metrics when they capture different costs.
+
+**Follow-up probe:** Why can Recall@K be misleading when relevance labels are incomplete?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### SDS-B3-17 — Validate an LLM-as-judge before using it for release decisions.
+
+**Round:** Evaluation methodology · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define a rubric with examples and blind candidate identity, then compare judge outputs with qualified human labels.
+- Measure agreement, bias by model or style, order sensitivity, variance, and failure on adversarial or unsupported answers.
+- Use repeated or panel judging only when justified, keep judge versions fixed, and retain human review for consequential slices.
+
+**Follow-up probe:** What would make high judge-human agreement still untrustworthy?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### SDS-B3-18 — Compare two RAG candidates statistically across a fixed evaluation set.
+
+**Round:** Statistical inference · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use paired per-query outcomes because both systems answer the same cases, and retain slice membership.
+- Report effect sizes and uncertainty through appropriate paired bootstrap or permutation methods, not only a p-value.
+- Account for multiple metrics, judge noise, missing outputs, and practical thresholds before claiming improvement.
+
+**Follow-up probe:** Why is an unpaired test wasteful in this comparison?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### SDS-B3-19 — Build an adversarial evaluation set for RAG security.
+
+**Round:** Security evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Cover poisoned documents, indirect prompt injection, cross-tenant requests, sensitive-data extraction, malicious citations, encoding tricks, and tool escalation.
+- Generate cases from the real trust boundaries and verify both attack success and benign-task utility to avoid unusable defenses.
+- Version attacks and controls, include adaptive variants, and route consequential findings to security owners rather than treating one scan as proof.
+
+**Follow-up probe:** How would you test that a defense is not merely overfitted to known attack phrases?
+
+**Revision links:** [RAG security and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }})
+
+### SDS-B3-20 — Diagnose a production decline in grounded-answer rate.
+
+**Round:** Monitoring and incident analysis · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Decompose the metric by query, tenant, language, source, document type, and version instead of inspecting only the aggregate.
+- Trace ingestion freshness, retrieval recall, rank distribution, context composition, prompt and model versions, and judge drift.
+- Reproduce cases with preserved artifacts, compare a known-good candidate, and separate real quality change from measurement change.
+
+**Follow-up probe:** What evidence would show that the evaluator, not the RAG system, caused the apparent decline?
+
+**Revision links:** [RAG evaluation and production]({{ '/interview-prep/cheat-sheets/rag-evaluation-security-production/' | relative_url }}) · [Ingestion and indexing]({{ '/interview-prep/cheat-sheets/document-ingestion-chunking-indexing/' | relative_url }})
 
 ## Completion evidence
 
