@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "review"
-version: "0.1.0"
+status: "approved"
+version: "1.0.0"
 last_reviewed: "2026-11-09"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 20 questions · **Batch:** 1 core foundations · **Status:** review candidate
+**Bank size:** 20 questions · **Batch:** 1 core foundations · **Status:** approved
 
 ## Problem framing
 

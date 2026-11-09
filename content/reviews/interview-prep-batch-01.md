@@ -43,4 +43,4 @@ The master index and four cheat sheets use the existing artifacts dated 8–9 No
 
 ## Review status
 
-Technical structure is a review candidate. Human review should confirm role fit, answer depth, and prioritization before changing the public status from `review` to `approved` and merging.
+Human review was accepted on 9 November 2026. Public pages are version `1.0.0` with `status: approved`; the validated candidate is ready to merge.

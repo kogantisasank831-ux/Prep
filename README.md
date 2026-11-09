@@ -15,8 +15,8 @@ the interview banks test decisions, trade-offs, communication and project eviden
 
 Batch 1 covers Python, SQL, probability/statistics and machine-learning
 fundamentals, with guided banks for Agentic AI Engineer, Data Science Technical
-Lead and Senior Data Scientist roles. Public candidates use `status: review`
-until human review is complete.
+Lead and Senior Data Scientist roles. Approved public pages use `status: approved`; future batches remain review
+candidates until their content and CI checks are accepted.
 
 ## Run locally
 

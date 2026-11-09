@@ -35,7 +35,7 @@ def test_public_pages_have_required_front_matter() -> None:
         content = read(page)
         assert content.startswith("---\n")
         assert 'layout: "week"' in content
-        assert 'status: "review"' in content
+        assert 'status: "approved"' in content
         match = re.search(r'^permalink: "([^"]+)"$', content, re.MULTILINE)
         assert match is not None, page
         permalinks.append(match.group(1))
