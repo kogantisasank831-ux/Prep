@@ -1,8 +1,8 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.3.0"
-last_reviewed: "2026-11-09"
+status: "review"
+version: "1.4.0"
+last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "Eighty guided questions for Senior Data Scientist interviews."
-summary: "Practise statistics, ML, RAG, agent experiments, LangGraph analysis, framework benchmarks, protocol evaluation, resilience, and defensible business impact."
+description: "One hundred guided questions for Senior Data Scientist interviews."
+summary: "Practise statistics, ML and RAG, agent experiments, system-design evidence, inference benchmarks, reproducibility, release evaluation, monitoring, drift, and impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–4 · 80 guided questions"
+kicker_secondary: "Batches 1–5 · 100 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 80
+question_count: 100
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 80 questions across Batches 1–4 · **Status:** Batches 1–4 approved
+**Bank size:** 100 questions across Batches 1–5 · **Status:** Batches 1–4 approved · Batch 5 review candidate
 
 ## SQL and data
 
@@ -1189,6 +1189,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** When would a paired bootstrap be more useful than comparing two aggregate means?
 
 **Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+## Data, metrics, and system-design evidence
+
+### SDS-B5-01 — Design point-in-time-correct data and labels for an online prediction system.
+
+**Round:** Data architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define authoritative events, event versus processing time, entity keys, observation and prediction times, label window, maturation, censoring, and revisions.
+- Reconstruct features as known at prediction time, prevent entity overlap and future leakage, and version source snapshots and transformations.
+- Test training-serving consistency, late data, backfills, deletion, label coverage, and joins against controlled examples.
+
+**Follow-up probe:** How can a correct SQL join still leak future information?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### SDS-B5-02 — Define success metrics for a recommendation model that improves offline ranking but not conversion.
+
+**Round:** Product analytics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Connect conversion and user value to exposure, ranking quality, calibration or relevance, latency, diversity, guardrails, and cost.
+- Check treatment delivery, traffic mix, position bias, novelty, downstream friction, and slice effects before blaming model quality.
+- Use a properly powered online experiment or quasi-experimental evidence with practical effect sizes and safety constraints.
+
+**Follow-up probe:** Which offline metric can improve while user value falls, and why?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### SDS-B5-03 — Choose batch, synchronous online, asynchronous, or streaming inference for a risk model.
+
+**Round:** System design · **Depth:** Applied
+
+**Strong answer signals**
+
+- Map decision timing, freshness, response contract, volume, latency, availability, and correction needs to each mode.
+- Consider batch precomputation with online lookup or a hybrid path before defaulting to a complex streaming system.
+- Define stale-data handling, idempotency, late events, backfill, monitoring, and fallback for the chosen architecture.
+
+**Follow-up probe:** When can daily batch scores be safer than a real-time model?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### SDS-B5-04 — Design a feedback loop without poisoning training data or leaking evaluation cases.
+
+**Round:** Data and evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Capture feedback with provenance, consent, prediction identity, cohort, task context, and whether it is a proxy, correction, or confirmed outcome.
+- Deduplicate, validate, quarantine abuse or incidents, handle disagreement, and enforce privacy, retention, and deletion.
+- Keep holdouts and adversarial suites isolated, version approved datasets, and require review before feedback changes training, prompts, retrieval, or memory.
+
+**Follow-up probe:** Why should model-generated traces not flow directly into the next training set?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }}) · [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### SDS-B5-05 — Evaluate whether caching improves a prediction or RAG product correctly.
+
+**Round:** Experimentation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define key, version namespace, tenant scope, TTL, invalidation, and which outputs are safe to reuse.
+- Compare hit rate, latency, cost, freshness, task quality, stale errors, privacy leakage, and stampede behavior by slice.
+- Include version changes, deletions, permission updates, cold starts, and a no-cache baseline; a high hit rate alone is not success.
+
+**Follow-up probe:** How would you detect that a cache improves latency by serving obsolete answers?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+## Inference benchmark and optimization science
+
+### SDS-B5-06 — Design a benchmark comparing two LLM serving configurations.
+
+**Round:** Performance experiment · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Freeze model, tokenizer/template, precision, engine, hardware, generation, workload distribution, arrival process, and quality set.
+- Measure queue, TTFT, TPOT, E2E, goodput, memory, failures, rejections, variability, quality, and cost over warm, spike, and soak trials.
+- Use paired requests or controlled repetitions, report uncertainty and slices, and retain timed-out or invalid outputs.
+
+**Follow-up probe:** Why can fixed-concurrency and open-loop request-rate tests produce different conclusions?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### SDS-B5-07 — Evaluate INT4, INT8, FP8, and BF16 candidates for a domain task.
+
+**Round:** Model evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Confirm hardware and engine compatibility, calibration or conversion method, and exact quantized artifact identity.
+- Compare task and critical-slice quality, schema/tool behavior, numerical or long-context sensitivity, memory, TTFT, TPOT, throughput, and stability.
+- Use equivalence or non-inferiority bounds where appropriate and reject aggregate speedups that violate a high-risk slice.
+
+**Follow-up probe:** Why can perplexity alone miss quantization damage important to the application?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### SDS-B5-08 — Test whether speculative decoding benefits the workload.
+
+**Round:** Optimization evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Compare target-only and speculative candidates with the same prompts, outputs, generation semantics, concurrency, and quality checks.
+- Measure accepted tokens or acceptance length, draft and verification cost, TPOT, E2E, memory, batch interaction, and variability by request class.
+- Analyze short outputs, low-acceptance domains, and high concurrency separately; extra machinery can be slower.
+
+**Follow-up probe:** Which workload characteristic most strongly limits speculative decoding gains?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### SDS-B5-09 — Segment workload results so an inference optimization is not hidden by averages.
+
+**Round:** Performance analytics · **Depth:** Applied
+
+**Strong answer signals**
+
+- Slice by input/output length, task, streaming, tenant or priority, cache state, route, tool path, hardware, and time period.
+- Report p50/p95/p99 TTFT/TPOT/E2E, goodput, failure and rejection, quality, and cost with sample sizes.
+- Check interaction effects such as long prefills harming short decodes and use production traffic weights only after slice safety is established.
+
+**Follow-up probe:** How can Simpson's paradox mislead an overall latency comparison?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### SDS-B5-10 — Quantify uncertainty in a capacity estimate derived from load tests.
+
+**Round:** Statistical capacity planning · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Repeat production-like trials across arrival and token distributions, random seeds where relevant, and stable environmental conditions.
+- Estimate goodput and tail-latency variability, identify saturation and failure thresholds, and apply peak and resilience headroom separately.
+- Validate on an independent run and monitor forecast error after release; a single maximum-throughput point is not a confidence bound.
+
+**Follow-up probe:** Why does adding a fixed 20% headroom not address an unrepresentative workload sample?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }}) · [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+## Reproducibility, lifecycle, and release evaluation
+
+### SDS-B5-11 — Make an ML experiment reproducible within realistic limits.
+
+**Round:** Experiment reproducibility · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Record hypothesis, metrics, data snapshot, code/config/environment, preprocessing, initialization, seeds, hyperparameters, hardware, logs, and artifact digests.
+- State nondeterministic GPU or distributed behavior and compare within justified tolerances rather than promising bitwise equality.
+- Re-run from retained inputs in a clean environment and verify both headline and slice metrics plus failure and cost evidence.
+
+**Follow-up probe:** Why do fixed random seeds not guarantee identical distributed-training results?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### SDS-B5-12 — Explain when an experiment tracker and a model registry provide different evidence.
+
+**Round:** MLOps foundations · **Depth:** Applied
+
+**Strong answer signals**
+
+- A tracker records development runs, parameters, metrics, artifacts, and comparisons; a registry governs immutable candidate identity, lineage, gates, approval, deployment, and retirement.
+- Link accepted registry versions back to exact runs and data while preventing mutable aliases from replacing immutable evidence.
+- Record evaluator, thresholds, approver, deployment cohort, and rollback reference rather than storing only weights.
+
+**Follow-up probe:** Can one product implement both responsibilities, and what separation still matters?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### SDS-B5-13 — Define data validation gates before retraining.
+
+**Round:** Data quality · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Validate schema, types, ranges, missingness, duplicates, volume, freshness, source completeness, labels, entity overlap, and point-in-time correctness.
+- Compare distributions by meaningful slices with versioned baselines and distinguish expected population change from pipeline defects.
+- Block or quarantine candidates when evidence is incomplete, preserve the failing snapshot, and require owner-approved resolution.
+
+**Follow-up probe:** Which leakage check cannot be replaced by a simple train/test row split?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### SDS-B5-14 — Validate a new RAG index before promotion.
+
+**Round:** RAG lifecycle · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind corpus, permissions, parser, chunker, embedding, index, reranker, retrieval config, and deletion state to an immutable candidate.
+- Test completeness, ACL and revocation, retrieval recall and ranking, latency, citations, answer quality, and critical slices against the current index.
+- Use paired canary queries and an atomic alias switch with rollback; investigate disagreements rather than relying on one aggregate judge.
+
+**Follow-up probe:** Why can higher retrieval recall still reduce answer quality?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### SDS-B5-15 — Analyze a canary release statistically and operationally.
+
+**Round:** Release evaluation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Confirm comparable routing and exposure, exact candidate identity, primary metrics, safety gates, power or minimum evidence, and predeclared abort criteria.
+- Compare outcomes and uncertainty by critical slice while monitoring service, cost, fallback, and telemetry health.
+- Separate release-risk evidence from long-term product experimentation and account for delayed labels before full promotion.
+
+**Follow-up probe:** What selection bias appears if only low-latency requests reach the canary?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+## Production monitoring and decision quality
+
+### SDS-B5-16 — Monitor performance when ground truth arrives weeks later.
+
+**Round:** Delayed-label monitoring · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Preserve immutable prediction, entity or decision ID, event time, candidate lineage, and original threshold or action.
+- Join labels after a defined maturation window, retain revisions, and report coverage, censoring, uncertainty, and cohort or slice metrics.
+- Use leading proxies only as clearly labeled diagnostics and avoid declaring quality from confidence or early responders.
+
+**Follow-up probe:** How can outcome-dependent label availability bias the monitored metric?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### SDS-B5-17 — Choose and interpret drift detectors for production features.
+
+**Round:** Drift analysis · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Match domain rules, PSI, KS, chi-square, Wasserstein, Jensen–Shannon, or learned detectors to feature type and decision need.
+- Define reference, window, sample size, seasonality, multiple comparisons, missing-data behavior, threshold source, and slices.
+- Treat drift as investigation evidence and verify labels, instrumentation, traffic, and outcome impact before retraining.
+
+**Follow-up probe:** Why can a statistically significant shift be operationally irrelevant?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### SDS-B5-18 — Calibrate an LLM judge used in production quality monitoring.
+
+**Round:** Evaluation operations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Pin judge model, prompt, rubric, sampling, and version; create a blinded expert or deterministic calibration set.
+- Measure agreement, uncertainty, and position, verbosity, style, and self-preference bias by task and risk slice.
+- Treat judge failure or disagreement as unknown, protect sensitive content, and avoid automatic rollback from the judge alone.
+
+**Follow-up probe:** How would you detect that a judge drifted after its provider changed the resolved model?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### SDS-B5-19 — Construct a quality-latency-cost frontier for model routing.
+
+**Round:** Decision analysis · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Evaluate exact routes on identical representative cases with task and safety quality, tail latency, failure, tokens, provider/GPU and tool cost.
+- Identify dominated options and slice-specific frontiers rather than collapsing all objectives into one arbitrary weighted score.
+- Choose routes by accepted risk and SLO tier, then validate with canary outcomes and monitor route drift.
+
+**Follow-up probe:** Why might one model be optimal for routine cases but unacceptable for the high-risk tail?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### SDS-B5-20 — Production quality falls after a release while input drift also rises. Diagnose causally.
+
+**Round:** Production investigation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Verify telemetry and labels, preserve exact release identity, and decompose by time, cohort, feature, route, model, prompt/index, and data pipeline versions.
+- Compare rollback or shadow candidates on the same requests and separate instrumentation, traffic composition, data quality, and behavior changes.
+- Quantify affected outcomes and uncertainty, contain high-risk slices, and add the confirmed failure to release and monitoring suites.
+
+**Follow-up probe:** What evidence would show that drift is correlated with, but did not cause, the regression?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
 
 ## Completion evidence
 

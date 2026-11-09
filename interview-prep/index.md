@@ -1,8 +1,8 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.3.0"
-last_reviewed: "2026-11-09"
+status: "review"
+version: "1.4.0"
+last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 80 guided questions across Batches 1–4, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–4 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 100 guided questions across Batches 1–5, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 5 is a review candidate; Batches 1–4 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -63,6 +63,15 @@ Each role bank now contains 80 guided questions across Batches 1–4, with stron
 | [Agent frameworks and libraries comparison]({{ '/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/' | relative_url }}) | LangGraph, Google ADK, OpenAI Agents SDK, PydanticAI, DSPy, retrieval frameworks, Microsoft and NVIDIA layers |
 | [Agent protocols, reliability, security, and evaluation]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }}) | MCP, A2A, identity, idempotency, retries, resilience, trajectory evaluation, SLOs and release gates |
 
+## Batch 5 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [AI/ML system design and production architecture]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }}) | Requirements, metric hierarchy, capacity estimates, control and serving planes, storage, APIs, queues, tenancy, security, reliability and rollout |
+| [LLM inference and serving optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }}) | TTFT/TPOT, prefill/decode, GPU and KV memory, batching, caching, quantization, parallelism, engine selection, benchmarking and autoscaling |
+| [MLOps, LLMOps, deployment, and lifecycle]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }}) | Reproducibility, lineage, registries, CI/CD/CT, prompt/index/agent lifecycle, containers, Kubernetes, deployment strategies and rollback |
+| [AI production monitoring, cost, and capacity]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }}) | Release lineage, observability, SLOs, drift, delayed labels, LLM/RAG/agent monitoring, telemetry quality, capacity, autoscaling and FinOps |
+
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
 ## Interview answer standard
@@ -91,6 +100,6 @@ A senior answer should normally cover:
 
 | Batch | Planned scope |
 | --- | --- |
-| 5 | AI system design, MLOps, observability, security, leadership, project storytelling and mock rounds |
+| 6 | Data and distributed compute, AI security/privacy/governance, technical leadership/product thinking, project deep dives, behavioral and mock interviews |
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.
