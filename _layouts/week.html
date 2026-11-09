@@ -26,6 +26,10 @@
           <span aria-hidden="true">⌂</span>
           <span>Roadmap</span>
         </a>
+        <a class="app-nav-link app-content-link{% if page.url contains '/interview-prep/' %} active{% endif %}" href="{{ '/interview-prep/' | relative_url }}"{% if page.url contains '/interview-prep/' %} aria-current="page"{% endif %}>
+          <span aria-hidden="true">◎</span>
+          <span>Interview prep</span>
+        </a>
         <p class="app-nav-label app-weeks-label">Learning path</p>
         <div class="app-week-navigation" id="app-week-navigation" aria-live="polite"></div>
       </nav>
@@ -39,14 +43,14 @@
             <span aria-hidden="true">☰</span>
             <span>Menu</span>
           </button>
-          <span class="header-context">Lesson</span>
+          <span class="header-context">{{ page.header_context | default: "Lesson" }}</span>
         </div>
         <div class="header-actions lesson-header-actions">
           <button class="header-control theme-toggle" type="button" aria-label="Switch color mode">
             <span data-theme-icon aria-hidden="true">☀</span>
             <span data-theme-label>Light</span>
           </button>
-          <a class="back-link" href="{{ '/#roadmap' | relative_url }}">Roadmap</a>
+          <a class="back-link" href="{{ page.back_url | default: '/#roadmap' | relative_url }}">{{ page.back_label | default: "Roadmap" }}</a>
         </div>
       </header>
 
@@ -77,7 +81,7 @@
 
       <div class="lesson-layout">
         <aside class="lesson-sidebar" id="lesson-sidebar" aria-label="Lesson navigation">
-          <p class="lesson-toc-heading">Lesson sections</p>
+          <p class="lesson-toc-heading">{{ page.toc_heading | default: "Lesson sections" }}</p>
           <button class="toc-toggle" id="toc-toggle" type="button" aria-expanded="false" aria-controls="lesson-toc">
             On this page <span aria-hidden="true">＋</span>
           </button>
@@ -93,7 +97,7 @@
       </div>
 
       <nav class="lesson-pagination" aria-label="Week navigation">
-        <a href="{{ '/#roadmap' | relative_url }}">← Roadmap overview</a>
+        <a href="{{ page.pagination_url | default: '/#roadmap' | relative_url }}">← {{ page.pagination_label | default: "Roadmap overview" }}</a>
         <span>{{ page.title }}</span>
       </nav>
       </main>
