@@ -53,6 +53,13 @@ BATCH_SIX_CHEAT_SHEETS = (
     ROOT / "interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview.md",
 )
 
+BATCH_SEVEN_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/linear-algebra-calculus-optimization.md",
+    ROOT / "interview-prep/cheat-sheets/experimentation-causal-inference.md",
+    ROOT / "interview-prep/cheat-sheets/data-preparation-eda-feature-engineering.md",
+    ROOT / "interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection.md",
+)
+
 ALL_CHEAT_SHEETS = (
     BATCH_ONE_CHEAT_SHEETS
     + BATCH_TWO_CHEAT_SHEETS
@@ -60,6 +67,7 @@ ALL_CHEAT_SHEETS = (
     + BATCH_FOUR_CHEAT_SHEETS
     + BATCH_FIVE_CHEAT_SHEETS
     + BATCH_SIX_CHEAT_SHEETS
+    + BATCH_SEVEN_CHEAT_SHEETS
 )
 
 
@@ -100,11 +108,19 @@ def markdown_h1_lines_outside_fences(content: str) -> list[str]:
 def test_public_pages_have_required_front_matter() -> None:
     approved_pages = (
         ROOT / "interview-prep/master-index.md",
+        *BATCH_ONE_CHEAT_SHEETS,
+        *BATCH_TWO_CHEAT_SHEETS,
+        *BATCH_THREE_CHEAT_SHEETS,
+        *BATCH_FOUR_CHEAT_SHEETS,
+        *BATCH_FIVE_CHEAT_SHEETS,
+        *BATCH_SIX_CHEAT_SHEETS,
+    )
+    review_pages = (
         ROOT / "interview-prep/index.md",
-        *ALL_CHEAT_SHEETS,
+        *BATCH_SEVEN_CHEAT_SHEETS,
         *ROLE_BANKS.values(),
     )
-    pages = approved_pages
+    pages = approved_pages + review_pages
     permalinks: list[str] = []
     for page in pages:
         content = read(page)
@@ -114,13 +130,14 @@ def test_public_pages_have_required_front_matter() -> None:
         assert match is not None, page
         permalinks.append(match.group(1))
     assert all(page_status(read(page)) == "approved" for page in approved_pages)
+    assert all(page_status(read(page)) == "review" for page in review_pages)
     assert len(permalinks) == len(set(permalinks))
 
 
 def test_role_banks_have_stable_complete_batches() -> None:
     for prefix, path in ROLE_BANKS.items():
         content = read(path)
-        for batch in (1, 2, 3, 4, 5, 6):
+        for batch in (1, 2, 3, 4, 5, 6, 7):
             ids = re.findall(
                 rf"^### ({prefix}-B{batch}-\d{{2}}) — ",
                 content,
@@ -129,10 +146,10 @@ def test_role_banks_have_stable_complete_batches() -> None:
             expected = [f"{prefix}-B{batch}-{index:02d}" for index in range(1, 21)]
             assert ids == expected
             assert len(ids) == len(set(ids)) == 20
-        assert content.count("**Strong answer signals**") == 120
-        assert content.count("**Follow-up probe:**") == 120
-        assert content.count("**Revision links:**") == 120
-        assert "question_count: 120" in content
+        assert content.count("**Strong answer signals**") == 140
+        assert content.count("**Follow-up probe:**") == 140
+        assert content.count("**Revision links:**") == 140
+        assert "question_count: 140" in content
 
 
 def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
@@ -170,6 +187,10 @@ def test_hub_links_every_interview_artifact() -> None:
         "/interview-prep/cheat-sheets/ai-security-privacy-governance/",
         "/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/",
         "/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/",
+        "/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/",
+        "/interview-prep/cheat-sheets/experimentation-causal-inference/",
+        "/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/",
+        "/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/",
         "/interview-prep/roles/agentic-ai-engineer/",
         "/interview-prep/roles/data-science-technical-lead/",
         "/interview-prep/roles/senior-data-scientist/",
