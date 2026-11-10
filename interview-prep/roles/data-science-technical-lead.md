@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.5.0"
+status: "review"
+version: "1.6.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "One hundred twenty guided questions for Data Science Technical Lead interviews."
-summary: "Practise data and AI platform strategy, security and governance, product metrics, roadmaps, operating models, project defense, people leadership, and enterprise decisions."
+description: "One hundred forty guided questions for Data Science Technical Lead interviews."
+summary: "Practise AI and data leadership across mathematical review, causal strategy, experimentation platforms, data and feature governance, clustering, anomaly operating models, security, delivery, and product decisions."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–6 · 120 guided questions"
+kicker_secondary: "Batches 1–7 · 140 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 120
+question_count: 140
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–6 approved
+**Bank size:** 140 questions across Batches 1–7 · **Status:** Batches 1–6 approved · Batch 7 review candidate
 
 ## Problem framing
 
@@ -1769,6 +1769,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which reusable platform component should wait until the second domain proves repeated need?
 
 **Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+## Mathematical foundations and optimization
+
+### DSTL-B7-01 — Review the mathematical correctness of a proposed attention-based architecture.
+
+**Round:** Architecture review · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require named tensor axes, mask semantics, normalization, objective, parameter and activation memory, numerical precision and complexity estimates before discussing libraries.
+- Use shape checks, invariance/property tests, tiny synthetic cases and a simple baseline to expose broadcast, padding, reduction and loss-contract mistakes.
+- Separate mathematical validity, optimization evidence and business value; assign owners and acceptance gates for each rather than approving from a diagram.
+
+**Follow-up probe:** Which invariant would you test to catch attention paid to padded positions?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B7-02 — Standardize embedding similarity across several product teams.
+
+**Round:** Platform strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define model-specific representation, normalization, metric, index capability, filtering and labeled retrieval benchmarks; reject one universal metric without evidence.
+- Publish a versioned vector contract covering dimensions, dtype, norm expectations, distance semantics, score calibration caveats and migration/reindex behavior.
+- Gate changes on slice quality, latency, memory and cost, monitor norm/score drift, and preserve dual-read or rollback during model and index transitions.
+
+**Follow-up probe:** Why is a raw similarity threshold not portable across embedding model versions?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B7-03 — Govern optimizer and training-scale experiments for a costly foundation-model adaptation.
+
+**Round:** Experimental leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Fix model/data identity, token budget, global batch, schedule, precision, evaluation cadence and compute ceiling so SGD/AdamW or schedule comparisons are meaningful.
+- Require learning curves, throughput, stability, held-out task/safety quality and uncertainty across seeds/checkpoints rather than choosing the lowest observed training loss.
+- Use staged low-cost screens, explicit stop rules, reproducible manifests and promotion gates; retain checkpoint compatibility and rollback evidence.
+
+**Follow-up probe:** What must remain constant when comparing two optimizers under a fixed compute budget?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B7-04 — Decide whether PCA belongs in a regulated tabular-model pipeline.
+
+**Round:** Model governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Frame the need—conditioning, compression, privacy, latency or multicollinearity—and compare with regularization, feature removal and simpler models.
+- Evaluate downstream quality, stability, slice effects, reproducibility and explanation obligations; explained variance alone does not establish predictive or regulatory value.
+- Fit within folds, version the transform, preserve lineage back to source features, validate serving parity and document the loss of direct feature interpretability.
+
+**Follow-up probe:** How would you explain a principal-component model decision to a reviewer who needs source-feature evidence?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B7-05 — Lead a constrained optimization design for production scheduling.
+
+**Round:** Decision optimization · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define objective units, hard/soft constraints, uncertainty, time horizon, decision cadence, feasibility, data latency and accountable business owner.
+- Separate predictive inputs from the solver, compare baseline heuristics, test sensitivity and shadow prices, and avoid claiming a local or relaxed result is globally optimal.
+- Require solver status/tolerance, infeasibility diagnosis, safe fallback, human override, replayable inputs, realized-outcome attribution and rollback.
+
+**Follow-up probe:** What should the system do when the mathematical model is infeasible but operations must continue?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+## Experimentation and causal inference
+
+### DSTL-B7-06 — Establish an experimentation standard for AI product releases.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require decision, estimand, unit, eligibility, assignment, treatment version, primary metric, guardrails, power, duration and stop/launch rule before exposure.
+- Standardize immutable assignment, A/A and SRM monitoring, design-consistent uncertainty, multiple-testing policy, analysis review and reproducible result artifacts.
+- Tier requirements by impact, preserve emergency safety stops, assign metric and decision owners, and audit whether launches achieved durable downstream value.
+
+**Follow-up probe:** Which controls should be mandatory even for a low-traffic experiment?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B7-07 — Select a design for a marketplace ranking change with seller and buyer interference.
+
+**Round:** Causal strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define whether the target is buyer utility, seller welfare, transactions or ecosystem value and map inventory/competition spillovers that invalidate simple user randomization.
+- Compare cluster, geo, switchback and marketplace-specific designs using contamination, power, carryover, operational risk and representativeness.
+- Measure both sides, concentration/fairness, latency, cancellations and long-term equilibrium; use staged ramp and sensitivity analysis before scaling.
+
+**Follow-up probe:** Why might buyer-level randomization change outcomes for control-group sellers?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B7-08 — Make a launch decision when the primary effect interval crosses zero.
+
+**Round:** Product judgment · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Compare the full confidence/credible interval with the minimum practical effect, downside tolerance, guardrails, cost and reversibility rather than labeling the test simply failed.
+- Check power assumptions, SRM, metric maturity, heterogeneity, novelty and implementation fidelity without fishing for a favorable segment or extended horizon.
+- Choose stop, iterate, gather more data or bounded rollout using a pre-agreed decision owner and record uncertainty, opportunity cost and next evidence.
+
+**Follow-up probe:** When is gathering more data worse than stopping and reallocating traffic?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B7-09 — Review an observational claim that AI-tool adoption improved employee productivity.
+
+**Round:** Causal governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Demand a precise adoption policy, productivity outcome, population, horizon and DAG including motivation, skill, workload, manager support and post-treatment behavior.
+- Challenge self-selection, overlap, missing outcomes and policy feedback; require balance, sensitivity, negative controls and transparent residual-confounding limits.
+- Prefer randomized encouragement or phased rollout when feasible and prevent an associational estimate from being presented as company-wide causal ROI.
+
+**Follow-up probe:** Which variable might look like a useful control but actually mediate adoption's effect?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B7-10 — Design an experimentation platform roadmap rather than only an analysis notebook.
+
+**Round:** Data platform leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Prioritize identity, eligibility, deterministic assignment, configuration/versioning, exposure, metric definitions, power planning, SRM and analysis reproducibility as product contracts.
+- Separate control and data planes, secure permissions, preserve audit lineage, support cluster/holdout designs and prevent mutually contaminating experiments.
+- Define SLOs, ownership, migration, cost, self-service guardrails and adoption metrics; deliver a vertical slice before a general framework.
+
+**Follow-up probe:** What is the minimum platform capability needed to trust an experiment result?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+## Data preparation, EDA, and feature engineering
+
+### DSTL-B7-11 — Define a cross-team data and label contract for a high-impact ML use case.
+
+**Round:** Data governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Specify entity/grain, keys, event/available times, schema, units, label horizon, adjudication, population, privacy, retention and allowed evolution with owners.
+- Turn correctness into executable uniqueness, referential, freshness, range, distribution, point-in-time and deletion tests with quarantine, recovery and escalation.
+- Version definitions and lineage, measure quality by slice, negotiate backward-compatible changes and tie contract failures to model fallback and release decisions.
+
+**Follow-up probe:** Which label change requires a new dataset/model version even if the column type remains the same?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B7-12 — Build a label strategy when outcomes are delayed, selective, and expensive to review.
+
+**Round:** Applied-science strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Map label source, maturity, censoring, intervention-created selective labels, annotator rubric, disagreement and the decision's false-error costs.
+- Combine a randomly sampled adjudicated gold set with weak supervision or active learning, retaining provenance and correcting evaluation selection bias.
+- Plan delayed-outcome monitoring, exploration or holdouts where ethical, uncertainty and feedback SLAs; do not optimize only the currently observable policy outcomes.
+
+**Follow-up probe:** How can a successful intervention make future training labels systematically missing?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B7-13 — Decide whether the organization needs a feature store.
+
+**Round:** Build-versus-buy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start from reuse, online latency, point-in-time correctness, parity, freshness, governance and duplicated-computation pain rather than adopting a platform category.
+- Compare warehouse pipelines, shared transformation libraries and managed/self-hosted feature stores across scale, ownership, migration, lock-in, cost and recovery.
+- Require entity/time semantics, lineage, backfills, TTL, materialization, deletion and reconciliation contracts; pilot one valuable feature family with adoption evidence.
+
+**Follow-up probe:** Which correctness problem remains a team responsibility even after buying a feature store?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B7-14 — Run a leakage review before approving a model release.
+
+**Round:** Release governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Reconstruct real decision time, unit, label horizon and source produced/available timestamps; review target, temporal, entity, preprocessing, evaluation and feedback leakage.
+- Require group/time backtests, pipeline-in-fold fitting, duplicate/similarity tests, metadata-only baselines and point-in-time feature reconstruction.
+- Record reviewer, evidence, residual risks and blocked features; add reusable availability metadata and regression tests rather than relying on a one-time checklist.
+
+**Follow-up probe:** Which leakage can remain even when every feature timestamp precedes the label timestamp?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B7-15 — Govern feature ownership and change across multiple production models.
+
+**Round:** ML operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Assign source, semantic-definition, pipeline and consuming-model owners; version schema, units, time semantics, default, privacy class and deprecation policy.
+- Map dependencies, require compatibility and point-in-time tests, canary changes, dual computation and consumer sign-off proportional to risk.
+- Monitor freshness, parity, drift, cost and downstream impact; support rollback/backfill and retire unused or sensitive features with deletion propagation.
+
+**Follow-up probe:** How would you prevent a harmless-looking unit change from silently corrupting five models?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+## Unsupervised learning and anomaly detection
+
+### DSTL-B7-16 — Decide whether customer clustering should become a product capability.
+
+**Round:** Product strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start from the decision and compare rules, supervised uplift and continuous scores with clustering; define who acts and what reversible treatment changes.
+- Require point-in-time representation, stability, interpretability, support, fairness and prospective treatment-value evidence rather than silhouette or a colorful projection.
+- Establish segment versioning, migration, monitoring, ownership and retirement because customer labels can become stale or self-fulfilling.
+
+**Follow-up probe:** When is a continuous propensity score preferable to discrete segments?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### DSTL-B7-17 — Design an enterprise anomaly-detection operating model.
+
+**Round:** Platform leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate domain-specific reference populations and actions from shared ingestion, scoring, threshold, case-management, feedback, lineage and monitoring capabilities.
+- Define severity, alert capacity, random audit, adjudication, escalation, retraining, rollback and incident ownership; do not optimize a central model score alone.
+- Track prevented loss, precision at capacity, delay, workload and missed-event estimates with site/slice governance and cost allocation.
+
+**Follow-up probe:** Which components should be shared while thresholds remain domain-owned?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### DSTL-B7-18 — Set the evidence bar for choosing among clustering algorithms.
+
+**Round:** Model evaluation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Predefine decision, representation, distance, constraints and baselines; compare k-means, mixtures, hierarchical or density methods only where their assumptions fit.
+- Require stability across seeds/samples/time, cluster support and migration, expert interpretability, slice/fairness analysis and downstream prospective value.
+- Treat internal scores and 2D plots as diagnostics, retain reproducible artifacts, and reject solutions whose operational assignment or monitoring is undefined.
+
+**Follow-up probe:** Why can the algorithm with the best silhouette be the worst product choice?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### DSTL-B7-19 — Approve risk-based anomaly thresholds under limited investigation capacity.
+
+**Round:** Risk decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Translate scores into severity tiers using error costs, daily capacity, time-to-harm, prevalence and slice obligations; separate model from policy versions.
+- Evaluate precision and captured value at capacity, delay and random below-threshold audit rather than relying on ROC-AUC or a guessed contamination rate.
+- Define override, escalation, capacity overload, drift response and accountable acceptance of residual risk; monitor whether investigations produce beneficial action.
+
+**Follow-up probe:** Who should own the trade-off when raising recall doubles analyst workload?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### DSTL-B7-20 — Lead an anomaly-system incident after onboarding a new region.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Contain alert overload without losing evidence, establish incident command, identify exact data/model/threshold versions and protect high-severity response.
+- Distinguish source/unit/schema failure, legitimate population shift and real incident through region comparisons, domain owners and sampled adjudication.
+- Recover with correction or bounded shadow model, reconcile missed/suppressed alerts, communicate uncertainty and add onboarding gates, reference ownership and effectiveness checks.
+
+**Follow-up probe:** What must be reconciled before declaring the incident resolved?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
 
 ## Completion evidence
 

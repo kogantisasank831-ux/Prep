@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.5.0"
+status: "review"
+version: "1.6.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "One hundred twenty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production AI, RAG and agents, distributed data, security and privacy, technical leadership, project defenses, behavioral evidence, reliability, and incidents."
+description: "One hundred forty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production AI and agents alongside mathematical reasoning, trustworthy experiments, point-in-time feature systems, unsupervised methods, anomaly operations, security, reliability, and leadership."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–6 · 120 guided questions"
+kicker_secondary: "Batches 1–7 · 140 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 120
+question_count: 140
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–6 approved
+**Bank size:** 140 questions across Batches 1–7 · **Status:** Batches 1–6 approved · Batch 7 review candidate
 
 ## Python and service engineering
 
@@ -1767,6 +1767,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which measurement would determine whether more replicas or a shorter context policy is the better first move?
 
 **Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+## Mathematical foundations and optimization
+
+### AIE-B7-01 — Trace tensor shapes and compute through one multi-head attention block.
+
+**Round:** Mathematical engineering · **Depth:** Applied
+
+**Strong answer signals**
+
+- Name batch, sequence, model, head-count and head-width axes; derive Q/K/V, attention-score, mask, weighted-value, concatenation and output shapes.
+- Distinguish elementwise, batched matrix and broadcast operations; identify where an apparently valid mask shape could leak attention across positions or batches.
+- Connect score-matrix size to quadratic sequence cost, then discuss grouped/multi-query attention, chunking or alternate attention only against the workload.
+
+**Follow-up probe:** Which broadcasting mistake could pass runtime shape checks but apply one sequence's mask to every item?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B7-02 — Choose cosine, dot-product, or Euclidean similarity for an embedding service.
+
+**Round:** Retrieval mathematics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Establish whether embedding magnitude carries meaning, how the model was trained, whether vectors are normalized, and which index metrics are supported.
+- Explain that normalized vectors make cosine and dot-product ranking equivalent and relate squared Euclidean distance monotonically, while unnormalized vectors need not agree.
+- Validate on labeled retrieval slices and operational constraints, version normalization with the index, and monitor norm and score-distribution drift.
+
+**Follow-up probe:** What failure appears if documents are normalized at indexing but queries are not?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B7-03 — Diagnose a mixed-precision training run whose loss becomes NaN after 2,000 steps.
+
+**Round:** Optimization debugging · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Pin code, data shard, checkpoint, batch, optimizer, schedule and precision; locate the first non-finite input, activation, loss, gradient or parameter with a small reproducible run.
+- Check label range, masking, reductions, log/softmax stability, normalization, distributed aggregation, overflow/underflow and data-specific triggers before adding clipping.
+- Compare full precision, stable fused losses, loss scaling, lower learning rate or warmup one hypothesis at a time, then add finite-value and gradient telemetry to CI/release gates.
+
+**Follow-up probe:** Why can gradient clipping make this incident harder to diagnose?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B7-04 — Use SVD or PCA to compress a high-dimensional inference input safely.
+
+**Round:** Model efficiency · **Depth:** Applied
+
+**Strong answer signals**
+
+- Clarify whether data is centered, sparse and scaled; distinguish centered PCA from truncated SVD and fit every learned transform on training/reference data only.
+- Select dimension from validation quality, latency, memory and reconstruction or downstream error rather than explained variance alone.
+- Package the exact transform with serving, monitor component/input drift and parity, and retain a fallback because low-variance directions can still be predictive.
+
+**Follow-up probe:** Why might 95% explained variance still damage the production classifier?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B7-05 — Scale global batch size across GPUs without silently changing optimization.
+
+**Round:** Distributed training · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Calculate physical batch, data-parallel replicas and gradient accumulation; compare runs by tokens/examples, optimizer steps, wall time and held-out quality.
+- Treat learning-rate scaling, warmup, decay, optimizer state, gradient reduction and stochasticity as explicit experimental choices rather than automatic rules.
+- Verify throughput, numerical stability, convergence, reproducibility and checkpoint recovery; reject extra scale when communication or generalization erases the gain.
+
+**Follow-up probe:** Why are two runs with the same epoch count not comparable after the global batch changes?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+## Experimentation and causal inference
+
+### AIE-B7-06 — Design an online experiment for an agent-assisted support workflow.
+
+**Round:** Product experimentation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define eligible agent or customer unit, immutable assignment, treatment version, ITT estimand, resolution horizon and exposure diagnostics without conditioning the primary result on usage.
+- Use resolution or repeat-contact outcome plus safety, hallucination, escalation, latency, cost and employee-workload guardrails; plan power at the randomization unit.
+- Validate assignment/logging with A/A and SRM checks, ramp safely, preserve long enough follow-up and reconcile whether product lift survives delivery failures.
+
+**Follow-up probe:** Why would analyzing only conversations where the agent suggestion was opened bias the result?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B7-07 — Choose the randomization unit for a recommendation model used by shared business accounts.
+
+**Round:** Experimental architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Map persistent assignment, shared users/devices, account-level inventory, cross-user learning and interference before choosing user, account or cluster randomization.
+- Analyze uncertainty at the assignment unit and inflate sample needs for within-account correlation rather than treating recommendation events as independent.
+- Keep eligibility, assignment, exposure and metric joins auditable; quantify contamination and prefer the smallest unit that keeps it acceptably bounded.
+
+**Follow-up probe:** What changes in power if assignment moves from users to accounts?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B7-08 — Investigate sample ratio mismatch before reading an experiment's lift.
+
+**Round:** Experiment reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Recompute planned versus observed assignment at the immutable randomized unit and segment by time, platform, version, geography and eligibility path.
+- Trace hashing, bucketing, crashes, logging loss, post-assignment filters, joins, bots and overlapping experiments; preserve raw assignment as the source of truth.
+- Pause effect interpretation, repair and validate with A/A/shadow evidence; avoid reweighting until the missingness mechanism and outcome relationship are understood.
+
+**Follow-up probe:** Why can an arm-specific crash create both SRM and biased outcome estimates?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B7-09 — Design a switchback test for a routing model that changes shared queue behavior.
+
+**Round:** Causal system design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain why concurrent request-level randomization interferes through shared capacity, then choose randomized time blocks, eligible queues and a policy-level estimand.
+- Set block and washout lengths using queue persistence, autocorrelation and operational cycles; balance time-of-day/day-of-week and account for shared shocks.
+- Track service level, delay, abandonment, quality, cost and safety with block-aware inference, ramp controls and a carryover sensitivity analysis.
+
+**Follow-up probe:** What happens if the block is shorter than the queue's recovery time?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B7-10 — Estimate the effect of voluntary AI-assistant adoption from observational logs.
+
+**Round:** Causal inference · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define adoption, outcome, population and horizon; draw a DAG covering motivation, skill, workload, manager policy, prior performance, exposure opportunity and post-treatment engagement.
+- State that propensity weighting/matching can balance measured pre-treatment covariates only; check overlap, balance, extreme weights and temporal ordering.
+- Seek a stronger design such as randomized encouragement or phased rollout, run negative-control and sensitivity analyses, and label residual unmeasured-confounding limits.
+
+**Follow-up probe:** Why would controlling for post-adoption usage time change or bias the estimand?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+## Data preparation, EDA, and feature engineering
+
+### AIE-B7-11 — Build point-in-time fraud features for online serving and offline training.
+
+**Round:** Feature architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define transaction key, event and available-at times, prediction cutoff, rolling-window inclusion, late/correction policy, label horizon and online freshness fallback.
+- Preserve immutable events and versioned definitions; use point-in-time joins offline and materialized keyed values online with source, timestamp, TTL and lineage.
+- Reconcile sampled online/offline values, isolate backfills, test clock/timezone boundaries and monitor missing, stale, defaulted and drifted features by slice.
+
+**Follow-up probe:** How would a chargeback recorded thirty days later leak into a historical feature rebuild?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B7-12 — Repair a document classifier whose random-split validation is unrealistically high.
+
+**Round:** Leakage debugging · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Audit duplicated/templated documents, customer/source identity, file metadata, post-resolution text, label-generation artifacts and vocabulary or embeddings fit before splitting.
+- Rebuild group- and time-aware splits matching new-document deployment, fitting every parser-derived vocabulary, selector and transform inside training folds.
+- Compare a metadata-only and simple text baseline, report performance by source/time, and add similarity-based duplicate gates plus a final untouched holdout.
+
+**Follow-up probe:** Why can removing exact duplicates still leave near-duplicate leakage?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B7-13 — Encode a high-cardinality supplier field without target leakage.
+
+**Round:** Feature engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Compare hashing, frequency, learned embeddings and smoothed target encoding against cardinality, data volume, interpretability, unseen suppliers, privacy and latency.
+- If target encoding is used, compute training values out of fold and strictly from earlier outcomes for temporal data, with smoothing and global/rare/unseen fallbacks.
+- Package mapping/version with serving and monitor category coverage, support, drift and performance; validate that supplier identity will legitimately exist at decision time.
+
+**Follow-up probe:** How does full-data target encoding reveal each row's own label?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B7-14 — Eliminate training-serving skew in a feature preprocessing pipeline.
+
+**Round:** ML reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Inventory schema, units, defaults, imputation, encoders, windows, sources and version boundaries in training and online paths; identify duplicated implementations.
+- Move learned transforms into one versioned artifact or shared definition, enforce strict input contracts and retain event/produced-at timestamps for time-sensitive values.
+- Add golden fixtures and sampled parity reconciliation with tolerances, plus alerts for stale/defaulted/unseen values and a safe fallback or rollback.
+
+**Follow-up probe:** Why can identical feature code still produce different offline and online values?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B7-15 — Train an imbalanced incident detector under a fixed daily review capacity.
+
+**Round:** Decision-aware modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define incident label maturity, false-negative cost, review capacity and intervention; use time/entity splits and preserve real prevalence for validation.
+- Compare weighting or fold-local resampling with simple baselines; select by precision/recall and captured value at the daily alert budget plus calibration and slice constraints.
+- Version the threshold separately, shadow/canary the workflow, sample below-threshold cases and monitor alert volume, yield, delay, workload and prevalence shift.
+
+**Follow-up probe:** Why can ROC-AUC improve while the top 100 daily alerts become worse?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+## Unsupervised learning and anomaly detection
+
+### AIE-B7-16 — Build a customer-segmentation service that supports an actual product decision.
+
+**Round:** Unsupervised system design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Start from the decision and unit, define a point-in-time behavior window, exclude identifiers/outcomes, choose scale and geometry, and state how new customers are assigned.
+- Compare k-means, mixtures and density methods using stability across seeds/time, interpretability, minimum support, migration and prospective downstream value—not one 2D plot.
+- Version representation, model and segment definitions; monitor coverage, drift and fairness, and require a controlled test before claiming segment-specific treatment value.
+
+**Follow-up probe:** What evidence would show the segments are actionable rather than merely descriptive?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### AIE-B7-17 — Select an anomaly detector for multivariate machine telemetry.
+
+**Round:** Anomaly engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define machine/window, operating modes, seasonality, reference period, failure labels, detection delay, review/maintenance action and missing-sensor behavior.
+- Benchmark rules and forecast/PCA residuals against Isolation Forest, local methods or autoencoders, fitting only on justified reference data and using rolling-origin validation.
+- Choose thresholds from incident cost and inspection capacity, expose feature/context evidence, group alerts into cases and preserve model/threshold rollback.
+
+**Follow-up probe:** When would a global detector mistake a valid operating mode for an anomaly?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### AIE-B7-18 — Use UMAP or t-SNE responsibly in an embedding-analysis tool.
+
+**Round:** Representation analysis · **Depth:** Applied
+
+**Strong answer signals**
+
+- Treat the projection as an exploratory neighborhood visualization, document sample, preprocessing, metric, parameters and seed, and compare multiple runs.
+- Do not infer global distance, prevalence, causal structure or validated clusters from gap/area; test neighborhoods and clustering in the original justified space.
+- Keep labels/colors out of fitting, provide source examples and uncertainty, and avoid using an unstable plot coordinate as a production feature without independent validation.
+
+**Follow-up probe:** Why can the same embeddings show different apparent islands under another seed or perplexity?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### AIE-B7-19 — Evaluate an anomaly detector when confirmed incidents are scarce.
+
+**Round:** Evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use time-held historical incidents and prospective shadow adjudication, while randomly auditing below-threshold cases to estimate missed events and reviewer-selection bias.
+- Add bounded synthetic fault injection only for known signatures; test stability across seeds/windows and report precision at capacity, delay, alert burden and downstream value.
+- Track evidence provenance and uncertainty, maintain an adjudicated set, and require a feedback path rather than claiming recall from unlabeled data.
+
+**Follow-up probe:** Why is analyst precision among reviewed alerts an incomplete metric?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### AIE-B7-20 — Respond when a newly onboarded site causes an anomaly-alert flood.
+
+**Round:** Production incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Cap and triage alerts without discarding scores/evidence, identify model, threshold, schema and reference versions, and compare units, firmware, sampling, missingness and operating modes by site.
+- Decide whether the change is pipeline error, legitimate new population or real incident; avoid automatic retraining until the mechanism and safety impact are known.
+- Repair or build context-aware reference models in shadow mode, audit suppressed cases, and add onboarding contracts, unit checks, threshold ownership and rollback.
+
+**Follow-up probe:** Which evidence would justify a site-specific model instead of correcting the ingestion path?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
 
 ## Completion evidence
 

@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.5.0"
+status: "review"
+version: "1.6.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "One hundred twenty guided questions for Senior Data Scientist interviews."
-summary: "Practise statistical and ML evidence, distributed data correctness, security and fairness, product judgment, impact attribution, project defense, behavioral growth, and mock cases."
+description: "One hundred forty guided questions for Senior Data Scientist interviews."
+summary: "Practise mathematical derivations, optimization diagnostics, experimental and causal inference, leakage-safe feature engineering, clustering, anomaly evaluation, production evidence, and business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–6 · 120 guided questions"
+kicker_secondary: "Batches 1–7 · 140 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 120
+question_count: 140
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–6 approved
+**Bank size:** 140 questions across Batches 1–7 · **Status:** Batches 1–6 approved · Batch 7 review candidate
 
 ## SQL and data
 
@@ -1765,6 +1765,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** How would you prove that a better forecast actually improved the optimization decision?
 
 **Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+## Mathematical foundations and optimization
+
+### SDS-B7-01 — Derive the gradient of logistic loss and explain every shape.
+
+**Round:** Mathematical foundations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define `X` as `(n, d)`, `w` as `(d,)`, logits `Xw`, probabilities `sigmoid(Xw)` and average binary cross-entropy.
+- Use chain rule to obtain `Xᵀ(p-y)/n`, note that the gradient matches `w`, and add the appropriate regularization gradient if present.
+- Connect the residual term to maximum likelihood, numerical stable logits-based loss and finite-difference checks on a tiny smooth example.
+
+**Follow-up probe:** How does the Hessian explain convexity and poor conditioning in logistic regression?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B7-02 — Diagnose multicollinearity and decide between regularization and PCA.
+
+**Round:** Statistical modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use domain redundancy, correlation, singular values/condition number and coefficient instability across samples while separating prediction quality from coefficient interpretation.
+- Compare ridge shrinkage, lasso sparsity, feature redesign and PCA against explanation, stability, scale and downstream performance; fit all choices inside validation folds.
+- Report coefficient/feature stability and held-out value, preserve units and lineage, and avoid explicit inverse-based solutions on ill-conditioned matrices.
+
+**Follow-up probe:** Why can predictions remain stable while individual coefficients change sign?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B7-03 — Explain when L1, L2, and elastic net produce different practical models.
+
+**Round:** Model regularization · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain L1's non-smooth sparse solutions, L2's smooth shrinkage and elastic net's grouped/stabilizing compromise for correlated predictors.
+- Standardize features where penalty comparability requires it and tune regularization only inside cross-validation or time-aware validation.
+- Compare predictive uncertainty, selection stability, calibration and interpretability; do not present a selected nonzero coefficient as causal evidence.
+
+**Follow-up probe:** Why might lasso arbitrarily keep one of several correlated variables?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B7-04 — Separate optimization, generalization, and numerical failures in a neural model.
+
+**Round:** Training diagnostics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use train/validation curves, gradient and activation norms, finite-value checks, learning-rate/batch experiments and tiny-batch overfit to classify the failure.
+- Treat decreasing train loss with widening validation gap as generalization, flat train loss as optimization/data/model issue, and NaN/Inf as numerical or invalid-data evidence.
+- Change one hypothesis at a time—scaling, initialization, optimizer, schedule, regularization or stable loss—and retain reproducible checkpoints and baselines.
+
+**Follow-up probe:** Which evidence argues against “bad local minimum” as the explanation?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B7-05 — Explain the geometry behind an embedding nearest-neighbor model.
+
+**Round:** Representation learning · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Connect the training objective to expected geometry, discuss vector norms and derive cosine/dot/Euclidean relationships after unit normalization.
+- Explain high-dimensional concentration, anisotropy, hubness and approximate-index effects, then validate neighbors with task labels and slices.
+- Separate representation quality, index recall and downstream decision quality; monitor model/version, normalization, norm and score drift.
+
+**Follow-up probe:** How would you determine whether poor neighbors come from the embedding or ANN index?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+## Experimentation and causal inference
+
+### SDS-B7-06 — Calculate and defend sample size for a binary-conversion experiment.
+
+**Round:** Experimental design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- State baseline rate, absolute MDE from practical value, two-sided alpha, power, allocation, randomization unit, expected eligible traffic and outcome maturation.
+- Use an appropriate two-proportion approximation or simulation, then adjust for clustering, attrition/noncompliance, multiple primary comparisons and ramp.
+- Convert units to calendar duration with business cycles, predeclare stopping and report sensitivity when baseline or variance assumptions are uncertain.
+
+**Follow-up probe:** Why does halving the MDE require roughly four times the sample in the simple case?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B7-07 — Apply CUPED without contaminating an experiment.
+
+**Round:** Variance reduction · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Choose a pre-treatment covariate measured consistently for both arms and correlated with the outcome, define handling for new users and lock it before effect inspection.
+- Explain the adjusted outcome and estimated coefficient, preserve ITT and compute uncertainty under the actual randomization design.
+- Verify no treatment leakage, compare variance/power gain, inspect slice behavior and retain the unadjusted estimate as a transparent robustness check.
+
+**Follow-up probe:** What goes wrong if the covariate includes activity after assignment?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B7-08 — Choose an adjustment set from a causal DAG.
+
+**Round:** Causal reasoning · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define treatment, outcome and estimand, then identify pre-treatment common causes, mediators, colliders and proxy relationships with domain experts.
+- Block backdoor paths using a sufficient pre-treatment set while avoiding post-treatment mediators and collider conditioning; state unmeasured-confounding risk.
+- Check temporal order, positivity and balance, compare plausible DAGs and use negative controls or sensitivity analysis rather than claiming the graph is proven.
+
+**Follow-up probe:** How can conditioning on workflow completion create an association that did not exist?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B7-09 — Evaluate a difference-in-differences policy study.
+
+**Round:** Quasi-experimental methods · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define treated/comparison groups, intervention timing and outcome; defend parallel untreated trends using domain context and multiple pre-periods, not a p-value alone.
+- Examine anticipation, composition, spillovers, concurrent shocks, autocorrelation and staggered adoption; use timing-appropriate estimators and clustered uncertainty.
+- Present event-time dynamics and sensitivity/placebo analyses, bound external validity and avoid translating a local policy effect into a universal claim.
+
+**Follow-up probe:** Why can naive two-way fixed effects mislead with staggered treatment and heterogeneous effects?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B7-10 — Estimate and validate heterogeneous treatment effects for targeting.
+
+**Round:** Uplift modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use randomized or credibly identified data, ensure overlap and enough sample, and separate outcome prediction from treatment-effect estimation.
+- Predeclare important segments or use honest sample splitting/causal forests or meta-learners; tune and evaluate out of sample with uplift/value curves and capacity.
+- Confirm exploratory subgroups in a holdout/new experiment, include guardrails and fairness, and compare the targeting policy with treat-all/treat-none baselines.
+
+**Follow-up probe:** Why is high response-model AUC insufficient for an uplift policy?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+## Data preparation, EDA, and feature engineering
+
+### SDS-B7-11 — Design the unit, label, and validation split for a churn model.
+
+**Round:** Problem framing · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define customer scoring date, eligible population, observation window, churn event/horizon, censoring, intervention and repeated-score handling.
+- Use time- and customer-aware backtesting with matured labels, fitting preprocessing within folds and keeping a future final test period.
+- Audit cancellation/post-contact leakage, selective outcomes and seasonality; evaluate calibration and lift/value at contact capacity by cohort.
+
+**Follow-up probe:** How would you label customers whose outcome horizon is not yet complete?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B7-12 — Handle informative missingness and outliers in industrial sensor data.
+
+**Round:** Data preparation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Trace outages, maintenance, sensor limits, operating modes and units; distinguish absent, not applicable, censored, stuck and invalid values by asset/time.
+- Compare robust imputation/scaling, missing indicators, model-native handling and regime-specific models while fitting all statistics on training/reference periods.
+- Preserve rare valid failures, use physical plausibility and source evidence before capping, and monitor missing/outlier mechanisms because operations can change them.
+
+**Follow-up probe:** Why might a missingness indicator be predictive today but dangerous after a sensor upgrade?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B7-13 — Compare categorical encoders for a high-cardinality tabular model.
+
+**Round:** Feature engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Compare one-hot, hashing, frequency, target encoding and embeddings by support, sparsity, model family, interpretability, unseen values, drift and latency.
+- Implement target encoding out of fold and, for temporal problems, only from prior labels with smoothing and a global fallback.
+- Evaluate time/group holdouts, rare-category slices and calibration; version mappings and monitor coverage rather than choosing by training AUC.
+
+**Follow-up probe:** When can hashing outperform target encoding despite collisions?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B7-14 — Perform feature selection for an imbalanced, correlated dataset.
+
+**Round:** Modeling strategy · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define decision metric and capacity, split by deployment, and place scaling, resampling and selection inside each training fold.
+- Compare domain removal, regularization, permutation or embedded importance with stability across folds/time; treat correlated feature importance cautiously.
+- Evaluate calibration, PR/capacity metrics, latency and slice performance on untouched prevalence; avoid selecting from test performance or causal claims from importance.
+
+**Follow-up probe:** Why can selecting features before cross-validation inflate performance?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B7-15 — Prove a rolling aggregate is point-in-time correct.
+
+**Round:** Feature validation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define entity, event time, produced/available time, prediction cutoff, interval endpoints, timezone, late corrections and minimum history explicitly.
+- Recompute small hand-audited examples and historical snapshots, ensuring no centered window, future partition or final-state dimension enters the join.
+- Compare offline and online sampled values with lineage/version, test boundary times and backfills, and monitor freshness/default rates after deployment.
+
+**Follow-up probe:** How can a source event timestamp still leak if the feature was not operationally available then?
+
+**Revision links:** [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+## Unsupervised learning and anomaly detection
+
+### SDS-B7-16 — Choose the number of customer clusters and defend the result.
+
+**Round:** Clustering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define point-in-time features, scaling, distance and downstream decision; compare a no-segmentation or business-rule baseline.
+- Use objective/elbow and silhouette only as diagnostics, then test stability across seeds/bootstraps/time, minimum support, interpretability and migration.
+- Validate cluster-specific action prospectively and assess fairness; reject a mathematically neat partition that has no distinct useful treatment.
+
+**Follow-up probe:** How would you compare two clusterings when their numeric labels are permuted?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### SDS-B7-17 — Compare k-means with a Gaussian mixture for overlapping segments.
+
+**Round:** Unsupervised modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain hard nearest-centroid assignments and spherical squared-distance assumptions versus probabilistic memberships and covariance choices.
+- Fit multiple starts with scaled data, check singular/degenerate components and compare BIC/likelihood, stability, calibration of memberships and external utility.
+- Prefer soft assignment only when uncertainty is meaningful to the action; do not treat mixture membership as an immutable customer type.
+
+**Follow-up probe:** What happens when a full-covariance GMM has too few points per component?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### SDS-B7-18 — Evaluate an Isolation Forest with very few confirmed fraud labels.
+
+**Round:** Anomaly evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use a time-held incident set, prospective review and random below-threshold audits; preserve prevalence and avoid labeling every unreviewed case negative.
+- Report precision/recall or captured value at investigation capacity, detection delay and stability by time/slice; compare supervised and rule baselines where possible.
+- Treat injected anomalies as signature tests only, analyze feature/context evidence and update an adjudicated set with selection-aware feedback.
+
+**Follow-up probe:** How would you estimate false negatives when investigators see only top-scored cases?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### SDS-B7-19 — Detect collective anomalies in seasonal multivariate time series.
+
+**Round:** Time-series modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define series/window, operating regimes, seasonal calendar, acceptable delay and incident grouping; build naive seasonal and rule baselines.
+- Compare forecast residuals, robust decomposition, change points and window representations with rolling-origin evaluation and strictly past normalization.
+- Threshold by incident cost/capacity, test known events and benign regime changes, expose contributing signals and monitor reference/seasonality drift.
+
+**Follow-up probe:** Why can independent point thresholds miss a dangerous sequence?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+### SDS-B7-20 — Decide whether an autoencoder improves anomaly detection over PCA.
+
+**Round:** Representation evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Compare on the same scaled reference period, time holdout and threshold policy; control capacity so the autoencoder cannot trivially reconstruct everything.
+- Evaluate per-feature and total residuals, known incidents, random audits, stability, latency and maintenance while checking reference contamination and regime coverage.
+- Choose the nonlinear model only for reproducible downstream gain beyond PCA/rules, and retain versioned preprocessing, explanation and rollback.
+
+**Follow-up probe:** Why can lower reconstruction error make anomaly detection worse?
+
+**Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
 
 ## Completion evidence
 

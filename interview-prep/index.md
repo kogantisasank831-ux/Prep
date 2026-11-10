@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.5.0"
+status: "review"
+version: "1.6.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 120 guided questions across Batches 1–6, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–6 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 140 guided questions across Batches 1–7, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 7 is a review candidate; Batches 1–6 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -81,6 +81,15 @@ Each role bank now contains 120 guided questions across Batches 1–6, with stro
 | [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }}) | Problem framing, AI alternatives, metrics, roadmaps, architecture, build-versus-buy, operating models, delegation, delivery and incident leadership |
 | [Project deep dives, behavioral answers, and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }}) | Project portfolio, truthful contribution, data and architecture defense, impact attribution, CARL+ stories, mock cases, scoring and practice |
 
+## Batch 7 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }}) | Shapes, vector geometry, rank, projections, eigen/SVD/PCA, gradients, backpropagation, optimizers, regularization, constraints and numerical stability |
+| [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }}) | Estimands, power, randomization, A/A and SRM, CUPED, sequential decisions, switchbacks, DAGs and observational causal methods |
+| [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }}) | Grain, labels, splits, leakage, quality, missingness, encoding, temporal aggregates, imbalance, point-in-time features and monitoring |
+| [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }}) | Clustering, mixtures, dimensionality reduction, anomaly methods, scarce-label evaluation, thresholds, alert economics and operations |
+
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
 ## Interview answer standard
@@ -107,6 +116,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Batch 6 completes the currently prepared source set. Define any later batch from the master index only after its canonical source material and review boundary are ready.
+Review Batch 7 for mathematical accuracy, causal assumptions, leakage and point-in-time correctness, unsupervised validation, role calibration, and interview usefulness. Define a later batch only after its source scope and evidence boundary are ready.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.
