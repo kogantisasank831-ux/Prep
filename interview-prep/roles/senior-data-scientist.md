@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.6.0"
+status: "review"
+version: "1.7.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "One hundred forty guided questions for Senior Data Scientist interviews."
-summary: "Practise mathematical derivations, optimization diagnostics, experimental and causal inference, leakage-safe feature engineering, clustering, anomaly evaluation, production evidence, and business impact."
+description: "One hundred sixty guided questions for Senior Data Scientist interviews."
+summary: "Practise causal estimators, trustworthy experiments, point-in-time feature validation, forecasting and uncertainty, recommendation and ranking models, production evidence, and business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–7 · 140 guided questions"
+kicker_secondary: "Batches 1–8 · 160 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 140
+question_count: 160
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 140 questions across Batches 1–7 · **Status:** Batches 1–7 approved
+**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–7 approved · Batch 8 review candidate
 
 ## SQL and data
 
@@ -2053,6 +2053,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Why can lower reconstruction error make anomaly detection worse?
 
 **Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+## Experimentation and causal inference — advanced practice
+
+### SDS-B8-01 — Analyze a ratio metric without treating events as independent.
+
+**Round:** Experimental statistics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define the estimand—ratio of totals, mean unit-level ratio, or another quantity—and aggregate numerator/denominator at the randomized unit when appropriate.
+- Use delta-method, unit-level bootstrap or regression/cluster-robust inference consistent with assignment; handle zero denominators and heavy tails explicitly.
+- Report absolute and relative effects with uncertainty, run simulation or A/A calibration, and avoid a naive event-level t-test that understates variance.
+
+**Follow-up probe:** When do ratio of means and mean of individual ratios answer different product questions?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B8-02 — Control false positives across variants, metrics, and interim looks.
+
+**Round:** Statistical decision design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate one confirmatory primary outcome from guardrails and exploratory families, count the actual hypotheses and predeclare the stopping horizon.
+- Choose Holm/Bonferroni, FDR, hierarchical testing, sample splitting or a sequential procedure from the error cost and discovery purpose.
+- Report every comparison, adjusted and unadjusted effect intervals where useful, preserve power reasoning and confirm exploratory winners on new data.
+
+**Follow-up probe:** Why does correcting metrics but ignoring repeated looks still leave the false-positive rate inflated?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B8-03 — Estimate an observational treatment effect with propensity weighting.
+
+**Round:** Causal inference · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define ATE or ATT and a causal adjustment set of pre-treatment covariates; estimate propensity without using outcomes or post-treatment variables.
+- Inspect overlap, extreme weights and standardized balance, trim or redefine the target population when positivity fails, and use stabilized weights with valid uncertainty.
+- Run alternate specifications, negative/placebo and unmeasured-confounding sensitivity; state that measured balance cannot establish exchangeability.
+
+**Follow-up probe:** Why is high propensity-model classification accuracy often a warning rather than the goal?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B8-04 — Choose between difference-in-differences and regression discontinuity.
+
+**Round:** Quasi-experimental methods · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use DiD when treated and comparison units plausibly share untreated trends; inspect multiple pre-periods, anticipation, composition, spillovers and staggered timing.
+- Use RDD when treatment changes at a defensible cutoff; validate no precise manipulation, continuity, bandwidth and functional-form robustness, and local support.
+- Match the estimand and external validity to the decision, cluster uncertainty appropriately, and triangulate with event/placebo/density/covariate checks.
+
+**Follow-up probe:** Why might a valid RDD effect not answer the policy question for units far from the threshold?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### SDS-B8-05 — Validate an uplift model used under a fixed treatment budget.
+
+**Round:** Heterogeneous effects · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Train on randomized or credibly identified data with overlap and honest sample splitting; distinguish conditional treatment effect from response propensity.
+- Evaluate uplift/Qini or policy value out of sample at the actual treatment capacity against treat-all, treat-none and simple segment baselines.
+- Quantify uncertainty and subgroup support, control discovery multiplicity, check fairness/guardrails and confirm the targeting policy prospectively.
+
+**Follow-up probe:** How can an accurate response model select people who would convert without treatment?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+## Feature engineering and ML data validation
+
+### SDS-B8-06 — Prove a feature set is point-in-time correct.
+
+**Round:** Data correctness · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define prediction origin and record entity, event, processing and availability times plus source/version for every feature and label.
+- Reconstruct hand-audited historical rows using as-of joins, strict window endpoints and earlier dimension versions; fit preprocessing only within each fold.
+- Compare offline/online sampled values, test late corrections, timezone and backfill boundaries, and reject values known only in latest-truth tables.
+
+**Follow-up probe:** How can an event that occurred before prediction still be unavailable to the real model?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B8-07 — Compare target encoding, hashing, and learned embeddings for a category.
+
+**Round:** Feature engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Compare cardinality, sample support, unseen/rare values, model family, sparsity, interpretability, drift, memory and serving latency.
+- Make target encoding out-of-fold and time-safe with smoothing/global fallback; document hashing collisions and embedding data/regularization needs.
+- Evaluate time/group holdouts, calibration and rare-category slices, version the mapping/model and prefer the simplest method with stable incremental value.
+
+**Follow-up probe:** Why can hashing generalize better than target encoding for rapidly changing categories?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B8-08 — Handle missing data when MNAR is plausible.
+
+**Round:** Statistical data preparation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use the collection process and causal context to distinguish structural, censored, outage and behavior-dependent missingness; do not claim MNAR is testable from observed data alone.
+- Compare explicit unknown/not-applicable states, indicators, model-based or multiple imputation and sensitivity scenarios fitted within training folds.
+- Report how conclusions change under plausible unobserved values, validate by slice/time and monitor the missingness mechanism after operational changes.
+
+**Follow-up probe:** Why does adding a missingness indicator not remove MNAR bias automatically?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B8-09 — Select features without leaking validation or overstating importance.
+
+**Round:** Model selection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Place preprocessing, resampling and filter/wrapper/embedded selection inside each training fold under a deployment-aligned split.
+- Compare regularization, domain removal and permutation/embedded importance across folds/time while treating correlated features and unstable rankings cautiously.
+- Evaluate held-out quality, calibration, latency, privacy and selection stability; keep the test set untouched and avoid causal claims from predictive importance.
+
+**Follow-up probe:** Why can permutation importance divide signal unpredictably among correlated features?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### SDS-B8-10 — Design validation gates for noisy, delayed labels.
+
+**Round:** ML data validation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Record definition, source, horizon, maturation, censoring, revision, adjudication and policy dependence; separate unlabeled from negative examples.
+- Measure prevalence and agreement by time/source/slice, audit a random sample, preserve a gold set and prevent weak/model-assisted labels from contaminating evaluation.
+- Version label logic, delay training/evaluation until maturity where needed, run correction/backfill reproducibly and quantify model sensitivity to plausible noise.
+
+**Follow-up probe:** How would you evaluate a model when recent negatives have not had time to become positives?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+## Time series and forecasting
+
+### SDS-B8-11 — Choose among ETS, ARIMA/SARIMAX, and a lagged-feature model.
+
+**Round:** Forecasting foundations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Start from trend/seasonality, autocorrelation, stationarity/differencing, exogenous availability, nonlinearities, history length, series count and decision horizon.
+- Keep seasonal-naive baseline; use ETS for evolving components, ARIMA/SARIMAX for autocorrelation/exogenous structure, and boosting for nonlinear lag/covariate interactions.
+- Compare through identical rolling origins by horizon/series, inspect residuals and intervals, and choose from accuracy, stability, interpretability and operations.
+
+**Follow-up probe:** What residual pattern suggests the selected model has left predictable temporal structure?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### SDS-B8-12 — Design a rolling-origin backtest without tuning on the future.
+
+**Round:** Temporal validation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define forecast origins, horizons, train window, gap, update cadence and matured targets to reproduce the intended production cycle.
+- Fit every transform/model per origin, use only covariates available then, reserve later origins for final selection and compare naive/seasonal baselines.
+- Report distributions by horizon, series and regime with uncertainty and compute cost; avoid choosing folds or hyperparameters after inspecting final-period outcomes.
+
+**Follow-up probe:** When should a gap exist between training cutoff and forecast origin?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### SDS-B8-13 — Select forecasting metrics for intermittent and differently scaled series.
+
+**Round:** Forecast evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain MAE/RMSE trade-offs, MAPE failure near zero, WAPE aggregation effects and MASE scaling by a naive error; define zero/undefined handling.
+- Report per-series/horizon distributions and business-weighted aggregates, bias and service/stockout costs rather than one overall number.
+- Add intermittent-demand diagnostics and benchmark against seasonal-naive or Croston-family baselines where appropriate.
+
+**Follow-up probe:** How can WAPE be dominated by high-volume series and hide failure on low-volume critical items?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### SDS-B8-14 — Evaluate quantile and interval forecasts.
+
+**Round:** Probabilistic forecasting · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use pinball loss for quantiles and coverage plus sharpness for intervals by horizon, series and regime; check quantile crossing and conditional miscalibration.
+- Compare empirical coverage with nominal levels using rolling origins and enough events, while relating chosen quantiles to asymmetric decision costs.
+- Calibrate or conformalize only under stated exchangeability/stability assumptions and monitor coverage after shift rather than claiming universal guarantees.
+
+**Follow-up probe:** Why can a very wide 90% interval have correct coverage but little decision value?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### SDS-B8-15 — Model intermittent demand within a product hierarchy.
+
+**Round:** Specialized forecasting · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate occurrence and positive size, inspect zero runs, censoring/stockouts, aggregation level, lead time and seasonal effects; retain intermittent baselines.
+- Compare Croston-style, count/probability, global or aggregate-first approaches through rolling-origin cost and calibration, not ordinary random splits.
+- Reconcile hierarchy deliberately, quantify uncertainty, pool information where support is weak and evaluate inventory/service impact at each decision level.
+
+**Follow-up probe:** How can stockouts make observed zero demand an invalid target?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+## Recommendation, search, and ranking
+
+### SDS-B8-16 — Explain matrix factorization for implicit feedback.
+
+**Round:** Recommender modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Factor user–item interactions into latent vectors, distinguish explicit ratings from implicit confidence/preference and explain regularization and cold-start limits.
+- Use weighted implicit objectives or pairwise ranking with carefully sampled negatives, recognizing unobserved does not mean disliked.
+- Evaluate with time/user-aware ranking metrics and coverage/long-tail slices against popularity/co-visitation baselines, then require online causal evidence.
+
+**Follow-up probe:** How does confidence weighting change the interpretation of repeated implicit actions?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### SDS-B8-17 — Design and evaluate a two-tower retrieval model.
+
+**Round:** Representation and retrieval · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Encode query/user and item independently for ANN serving, define positives/exposure, negative sampling, similarity/normalization, temperature and feature availability.
+- Prevent false or biased in-batch negatives, evaluate full/representative-corpus Recall@K and coverage by popularity/segment, and separate embedding quality from ANN recall.
+- Compare simple retrieval sources, handle cold start and refresh/version embeddings consistently with the index and downstream ranker.
+
+**Follow-up probe:** Why can excellent sampled-softmax training loss coexist with poor full-corpus recall?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### SDS-B8-18 — Calculate and interpret NDCG for a ranked list.
+
+**Round:** Ranking metrics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define graded relevance, discounted cumulative gain, ideal DCG and NDCG@K; show that rank discounts reward placing high-relevance items early.
+- Explain dependence on label/candidate construction, ties, unjudged items and per-query averaging; compare with MRR, MAP, Recall@K and product objectives.
+- Report slices, confidence and retrieval recall plus diversity/coverage, and avoid assuming offline NDCG improvement causes business lift.
+
+**Follow-up probe:** When would MRR be more aligned than NDCG?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### SDS-B8-19 — Use inverse propensity scoring for counterfactual ranking evaluation.
+
+**Round:** Causal recommendation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Require logged action/exposure under a known stochastic policy with propensities, consistency, overlap and a reward aligned to the target policy.
+- Weight observed rewards by target over logging propensity, inspect support/extreme weights and use clipping, self-normalization or doubly robust methods with bias–variance disclosure.
+- Validate on simulations/held-out policies and still use online experiments because unlogged confounding, bad propensities and feedback loops can invalidate estimates.
+
+**Follow-up probe:** What happens when the target policy recommends items the logging policy almost never exposed?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### SDS-B8-20 — Design exploration that learns without overwhelming user experience.
+
+**Round:** Bandits and policy evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define context, eligible actions, reward horizon, safety constraints, delayed feedback and nonstationarity; compare epsilon-greedy, UCB, Thompson or contextual policies.
+- Bound exploration by traffic, user/item risk and cost, log propensities and policy versions, and keep deterministic safe fallback plus kill switch.
+- Evaluate regret, coverage, reward, concentration and long-term outcomes with off-policy diagnostics and randomized holdouts; monitor feedback-loop and fairness effects.
+
+**Follow-up probe:** Why can a short-term click reward make a bandit converge to a harmful policy?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
 
 ## Completion evidence
 

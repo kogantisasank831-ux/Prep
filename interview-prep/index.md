@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.6.0"
+status: "review"
+version: "1.7.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 140 guided questions across Batches 1–7, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–7 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 160 guided questions across Batches 1–8, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 8 is a review candidate; Batches 1–7 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -90,6 +90,15 @@ Each role bank now contains 140 guided questions across Batches 1–7, with stro
 | [Data preparation, EDA, and feature engineering]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }}) | Grain, labels, splits, leakage, quality, missingness, encoding, temporal aggregates, imbalance, point-in-time features and monitoring |
 | [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }}) | Clustering, mixtures, dimensionality reduction, anomaly methods, scarce-label evaluation, thresholds, alert economics and operations |
 
+## Batch 8 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Experimentation and causal inference — expanded]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }}) | Causal contracts, power, trustworthy telemetry, ratio metrics, variance reduction, sequential decisions, interference, observational identification and uplift |
+| [Feature engineering and ML data validation — expanded]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }}) | Data identity, deployment-aligned splits, leakage, point-in-time features, validation layers, failure policy, drift and online/offline parity |
+| [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }}) | Forecasting contracts, baselines, statistical/ML/global models, rolling-origin evaluation, metrics, uncertainty, hierarchy and production |
+| [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }}) | Candidate generation, ranking, feedback and exposure, collaborative/two-tower models, metrics, counterfactual evaluation, cold start and reliability |
+
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
 ## Interview answer standard
@@ -116,6 +125,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Batch 7 is approved. Define a later batch only after its source scope and evidence boundary are ready.
+Review Batch 8 for causal and point-in-time correctness, forecasting evaluation, recommendation exposure and feedback assumptions, role calibration, and interview usefulness. One final planned batch remains after this candidate.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

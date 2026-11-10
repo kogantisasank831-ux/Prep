@@ -44,6 +44,11 @@ experimentation and causal inference, data preparation and feature
 engineering, and unsupervised/anomaly guides. Each role bank now contains
 140 guided questions while preserving all earlier IDs.
 
+Batch 8 is prepared as a review candidate with expanded experimentation and
+feature/data-validation guides plus new time-series forecasting and
+recommendation/search/ranking guides. It adds 20 role-specific questions
+per bank, bringing each candidate bank to 160.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than

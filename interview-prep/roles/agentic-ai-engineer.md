@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.6.0"
+status: "review"
+version: "1.7.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "One hundred forty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production AI and agents alongside mathematical reasoning, trustworthy experiments, point-in-time feature systems, unsupervised methods, anomaly operations, security, reliability, and leadership."
+description: "One hundred sixty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production AI and agents alongside experiment platforms, causal telemetry, feature contracts, forecasting services, recommendation and ranking systems, security, reliability, and leadership."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–7 · 140 guided questions"
+kicker_secondary: "Batches 1–8 · 160 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 140
+question_count: 160
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 140 questions across Batches 1–7 · **Status:** Batches 1–7 approved
+**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–7 approved · Batch 8 review candidate
 
 ## Python and service engineering
 
@@ -2055,6 +2055,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which evidence would justify a site-specific model instead of correcting the ingestion path?
 
 **Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+## Experimentation and causal inference — advanced practice
+
+### AIE-B8-01 — Design the assignment and exposure services for an AI product experiment.
+
+**Round:** Experiment platform engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define the stable randomization unit, eligibility point, deterministic bucketing, experiment and variant versions, mutual exclusions, and persistent assignment semantics.
+- Log assignment separately from delivery and exposure with event time, request identity, treatment configuration, and reason codes for failed or partial rendering.
+- Add A/A, sample-ratio-mismatch, duplicate-unit, telemetry-loss, rollback, and replay tests so analysis can reconstruct intention-to-treat without joining on post-treatment behavior.
+
+**Follow-up probe:** Why must assignment remain queryable even when the treatment service times out?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B8-02 — Implement a valid sequential decision process for a costly model experiment.
+
+**Round:** Statistical engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Predeclare the estimand, primary metric, monitoring cadence, information horizon, error control, efficacy/futility boundaries, guardrails, and maximum sample.
+- Use a supported group-sequential, alpha-spending, always-valid, or Bayesian decision method instead of repeatedly applying a fixed-horizon p-value.
+- Version the analysis policy, preserve every interim data cut, separate safety stops from efficacy, and simulate operating characteristics before launch.
+
+**Follow-up probe:** Why does refreshing a fixed-horizon dashboard every hour inflate false positives?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B8-03 — Add CUPED variance reduction without leaking treatment information.
+
+**Round:** Experiment implementation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Build the covariate strictly from pre-assignment data with a stable unit, window, availability rule, missing-history fallback, and definition shared across arms.
+- Estimate the adjustment within the declared analysis, retain intention-to-treat, and compute uncertainty at the randomization unit rather than treating events as independent.
+- Test invariant behavior in A/A data, compare adjusted and unadjusted estimates, and block any covariate whose production timestamp or source can be affected by treatment.
+
+**Follow-up probe:** How could a “seven-day activity” feature become post-treatment even if its table is called historical?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B8-04 — Instrument a tool-using agent so causal product impact can be estimated.
+
+**Round:** Agent analytics architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Log immutable assignment, agent/prompt/tool/policy versions, exposure opportunity, user action, tool effects, errors, latency, cost, safety outcomes, and matured business outcomes.
+- Keep diagnostics such as accepted suggestions or tool use out of the primary ITT filter because they are post-treatment; use them for mechanism analysis with caveats.
+- Preserve user/account identity and privacy boundaries, deterministic event IDs, late-data corrections, and an analysis-ready unit table that reconciles partial workflows.
+
+**Follow-up probe:** Which useful-looking agent event would become a collider if used to select the analysis population?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### AIE-B8-05 — Choose between user randomization, cluster randomization, and a switchback.
+
+**Round:** Causal system design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Map persistence, shared capacity, social or marketplace interference, contamination paths, carryover, and the policy-level decision before selecting the unit.
+- Prefer the smallest independent unit that delivers the treatment correctly; move to clusters or randomized time blocks when shared state invalidates simultaneous user assignment.
+- Analyze at the assigned unit, account for intracluster correlation or autocorrelation, balance operational cycles, and test washout and spillover sensitivity.
+
+**Follow-up probe:** What evidence shows a switchback block is long enough for system state to wash out?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+## Feature engineering and ML data validation
+
+### AIE-B8-06 — Turn a feature definition into an executable production contract.
+
+**Round:** Feature platform engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind entity key, event/processing/availability times, source, transformation version, unit, type, null/default semantics, freshness, privacy class, TTL, owner, and allowed use.
+- Add schema, range, relationship, uniqueness, point-in-time, distribution, and online/offline parity tests with blocking versus quarantine behavior.
+- Version compatible changes, publish lineage and consumers, support backfill and deletion propagation, and fail safely when a critical contract is unknown or stale.
+
+**Follow-up probe:** Why is a feature's event timestamp insufficient to prove it was available to the model?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B8-07 — Rebuild historical features after late corrections without creating leakage.
+
+**Round:** Point-in-time data engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Preserve event time, arrival/availability time, correction version, original record identity, and the policy for what a historical decision could have known.
+- Distinguish as-known-at-the-time training reconstruction from latest-truth reporting, and use bitemporal or versioned snapshots when both are required.
+- Isolate the backfill, pin code/config/source identity, compare affected entities and labels, reconcile downstream stores, and prevent duplicate online effects.
+
+**Follow-up probe:** When should corrected truth update labels but not historical serving features?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B8-08 — Diagnose feature drift before triggering retraining.
+
+**Round:** ML reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Segment the change by source, time, tenant, version and pipeline stage; inspect schema, units, missingness, sampling, freshness, category coverage and parity first.
+- Separate upstream defect, legitimate seasonality, population shift, policy feedback and target-concept change using source evidence and delayed outcomes.
+- Contain unsafe inputs, choose repair, recalibration or retraining from the diagnosed mechanism, and retain a rollback plus effectiveness check.
+
+**Follow-up probe:** Why can retraining on a unit-conversion bug make recovery harder?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B8-09 — Design a safe feature-store backfill and online materialization.
+
+**Round:** Data platform reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define bounded entity/time scope, exact feature version, source snapshots, event and availability cutoffs, compute capacity, publication mode and consumer impact.
+- Write idempotently to staged/offline outputs, validate point-in-time fixtures and distributions, then materialize online values with timestamps, TTL and atomic version switching.
+- Reconcile offline/online samples, rate-limit production load, preserve prior values for rollback, and communicate changed semantics to every consuming model.
+
+**Follow-up probe:** How would you avoid mixing two feature definitions during a long backfill?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### AIE-B8-10 — Build an active-learning and annotation pipeline without corrupting evaluation.
+
+**Round:** Data-centric AI · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate randomly sampled adjudicated evaluation data from uncertain, diverse or high-impact examples selected for labeling; version rubric, annotator and provenance.
+- Track selection probability, coverage, disagreement, conflicts, turnaround and privacy; prevent model suggestions from becoming unreviewed ground truth.
+- Retrain through reproducible data versions, evaluate on untouched representative/time holdouts, and maintain random audits to estimate blind spots outside the selected pool.
+
+**Follow-up probe:** Why does evaluating only actively selected examples misstate production performance?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+## Time series and forecasting
+
+### AIE-B8-11 — Define the contract for a production demand-forecasting API.
+
+**Round:** Forecasting system design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Specify series/hierarchy, target and unit, forecast origin, frequency, horizons, lead time, known-future versus observed covariates, output type and decision loss.
+- Version model, data cutoff, calendar, scenario/covariate inputs and quantiles; return freshness, fallback and partial-series diagnostics with the forecast.
+- Set latency, availability, backfill, reconciliation and publication semantics, including what happens when required history or future covariates are missing.
+
+**Follow-up probe:** How should the API distinguish a realized weather value from a weather forecast available at origin?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### AIE-B8-12 — Implement rolling-origin evaluation for many related series.
+
+**Round:** Forecast evaluation engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Generate origins in chronological order with fixed/expanding training windows, required gaps, horizon-specific targets and label-maturity checks; never shuffle rows.
+- Refit preprocessing and model per fold as production would, retain naive/seasonal baselines, and aggregate metrics by horizon, series, segment and business weight.
+- Persist origin, cutoff, feature/covariate versions and predictions for reproducibility; control compute with representative folds without leaking future tuning evidence.
+
+**Follow-up probe:** Why can one final holdout hide a model that degrades badly at longer horizons?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### AIE-B8-13 — Prevent future-covariate leakage in a forecasting feature pipeline.
+
+**Round:** Temporal data correctness · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Classify static, observed-past, known-future and forecasted covariates; record when each value was operationally available at every forecast origin.
+- Build lags and rolling statistics using strictly prior observations, fit scaling/encoding on training history, and evaluate with the same forecasted external inputs used in production.
+- Add hand-audited origin fixtures, timestamp/timezone boundary tests and lineage so realized future prices, stockouts or weather cannot enter training silently.
+
+**Follow-up probe:** Why is a published holiday calendar safe while realized future promotion uptake is not?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### AIE-B8-14 — Serve probabilistic forecasts for an inventory decision.
+
+**Round:** Decision-aware forecasting · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Produce calibrated quantiles or scenarios aligned to overage/underage costs and lead time rather than returning only a point forecast.
+- Validate pinball loss, interval coverage and sharpness by horizon/segment, check quantile crossing and reconcile hierarchy or inventory constraints deliberately.
+- Expose model/data version and uncertainty to the optimizer, monitor realized coverage and cost, and fall back to conservative baseline intervals under data failure.
+
+**Follow-up probe:** Which quantile is appropriate when stockout cost is much larger than holding cost?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### AIE-B8-15 — Operate a forecasting service through regime change.
+
+**Round:** Production reliability · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Monitor input timeliness, forecast bias, residuals, interval coverage, error by horizon/series, baseline comparison, overrides and downstream cost.
+- Diagnose pipeline defect, one-off shock, lasting regime shift, censoring/stockout change or model staleness before choosing retraining or reweighting.
+- Use champion/challenger or shadow evidence, bounded recent windows, manual/domain overrides, rollback and post-change forecast-value measurement.
+
+**Follow-up probe:** Why can shortening the training window help one regime change but harm seasonal estimation?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+## Recommendation, search, and ranking
+
+### AIE-B8-16 — Design a multi-stage recommendation service under a strict latency budget.
+
+**Round:** Ranking system design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define request context, item universe, eligibility/safety, freshness, objective and exposure logging; allocate latency across candidate sources, ranking and policy re-ranking.
+- Combine popularity/recency/content/collaborative or two-tower candidates for high recall, deduplicate, then use richer cross features only on the bounded candidate set.
+- Cache/version embeddings and features safely, support cold-start fallbacks, monitor stage recall, ranking quality, availability, latency, cost and rollback.
+
+**Follow-up probe:** Why can improving the ranker fail when the relevant item never reaches its candidate set?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### AIE-B8-17 — Implement negative sampling for a two-tower retrieval model.
+
+**Round:** Retrieval modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Distinguish exposed non-actions from unexposed items, choose random, popularity, in-batch and hard negatives with an explicit sampling distribution and false-negative policy.
+- Prevent same-user/duplicate positives from becoming negatives, account for batch/cross-device dependence, and use weighting or correction when training and serving distributions differ.
+- Evaluate full-corpus or representative retrieval recall by slice and popularity, inspect embedding norms and hard-negative quality, and compare simple candidate baselines.
+
+**Follow-up probe:** How can in-batch negatives penalize an item that is relevant to several users?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### AIE-B8-18 — Build offline evaluation that separates retrieval from ranking.
+
+**Round:** Evaluation engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use time- and user-aware splits with logged exposure and an explicit candidate universe; prevent future interactions, duplicate impressions and target-derived features.
+- Measure candidate Recall@K/coverage first, then ranker NDCG/MRR/precision with diversity, novelty, calibration, safety, long-tail and latency diagnostics.
+- Reproduce the historical policy and label window, report popularity/position bias limitations, and require an online experiment before claiming product impact.
+
+**Follow-up probe:** Why is sampled-candidate NDCG not directly comparable with full-corpus NDCG?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### AIE-B8-19 — Handle cold start and controlled exploration in a recommender.
+
+**Round:** Recommendation reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate new user, new item and sparse-context cases; combine onboarding/context, content, popularity/recency and business-safe fallback rather than returning empty results.
+- Introduce bounded exploration with eligibility, safety, traffic/cost caps and logged propensities so new or long-tail items can receive evidence without uncontrolled harm.
+- Monitor coverage, novelty, regret, user feedback and segment fairness, and keep exploitation plus rollback when exploration telemetry or policy fails.
+
+**Follow-up probe:** Why does always recommending popular items make future offline evaluation more biased?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### AIE-B8-20 — Diagnose a ranking release that improved offline NDCG but reduced conversions.
+
+**Round:** Production incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Verify exact model/candidate/feature/policy versions, exposure and position logging, online assignment, latency/errors, inventory eligibility and metric definitions before blaming user preference.
+- Test candidate recall, calibration, diversity, repetition, long-tail, price/availability and segment shifts; inspect whether offline labels reproduce the old policy rather than the new objective.
+- Roll back or narrow exposure, preserve evidence, correct the stage or metric, rerun guarded experiments and add end-to-end business plus reliability gates.
+
+**Follow-up probe:** Which online failure could lower conversion even if the served ordering matches the offline model?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
 
 ## Completion evidence
 
