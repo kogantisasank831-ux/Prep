@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.7.0"
+status: "review"
+version: "1.8.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "One hundred sixty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production AI and agents alongside experiment platforms, causal telemetry, feature contracts, forecasting services, recommendation and ranking systems, security, reliability, and leadership."
+description: "One hundred eighty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production AI and agents alongside vision and graph systems, responsible decision services, forecasting, recommendation, security, reliability, optimization, and incident leadership."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–8 · 160 guided questions"
+kicker_secondary: "Batches 1–9 · 180 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 160
+question_count: 180
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
+**Bank size:** 180 questions across Batches 1–9 · **Status:** Batches 1–8 approved · Batch 9 review candidate
 
 ## Python and service engineering
 
@@ -2343,6 +2343,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which online failure could lower conversion even if the served ordering matches the offline model?
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+## Computer vision and multimodal AI
+
+### AIE-B9-01 — Design an image-ingestion and inference API that safely handles untrusted media.
+
+**Round:** Vision service design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Validate MIME/signature, dimensions, pixels, frames, file size and decompression limits; isolate/patch decoders and treat EXIF, OCR text, filenames and URLs as untrusted data.
+- Apply versioned preprocessing identical to evaluation, enforce tenant authorization and retention/redaction policy, and bind media, model, weights and postprocessing identities to the trace.
+- Bound queueing, batching, latency and resource use; return schema-validated outputs with abstention/review and safe fallback when decode, model or dependency fails.
+
+**Follow-up probe:** How can text inside an image become a prompt-injection path for a multimodal agent?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### AIE-B9-02 — Export a detector to a faster runtime without silently changing behavior.
+
+**Round:** Vision optimization · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Freeze exact preprocessing, label map, resize/padding, model weights, confidence/NMS and output-coordinate contracts before conversion.
+- Compare native and exported tensors plus task-level AP/recall by class/size and threshold on a locked corpus, including dynamic shapes, empty detections and target hardware precision.
+- Benchmark warm/cold p50/p95 latency, throughput and memory; canary the exact artifact with versioned rollback rather than promoting from a synthetic speed result alone.
+
+**Follow-up probe:** Why can numerically small box-coordinate differences materially change AP after NMS?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### AIE-B9-03 — Build evaluation for a vision-language document assistant.
+
+**Round:** Multimodal evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define document/image types, question taxonomy, answer schema and required visual evidence; preserve page, crop, prompt, template, model and generation identities.
+- Score OCR, extraction, spatial grounding, table/chart interpretation, unsupported detail, citation/evidence and refusal separately with calibrated human review.
+- Slice by resolution, rotation, language, handwriting, layout and page count; add latency/token/cost and security tests for visual prompt injection and sensitive content.
+
+**Follow-up probe:** How would you detect an answer copied from model prior knowledge rather than grounded in the supplied image?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### AIE-B9-04 — Implement group-safe splitting for video-based training data.
+
+**Round:** Vision data engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define stable video, subject, device, site and event identities; keep adjacent frames, derived clips/crops and near duplicates in one split.
+- Choose temporal/site/group holdouts matching deployment, fit all learned preprocessing on training only and audit label/capture-policy changes at boundaries.
+- Persist a split manifest and duplicate report, then test generalization by scene, camera, lighting and rare event rather than relying on random frame accuracy.
+
+**Follow-up probe:** Why can sampling one frame every minute still leak if the same location appears in train and test?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### AIE-B9-05 — Diagnose a camera rollout that doubled model abstentions at one site.
+
+**Round:** Production incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop/narrow the rollout, identify camera/firmware/preprocessing/model versions and compare resolution, aspect ratio, color, exposure, blur, compression and decode errors with known-good traffic.
+- Reproduce affected requests, separate capture shift from serving/threshold/calibration failure and inspect quality by class/object size plus reviewer outcomes.
+- Restore compatible capture/preprocessing or rollback, preserve evidence and add site/device compatibility gates, drift alerts and acceptance tests before re-release.
+
+**Follow-up probe:** Which signal would distinguish a new image distribution from a broken normalization path?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+## Graph ML and knowledge graphs
+
+### AIE-B9-06 — Build a point-in-time graph feature pipeline for fraud scoring.
+
+**Round:** Graph data engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define typed/directed nodes and edges with entity, event, processing and availability times plus provenance and validity intervals.
+- Reconstruct neighborhoods strictly before each authorization origin, remove target/future edges, version entity resolution and produce immutable graph/feature manifests.
+- Test late events, merges/splits, duplicate retries, high-degree caps and online/offline parity; fall back safely when graph freshness or identity state is invalid.
+
+**Follow-up probe:** How can an edge that occurred earlier still be unavailable to the live scorer?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### AIE-B9-07 — Serve a neighbor-sampled GNN for unseen nodes under a latency budget.
+
+**Round:** GNN serving · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define inductive node features, typed historical neighborhood, sampling fan-out/depth, high-degree policy, freshness and missing/new-node fallback.
+- Separate batch graph/embedding publication from online feature/subgraph retrieval, atomically version snapshot, sampler, model and index, and bound expansion/cancellation.
+- Benchmark recall/quality versus tabular aggregates and cached embeddings plus p95 latency, memory and dependency failures; monitor degree/cold-start slices and staleness.
+
+**Follow-up probe:** When would a precomputed embedding be unsafe to reuse for a newly changed neighborhood?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### AIE-B9-08 — Implement leakage-safe negative sampling for temporal link prediction.
+
+**Round:** Graph modeling infrastructure · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define eligible pairs and non-edge meaning at each origin; avoid reverse duplicates, future positives, impossible pairs and target edges remaining in message-passing adjacency.
+- Combine random/degree-aware/local/hard negatives with recorded sampling probabilities and false-negative policy; mine only from information available then.
+- Evaluate on a representative/full candidate set with MRR/Hits/Recall and calibration by degree/age, disclosing differences from the sampled training distribution.
+
+**Follow-up probe:** Why can a random non-edge be an unknown positive rather than a true negative?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### AIE-B9-09 — Design an authorization-safe GraphRAG retrieval path.
+
+**Round:** GraphRAG security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Resolve authorized seeds, apply ACL/tenant checks during every typed/time-valid traversal and cap depth, fan-out, paths, tokens, latency and cost.
+- Preserve entity/relation/document provenance, validate extracted graph updates before trust and re-check access before context assembly and output.
+- Evaluate entity linking, seed/path/evidence recall, grounding and authorization violations separately; propagate revocation/deletion through graph, embeddings, caches and summaries.
+
+**Follow-up probe:** Why is filtering the final text insufficient if traversal already crossed a restricted node?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### AIE-B9-10 — Recover from a graph-embedding release whose online recommendations became repetitive.
+
+**Round:** Graph production incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Verify graph snapshot, edge windows, sampler, embedding/index and ranker versions plus cache state, candidate counts, degree/popularity mix and exposure logging.
+- Compare structure-only, feature-only and prior embeddings; inspect collapse/oversmoothing, hub dominance, stale edges, missing relation types and index mismatch by slice.
+- Roll back atomically, repair construction/training/publication, add embedding diversity/norm and candidate-coverage gates, then revalidate online under guarded exposure.
+
+**Follow-up probe:** How could publishing new embeddings against an old ANN index create this symptom?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+## Explainability, fairness, and responsible ML
+
+### AIE-B9-11 — Design a versioned explanation service for tabular predictions.
+
+**Round:** Responsible ML platform · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind prediction, raw/transformed features, preprocessing, model, output scale, explainer, background/reference and parameters to one immutable request identity.
+- Return schema-validated attributions with local fidelity/additivity and stability diagnostics, privacy-safe feature labels and explicit non-causal limitations.
+- Cache only on full identity, enforce access/retention, monitor failures/drift and fall back to approved reason codes or human review rather than fabricate an explanation.
+
+**Follow-up probe:** Why can reusing yesterday’s SHAP background change the meaning of today’s attribution?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### AIE-B9-12 — Implement slice metrics without exposing sensitive attributes to unauthorized consumers.
+
+**Round:** Fairness telemetry · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate protected evaluation data from serving features, enforce purpose-limited access and compute approved metrics in a restricted aggregation boundary.
+- Emit denominators, events, performance/error/calibration/selection measures, confidence intervals and intersection/time slices with minimum-support/privacy rules.
+- Version group definitions, label maturity, threshold/policy and metric code; alert owners without leaking row-level membership and retain auditable decisions.
+
+**Follow-up probe:** Why is deleting a sensitive column from training not enough to assess proxy effects?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### AIE-B9-13 — Add calibration and abstention to a high-impact classifier API.
+
+**Round:** Decision safety · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Fit calibration on a separate validation procedure, pin score/calibrator/threshold/policy versions and verify reliability/Brier plus subgroup/time evidence on untouched data.
+- Define abstention from supported confidence/OOD/operational signals with coverage-risk targets, review capacity/SLA, user message and deterministic fallback.
+- Log outcome, override and selective-label paths; monitor prevalence, calibration, coverage and group effects after labels mature and rollback on policy breach.
+
+**Follow-up probe:** How can an abstention policy worsen fairness even when overall error falls?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### AIE-B9-14 — Build a release gate for model cards and responsible-AI evidence.
+
+**Round:** ML governance automation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require immutable data/model/runtime identities, intended/excluded use, baseline, metrics/slices/uncertainty, explanation limits, fairness harm decision and unresolved risks with named owners.
+- Verify security, privacy, robustness, capacity, threshold/abstention, human oversight, appeal, rollback and monitoring evidence using machine-checkable manifests where possible.
+- Block promotion when required evidence/approval is missing, preserve the candidate and failure, and trigger re-review on data, policy, population, interface or dependency changes.
+
+**Follow-up probe:** Which parts must remain human decisions even if evidence collection is automated?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### AIE-B9-15 — Diagnose a fairness dashboard whose group gaps changed overnight with no model release.
+
+**Round:** Responsible AI incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Freeze decisions and verify metric code, group mapping, join grain, threshold/policy, label maturity, eligibility/exposure and data/backfill versions before interpreting harm.
+- Recompute denominators/confusion/calibration with known-good snapshots; separate telemetry or population shift from real decision/outcome change and quantify affected users.
+- Correct or roll back instrumentation/policy, notify responsible owners, preserve audit evidence and add schema/mapping/late-label regression plus anomaly gates.
+
+**Follow-up probe:** How can a label backfill move equalized-odds metrics without changing any historical predictions?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+## Survival, risk, pricing, and decision optimization
+
+### AIE-B9-16 — Design a survival-model prediction contract for multiple horizons.
+
+**Round:** Specialized model serving · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Accept a time origin and point-in-time feature snapshot; return ordered supported horizons with survival/event probabilities, model/calibrator and feature identities plus uncertainty/limitations.
+- Validate horizon support, monotonic survival probabilities, missing/time-varying features and calibration; distinguish risk ranking from probability and avoid extrapolation beyond trained follow-up.
+- Version thresholds/actions separately, monitor censoring/cohort/calibration after maturity and route unsupported or stale requests to safe fallback/review.
+
+**Follow-up probe:** What invariant should the returned survival curve satisfy as the horizon increases?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### AIE-B9-17 — Build an optimization API that never treats “no solution” as an empty plan.
+
+**Round:** Decision service engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Validate variables, units, data freshness and authorized hard/soft constraints; version the formulation, inputs, solver and parameters before solving under bounded time/resources.
+- Branch explicitly on optimal, feasible, infeasible, unbounded, limit and failure states; verify tolerances/business rules before returning decisions and include objective/bound/gap diagnostics.
+- Provide owner-approved fallback, human escalation and idempotent separation between plan generation and execution; log exact evidence for replay and rollback.
+
+**Follow-up probe:** Why is reading variable values after an `UNKNOWN` solver status dangerous?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### AIE-B9-18 — Connect a demand forecast to an allocation optimizer without version skew.
+
+**Round:** Predict-then-optimize architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Publish forecast scenarios/distributions with origin, horizon, item/location identities, units, calibration and model/data versions as an immutable manifest.
+- Construct optimization from the exact manifest, validate coverage/freshness and constraints, atomically bind solution to forecast/formulation/solver identities and reject mixed versions.
+- Evaluate forecast metrics plus feasibility, realized objective/regret and decision stability; monitor sensitivity and use robust fallback when uncertainty or dependency fails.
+
+**Follow-up probe:** How can a small forecast error cause a large allocation change near a capacity constraint?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### AIE-B9-19 — Implement safe randomized price exploration.
+
+**Round:** Pricing platform · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Enforce eligibility, floors/ceilings, contracts, inventory and fairness/legal policy; randomize within approved support and log assignment probability, price, context and policy version.
+- Bound traffic, customer exposure, duration and loss with guardrails/kill switch; keep deterministic fallback and prevent caching or retries from changing assigned treatment.
+- Measure margin and long-term guardrails with interference/seasonality analysis, audit sample-ratio mismatch and use causal estimates rather than treating observed price correlation as elasticity.
+
+**Follow-up probe:** Why must a retry return the same assigned price for the same experimental unit?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### AIE-B9-20 — Recover from a scheduler that became infeasible after an upstream schema change.
+
+**Round:** Optimization incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop execution, identify input/schema/formulation/constraint/solver versions and validate units, null/default handling, row counts and the first infeasible constraint group.
+- Use controlled relaxation/IIS diagnostics where supported without silently changing hard rules; quantify blocked decisions and activate the approved safe schedule/manual fallback.
+- Restore compatible data or formulation, replay the exact case, add schema/units/feasibility fixtures and canary shadow solves, then re-release with owner sign-off.
+
+**Follow-up probe:** Why should automatic constraint relaxation never directly authorize the production schedule?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
 
 ## Completion evidence
 

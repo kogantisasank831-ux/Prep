@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.7.0"
+status: "review"
+version: "1.8.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "One hundred sixty guided questions for Senior Data Scientist interviews."
-summary: "Practise causal estimators, trustworthy experiments, point-in-time feature validation, forecasting and uncertainty, recommendation and ranking models, production evidence, and business impact."
+description: "One hundred eighty guided questions for Senior Data Scientist interviews."
+summary: "Practise causal and point-in-time evidence, forecasting and ranking, vision and graph models, explainability and fairness, survival/risk/pricing analysis, optimization, and business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–8 · 160 guided questions"
+kicker_secondary: "Batches 1–9 · 180 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 160
+question_count: 180
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
+**Bank size:** 180 questions across Batches 1–9 · **Status:** Batches 1–8 approved · Batch 9 review candidate
 
 ## SQL and data
 
@@ -2341,6 +2341,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Why can a short-term click reward make a bandit converge to a harmful policy?
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+## Computer vision and multimodal AI
+
+### SDS-B9-01 — Compare a pretrained CNN and vision transformer for a small domain dataset.
+
+**Round:** Vision modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Match official preprocessing and comparable pretrained weights, then compare frozen features and controlled fine-tuning under identical group/site/time splits.
+- Discuss CNN locality/translation bias versus patch attention/global context, data/pretraining, resolution, parameter/compute, latency and domain shift.
+- Evaluate calibration and class/site/device/object-scale slices plus robustness and stability, choosing from evidence rather than architecture fashion.
+
+**Follow-up probe:** Why might a ViT underperform from scratch but win after large-scale pretraining?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### SDS-B9-02 — Design augmentations without invalidating labels.
+
+**Round:** Vision data science · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Derive transforms from capture variation and task invariance; explain why flips, crops, color shifts or warps may change text, laterality, geometry or diagnostic signal.
+- Apply identical geometry to boxes/masks/keypoints, keep validation deterministic and fit/select augmentation only on training evidence.
+- Review augmented examples and run ablations by rare class/site/device, checking calibration and external holdout rather than accepting training lift.
+
+**Follow-up probe:** When can color jitter remove the very signal the model must learn?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### SDS-B9-03 — Explain AP for object detection and its interpretation limits.
+
+**Round:** Vision evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define IoU-based matching, confidence-ranked precision/recall and area under/interpolation of that curve under a named protocol.
+- State IoU range, classes, object sizes, ignored/crowd regions, max detections and macro/weighted aggregation; AP values from different protocols are not directly comparable.
+- Add operating-threshold recall/precision, calibration, error taxonomy, latency and downstream cost because one AP number hides class/size and user impact.
+
+**Follow-up probe:** How can changing NMS improve AP at one IoU threshold and harm small crowded objects?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### SDS-B9-04 — Evaluate segmentation when most images contain no positive pixels.
+
+**Round:** Dense prediction · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate image-level detection of presence from conditional mask quality and define IoU/Dice behavior when both truth and prediction are empty.
+- Report per-class/image distributions, macro aggregation, boundary/small-object metrics, false-positive area and confidence intervals under group/site splits.
+- Compare empty-mask and simple threshold baselines, tune thresholds on validation only and connect performance to review/action cost.
+
+**Follow-up probe:** Why can global pixel accuracy approach 100% for a useless background-only model?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### SDS-B9-05 — Test whether a VLM is visually grounded.
+
+**Round:** Multimodal science · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Create paired images/prompts requiring localized evidence, counterfactual edits/occlusions and hard negatives where prior knowledge alone gives the wrong answer.
+- Score recognition, OCR, spatial/counting, citation/region grounding and unsupported details separately with blinded calibrated human rubrics.
+- Hold model/template/generation fixed, analyze sensitivity and slices, and avoid treating attention maps or fluent explanations as causal proof of grounding.
+
+**Follow-up probe:** What result on image-swapped controls would reveal that the model is ignoring the image?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+## Graph ML and knowledge graphs
+
+### SDS-B9-06 — Derive the intuition behind a message-passing GNN layer.
+
+**Round:** Graph foundations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Describe neighbor messages from source/target/edge features, permutation-invariant aggregation and node update with shared learnable functions.
+- Explain that $k$ layers expose up to $k$-hop information subject to sampling, direction and relation type, with inductive bias from graph construction.
+- Discuss degree normalization, self/residual paths, oversmoothing, oversquashing and why deeper is not automatically better.
+
+**Follow-up probe:** Why must an aggregator such as sum/mean be permutation invariant for an unordered neighborhood?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### SDS-B9-07 — Design a statistically honest temporal link-prediction experiment.
+
+**Round:** Graph evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Choose origins and predict eligible future links using only historical topology/features; remove target/reverse edges and keep identity groups consistent.
+- Define unknown versus negative, candidate universe and sampling probabilities; report representative/full-corpus MRR/Hits/Recall and calibration by degree/age.
+- Compare heuristics, matrix factorization, tabular aggregates and GNN ablations with uncertainty that acknowledges graph dependence and repeated nodes.
+
+**Follow-up probe:** Why does evaluating against 100 easy random negatives inflate ranking quality?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### SDS-B9-08 — Diagnose oversmoothing versus hub-feature shortcut learning.
+
+**Round:** GNN diagnostics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Track representation variance/similarity and class separability by depth while ablating edges, node features and degree/popularity features.
+- Compare shallow/residual/normalized models, sampled neighborhoods and simple degree/aggregate baselines on low/high-degree and cold-start slices.
+- Inspect calibration and errors under edge perturbation and temporal holdout; avoid attributing failure to oversmoothing without ruling out leakage or hub dominance.
+
+**Follow-up probe:** Which ablation would show that the model mostly learned node degree?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### SDS-B9-09 — Model a heterogeneous user–item–merchant graph.
+
+**Round:** Heterogeneous graph modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Preserve node and directed relation types, timestamps and edge features; articulate which meta-paths or relations carry mechanism-level signal.
+- Compare relation-specific transformations, shared/basis parameters and typed feature encoders under support, scale and cold-start constraints.
+- Use time-safe relation ablations and per-type/degree slices, checking whether rare relations overfit and whether simpler typed aggregates match performance.
+
+**Follow-up probe:** Why might fully separate parameters for every relation overfit a sparse relation type?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### SDS-B9-10 — Prove incremental value from GraphRAG over vector retrieval.
+
+**Round:** Retrieval experimentation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Build a query set labeled for entity, relation and multi-hop needs; hold corpus/model/generation constant and compare vector, graph and hybrid retrieval.
+- Measure entity linking, seed/path/evidence recall, answer support and failure taxonomy plus latency/token/cost with bootstrap or paired uncertainty.
+- Analyze extraction/provenance errors and where graph lift occurs, then require online/user evidence before claiming product impact.
+
+**Follow-up probe:** How would you distinguish graph-retrieval lift from simply retrieving more context?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+## Explainability, fairness, and responsible ML
+
+### SDS-B9-11 — Compare permutation importance, PDP/ICE, and SHAP for correlated features.
+
+**Round:** Model interpretation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Permutation measures held-out score dependence and can hide redundant correlated features; PDP/ICE probe modeled response but may enter implausible joint regions.
+- SHAP-style attributions allocate output relative to a background under dependence choices; values and rankings can change with grouping/reference.
+- Use grouped/conditional sensitivity, fidelity/stability checks and domain review, state output scale and never convert predictive attribution into a causal claim.
+
+**Follow-up probe:** Why can two equally predictive correlated features receive unstable or asymmetric attributions?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### SDS-B9-12 — Evaluate probability calibration across groups and time.
+
+**Round:** Uncertainty and calibration · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use untouched temporal/group-aware evaluation with reliability curves, Brier/log loss and sample/event counts; disclose binning/smoothing and horizon.
+- Compare calibration-in-the-large, slope and decision-relevant risk bands by group/time with uncertainty, separating prevalence shift from score-function change.
+- Fit recalibration only on an authorized validation window, re-evaluate discrimination and utility, and avoid assuming group calibration proves fairness.
+
+**Follow-up probe:** How can overall calibration be good while every important subgroup is miscalibrated?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### SDS-B9-13 — Analyze demographic parity, equalized odds, and predictive parity under unequal base rates.
+
+**Round:** Fairness statistics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define each conditional probability and the harm it approximates: allocation, error parity or reliability of positive decisions.
+- Explain incompatibility results under differing base rates except in special/perfect cases; thresholds move TPR/FPR/PPV and selection jointly.
+- Report confusion/calibration/utility with denominators and uncertainty, involve policy/domain owners and avoid calling any one parity definition universally correct.
+
+**Follow-up probe:** Why can matching positive predictive value still leave one group with a much higher false-negative rate?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### SDS-B9-14 — Quantify subgroup harm with sparse intersectional data.
+
+**Round:** Responsible statistical analysis · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Show sample/event/exposure counts and intervals, label/missingness quality and privacy limits; absence of significance is not evidence of no harm.
+- Use predeclared critical slices, hierarchical/partial pooling or Bayesian/regularized estimates where justified, multiplicity awareness and targeted qualitative review.
+- Perform sensitivity and targeted data-collection planning, preserving the group in governance rather than dropping it for low power.
+
+**Follow-up probe:** What assumption does partial pooling make about relationships among subgroup effects?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### SDS-B9-15 — Separate predictive explanation from causal recourse.
+
+**Round:** Causal interpretation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- A local attribution explains model-score association versus a reference; changing a feature may not causally change outcome or remain on the data manifold.
+- Recourse requires actionable/immutable definitions, structural/temporal constraints, feasibility/cost, policy response and robustness to model changes.
+- Validate candidate actions with causal/domain evidence and affected-user policy; communicate uncertainty and appeal instead of promising an outcome from a counterfactual optimization.
+
+**Follow-up probe:** Why is “increase income” often an invalid recourse recommendation even if it flips the model score?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+## Survival, risk, pricing, and decision optimization
+
+### SDS-B9-16 — Explain Kaplan–Meier estimation and when it becomes misleading.
+
+**Round:** Survival foundations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Describe the product of conditional survival at event times using events over the current risk set, with censoring removing later risk contribution rather than becoming a non-event.
+- State independent/non-informative censoring and correct time origin/risk-set assumptions; show confidence and numbers at risk because tails become unstable.
+- Discuss delayed entry, informative censoring and competing risks, where standard KM comparison may require alternative methods or sensitivity.
+
+**Follow-up probe:** Why does treating a competing event as ordinary censoring overestimate cumulative incidence?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### SDS-B9-17 — Validate a Cox model beyond reporting a C-index.
+
+**Round:** Survival modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Check proportional hazards/time interactions, nonlinear functional form, influential observations, covariate timing and leakage under temporal/group splits.
+- Evaluate IPCW-aware concordance/time-dependent AUC, horizon calibration and Brier/IBS with supported follow-up, event/censor counts and simple KM baselines.
+- Interpret hazard ratios conditionally rather than as probabilities/causal effects and connect calibrated horizon risk to the actual intervention utility.
+
+**Follow-up probe:** What residual or time interaction would signal a proportional-hazards violation?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### SDS-B9-18 — Estimate price elasticity from historically targeted prices.
+
+**Round:** Causal pricing · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Model price as treatment chosen by policy and identify confounding from customer, inventory, promotion, seasonality and competition; ordinary demand regression is not automatically causal.
+- Prefer randomized variation or defensible IV/RD/panel/quasi-experimental design with overlap, anticipation/interference and functional-form checks.
+- Estimate heterogeneous response with uncertainty within support, validate revenue/margin and long-term outcomes, and avoid extrapolating to unseen prices.
+
+**Follow-up probe:** Which variable might look like a useful elasticity instrument but violate the exclusion restriction?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### SDS-B9-19 — Build and validate a customer lifetime value model.
+
+**Round:** Applied decision modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define cohort/time origin, active/churn/reactivation, horizon, margin, service/acquisition cost, discounting, refunds and intervention policy.
+- Combine calibrated retention/survival with conditional transaction/margin models, propagate uncertainty and prevent recent censored customers from becoming false negatives.
+- Backtest by cohort/time and value decile using calibration and realized discounted margin, compare simple historical baselines and test decisions rather than revenue correlation.
+
+**Follow-up probe:** Why can ranking customers correctly by CLV still produce badly biased portfolio value estimates?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### SDS-B9-20 — Evaluate a predict-then-optimize allocation system.
+
+**Round:** Decision optimization · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Reconstruct forecast origins and feasible decisions with exact constraints, compare simple policy and oracle/stochastic benchmarks and keep evaluation out of training/tuning.
+- Report upstream calibration/error plus feasibility, realized objective/regret, constraint shadow/sensitivity, turnover and slices near binding constraints.
+- Stress scenarios and uncertainty, inspect discontinuous integer switches, and choose robust/stochastic or retraining changes only when downstream decision evidence improves.
+
+**Follow-up probe:** Why can lower average prediction RMSE increase optimization regret?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
 
 ## Completion evidence
 

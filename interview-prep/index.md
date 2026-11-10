@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.7.0"
+status: "review"
+version: "1.8.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -21,11 +21,11 @@ current_label: "Interview prep hub"
 
 | Role bank | Best for | Current coverage |
 | --- | --- | --- |
-| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, embeddings, ingestion, RAG architecture, evaluation, security, reliability and incidents |
-| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
-| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
+| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, vision and graph systems, RAG/agents, decision services, security, reliability and incidents |
+| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML/LLM and specialized-model decisions, responsible governance, security, delivery and operating models |
+| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, causal and specialized modeling, retrieval/RAG evaluation, responsible evidence, monitoring and business impact |
 
-Each role bank now contains 160 guided questions across Batches 1–8, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–8 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 180 guided questions across Batches 1–9, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 9 is the final planned review candidate; Batches 1–8 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -99,6 +99,15 @@ Each role bank now contains 160 guided questions across Batches 1–8, with stro
 | [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }}) | Forecasting contracts, baselines, statistical/ML/global models, rolling-origin evaluation, metrics, uncertainty, hierarchy and production |
 | [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }}) | Candidate generation, ranking, feedback and exposure, collaborative/two-tower models, metrics, counterfactual evaluation, cold start and reliability |
 
+## Batch 9 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }}) | Visual task contracts, capture and annotation quality, CNNs/ViTs, transfer learning, detection, segmentation, VLM grounding, serving, monitoring and safety |
+| [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }}) | Graph construction, message passing, temporal link evaluation, sampling, heterogeneous graphs, knowledge provenance, GraphRAG, serving and access control |
+| [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }}) | Inspection and attribution limits, calibration, uncertainty, abstention, fairness harms and metrics, mitigation, lifecycle governance and appeals |
+| [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }}) | Censoring and time-to-event models, risk and CLV, causal pricing, LP/MILP/constraint systems, solver evidence, uncertainty and downstream regret |
+
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
 ## Interview answer standard
@@ -125,6 +134,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Batch 8 is approved. One final planned batch remains.
+Review final Batch 9 for visual and graph evidence, explanation and fairness limits, survival/censoring assumptions, causal pricing, optimization feasibility, role calibration, and interview usefulness.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

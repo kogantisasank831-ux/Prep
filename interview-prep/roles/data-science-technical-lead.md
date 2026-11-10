@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.7.0"
+status: "review"
+version: "1.8.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "One hundred sixty guided questions for Data Science Technical Lead interviews."
-summary: "Practise AI and data leadership across experimentation standards, feature governance, forecasting strategy, recommendation products, operating models, risk, delivery, and business decisions."
+description: "One hundred eighty guided questions for Data Science Technical Lead interviews."
+summary: "Practise AI and data leadership across experimentation, vision and graph strategy, responsible-ML governance, survival/risk/pricing decisions, optimization, delivery, and business outcomes."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–8 · 160 guided questions"
+kicker_secondary: "Batches 1–9 · 180 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 160
+question_count: 180
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
+**Bank size:** 180 questions across Batches 1–9 · **Status:** Batches 1–8 approved · Batch 9 review candidate
 
 ## Problem framing
 
@@ -2345,6 +2345,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Why must recovery verify both user conversion and seller exposure distribution?
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+## Computer vision and multimodal AI
+
+### DSTL-B9-01 — Decide whether a defect-detection product needs classification, detection, or segmentation.
+
+**Round:** Vision problem framing · **Depth:** Lead
+
+**Strong answer signals**
+
+- Start from operator action: whether presence is enough, localization is required for repair, or pixel area/boundary drives severity; define latency and miss/false-alarm cost.
+- Compare annotation cost/quality, object size/overlap, explainability and deployment capacity with simple rules and transfer-learning baselines.
+- Select the minimum output that changes the decision, then gate it with slice metrics, calibration/abstention, reviewer workflow and measurable operational impact.
+
+**Follow-up probe:** When could a weaker classifier deliver more value than a higher-AP segmenter?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### DSTL-B9-02 — Establish a visual-data and annotation governance program across sites.
+
+**Round:** Data leadership · **Depth:** Lead
+
+**Strong answer signals**
+
+- Define capture/consent/rights, retention and identity standards plus ontology, ambiguous-case, occlusion, negative and adjudication rules with accountable owners.
+- Version manifests, label guide and annotator/tool provenance; audit duplicates, site/device coverage, rare classes, disagreement and privacy-sensitive content.
+- Use group/site/time splits and external holdouts, sample quality reviews and drift/change triggers; block publication when critical lineage or annotation gates fail.
+
+**Follow-up probe:** How would you handle a site whose annotators systematically draw looser boxes?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### DSTL-B9-03 — Build a roadmap for a multimodal document-understanding product.
+
+**Round:** Product and architecture · **Depth:** Lead
+
+**Strong answer signals**
+
+- Prioritize user tasks and schemas—classification, OCR/extraction, tables, visual Q&A or grounded generation—with privacy, review, latency and cost requirements.
+- Stage OCR/rules and task-specific baselines before general VLMs; benchmark build/buy and routing options on a versioned representative corpus.
+- Plan visual grounding/hallucination, prompt-injection and access controls, human correction, observability and rollout/rollback with business and quality gates.
+
+**Follow-up probe:** Which evidence would justify adding a costly VLM after a strong OCR-plus-rules baseline?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### DSTL-B9-04 — Define release gates for a safety-sensitive vision system.
+
+**Round:** Model governance · **Depth:** Lead
+
+**Strong answer signals**
+
+- Require exact data/label/split/model/preprocessing/runtime identities, intended/excluded environments and baseline comparisons across class, site, device, lighting, object-size and rare-event slices.
+- Gate calibration/abstention, robustness within the threat model, latency/capacity, privacy/security, reviewer load, failure fallback and rollback—not only average AP.
+- Use independent review and guarded shadow/canary evidence, predeclare stop criteria and retain unresolved risks with owners before production approval.
+
+**Follow-up probe:** Why should synthetic corruption benchmarks not be the only robustness gate?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+### DSTL-B9-05 — Lead an incident where a vision model misses rare defects after a new production line launches.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Protect users by reverting/narrowing automation and increasing review; bound affected parts/sites/times and preserve image, capture, model and decision evidence.
+- Separate capture/preprocessing drift, annotation policy, object scale, class support and threshold/calibration failures using known-good comparisons and expert review.
+- Communicate impact/uncertainty, correct data or system, backtest and canary the fix, then add new-line acceptance, rare-class and delayed-outcome gates plus accountable follow-up.
+
+**Follow-up probe:** How would you avoid training immediately on biased labels produced during the incident?
+
+**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+
+## Graph ML and knowledge graphs
+
+### DSTL-B9-06 — Decide whether a business problem genuinely requires a graph model.
+
+**Round:** Modeling strategy · **Depth:** Lead
+
+**Strong answer signals**
+
+- Define relational hypothesis, nodes/edges/time and decision; ask whether relationships add signal or constraints unavailable to a tabular model.
+- Compare rules, degree/path aggregates, matrix factorization and tabular baselines with a GNN on leakage-safe temporal/group splits.
+- Include graph construction/identity cost, privacy, scale, freshness, explainability, serving and deletion; choose the simplest approach with stable decision value.
+
+**Follow-up probe:** What ablation shows whether the GNN uses structure rather than only node features?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### DSTL-B9-07 — Set organization-wide standards for temporal graph evaluation.
+
+**Round:** Technical standards · **Depth:** Lead
+
+**Strong answer signals**
+
+- Require event/availability times, snapshot manifests, target-edge removal, entity grouping, reverse-edge deduplication and explicit transductive versus inductive claims.
+- Standardize eligible candidate and negative policies, full/representative ranking metrics, degree/age/cold-start slices, calibration and dependence-aware uncertainty.
+- Mandate baseline/ablation, code/sampler/model identity and independent leakage review; block release when future structure or unrealistic candidates contaminate evidence.
+
+**Follow-up probe:** Why is a random edge split especially misleading for a growing marketplace graph?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### DSTL-B9-08 — Design a graph platform serving fraud, recommendations, and GraphRAG.
+
+**Round:** Platform architecture · **Depth:** Lead
+
+**Strong answer signals**
+
+- Separate canonical typed/time-valid graph with provenance from task-specific point-in-time snapshots, feature/embedding pipelines and serving indexes.
+- Provide authorized bounded traversal, sampling, versioned publication, entity merge/split and late-edge handling with deletion/revocation propagation and audit.
+- Offer task-specific SLAs/fallbacks and monitor freshness, quality, degree/skew, latency/cost and incidents; avoid one schema or embedding silently serving incompatible purposes.
+
+**Follow-up probe:** Which artifact identities must be atomic when publishing graph embeddings and an ANN index?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### DSTL-B9-09 — Review a proposal to add GraphRAG to an enterprise assistant.
+
+**Round:** Architecture review · **Depth:** Lead
+
+**Strong answer signals**
+
+- Demand a relationship/multi-hop use case and compare SQL/graph queries, metadata, lexical and vector baselines on a representative evaluation set.
+- Review entity/relation extraction quality, provenance, temporal validity, ACL traversal, bounded expansion, deletion and graph-update ownership.
+- Gate on seed/path/evidence recall, grounded answers, authorization violations, latency/token/cost and operational simplicity; reject if graph errors outweigh lift.
+
+**Follow-up probe:** When might a deterministic graph query be preferable to learned subgraph retrieval?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+### DSTL-B9-10 — Lead a response to a knowledge-graph entity merge that contaminated recommendations.
+
+**Round:** Data/model incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop graph/embedding publication, identify merged entities, downstream snapshots/indexes/caches/models and affected recommendations, and preserve provenance/audit evidence.
+- Split/correct entities under owner-approved rules, propagate invalidation/deletion through derived artifacts and verify repaired neighborhoods plus decision outcomes.
+- Rebuild atomically, shadow/canary against known-good, notify stakeholders and add merge confidence, human review, reversible lineage and blast-radius checks.
+
+**Follow-up probe:** Why is correcting the canonical node insufficient if embeddings remain cached?
+
+**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+
+## Explainability, fairness, and responsible ML
+
+### DSTL-B9-11 — Select an explanation strategy for developers, reviewers, and affected users.
+
+**Round:** Responsible product design · **Depth:** Lead
+
+**Strong answer signals**
+
+- Map each audience to a task: developer debugging, reviewer evidence, user notice/contest/recourse; define accuracy, stability, actionability, privacy and language needs.
+- Combine model-appropriate global inspection, local reason/attribution with fidelity limits and feasible counterfactual or supporting evidence where policy permits.
+- Validate comprehension and misuse, version explanation with prediction/model/reference and provide appeal/human oversight rather than presenting association as causality.
+
+**Follow-up probe:** Why might a technically faithful attribution still be unsuitable for an affected user?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### DSTL-B9-12 — Choose fairness metrics for a capacity-constrained review system.
+
+**Round:** Fairness decision · **Depth:** Lead
+
+**Strong answer signals**
+
+- Identify allocation and error harms, eligible population, sensitive/intersection groups, baseline process and whose decision/rights are affected with legal/policy owners.
+- Compare selection rate, opportunity/equalized-odds, predictive value, calibration and utility under capacity, base-rate and measurement differences with denominators/uncertainty.
+- Document why selected metrics fit the harm, unavoidable trade-offs, mitigation and residual risk; test downstream outcomes and review/appeal rather than optimizing a dashboard gap alone.
+
+**Follow-up probe:** Why can equalized odds and calibrated probabilities conflict when base rates differ?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### DSTL-B9-13 — Govern subgroup analysis when many intersections have small samples.
+
+**Round:** Statistical governance · **Depth:** Lead
+
+**Strong answer signals**
+
+- Predeclare critical groups/metrics, report support/events and uncertainty, protect privacy and avoid treating no significant difference as proof of parity.
+- Use pooled/hierarchical or multiplicity-aware analysis where appropriate, combine quantitative evidence with qualitative harm review and plan targeted data collection.
+- Set owner-approved action thresholds and recurring review; never drop a vulnerable group solely because current data is inconveniently sparse.
+
+**Follow-up probe:** How can minimum-cell privacy rules hide the group with the greatest potential harm?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### DSTL-B9-14 — Establish a responsible-ML release and change-management process.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Tier systems by impact and require proportionate data/model lineage, intended use, validation, explanation/fairness, privacy/security, human oversight, rollback and owner approvals.
+- Separate evidence creation, independent review and risk acceptance; record unresolved limits and block release when mandatory gates fail.
+- Trigger re-review on data/population, label, threshold/policy, interface, vendor/dependency, law or incident changes and maintain monitoring, appeal and retirement workflows.
+
+**Follow-up probe:** Who should be allowed to accept a fairness trade-off, and why not the model team alone?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+### DSTL-B9-15 — Respond when a mitigation improves parity but reduces calibration and business utility.
+
+**Round:** Trade-off leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Revisit harm/decision objective and verify comparable data, thresholds, groups, uncertainty and downstream outcomes; do not choose the metric with the best optics.
+- Present a frontier of fairness, calibration, error, capacity and user/business outcomes plus non-model product/process alternatives and affected-stakeholder implications.
+- Route the explicit trade-off to accountable policy/legal/product owners, document decision/residual risk and use guarded rollout, monitoring and appeal if approved.
+
+**Follow-up probe:** What non-model change could improve both fairness and utility in a review-capacity problem?
+
+**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+
+## Survival, risk, pricing, and decision optimization
+
+### DSTL-B9-16 — Choose between fixed-horizon classification and survival analysis for churn.
+
+**Round:** Modeling strategy · **Depth:** Lead
+
+**Strong answer signals**
+
+- Define contractual/non-contractual churn, time origin, censoring/reactivation, action lead time and whether one or multiple horizons drive decisions.
+- Fixed-horizon classification can be simple with matured labels; survival uses event timing/censoring and supports horizon curves but adds assumptions/evaluation complexity.
+- Compare calibrated decision utility, follow-up support, intervention/selective-label effects and operational usability against simple baselines before standardizing.
+
+**Follow-up probe:** When would a 90-day classifier incorrectly label a recent active customer as negative?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### DSTL-B9-17 — Govern a risk model affected by selective approvals and delayed defaults.
+
+**Round:** Risk governance · **Depth:** Lead
+
+**Strong answer signals**
+
+- Map eligibility, approval/review/intervention policy, outcome maturation and unobserved counterfactual labels; prevent recent unknowns from becoming negatives.
+- Use policy/randomized or credible correction evidence where available, stress assumptions and keep a representative audited evaluation/monitoring set with calibration and loss metrics.
+- Separate score from approval policy, require fairness/legal review, human appeal, drift/recalibration and conservative fallback when support or labels are inadequate.
+
+**Follow-up probe:** Why can training only on approved applicants reverse conclusions about rejected applicants?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### DSTL-B9-18 — Design a pricing experimentation and decision program.
+
+**Round:** Causal product strategy · **Depth:** Lead
+
+**Strong answer signals**
+
+- Define margin/long-term objective, eligible unit, price support, inventory/substitution/competition, contracts and fairness/legal guardrails rather than conversion alone.
+- Start with approved randomized price/promotion variation or defensible quasi-experiment, log propensities/policy and estimate heterogeneous response with uncertainty.
+- Use bounded optimization/exploration, predeclared guardrails and rollback; monitor customer trust, retention, margin, mix and interference before scaling.
+
+**Follow-up probe:** Why can a demand model trained on historical prices recommend the old policy rather than the best price?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### DSTL-B9-19 — Set engineering and governance standards for optimization models.
+
+**Round:** Decision systems leadership · **Depth:** Lead
+
+**Strong answer signals**
+
+- Require owner-approved variables, objective, units, hard/soft constraints, feasibility/fallback and input lineage before solver selection.
+- Standardize formulation/data/solver identities, status/gap/tolerance reporting, reproducible cases, constraint tests, sensitivity/scenario and predict-then-optimize regret evidence.
+- Separate recommendation from execution, define human override/rollback and incident review, and prohibit silent hard-constraint relaxation or stale-plan reuse.
+
+**Follow-up probe:** Why should an optimal solver status not alone authorize execution?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+
+### DSTL-B9-20 — Prioritize a portfolio spanning forecasting, pricing, risk, and optimization.
+
+**Round:** Portfolio leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Rank decisions by value, frequency, controllability, data/label maturity, causal support, constraint clarity, risk, integration effort and measurable baseline.
+- Fund vertical slices that connect prediction to action and outcome, with simple policy/solver baselines, owner, stop criteria, evidence budget and shared platform only after repeated need.
+- Sequence high-learning reversible work first, expose dependencies and reject projects where no owner can define/authorize the action or evaluate counterfactual impact.
+
+**Follow-up probe:** Which project would you pause even if its predictive model already has excellent offline accuracy?
+
+**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
 
 ## Completion evidence
 
