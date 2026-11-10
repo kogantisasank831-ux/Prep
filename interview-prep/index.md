@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.4.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 100 guided questions across Batches 1–5, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 5 is a review candidate; Batches 1–4 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 100 guided questions across Batches 1–5, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–5 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 

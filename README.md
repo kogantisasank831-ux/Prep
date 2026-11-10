@@ -30,10 +30,9 @@ Approved Batch 4 adds agent fundamentals, LangGraph, framework comparisons,
 and agent protocols/reliability/evaluation. Each role bank now contains 80
 guided questions while preserving all earlier IDs.
 
-Batch 5 is prepared as a review candidate with AI/ML system design, LLM
-inference optimization, MLOps/LLMOps lifecycle, and production monitoring,
-capacity, and cost. It adds 20 role-specific questions per bank, bringing
-each candidate bank to 100.
+Approved Batch 5 adds AI/ML system design, LLM inference optimization,
+MLOps/LLMOps lifecycle, and production monitoring, capacity, and cost. Each
+role bank now contains 100 guided questions while preserving all earlier IDs.
 
 ## Run locally
 
