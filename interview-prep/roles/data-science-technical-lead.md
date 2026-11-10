@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.4.0"
+version: "1.5.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "One hundred guided questions for Data Science Technical Lead interviews."
-summary: "Practise ML and LLM decisions, RAG and agent leadership, architecture strategy, inference platforms, lifecycle governance, SLOs, capacity, FinOps, and operating models."
+description: "One hundred twenty guided questions for Data Science Technical Lead interviews."
+summary: "Practise data and AI platform strategy, security and governance, product metrics, roadmaps, operating models, project defense, people leadership, and enterprise decisions."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–5 · 100 guided questions"
+kicker_secondary: "Batches 1–6 · 120 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 100
+question_count: 120
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 100 questions across Batches 1–5 · **Status:** Batches 1–5 approved
+**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–6 approved
 
 ## Problem framing
 
@@ -1481,6 +1481,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which signals show that the fallback is protecting availability but violating quality or budget?
 
 **Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+## Data and distributed compute engineering
+
+### DSTL-B6-01 — Define a workload contract before standardizing a data-processing engine.
+
+**Round:** Data-platform strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Capture volume and growth, file shape, arrival and skew distributions, freshness, latency, replay, correctness, security, retention, cost, and operating ownership by workload class.
+- Compare database, warehouse, single-node, batch-distributed, and streaming options on representative work, including coordination and operational overhead.
+- Establish a paved road with evidence-based escape criteria, portability and migration expectations, telemetry, support ownership, and periodic review triggers.
+
+**Follow-up probe:** How would you prevent the platform standard from forcing small teams onto unnecessary clusters?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### DSTL-B6-02 — Govern reproducible backfills across live feature, RAG, and analytics pipelines.
+
+**Round:** Data operations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Require bounded intervals, immutable source snapshot or offsets, code and config identity, output manifest, owner, capacity quota, downstream impact, and rollback plan.
+- Keep raw evidence reproducible and derived products rebuildable; use deterministic keys, staged publication, idempotent sinks, and reconciliation rather than silent overwrites.
+- Isolate live SLOs, validate counts and distributions plus point-in-time correctness and permissions, notify consumers, and retain an auditable run record.
+
+**Follow-up probe:** When should a backfill create a new version instead of replacing the current table or index?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### DSTL-B6-03 — Lead the design of a real-time fraud-feature platform with online/offline parity.
+
+**Round:** System architecture · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Align event definitions, event time, keys, ordering, duplicates, corrections, watermark, label delay, freshness, availability, and acceptable fallback with domain owners.
+- Separate immutable events, curated snapshots, versioned stream processing, online features, and point-in-time offline history with ownership and access contracts.
+- Gate rollout on replay, parity, late-data, failure, capacity, and reconciliation tests; monitor lag, state, skew, checkpoints, feature quality, cost, and business outcomes.
+
+**Follow-up probe:** Who should own a late-event correction that changes both a served feature and a historical label?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### DSTL-B6-04 — Establish data contracts and quality gates for ML and GenAI products.
+
+**Round:** Data governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define owner, schema and semantics, keys, units, event time, freshness, allowed evolution, privacy, retention, compatibility, and downstream decision consequences.
+- Layer deterministic schema, uniqueness, invariant, volume, freshness, distribution, point-in-time, deletion, and access checks with quarantine and recovery behavior.
+- Assign thresholds and response owners, version contracts with consumers, test breaking evolution, and measure incidents and rebuild success rather than tool adoption.
+
+**Follow-up probe:** Which type-compatible schema change can still break model behavior?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### DSTL-B6-05 — Decide how far to scale a distributed-training platform.
+
+**Round:** Platform strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Segment actual model size, data volume, run frequency, time-to-result, reliability, topology, utilization, checkpoint, and team-skill needs before funding complexity.
+- Standardize DDP first where models fit, add sharding or other parallelism for demonstrated memory and throughput limits, and preserve global-batch and reproducibility controls.
+- Track useful training throughput, scaling efficiency, queue time, failure recovery, idle capacity, cost per accepted model, adoption, exceptions, and platform exit criteria.
+
+**Follow-up probe:** What evidence would tell you that a managed service is cheaper than operating the internal platform?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+## AI security, privacy, and governance
+
+### DSTL-B6-06 — Create an AI-governance operating model that supports delivery rather than a one-time checklist.
+
+**Round:** Governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Maintain an inventory with accountable owner, intended and excluded use, users, system boundary, risk tier, data and release lineage, and applicable policy or jurisdiction.
+- Define decision rights for data, product, DS, engineering, security, privacy, legal, model risk, operations, release approval, exceptions, incidents, and retirement.
+- Require proportional evaluation, threat modeling, human oversight, rollout, monitoring, evidence retention, review triggers, and time-bounded residual-risk acceptance.
+
+**Follow-up probe:** Which material change should automatically reopen a previously approved assessment?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### DSTL-B6-07 — Lead security and privacy design for a cross-domain enterprise RAG service.
+
+**Round:** Security architecture · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Map identities, tenants, corpora, permissions, data classes, providers, indexes, caches, traces, regions, tools, and trust boundaries with data owners.
+- Enforce current authorization before retrieval, lineage and revocation through derived stores, minimization and retention, tenant-scoped caching, safe provider settings, and auditable access.
+- Gate each domain independently with cross-tenant canaries, poisoned/revoked content, citation support, deletion, incident, and recovery cases; prohibit shared rollout when evidence is incomplete.
+
+**Follow-up probe:** How would you handle one business unit requesting a weaker retention policy for faster delivery?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### DSTL-B6-08 — Define impact-based security release gates for an agent platform.
+
+**Round:** Security assurance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Prioritize unauthorized data access and effects, cross-tenant isolation, tool permission, approval, injection, supply chain, replay, resource abuse, and recovery from the exact threat model.
+- Combine ordinary application tests, deterministic state assertions, bounded adversarial scenarios, scanners, calibrated content evaluation, load caps, and rollback rehearsal.
+- Set severity and acceptance criteria, evidence identity, exception owner and expiry, remediation and retest workflow, plus kill-switch and incident ownership.
+
+**Follow-up probe:** Why should a scanner pass never be the sole release criterion?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### DSTL-B6-09 — Govern sensitive data across prompts, traces, evaluation, fine-tuning, and feedback.
+
+**Round:** Privacy leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Build a purpose and data inventory across inputs, retrieval, embeddings, memory, output, caches, telemetry, evaluation, feedback, provider retention, and training.
+- Apply minimization, classification, access, encryption, pseudonymization or redaction, residency, retention, deletion propagation, privacy-safe test data, and field-level logging controls.
+- Assign data and privacy owners, validate provider contracts and workflows for access/export/correction/deletion, test incidents, and avoid claiming anonymity without a threat model.
+
+**Follow-up probe:** Which derived artifact is most likely to survive after the source record is deleted?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### DSTL-B6-10 — Respond to a request to claim NIST, OWASP, or EU AI Act compliance.
+
+**Round:** Risk communication · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Clarify that catalogs and frameworks organize risk evidence while legal applicability and formal conformity depend on jurisdiction, actor role, use, dates, and accountable qualified owners.
+- Map the exact system to applicable lifecycle, security, privacy, transparency, oversight, documentation, monitoring, and incident obligations without inventing certification.
+- Present implemented, tested, missing, excepted, and owner-accepted controls separately; define evidence, deadlines, change triggers, and external review where required.
+
+**Follow-up probe:** How would you explain residual risk to an executive without hiding uncertainty or making a legal conclusion?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+## Technical leadership and product thinking
+
+### DSTL-B6-11 — Turn an ambiguous “use GenAI” request into an outcome-based roadmap.
+
+**Round:** Product strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define user and decision, current workflow and baseline, value, error cost, constraints, guardrails, adoption path, and explicit non-goals.
+- Compare process change, rules, dashboard, search, classical ML, RAG, agent, vendor, and human service using the smallest evidence that can change a decision.
+- Sequence now/next/later around one vertical slice, uncertainty and dependencies, with owners, stop or pivot criteria, accepted risk, and decision dates.
+
+**Follow-up probe:** What would make you stop the initiative after the first experiment?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### DSTL-B6-12 — Build a metric tree for an AI decision-support product.
+
+**Round:** Product metrics · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Connect business outcome, user workflow, adoption and correction, model or retrieval quality, safety and fairness, service reliability, and cost per accepted outcome.
+- Define unit, direction, population and slices, window, source, owner, uncertainty, threshold, and action for each metric; distinguish leading proxies from actual outcomes.
+- Establish baseline and experiment or rollout attribution, guardrails and capacity limits, delayed-label handling, and a review that can stop or narrow the product.
+
+**Follow-up probe:** Which strong offline metric could coexist with poor user or business value?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### DSTL-B6-13 — Prioritize model quality, platform reuse, technical debt, and a new feature under limited capacity.
+
+**Round:** Prioritization · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Compare outcome, urgency, evidence confidence, effort and opportunity cost, risk reduction, dependency unlock, reversibility, learning value, and compliance deadlines.
+- Quantify technical debt through incidents, toil, blocked releases, cost, security exposure, or user impact and avoid treating every platform idea as strategic reuse.
+- Present options and consequences, choose the smallest work that reduces the largest uncertainty or risk, assign owners, and define triggers for the deferred items.
+
+**Follow-up probe:** How would you resist a stakeholder who treats a scoring framework as an objective answer?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### DSTL-B6-14 — Define cross-functional ownership for an AI product without becoming the final approver for everything.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Clarify decision rights across Product, domain, data, DS, ML/AI engineering, platform, security, privacy/legal/risk, and operations for outcomes and interfaces.
+- Delegate real outcomes and reversible decisions with context, access, evidence bars, checkpoints, and escalation triggers while retaining only consequential boundary decisions.
+- Publish standards and paved roads with exception paths, use decision records for costly ambiguity, and measure independent ownership, delivery, reliability, and reduced toil.
+
+**Follow-up probe:** Which decision should remain with a data owner rather than the technical lead?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### DSTL-B6-15 — Lead a postmortem after an AI release causes silent quality degradation.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Contain user harm, preserve model, data, prompt, index, tool, config and cohort identity, bound affected slices and delayed-label windows, and communicate uncertainty.
+- Trace the mechanism across upstream data, evaluation representativeness, release gates, telemetry, feedback, and human workflow without blaming an individual.
+- Assign systemic actions with owners and verification for monitoring, acceptance sets, shadow or canary rollout, rollback, ownership, and later evidence of effectiveness.
+
+**Follow-up probe:** What would you do if the aggregate metric remained stable while one high-impact slice failed?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+## Project deep dives, behavioral answers, and mock interviews
+
+### DSTL-B6-16 — Present a lead-level project deep dive without taking sole credit.
+
+**Round:** Project defense · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Structure the answer around user decision, baseline, scale, constraints, alternatives, architecture, validation, rollout, outcome, operating state, and remaining risk.
+- Separate what you owned, implemented, influenced, reviewed, and delegated from the team's work, naming one decision artifact or mechanism you personally created.
+- Quantify quality, product, business, safety, reliability, and cost evidence with attribution limits and explain one trade-off, failure, or changed decision.
+
+**Follow-up probe:** Which outcome would not have happened without your specific leadership contribution?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### DSTL-B6-17 — Defend a GenAI pilot that had strong demos but low adoption and high corrections.
+
+**Round:** Failure and product judgment · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Admit the demo and production-decision mismatch; reconstruct baseline, workflow, cohort, adoption funnel, correction, escalation, source support, latency, permissions, and cost.
+- Segment failures across product fit, data freshness and coverage, retrieval, generation, policy, UX, and evaluation selection; contain unsupported tasks.
+- Run discriminating tests, re-estimate value, and decide to fix, narrow, pivot to search or workflow, or stop; explain how later discovery and release gates changed.
+
+**Follow-up probe:** Which result would convince you to stop rather than improve the model?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### DSTL-B6-18 — Describe a disagreement with an executive about scope or delivery date.
+
+**Round:** Stakeholder leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Restate the shared outcome, expose capacity, evidence, dependency, and risk assumptions, and separate mandatory controls from optional scope.
+- Present concrete options with user value, date, quality, safety, operational, and debt consequences; offer a narrower reversible release and escalation path.
+- State the accountable decision, your influence and commitment, result, relationship outcome, and what planning or communication behavior changed later.
+
+**Follow-up probe:** What would you do if the executive knowingly accepted a risk outside their authority?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### DSTL-B6-19 — Tell a mentoring story that proves another engineer gained independent ownership.
+
+**Round:** People leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define the capability gap and desired ownership, diagnose it through observed work, and provide context, guardrails, access, and progressively larger decisions.
+- Use specific artifact and reasoning feedback, proportional checkpoints, and an escalation contract while leaving room for a different valid approach.
+- Show the person's later independent result and team throughput or quality benefit, plus what you changed in your own coaching practice.
+
+**Follow-up probe:** Which mistake did you allow safely because correcting it yourself would have reduced learning?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### DSTL-B6-20 — Lead a mock enterprise-agent roadmap across HR, procurement, and finance.
+
+**Round:** Mock leadership case · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Reject “multi-agent everywhere” as a requirement; select one high-value journey from baseline, risk, data and permission readiness, adoption, and measurable outcome.
+- Design shared identity, policy, release lineage, observability and operations with domain-owned corpora and tools, bounded autonomy, approvals, audit, and kill switches.
+- Deliver one vertical slice, gate a second domain on acceptance evidence, assign cross-functional decisions, show capacity trade-offs, and state what cannot fit the quarter.
+
+**Follow-up probe:** Which reusable platform component should wait until the second domain proves repeated need?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
 
 ## Completion evidence
 

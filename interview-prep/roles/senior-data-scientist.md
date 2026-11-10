@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.4.0"
+version: "1.5.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "One hundred guided questions for Senior Data Scientist interviews."
-summary: "Practise statistics, ML and RAG, agent experiments, system-design evidence, inference benchmarks, reproducibility, release evaluation, monitoring, drift, and impact."
+description: "One hundred twenty guided questions for Senior Data Scientist interviews."
+summary: "Practise statistical and ML evidence, distributed data correctness, security and fairness, product judgment, impact attribution, project defense, behavioral growth, and mock cases."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–5 · 100 guided questions"
+kicker_secondary: "Batches 1–6 · 120 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 100
+question_count: 120
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 100 questions across Batches 1–5 · **Status:** Batches 1–5 approved
+**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–6 approved
 
 ## SQL and data
 
@@ -1477,6 +1477,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** What evidence would show that drift is correlated with, but did not cause, the regression?
 
 **Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+## Data and distributed compute engineering
+
+### SDS-B6-01 — Decide whether a large analytical feature job needs distributed compute.
+
+**Round:** Data engineering judgment · **Depth:** Applied
+
+**Strong answer signals**
+
+- Define bytes and rows, growth, file count, joins and groupings, memory, freshness, repetition, skew, failure and replay needs, and current single-node evidence.
+- Compare SQL, DuckDB or Polars and Spark on a representative slice including I/O, startup, shuffle, spill, serialization, engineering time, and cost.
+- Prefer the smallest reliable boundary, then define migration triggers and preserve deterministic outputs, data lineage, tests, and benchmark identity.
+
+**Follow-up probe:** Which wide operation is most likely to make the single-node approach fail first?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### SDS-B6-02 — Build point-in-time-correct training data from historical and streaming sources.
+
+**Round:** Feature correctness · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define prediction time, event time, label observation and maturation windows, entity keys, corrections, missingness, duplicates, and source availability at decision time.
+- Use as-of or point-in-time joins, fit transformations on training only, group and time-aware splits, deduplication, immutable test data, and versioned source snapshots.
+- Test online/offline parity, late-event and backfill behavior, leakage canaries, freshness and distributions by slice, and reproducibility of the exact dataset.
+
+**Follow-up probe:** How can a recently observed negative label create censoring bias?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### SDS-B6-03 — Choose event-time windows, watermarks, and late-data behavior for online features.
+
+**Round:** Streaming data science · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Derive windows from the decision and label process, then measure arrival-delay distributions rather than choosing a watermark from convenience.
+- Define state key, retention, duplicate and correction semantics, whether late records update, side-output, or trigger batch correction, and what freshness is exposed to the model.
+- Evaluate quality and operational cost across delay slices, replay failures and checkpoint recovery, and monitor watermark lag, state size, missing features, and drift.
+
+**Follow-up probe:** What bias can result if late events are dropped disproportionately for one population?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### SDS-B6-04 — Diagnose a distributed aggregation whose totals are correct but completion time is unstable.
+
+**Round:** Performance and correctness · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Inspect the physical plan, task-time and partition-size distributions, hot keys, shuffle, spill, small files, executor loss, retries, and input variation by interval.
+- Filter or project earlier, pre-aggregate, isolate or salt exceptional keys, adjust partitioning, remove slow UDFs, and validate adaptive execution with the real skew.
+- Preserve exact aggregation semantics and reconcile counts; report tail time, useful throughput, cost, and output correctness rather than average CPU.
+
+**Follow-up probe:** Why might simply adding executors leave the p99 task unchanged?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### SDS-B6-05 — Make a multi-GPU training experiment reproducible and statistically comparable.
+
+**Round:** Distributed experimentation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Pin data order and snapshot, model and code, precision, topology, parallel strategy, global batch, accumulation, optimizer and schedule, seeds, and determinism limits.
+- Compare candidates on accepted quality and slices plus tokens per second, scaling efficiency, memory, communication, failures, checkpoint and recovery, and total cost.
+- Repeat enough runs to characterize variance, preserve exact checkpoints and manifests, and avoid attributing convergence changes to architecture when effective batch changed.
+
+**Follow-up probe:** Which worker-count change can silently alter the optimization trajectory?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+## AI security, privacy, and governance
+
+### SDS-B6-06 — Explain why prompt-injection robustness cannot be established from model refusal rate alone.
+
+**Round:** AI security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate unsafe text, attempted application action, control decision, and committed business effect; a probabilistic refusal is not an authorization boundary.
+- Test direct and indirect channels across documents, tool results, memory and peer messages with trusted identity, least privilege, semantic validation, approval, and sandbox controls.
+- Use bounded synthetic canaries and deterministic state or side-effect assertions, report false positives and coverage, and bind results to the exact release.
+
+**Follow-up probe:** Which metric would reveal a model that refuses visibly but still emits a valid dangerous tool call?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### SDS-B6-07 — Prepare a privacy-safe dataset for model evaluation and feedback learning.
+
+**Round:** Privacy engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define purpose, lawful or organizational basis, population, data classes, sensitive fields, consent where applicable, access, retention, deletion, provider use, and excluded uses.
+- Minimize and pseudonymize or redact where useful, retain linkage only under control, use synthetic canaries, restrict traces and exports, and assess reidentification rather than claiming anonymity.
+- Version provenance and transformations, test slice representativeness and deletion propagation, document limitations, and require accountable review before feedback changes production behavior.
+
+**Follow-up probe:** How can removing direct identifiers still leave a dataset reidentifiable?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### SDS-B6-08 — Evaluate a RAG system for poisoning, unauthorized retrieval, and unsupported citations.
+
+**Round:** RAG assurance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Create versioned clean, malicious, cross-tenant, revoked, stale, and authority-spoofed documents with immutable source and ACL lineage.
+- Measure authorization violations separately from candidate recall, ranking, answer correctness, groundedness and citation support; assert protected canaries never appear.
+- Test ingestion quarantine, current permission checks, permission-aware caches, deletion and index rebuild, suspicious enumeration, abstention, incident containment, and recovery.
+
+**Follow-up probe:** Why can a grounded answer still be unsafe or wrong?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### SDS-B6-09 — Define fairness and governance evidence for a high-impact classifier.
+
+**Round:** Responsible AI · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Identify affected users, decision, error costs, relevant groups and intersections, label and sampling bias, human workflow, appeal, and whether automation is appropriate.
+- Report performance, calibration and outcome disparities with uncertainty by meaningful slice, threshold trade-offs, data limitations, and comparison with the existing baseline.
+- Assign accountable owners, review and release criteria, monitoring with delayed outcomes, escalation and fallback, documented exceptions, and triggers to pause or narrow use.
+
+**Follow-up probe:** Why can equal aggregate accuracy hide unacceptable group harm?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### SDS-B6-10 — Design an adversarial evaluation campaign without overstating what the tools prove.
+
+**Round:** Evaluation design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Derive scenarios from the application threat model and ordinary security risks, covering injection, data disclosure, tenant isolation, poisoned content, unsafe sinks, agency, and resource abuse.
+- Combine PyRIT, garak, promptfoo, guardrails or custom suites with deterministic oracles, calibrated subjective labels, bounded authority, synthetic data, and cleanup.
+- Preserve scenario and release identity, severity, reproduction, failed and skipped cases, remediation and retest, residual gaps, and accountable risk acceptance.
+
+**Follow-up probe:** Which claim remains invalid even if every configured scanner test passes?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+## Technical leadership and product thinking
+
+### SDS-B6-11 — Build a metric tree that connects a model improvement to product and business value.
+
+**Round:** Product thinking · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start from user decision and baseline, then connect business outcome, product adoption and corrections, model quality, safety or fairness, service reliability, and cost.
+- Define metric unit, direction, population and slices, window, source, owner, threshold and action; label proxy versus outcome and expected delay.
+- Propose an ethical experiment or phased rollout, guardrails, attribution limits, and a decision rule that can reject a statistically better but operationally worse model.
+
+**Follow-up probe:** Which metric would show that higher recall overloaded the human review team?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### SDS-B6-12 — Challenge a request for an LLM when a simpler baseline may be sufficient.
+
+**Round:** Technical judgment · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Clarify the user, action, baseline, frequency, value, error cost, explainability, privacy, latency, budget, and adoption constraints.
+- Compare process change, rules, SQL, search, classical ML, retrieval, LLM and human service using a representative dataset and outcome-aligned evaluation.
+- Recommend the simplest accepted option, state trade-offs and non-goals, and define evidence and thresholds that would justify more complexity later.
+
+**Follow-up probe:** How would you communicate this recommendation to an executive who specifically requested GenAI?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### SDS-B6-13 — Prioritize experiments when labels, adoption, latency, and fairness are all uncertain.
+
+**Round:** Experiment strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- List uncertainties and decision impact, dependencies, evidence confidence, reversibility, effort, risk and learning value rather than ranking model ideas by novelty.
+- Start with workflow and data audits, baseline and label-agreement studies, then offline, user, shadow and controlled rollout evidence only as justified.
+- Set stop or pivot criteria, owners, decision dates and guardrails; update the roadmap when evidence changes instead of protecting sunk work.
+
+**Follow-up probe:** Which uncertainty would you resolve first if the label definition itself is disputed?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### SDS-B6-14 — Contribute technical depth to an architecture review without owning every component.
+
+**Round:** Technical influence · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Bring data and label contracts, point-in-time correctness, evaluation and uncertainty, model or retrieval alternatives, monitoring, and change triggers tied to requirements.
+- Ask how failures, drift, delayed outcomes, feedback, rollout and rollback affect evidence; separate observed facts, assumptions, preferences and open risks.
+- Record your exact recommendation and validation action, respect interface owners, escalate only consequential unresolved risk, and support the accountable decision.
+
+**Follow-up probe:** Which modeling concern should block design approval rather than become a follow-up experiment?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### SDS-B6-15 — Escalate a fairness or privacy concern when the release deadline is fixed.
+
+**Round:** Responsible leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Document affected populations, data flow, measured evidence and uncertainty, potential harm, policy boundary, and which release scope creates the risk.
+- Bring domain, product, privacy, security, legal or model-risk owners early and present pause, narrower cohort, human review, data minimization, or alternative-process options.
+- Preserve accountable decision and dissent, define required evidence and monitoring, and refuse to hide or relabel risk merely to meet the date.
+
+**Follow-up probe:** What narrower release could preserve learning without exposing the high-risk population?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+## Project deep dives, behavioral answers, and mock interviews
+
+### SDS-B6-16 — Give a 30-second headline and two-minute overview of a high-impact ML project.
+
+**Round:** Project storytelling · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Lead with user or business decision, measured baseline, scale and constraints, then state your exact ownership and the team's complementary work.
+- Explain why ML was justified, data and validation approach, simplest architecture, rollout and operational evidence without turning the answer into an algorithm chronology.
+- State outcome with unit, window, population, comparator and attribution limits plus the key trade-off or learning, then pause for the interviewer to choose depth.
+
+**Follow-up probe:** What should you remove first if the two-minute answer becomes four minutes?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### SDS-B6-17 — Defend a business-impact claim from an optimization or predictive project.
+
+**Round:** Impact attribution · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Provide metric and unit, baseline and comparator, eligible volume, time window, seasonality, adoption, gross versus net value, and operating or change costs.
+- Explain the strongest feasible attribution method—projected, before/after, matched, phased or randomized—plus uncertainty, confounders and overlapping benefits.
+- Separate offline score, recommended opportunity, accepted decision, realized outcome and owner validation; never multiply accuracy by revenue without a causal bridge.
+
+**Follow-up probe:** Which part of the claimed value would you label projected rather than realized?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### SDS-B6-18 — Tell a failure story about drift or leakage that reached a user-facing workflow.
+
+**Round:** Behavioral · **Depth:** Leadership
+
+**Strong answer signals**
+
+- State the assumption or signal missed, affected users and slices, decision impact, detection path, and your accountability without disguising the failure as routine retraining.
+- Cover containment, stakeholder communication, version and evidence preservation, root mechanism, correction, backfill or reconciliation, and recovery verification.
+- Show durable changes to data contracts, split strategy, acceptance sets, monitoring, release gates or ownership and later evidence that recurrence risk fell.
+
+**Follow-up probe:** Why did the original monitoring fail to reveal the issue?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### SDS-B6-19 — Describe a disagreement over model complexity or operating threshold.
+
+**Round:** Behavioral · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Frame the shared outcome and valid concerns, then make error costs, capacity, latency, calibration, explainability, adoption, and uncertainty explicit.
+- Gather a discriminating ablation, threshold simulation or controlled test; present reversible options and route risk tolerance to the accountable owner.
+- Explain your contribution, final decision, commitment and result, credit the other perspective, and name the evidence that would reopen the choice.
+
+**Follow-up probe:** Which result could make the simpler model preferable even with lower offline accuracy?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### SDS-B6-20 — Solve a mock demand-forecasting and optimization case end to end.
+
+**Round:** Mock system case · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define the downstream decision, objective, constraints, hierarchy, horizon, baseline, error asymmetry, exogenous information availability, override and business counterfactual.
+- Design time-aware backtesting, leakage controls, uncertainty or scenarios, reconciliation across hierarchy, model and optimization interface, feasibility fallback, and human review.
+- Connect forecast metrics to decision regret and business outcome, then cover rollout, drift, constraint changes, capacity, monitoring, retraining, rollback and impact attribution.
+
+**Follow-up probe:** How would you prove that a better forecast actually improved the optimization decision?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
 
 ## Completion evidence
 

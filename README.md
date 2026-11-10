@@ -34,6 +34,11 @@ Approved Batch 5 adds AI/ML system design, LLM inference optimization,
 MLOps/LLMOps lifecycle, and production monitoring, capacity, and cost. Each
 role bank now contains 100 guided questions while preserving all earlier IDs.
 
+Approved Batch 6 adds data and distributed compute, AI
+security/privacy/governance, technical leadership/product thinking, and
+project deep-dive/behavioral/mock-interview guides. Each role bank now contains
+120 guided questions while preserving all earlier IDs.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than
