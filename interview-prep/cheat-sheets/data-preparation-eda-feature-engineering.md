@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "review"
-version: "0.1.0"
+status: "approved"
+version: "1.0.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 7 source:** This review candidate integrates the newly prepared revision source into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 7 source:** This page integrates the newly prepared revision source into the Prep site. It is separate from the Week 1–20 learning assessments.
 
 **Target roles:** Data Scientist, ML Engineer, AI Engineer, Analytics Engineer, AI/Data Science Lead  
 **Use:** data-quality, exploratory-analysis, modeling, feature-platform, and production-ML rounds  

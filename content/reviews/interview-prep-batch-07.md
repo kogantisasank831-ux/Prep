@@ -1,11 +1,11 @@
 # Interview preparation Batch 7 review record
 
-## Review state
+## Approval
 
-- Decision: candidate prepared for repository-owner review on 2026-11-10.
-- Candidate scope: four revision guides covering mathematical foundations and optimization, experimentation and causal inference, data preparation and feature engineering, and unsupervised learning and anomaly detection, plus twenty new questions per role bank.
-- Publication state: not yet approved; Batch 7 pages and expanded banks use `status: review`.
-- Merge gate: explicit human approval plus content, navigation, regression, and PostgreSQL/pgvector integration checks.
+- Decision: approved for merge and publication on 2026-11-10.
+- Approved scope: four revision guides covering mathematical foundations and optimization, experimentation and causal inference, data preparation and feature engineering, and unsupervised learning and anomaly detection, plus twenty new questions per role bank.
+- Authority: explicit repository-owner approval in the Batch 7 review conversation.
+- Merge gate: the approval state must pass the content, navigation, regression, and PostgreSQL/pgvector integration jobs.
 
 ## Documentation set
 
@@ -27,7 +27,7 @@ The candidate pages preserve each prepared instructional body apart from removin
 
 ## Role-bank extension
 
-| Role | Approved Batches 1–6 | New Batch 7 candidate | Candidate total |
+| Role | Approved Batches 1–6 | Approved Batch 7 | Approved total |
 | --- | ---: | ---: | ---: |
 | Agentic AI Engineer | 120 | 20 | 140 |
 | Data Science Technical Lead | 120 | 20 | 140 |
@@ -41,10 +41,10 @@ Each role uses the same four topic blocks but changes the decision boundary: imp
 - each role adds exactly `B7-01` through `B7-20` with unique IDs;
 - every new question has three strong-answer signals, one follow-up probe, and direct revision links;
 - source bodies retain their rapid-revision sections and exact prepared instructional content;
-- existing approved sheets remain approved while Batch 7, expanded role banks, and navigation remain review candidates;
+- all Batch 7 public pages, expanded role banks, and navigation use `status: approved`;
 - formulas, shapes, causal assumptions, time/identity boundaries, clustering geometry, anomaly thresholds, and evidence limitations are explicit;
 - unique permalinks, complete hub links, Markdown structure, linting, tests, and repository integration checks are merge gates.
 
 ## Evidence boundary and handoff
 
-Automated checks establish source fidelity and repository consistency, not interview-market completeness, psychometric calibration, reader comprehension, causal validity for a particular business, or production fitness of any named method. The questions are guided practice prompts rather than authenticated exams. A cold-reader exercise remains future evidence. Human review is required before approval, merge, and publication.
+Automated checks establish source fidelity and repository consistency, not interview-market completeness, psychometric calibration, reader comprehension, causal validity for a particular business, or production fitness of any named method. The questions are guided practice prompts rather than authenticated exams. A cold-reader exercise remains future evidence. Post-merge publication verification remains required.

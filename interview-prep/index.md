@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.6.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 140 guided questions across Batches 1–7, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 7 is a review candidate; Batches 1–6 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 140 guided questions across Batches 1–7, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–7 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -116,6 +116,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Review Batch 7 for mathematical accuracy, causal assumptions, leakage and point-in-time correctness, unsupervised validation, role calibration, and interview usefulness. Define a later batch only after its source scope and evidence boundary are ready.
+Batch 7 is approved. Define a later batch only after its source scope and evidence boundary are ready.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

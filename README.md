@@ -39,10 +39,10 @@ security/privacy/governance, technical leadership/product thinking, and
 project deep-dive/behavioral/mock-interview guides. Each role bank now contains
 120 guided questions while preserving all earlier IDs.
 
-Batch 7 is prepared as a review candidate with mathematical foundations and
-optimization, experimentation and causal inference, data preparation and
-feature engineering, and unsupervised/anomaly guides. It adds 20
-role-specific questions per bank, bringing each candidate bank to 140.
+Approved Batch 7 adds mathematical foundations and optimization,
+experimentation and causal inference, data preparation and feature
+engineering, and unsupervised/anomaly guides. Each role bank now contains
+140 guided questions while preserving all earlier IDs.
 
 ## Run locally
 
