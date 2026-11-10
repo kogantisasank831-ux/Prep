@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.3.0"
-last_reviewed: "2026-11-09"
+version: "1.4.0"
+last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "Eighty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production Python, AI systems, RAG, agent design, LangGraph, framework selection, protocols, security, reliability, evaluation, and incidents."
+description: "One hundred guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production AI and RAG, agent systems, system design, LLM inference, MLOps/LLMOps, deployment, monitoring, capacity, cost, reliability, and incidents."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–4 · 80 guided questions"
+kicker_secondary: "Batches 1–5 · 100 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 80
+question_count: 100
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 80 questions across Batches 1–4 · **Status:** Batches 1–4 approved
+**Bank size:** 100 questions across Batches 1–5 · **Status:** Batches 1–5 approved
 
 ## Python and service engineering
 
@@ -1191,6 +1191,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** What measurements tell you whether retries are amplifying the outage?
 
 **Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+## AI/ML system design and production architecture
+
+### AIE-B5-01 — Design an AI support assistant without starting from a model or framework.
+
+**Round:** System design · **Depth:** Applied
+
+**Strong answer signals**
+
+- Clarify users, decisions, scope, risk, traffic, latency, freshness, quality, cost, and non-goals before drawing components.
+- Define business, task-quality, safety, service, and efficiency metrics plus a simple baseline and fallback.
+- Separate offline/control and online/data planes, identify sources of truth, and close with validation, rollout, monitoring, and rollback.
+
+**Follow-up probe:** Which assumption would you validate first with a small production-like experiment?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### AIE-B5-02 — Design a multi-tenant AI gateway that routes to self-hosted and managed models.
+
+**Round:** Architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Authenticate users and workloads, authorize model/data/tool access server-side, and isolate tenant quotas, caches, indexes, traces, and budgets.
+- Route by capability, risk, residency, load, quality tier, and cost with bounded queues, deadlines, cancellation, and safe fallbacks.
+- Preserve resolved model, prompt, index, policy, and cohort lineage; validate every route with contract, quality, load, and security tests.
+
+**Follow-up probe:** How would you prevent a low-cost fallback from violating a tenant's quality or residency contract?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### AIE-B5-03 — Define the API and state machine for a long-running agent job.
+
+**Round:** API design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use versioned request/response schemas, principal and tenant context, correlation and idempotency keys, deadlines, cancellation, and stable errors.
+- Expose explicit pending, running, waiting, succeeded, failed, cancelled, and expired states with polling or webhook semantics.
+- Distinguish request acceptance from business success and reconcile partial tool side effects before declaring a terminal result.
+
+**Follow-up probe:** What should a repeated submission with the same idempotency key return?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### AIE-B5-04 — Choose sources of truth and rebuild paths for a RAG and agent service.
+
+**Round:** Data architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Keep authoritative documents, permissions, transactional state, and operation outcomes separate from derived indexes, caches, embeddings, and memory.
+- Version derivations and propagate updates, revocations, and deletions with reconciliation and completeness checks.
+- Define atomic publication, fallback to a last-known-good version, and tested rebuild or disaster-recovery procedures.
+
+**Follow-up probe:** Why should a vector index normally not be the authoritative document store?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### AIE-B5-05 — Design graceful degradation when retrieval, a model provider, or an agent tool fails.
+
+**Round:** Reliability design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Classify dependency failure and choose a tested reduced-capability path such as cached, retrieval-only, queued, smaller-model, abstention, or human escalation.
+- Preserve authorization, schema, minimum quality, and user expectations; do not retry unsafe or expired work.
+- Add deadlines, circuit breakers, bulkheads, bounded queues, monitoring, and exact rollback or kill-switch ownership.
+
+**Follow-up probe:** When is returning no answer safer than using a technically available fallback?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+## LLM inference and serving optimization
+
+### AIE-B5-06 — Diagnose high end-to-end latency when GPU utilization looks healthy.
+
+**Round:** Performance diagnosis · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Decompose admission, queue, tokenization, prefill, decode, post-processing, tools, and delivery with p50/p95/p99 by request class.
+- Compare TTFT, TPOT, token backlog, active sequences, KV pressure, preemption, rejection, and goodput rather than GPU utilization alone.
+- Reproduce the production arrival and token-length distributions before changing scheduler or batch settings.
+
+**Follow-up probe:** What evidence distinguishes queue-bound latency from slow decode?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### AIE-B5-07 — Estimate whether a model and target concurrency fit on the available GPUs.
+
+**Round:** Capacity estimation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Estimate raw weight memory from parameters and precision, then add quantization metadata, runtime, activations, workspaces, adapters, fragmentation, and margin.
+- Estimate KV cache from layers, KV heads, head dimension, element bytes, and total cached tokens, accounting for GQA/MQA and sharding.
+- Treat calculations as feasibility bounds and confirm mixed-length concurrency, OOM, preemption, latency, and goodput under load.
+
+**Follow-up probe:** Why does fitting raw FP16 weights into VRAM not prove the server can run safely?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### AIE-B5-08 — Tune continuous batching and chunked prefill for mixed short and long prompts.
+
+**Round:** Serving optimization · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Sweep concurrent-sequence, batched-token, prefill-chunk, queue, and scheduling limits against TTFT, TPOT, throughput, rejection, and goodput.
+- Prevent long prefills from starving interactive decode through chunking, priority or traffic segmentation, and fairness controls.
+- Record engine/model/hardware/workload identity and retain OOM, timeout, and cancellation results rather than benchmarking only survivors.
+
+**Follow-up probe:** Why can a larger token batch improve throughput while worsening user experience?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### AIE-B5-09 — Add prefix caching to a multi-tenant LLM service safely.
+
+**Round:** Cache engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Confirm repeated stable token prefixes and key by exact model, tokenizer, template, adapters, precision, and token sequence.
+- Isolate tenants and permissions, define TTL, invalidation, memory and eviction, and prevent sensitive prefix reuse across trust boundaries.
+- Measure hit rate, saved prefill, memory pressure, latency, quality, and behavior after version changes; disable it if overhead exceeds benefit.
+
+**Follow-up probe:** Which apparently identical prompts can still require different cache keys?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### AIE-B5-10 — Compare vLLM, SGLang, TensorRT-LLM, and a local runtime for one production workload.
+
+**Round:** Engine selection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Freeze model revision, tokenizer/template, precision, hardware, generation settings, workload, API contract, and quality set.
+- Test warm and cold behavior, request-rate and concurrency sweeps, TTFT/TPOT/goodput, memory, stability, tool/schema behavior, and cost.
+- Include operational fit such as distributed topology, autoscaling, metrics, drain, upgrades, support, and rollback—not kernel speed alone.
+
+**Follow-up probe:** Why does OpenAI-compatible API support not establish behavioral compatibility?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+## MLOps, LLMOps, deployment, and lifecycle
+
+### AIE-B5-11 — Define an immutable release manifest for a RAG and agent application.
+
+**Round:** Release engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind source and image digests, model/tokenizer/adapters, prompts/schema, corpus/index/reranker, graph/tools/policies, runtime config, and evaluation suite.
+- Use immutable identifiers with signed provenance or SBOM where applicable; never place secret values in the manifest.
+- Resolve aliases at runtime, attach the exact manifest to traces and cohorts, and retain the prior compatible rollback bundle.
+
+**Follow-up probe:** Which behavior-changing artifact is most commonly omitted from GenAI release identity?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### AIE-B5-12 — Build the lifecycle for RAG indexes and agent tools.
+
+**Round:** LLMOps · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Version source manifest, permissions, extraction, chunking, embeddings, index, reranker, graph, tool contracts, and downstream capability versions.
+- Build candidates in stages with completeness, ACL/deletion, retrieval, trajectory, and side-effect tests before atomic promotion.
+- Canary exact bundles, retain rollback and active-thread compatibility, and clean old artifacts only after retention and caller checks.
+
+**Follow-up probe:** How can changing only a tool description cause a production regression?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### AIE-B5-13 — Design CI/CD gates for an AI service.
+
+**Round:** Delivery pipeline · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Run lint, types, unit, data, contract, integration, model/GenAI evaluation, security, load, recovery, and packaging checks proportionate to risk.
+- Promote the exact tested image and release manifest; continuous training may create a candidate but must not authorize production automatically.
+- Use shadow or canary, explicit abort thresholds, fast rollback, post-release smoke, and evidence tied to the deployed cohort.
+
+**Follow-up probe:** Which deterministic checks should run before expensive LLM-judge evaluation?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### AIE-B5-14 — Configure Kubernetes probes and shutdown for a slow-starting model server.
+
+**Round:** Kubernetes operations · **Depth:** Applied
+
+**Strong answer signals**
+
+- Use startup to protect model loading or compilation, readiness only after the server is warmed enough for traffic, and liveness for unrecoverable process failure.
+- Handle termination signals, stop admission, drain streams and in-flight work within a deadline, and preserve or cancel jobs deliberately.
+- Set measured CPU/RAM/GPU requests, placement, disruption, cache, and autoscaling behavior; avoid restarting a merely busy server.
+
+**Follow-up probe:** What failure occurs when liveness is used to police a long but healthy model load?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### AIE-B5-15 — Roll back an AI release whose model is unchanged but prompt, index, and tool behavior regressed.
+
+**Round:** Release recovery · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Roll back the complete compatible bundle rather than only a model alias, including prompt, index, tools, policy, config, and feature flags.
+- Account for state schemas, active jobs or threads, cache invalidation, irreversible effects, and database/index compatibility.
+- Verify restored service, quality, permissions, and external-effect reconciliation, then preserve evidence and add regression coverage.
+
+**Follow-up probe:** When can forward recovery be safer than rollback?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+## Production monitoring, cost, and capacity
+
+### AIE-B5-16 — Design observability that can attribute a production regression to the exact AI release.
+
+**Round:** Observability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Correlate gateway, retrieval, model, agent/tool, storage, and side-effect spans with privacy-safe request and operation identifiers.
+- Attach code/image, model/tokenizer, prompt, index, graph, tool/policy, config, evaluator, and rollout-cohort identity.
+- Monitor traffic, errors, latency stages, saturation, data freshness, task quality, safety, cost, and telemetry health by meaningful slices.
+
+**Follow-up probe:** Which lineage fields let you distinguish a model regression from a prompt or index regression?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### AIE-B5-17 — Monitor an agent whose workflow completes but external actions can remain uncertain.
+
+**Round:** Agent operations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Track terminal outcome, steps, loops, budgets, routes, tool arguments, authorization, approvals, retries, checkpoints, and external operation IDs.
+- Represent committed, failed, partial, and unknown side effects explicitly and reconcile ambiguous outcomes against authoritative systems.
+- Alert on duplicate or unauthorized actions, budget exhaustion, repeated loops, rising unknown outcomes, and missing audit telemetry.
+
+**Follow-up probe:** Why is a graph's `SUCCEEDED` state insufficient evidence that the business task succeeded?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### AIE-B5-18 — Size and autoscale an LLM service from measured production-like benchmarks.
+
+**Round:** Capacity planning · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Measure safe per-replica goodput by input/output class under the latency and quality SLO, then apply peak, burst, failure-zone, and maintenance headroom.
+- Scale on queue or token backlog, queue age/TTFT burn, active sequences, and KV pressure with warm floors, bounds, cooldown, and cluster capacity.
+- Test cold start, image/model download, compilation, readiness, spike, soak, drain, failure, and downstream limits.
+
+**Follow-up probe:** Why can scaling only on GPU utilization react too late?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### AIE-B5-19 — Reduce AI serving cost without silently reducing accepted quality.
+
+**Round:** FinOps · **Depth:** Applied
+
+**Strong answer signals**
+
+- Attribute provider tokens, GPU idle and active time, retrieval, tools, telemetry, evaluation, and operations to requests and successful outcomes.
+- Compare smaller models, routing, context limits, caching, batching, quantization, cancellation, and scale-down on a quality-latency-cost frontier.
+- Apply tenant/task budgets, quotas, anomaly alerts, and kill switches while retaining safety and availability gates.
+
+**Follow-up probe:** Why can cost per request make a cheap but failing route look efficient?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### AIE-B5-20 — Telemetry disappears while latency dashboards turn green. Lead the technical response.
+
+**Round:** Incident response · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Treat missing telemetry as unknown, verify heartbeats, volume, schema, delay, sampling, and trace completeness before trusting product metrics.
+- Assess user and safety impact through independent signals, contain risky traffic if evidence is insufficient, and preserve exact release state.
+- Restore the pipeline, backfill where valid, add no-data alerts and synthetic end-to-end checks, and verify responders can execute the runbook.
+
+**Follow-up probe:** Which synthetic event proves that collection, alert routing, and responder recovery all work?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
 
 ## Completion evidence
 

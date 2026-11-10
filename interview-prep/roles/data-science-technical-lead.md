@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.3.0"
-last_reviewed: "2026-11-09"
+version: "1.4.0"
+last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "Eighty guided questions for Data Science Technical Lead interviews."
-summary: "Practise framing, ML and LLM decisions, RAG leadership, agent strategy, LangGraph governance, framework portfolios, protocols, security, and operating models."
+description: "One hundred guided questions for Data Science Technical Lead interviews."
+summary: "Practise ML and LLM decisions, RAG and agent leadership, architecture strategy, inference platforms, lifecycle governance, SLOs, capacity, FinOps, and operating models."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–4 · 80 guided questions"
+kicker_secondary: "Batches 1–5 · 100 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 80
+question_count: 100
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 80 questions across Batches 1–4 · **Status:** Batches 1–4 approved
+**Bank size:** 100 questions across Batches 1–5 · **Status:** Batches 1–5 approved
 
 ## Problem framing
 
@@ -1193,6 +1193,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** What telemetry would have detected the retry storm before the dependency collapsed?
 
 **Revision links:** [Protocols and reliability]({{ '/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/' | relative_url }})
+
+## AI/ML architecture and product decisions
+
+### DSTL-B5-01 — Lead an ambiguous system-design round for an enterprise AI product.
+
+**Round:** System design leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Clarify users, decision or action, failure cost, risk, non-goals, scale, latency, freshness, residency, and budget with explicit assumptions.
+- Define business, product, model, safety, service, and cost metrics plus a credible non-AI or simpler baseline.
+- Evolve from a bounded first release to control and serving planes with ownership, validation, rollout, monitoring, and retirement.
+
+**Follow-up probe:** How would you keep the discussion at decision level rather than listing infrastructure products?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### DSTL-B5-02 — Build a metric hierarchy for an AI initiative whose model score and business result disagree.
+
+**Round:** Product measurement · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Map business outcome to user behavior, task quality, safety, service, and efficiency metrics and state which are proxies.
+- Diagnose population, threshold, workflow, adoption, latency, and downstream-process effects by cohort and slice.
+- Optimize outcome subject to non-negotiable safety and service constraints rather than maximizing an isolated model metric.
+
+**Follow-up probe:** What evidence would show that the model improved but the product workflow became worse?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### DSTL-B5-03 — Decide how far to scale an architecture before product demand is proven.
+
+**Round:** Architecture strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Establish measured current and plausible near-term traffic, failure cost, growth, and constraints rather than designing for an arbitrary global maximum.
+- Choose a simple baseline with stable contracts and observable bottlenecks, then define triggers for queues, partitioning, dedicated pools, or regionalization.
+- Preserve migration and rollback paths while delaying expensive complexity that has no validated user or operational need.
+
+**Follow-up probe:** Which early interface decisions most reduce future migration cost?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+### DSTL-B5-04 — Choose between managed models and self-hosted inference for several business units.
+
+**Round:** Build-versus-buy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Compare required quality, models, residency, privacy, latency, scale variability, customization, availability, lock-in, team capability, and total cost.
+- Benchmark exact workloads and include engineering, idle capacity, support, upgrades, security, and incident ownership—not token price alone.
+- Allow tiered routing only with equivalent contracts, policy, evaluation, lineage, and tested fallback for each route.
+
+**Follow-up probe:** What usage pattern most strongly favors managed elasticity over dedicated GPUs?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }}) · [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### DSTL-B5-05 — Define multi-tenant isolation and operating ownership for a shared AI platform.
+
+**Round:** Platform governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Tier isolation across identity, authorization, credentials, data/index/cache, compute pools, quotas, logs, residency, and administrative access.
+- Assign platform and product owners for sources, models, prompts, tools, policies, evaluation, SLOs, incidents, and support.
+- Test noisy-neighbor, cross-tenant, quota, failover, deletion, and audit behavior; do not rely on prompts for isolation.
+
+**Follow-up probe:** When does a high-risk tenant justify a separate account or cluster rather than logical isolation?
+
+**Revision links:** [AI/ML system design]({{ '/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/' | relative_url }})
+
+## Inference platform and performance governance
+
+### DSTL-B5-06 — Review a capacity proposal based only on theoretical GPU FLOPS and average requests.
+
+**Round:** Capacity governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Reject theoretical compute as capacity evidence; require exact model/runtime/hardware and production-like arrival, input, output, concurrency, and quality distributions.
+- Size from safe goodput within TTFT/TPOT/E2E SLOs with peak, burst, failure, maintenance, and scale-delay headroom.
+- Include queue policy, rejection, warm capacity, downstream quotas, cost, and repeatable spike, soak, and recovery tests.
+
+**Follow-up probe:** Which percentile and request classes should determine capacity rather than the average?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### DSTL-B5-07 — Decide whether to adopt quantization, speculative decoding, or more GPUs.
+
+**Round:** Optimization strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start from the measured bottleneck—memory fit, bandwidth-bound decode, compute-heavy prefill, latency, or capacity—and define quality and SLO gates.
+- Compare memory, TTFT, TPOT, goodput, stability, scaling efficiency, cost, and task or slice quality on the exact workload.
+- Prefer the smallest reversible change with clear rollback; extra GPUs may lose efficiency through communication and speculative methods may have low acceptance.
+
+**Follow-up probe:** When can INT4 make a model fit but fail to improve throughput?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### DSTL-B5-08 — Set an organization-wide inference benchmark standard.
+
+**Round:** Engineering standards · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require immutable model, tokenizer/template, precision, engine, driver, hardware, generation, dataset, and client identity.
+- Reproduce traffic and token distributions, warm and cold states, concurrency and request-rate sweeps, errors, quality, tail latency, goodput, and cost.
+- Retain raw results, variability, failures, and workload classes; prohibit cross-team comparisons lacking equivalent contracts.
+
+**Follow-up probe:** Why should timed-out and rejected requests remain in benchmark results?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+### DSTL-B5-09 — Select an inference engine and serving platform for a multi-model Kubernetes estate.
+
+**Round:** Platform architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate engine concerns such as batching, kernels, KV cache, and parallelism from platform concerns such as routing, rollout, autoscaling, tenancy, and lifecycle.
+- Evaluate model and hardware support, distributed topology, API contracts, observability, upgrades, security, operational skill, and support.
+- Prove the choice with representative failure, drain, scale, rollback, and compatibility tests rather than a feature matrix.
+
+**Follow-up probe:** Why might vLLM plus Kubernetes primitives be enough for one team but not an enterprise platform?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }}) · [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### DSTL-B5-10 — A new server configuration raises throughput but worsens p95 TTFT for premium users. Make the release decision.
+
+**Round:** Release decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Evaluate goodput and contractual slices, not aggregate throughput; a premium SLO regression can block release.
+- Identify scheduler, batching, queue, long-prompt interference, and capacity causes through paired traffic classes and traces.
+- Consider isolated pools or priority controls, canary the exact configuration, and define abort, rollback, and re-entry evidence.
+
+**Follow-up probe:** What evidence would justify releasing the configuration only for batch traffic?
+
+**Revision links:** [LLM inference optimization]({{ '/interview-prep/cheat-sheets/llm-inference-serving-optimization/' | relative_url }})
+
+## MLOps/LLMOps operating model and delivery
+
+### DSTL-B5-11 — Define platform and product-team responsibilities across the AI lifecycle.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- The platform owns paved paths for identity, lineage, registries, CI/CD, serving, telemetry, security controls, and reusable evaluation infrastructure.
+- Product teams own use-case requirements, data semantics, task evaluation, prompts/workflows, risk decisions, user outcomes, and domain support.
+- Establish contracts, escalation, exception review, SLOs, costs, lifecycle ownership, and evidence required for promotion.
+
+**Follow-up probe:** Which responsibility must remain with the product team even when the platform supplies an evaluation service?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### DSTL-B5-12 — Govern experiment tracking, registry approval, and production aliases.
+
+**Round:** Model governance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Keep experiments for development evidence and a registry for immutable candidate identity, lineage, gates, approval, deployment, and retirement.
+- Make aliases resolve to immutable artifacts in traces and restrict mutation through authorized, audited promotion workflows.
+- Define owners, segregation of duties where needed, revalidation triggers, rollback references, and retention.
+
+**Follow-up probe:** What audit gap appears if production traces record only the alias `champion`?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### DSTL-B5-13 — Introduce continuous training without allowing silent production replacement.
+
+**Round:** Lifecycle governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define approved triggers, data and label maturation, reproducible pipelines, candidate lineage, and failure handling.
+- Treat training output as a candidate subject to data, quality, safety, performance, fairness where applicable, and operational gates.
+- Require accountable promotion, progressive rollout, rollback, and feedback controls that prevent poisoning and train/eval leakage.
+
+**Follow-up probe:** Which data change should invalidate a previously accepted evaluation result?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### DSTL-B5-14 — Choose shadow, canary, blue-green, rolling, or A/B for an AI release.
+
+**Round:** Deployment strategy · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Match shadow to behavior comparison without user impact, canary to release risk, blue-green to fast environment switching, rolling to ordinary replacement, and A/B to product experiments.
+- Account for duplicate cost, state and schema compatibility, cohort comparability, side-effect fencing, capacity, and rollback speed.
+- Define exact candidate, exposure, success and abort gates, owner, duration, and post-release verification.
+
+**Follow-up probe:** Why must a shadow agent have write tools disabled or fenced?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+### DSTL-B5-15 — Approve a release with a database migration that may make rollback unsafe.
+
+**Round:** Change governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require expand-contract or backward-compatible migration where possible, tested backups, active-job strategy, and explicit point-of-no-return.
+- Compare rollback with forward recovery, including data integrity, irreversible side effects, downtime, and operator capability.
+- Stage the change, validate old and new versions, rehearse recovery, assign authority, and document residual risk before exposure.
+
+**Follow-up probe:** When should the application release be separated from the irreversible migration?
+
+**Revision links:** [MLOps and LLMOps]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }})
+
+## Production quality, SLOs, capacity, and FinOps
+
+### DSTL-B5-16 — Define SLOs for a shared RAG and agent platform.
+
+**Round:** Reliability leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate availability, latency, task quality, permission correctness, safety, freshness, side-effect integrity, and cost by risk and tenant class.
+- Define SLIs, windows, sample and label coverage, no-data behavior, threshold authority, error budgets, and dependency allocation.
+- Tie burn alerts and release policy to actionable runbooks, degraded modes, rollback, and accountable owners.
+
+**Follow-up probe:** How do you represent an HTTP-successful response with an invalid or unauthorized answer in the SLI?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### DSTL-B5-17 — Decide whether production drift warrants retraining.
+
+**Round:** Model operations · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Distinguish covariate, prior, concept, output, traffic, and instrumentation changes using versioned baselines and slices.
+- Verify telemetry, sample size, seasonality, label coverage, and actual outcome degradation; drift alone is not correctness evidence.
+- Choose investigation, threshold review, data repair, retraining, rollback, or no action based on validated cause and business impact.
+
+**Follow-up probe:** Which type of drift cannot be established without labels or outcome evidence?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### DSTL-B5-18 — Establish cost governance for teams sharing GPUs and managed providers.
+
+**Round:** FinOps leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Attribute dedicated and provider compute, tokens, idle capacity, retrieval, tools, storage, telemetry, evaluation, and human review to teams and successful outcomes.
+- Set budgets, quotas, service tiers, showback or chargeback, anomaly alerts, and exception governance while preserving minimum quality and safety.
+- Use measured cost-quality-latency frontiers for routing and capacity decisions and revisit them after workload or price changes.
+
+**Follow-up probe:** How would you prevent one team's long-context jobs from consuming shared interactive capacity?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### DSTL-B5-19 — Design an alerting and on-call model for AI quality and service failures.
+
+**Round:** Operating model · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Page only actionable immediate risks, ticket slower work, and use dashboards for observation; every signal needs owner, threshold source, and runbook.
+- Include exact lineage, affected slices, evidence coverage, telemetry health, likely changes, fallback and rollback state, and business impact.
+- Test delivery, escalation, no-data behavior, deduplication, and runbooks through safe synthetic failures and incident drills.
+
+**Follow-up probe:** Why should a noisy LLM-judge score rarely trigger automatic rollback by itself?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+### DSTL-B5-20 — Lead a platform incident involving queue growth, fallback traffic, and rising cost.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Verify telemetry, declare impact, stop amplification through admission, load shedding, retry control, quotas, circuit breaking, or reduced capability.
+- Preserve exact release and routing evidence, coordinate model, platform, provider, product, and security owners, and communicate user impact.
+- Reconcile incomplete work, restore gradually, then correct capacity, fallback, alert, cost, and change-management gaps with recurrence tests.
+
+**Follow-up probe:** Which signals show that the fallback is protecting availability but violating quality or budget?
+
+**Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
 
 ## Completion evidence
 

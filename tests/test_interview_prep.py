@@ -39,11 +39,19 @@ BATCH_FOUR_CHEAT_SHEETS = (
     ROOT / "interview-prep/cheat-sheets/agent-protocols-reliability-evaluation.md",
 )
 
+BATCH_FIVE_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/ai-ml-system-design-production-architecture.md",
+    ROOT / "interview-prep/cheat-sheets/llm-inference-serving-optimization.md",
+    ROOT / "interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle.md",
+    ROOT / "interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity.md",
+)
+
 ALL_CHEAT_SHEETS = (
     BATCH_ONE_CHEAT_SHEETS
     + BATCH_TWO_CHEAT_SHEETS
     + BATCH_THREE_CHEAT_SHEETS
     + BATCH_FOUR_CHEAT_SHEETS
+    + BATCH_FIVE_CHEAT_SHEETS
 )
 
 
@@ -104,7 +112,7 @@ def test_public_pages_have_required_front_matter() -> None:
 def test_role_banks_have_stable_complete_batches() -> None:
     for prefix, path in ROLE_BANKS.items():
         content = read(path)
-        for batch in (1, 2, 3, 4):
+        for batch in (1, 2, 3, 4, 5):
             ids = re.findall(
                 rf"^### ({prefix}-B{batch}-\d{{2}}) — ",
                 content,
@@ -113,10 +121,10 @@ def test_role_banks_have_stable_complete_batches() -> None:
             expected = [f"{prefix}-B{batch}-{index:02d}" for index in range(1, 21)]
             assert ids == expected
             assert len(ids) == len(set(ids)) == 20
-        assert content.count("**Strong answer signals**") == 80
-        assert content.count("**Follow-up probe:**") == 80
-        assert content.count("**Revision links:**") == 80
-        assert "question_count: 80" in content
+        assert content.count("**Strong answer signals**") == 100
+        assert content.count("**Follow-up probe:**") == 100
+        assert content.count("**Revision links:**") == 100
+        assert "question_count: 100" in content
 
 
 def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
@@ -146,6 +154,10 @@ def test_hub_links_every_interview_artifact() -> None:
         "/interview-prep/cheat-sheets/langgraph-deep-dive/",
         "/interview-prep/cheat-sheets/agent-frameworks-libraries-comparison/",
         "/interview-prep/cheat-sheets/agent-protocols-reliability-evaluation/",
+        "/interview-prep/cheat-sheets/ai-ml-system-design-production-architecture/",
+        "/interview-prep/cheat-sheets/llm-inference-serving-optimization/",
+        "/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/",
+        "/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/",
         "/interview-prep/roles/agentic-ai-engineer/",
         "/interview-prep/roles/data-science-technical-lead/",
         "/interview-prep/roles/senior-data-scientist/",

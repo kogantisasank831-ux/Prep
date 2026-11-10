@@ -30,6 +30,10 @@ Approved Batch 4 adds agent fundamentals, LangGraph, framework comparisons,
 and agent protocols/reliability/evaluation. Each role bank now contains 80
 guided questions while preserving all earlier IDs.
 
+Approved Batch 5 adds AI/ML system design, LLM inference optimization,
+MLOps/LLMOps lifecycle, and production monitoring, capacity, and cost. Each
+role bank now contains 100 guided questions while preserving all earlier IDs.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than
