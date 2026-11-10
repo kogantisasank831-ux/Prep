@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.4.0"
+status: "review"
+version: "1.5.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
 
-Each role bank now contains 100 guided questions across Batches 1–5, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–5 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 120 guided questions across Batches 1–6, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 6 is a review candidate; Batches 1–5 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -72,6 +72,15 @@ Each role bank now contains 100 guided questions across Batches 1–5, with stro
 | [MLOps, LLMOps, deployment, and lifecycle]({{ '/interview-prep/cheat-sheets/mlops-llmops-deployment-lifecycle/' | relative_url }}) | Reproducibility, lineage, registries, CI/CD/CT, prompt/index/agent lifecycle, containers, Kubernetes, deployment strategies and rollback |
 | [AI production monitoring, cost, and capacity]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }}) | Release lineage, observability, SLOs, drift, delayed labels, LLM/RAG/agent monitoring, telemetry quality, capacity, autoscaling and FinOps |
 
+## Batch 6 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Data and distributed compute engineering]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }}) | Workload contracts, execution boundaries, partitions, shuffles, skew, storage, Kafka, event time, exactly-once effects, backfills and distributed training |
+| [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }}) | Threat modeling, injection, RAG and agent security, privacy, supply chain, red teaming, lifecycle governance, regulation and incidents |
+| [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }}) | Problem framing, AI alternatives, metrics, roadmaps, architecture, build-versus-buy, operating models, delegation, delivery and incident leadership |
+| [Project deep dives, behavioral answers, and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }}) | Project portfolio, truthful contribution, data and architecture defense, impact attribution, CARL+ stories, mock cases, scoring and practice |
+
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
 ## Interview answer standard
@@ -96,10 +105,8 @@ A senior answer should normally cover:
 | Deep dive | 45 minutes | One system/case question with trade-offs and metrics |
 | Project evidence | 30 minutes | Add one example, number, failure, or lesson from your own work |
 
-## Roadmap for later batches
+## Next review step
 
-| Batch | Planned scope |
-| --- | --- |
-| 6 | Data and distributed compute, AI security/privacy/governance, technical leadership/product thinking, project deep dives, behavioral and mock interviews |
+Batch 6 completes the currently prepared source set. Define any later batch from the master index only after its canonical source material and review boundary are ready.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

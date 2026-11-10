@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.4.0"
+status: "review"
+version: "1.5.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "One hundred guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production AI and RAG, agent systems, system design, LLM inference, MLOps/LLMOps, deployment, monitoring, capacity, cost, reliability, and incidents."
+description: "One hundred twenty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production AI, RAG and agents, distributed data, security and privacy, technical leadership, project defenses, behavioral evidence, reliability, and incidents."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–5 · 100 guided questions"
+kicker_secondary: "Batches 1–6 · 120 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 100
+question_count: 120
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 100 questions across Batches 1–5 · **Status:** Batches 1–5 approved
+**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–5 approved · Batch 6 review candidate
 
 ## Python and service engineering
 
@@ -1479,6 +1479,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which synthetic event proves that collection, alert routing, and responder recovery all work?
 
 **Revision links:** [AI production operations]({{ '/interview-prep/cheat-sheets/ai-production-monitoring-cost-capacity/' | relative_url }})
+
+## Data and distributed compute engineering
+
+### AIE-B6-01 — Choose between DuckDB or Polars and Spark for a daily document-processing pipeline.
+
+**Round:** Data architecture · **Depth:** Applied
+
+**Strong answer signals**
+
+- Start from data size and growth, file count, transformations, memory, freshness, replay, team skill, and operational constraints rather than choosing a cluster by default.
+- Benchmark a representative slice including startup, remote reads, serialization, spill, retries, and cost; prefer the smallest system that meets the contract.
+- Define the evidence that triggers distribution, such as sustained memory pressure, missed completion SLOs, unavoidable shuffle scale, or required fault-tolerant parallelism.
+
+**Follow-up probe:** Why can a cluster make a 50 GB workload slower and less reliable?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### AIE-B6-02 — Diagnose a Spark join where a few tasks run far longer than the rest.
+
+**Round:** Distributed performance · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Inspect the physical plan, key-frequency and partition-size distributions, task-time tails, shuffle bytes, spill, and maximum-to-median ratios before tuning.
+- Reduce data before the shuffle, broadcast only a measured-small side, pre-aggregate, isolate or salt hot keys, and use adaptive execution when validated.
+- Verify row counts and join semantics after mitigation, then control output partitioning and small files rather than optimizing time alone.
+
+**Follow-up probe:** What correctness work does salting add after it spreads a hot key?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### AIE-B6-03 — Make a Kafka consumer that calls an external procurement API safe under retries.
+
+**Round:** Streaming reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define the observable business effect, key and partition ordering, offset boundary, stable operation ID, and behavior after a timeout with an unknown outcome.
+- Persist intent and result, make the API idempotent or reconcile its authoritative status before retrying, and commit progress only after the accepted effect boundary.
+- Inject failures before and after the API call and offset commit; prove duplicate delivery cannot create a duplicate procurement action.
+
+**Follow-up probe:** Why does Kafka exactly-once processing not make an arbitrary HTTP side effect exactly once?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### AIE-B6-04 — Design event-time fraud features that serve online and rebuild point-in-time-correct training data.
+
+**Round:** Streaming architecture · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define event IDs, account keys, event time, ordering, duplicate and correction behavior, watermark, late-data policy, state TTL, freshness, and fallback.
+- Keep immutable governed events, versioned stream logic, online features with freshness metadata, and offline history that supports point-in-time joins and replay.
+- Reconcile online and offline values, isolate backfills, canary feature versions, and monitor lag, skew, checkpoint health, missing/stale features, and cost.
+
+**Follow-up probe:** How would a record arriving after the watermark change an already served feature?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+### AIE-B6-05 — Select DDP, FSDP, tensor, or pipeline parallelism for a model-training job.
+
+**Round:** Distributed training · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Estimate model, gradient, optimizer, activation, and batch memory first; use data parallelism when the model fits and sharding when replicated state does not.
+- Introduce tensor or pipeline parallelism only when model scale requires it, accounting for collectives, topology, bubbles, stragglers, checkpoint format, and recovery.
+- Hold global batch and optimizer policy deliberately, measure tokens per second and scaling efficiency, and prove reproducibility and resharding across worker changes.
+
+**Follow-up probe:** Why can adding GPUs reduce throughput or change convergence?
+
+**Revision links:** [Data and distributed compute]({{ '/interview-prep/cheat-sheets/data-distributed-compute-engineering/' | relative_url }})
+
+## AI security, privacy, and governance
+
+### AIE-B6-06 — Threat-model a multi-tenant procurement document agent before selecting guardrail libraries.
+
+**Round:** Threat modeling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind users, tenants, documents, model/runtime, prompts, index, tools, credentials, external effects, assets, entry points, and trust boundaries.
+- Identify confidentiality, integrity, authorization, poisoning, injection, SSRF, replay, approval, resource-abuse, and partial-effect scenarios with impact evidence.
+- Assign deterministic controls, bounded test authority, synthetic canaries, owners, release gates, containment, rollback, and residual-risk acceptance.
+
+**Follow-up probe:** Which threat would an OWASP checklist miss without the exact procurement workflow?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### AIE-B6-07 — Defend a tool-using agent against indirect prompt injection from retrieved documents.
+
+**Round:** Agent security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Treat retrieved text as untrusted evidence, keep principal and tenant context outside model text, and never let document content grant tools or permissions.
+- Expose narrow typed tools, validate semantics, reauthorize the exact resource and action, use scoped credentials and egress controls, and approve high-impact effects.
+- Test malicious documents with bounded accounts and external-state assertions that distinguish unsafe text, attempted action, blocked action, and committed effect.
+
+**Follow-up probe:** Why does a model refusal not prove that no tool action occurred?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### AIE-B6-08 — Enforce authorization, revocation, and deletion in a multi-tenant RAG service.
+
+**Round:** RAG security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind trusted user and tenant identity before retrieval, store immutable source/ACL/version lineage, and isolate indexes, caches, embeddings, traces, and evaluation data.
+- Recheck current permissions during candidate assembly, propagate revocation and deletion to derived stores, and fail closed when ACL or lineage state is stale.
+- Add cross-tenant canaries, revoked-document cases, cache-key tests, enumeration limits, citation-support checks, and reconciliation for incomplete propagation.
+
+**Follow-up probe:** How can a permission-aware vector filter still leak through a shared cache?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### AIE-B6-09 — Secure the model, tokenizer, adapter, container, and dataset supply chain.
+
+**Round:** Supply-chain security · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Record immutable provenance for code, lockfile, image, model bytes, tokenizer, adapters, datasets, prompts, tools, policies, runtime, and evaluation suite.
+- Use trusted registries, digests or signatures, SBOM/model BOM, license and vulnerability review, safe formats, restricted deserialization, and isolated evaluation.
+- Promote the exact tested bundle, monitor for changed artifacts, retain rollback, and define quarantine and credential-rotation actions for compromise.
+
+**Follow-up probe:** Why is a familiar model repository name not proof that the loaded bytes are safe?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+### AIE-B6-10 — Build a bounded red-team regression suite for an agent release.
+
+**Round:** Adversarial testing · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Cover direct and indirect injection, cross-tenant access, secrets/PII, tool arguments, SSRF, replay, approval confusion, loops, budget exhaustion, and poisoned retrieval.
+- Give each case a synthetic canary, expected control, forbidden effect, deterministic oracle, rate and cost cap, cleanup, severity, and exact release identity.
+- Use scanners and model judges as coverage aids, calibrate subjective labels, and gate releases on reproducible application-state evidence rather than pass counts alone.
+
+**Follow-up probe:** Which oracle would prove that a malicious tool call was blocked before any external effect?
+
+**Revision links:** [AI security, privacy, and governance]({{ '/interview-prep/cheat-sheets/ai-security-privacy-governance/' | relative_url }})
+
+## Technical leadership and product thinking
+
+### AIE-B6-11 — Reframe an executive request for a multi-agent assistant into a testable first release.
+
+**Round:** Product framing · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Identify the user, decision, baseline, pain, constraints, failure cost, measurable outcome, guardrails, and non-goals; multi-agent is not itself a requirement.
+- Compare search, deterministic workflow, RAG, one bounded agent, vendor service, and human process before accepting extra autonomy.
+- Propose one vertical slice with an evidence plan, stop/pivot criteria, owner, risk tier, human approval for writes, and a decision date.
+
+**Follow-up probe:** What evidence would justify adding a second agent rather than another deterministic workflow step?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### AIE-B6-12 — Lead a build-versus-buy-versus-self-host decision for model serving.
+
+**Round:** Technical strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Compare quality and capability, privacy/residency, latency, demand shape, reliability, observability, support, team skill, delivery time, and exit requirements.
+- Model total cost across usage, idle capacity, GPUs/cloud, staffing, security, upgrades, licenses, migration, and provider failure rather than price per token alone.
+- Run a representative benchmark and risk review, document assumptions and triggers, preserve an interface and fallback, and assign lifecycle ownership.
+
+**Follow-up probe:** At what utilization or risk threshold would you revisit the selected option?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### AIE-B6-13 — Run an architecture decision for a public agent API and persistent state schema.
+
+**Round:** Architecture leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate facts, assumptions, risks, and preferences; define contracts, scale, security, recovery, migration, observability, and supported version requirements.
+- Treat the public API, identity boundary, state and retention model as high-reversal-cost choices; compare alternatives and require broader review and an exit path.
+- Record the decision, dissent, owner, validation evidence, rollout and rollback, and explicit triggers that reopen it.
+
+**Follow-up probe:** Which internal implementation choice could remain reversible behind that contract?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### AIE-B6-14 — Delegate ownership of an agent evaluation subsystem without becoming the bottleneck.
+
+**Round:** Delegation and mentoring · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Delegate the outcome, scope, non-goals, interfaces, decision authority, evidence bar, dependencies, and escalation triggers—not only a task list.
+- Provide representative scenarios and review checkpoints proportional to risk while leaving room for the owner to make and defend decisions.
+- Measure success through independent ownership, reusable standards, release evidence, and improved team throughput; give specific artifact-based feedback.
+
+**Follow-up probe:** Which decisions would you retain because their risk crosses the delegated boundary?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+### AIE-B6-15 — Lead an AI incident involving wrong actions, incomplete telemetry, and stakeholder pressure.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Protect users and data first, stop or narrow harmful effects, establish incident command and a source of truth, preserve exact release identity, and bound impact.
+- Communicate known, unknown, decisions, risk, and next update; roll back, disable tools, or degrade safely while reconciling external actions.
+- Verify recovery, run an evidence-based postmortem, and assign systemic actions for authorization, telemetry, release gates, runbooks, and later effectiveness checks.
+
+**Follow-up probe:** How would you proceed when the business asks to restore service before action reconciliation is complete?
+
+**Revision links:** [AI technical leadership and product thinking]({{ '/interview-prep/cheat-sheets/ai-technical-leadership-product-thinking/' | relative_url }})
+
+## Project deep dives, behavioral answers, and mock interviews
+
+### AIE-B6-16 — Give a two-minute defense of a production RAG or agent project.
+
+**Round:** Project deep dive · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Lead with the user decision, measured baseline, scale, constraints, why AI was justified, and the simplest viable architecture rather than a framework list.
+- State your exact ownership and team contributions, then cover data, evaluation, permissions, failure handling, rollout, monitoring, cost, and operational status.
+- Quantify the outcome with unit, population, window, comparator, attribution limits, and one trade-off or learning; label prototypes honestly.
+
+**Follow-up probe:** Which artifact most clearly proves your personal contribution?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### AIE-B6-17 — Defend a claimed latency or cost improvement from an inference project.
+
+**Round:** Impact evidence · **Depth:** Advanced
+
+**Strong answer signals**
+
+- State exact candidate, hardware, workload and token distributions, baseline, metric definitions, time window, traffic cohort, and quality acceptance gates.
+- Separate queue, TTFT, TPOT, throughput, goodput, rejection, and cost per successful outcome; include warm/cold behavior and failures.
+- Explain experiment or phased-rollout attribution, uncertainty and confounders, net operating cost, and whether results were projected, observed, or realized.
+
+**Follow-up probe:** How could lower cost per request hide a worse production result?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### AIE-B6-18 — Tell a failure story about an agent that completed workflows incorrectly.
+
+**Round:** Behavioral · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Explain the missed assumption, affected users or external effects, detection gap, and your accountability without blaming the model, data, or another team.
+- Describe containment, communication, exact-state preservation, root-mechanism investigation, action reconciliation, correction, and verification.
+- Show the durable change to contracts, evaluation, approval, monitoring, or rollout and provide later evidence that the change worked.
+
+**Follow-up probe:** What leading signal could have detected the failure before a user report?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### AIE-B6-19 — Describe a disagreement over graph orchestration versus a simpler workflow.
+
+**Round:** Behavioral · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Establish the shared outcome and each view's valid concern, then make state, recovery, latency, operability, team skill, and change criteria explicit.
+- Gather the smallest discriminating evidence through a thin spike or failure-path test and route any residual consequential decision to the accountable owner.
+- Explain the final decision, your exact influence, team commitment, outcome, and what evidence would trigger reconsideration without portraying peers as incompetent.
+
+**Follow-up probe:** What did the other proposal reveal that improved your preferred design?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
+
+### AIE-B6-20 — Handle a mock design follow-up that increases LLM-gateway traffic and context size by 10×.
+
+**Round:** Mock system design · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Recalculate request and token distributions, queueing, prefill/decode capacity, KV memory, network, storage, provider limits, and failure headroom rather than scaling every box uniformly.
+- Introduce admission, quotas, traffic classes, batching, caching, routing, model or context optimization, horizontal and parallel scaling only where measured bottlenecks require them.
+- Preserve quality, tenancy, security, observability, rollback, and cost per accepted outcome; propose load, spike, soak, failure, and recovery gates.
+
+**Follow-up probe:** Which measurement would determine whether more replicas or a shorter context policy is the better first move?
+
+**Revision links:** [Project deep dive and mock interviews]({{ '/interview-prep/cheat-sheets/project-deep-dive-behavioral-mock-interview/' | relative_url }})
 
 ## Completion evidence
 
