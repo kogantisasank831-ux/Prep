@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
+version: "1.1.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,390 +10,338 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Experimentation and causal inference interview cheat sheet"
-description: "Estimands, randomization, power, A/A and SRM, metrics, CUPED, sequential decisions, switchbacks, DAGs, propensity methods, DiD, RDD, IV, and uplift."
-summary: "Revise trustworthy experiments and observational causal designs from decision contract through assumptions, execution, inference, guardrails, and launch evidence."
+description: "Causal contracts, power, trustworthy experiments, ratio metrics, CUPED, sequential decisions, interference, DAGs, observational identification, uplift, and implementation."
+summary: "Revise causal decisions from estimand and assignment through telemetry, inference, identification assumptions, heterogeneous effects, and production evidence."
 permalink: "/interview-prep/cheat-sheets/experimentation-causal-inference/"
 kicker_primary: "Interview preparation"
-kicker_secondary: "Batch 7 · Experimentation and causality"
+kicker_secondary: "Batch 8 · Expanded experimentation and causality"
 current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 7 source:** This page integrates the newly prepared revision source into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page updates the prepared `25_Experimentation_Causal_Inference_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
 
-**Target roles:** Data Scientist, Applied Scientist, ML Engineer, AI/Data Science Lead, Product Data Scientist  
-**Use:** A/B testing, metric design, causal inference, product experimentation, and decision-science rounds  
-**Interview rule:** begin with the decision and causal estimand, then justify assignment, exposure, analysis, and assumptions. A small p-value is not a product decision.
+**Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, Product Data Scientist, ML/AI Engineer  
+**Use:** statistics, product experimentation, causal-inference, modeling-case, system-design, and leadership interviews  
+**Interview rule:** begin with the decision and target estimand. A sophisticated estimator cannot repair an undefined outcome, broken randomization, post-treatment filtering, or an implausible causal assumption.
 
 ## 1. Thirty-second revision
 
-- Define the decision, population, treatment, comparator, outcome, time window, estimand, and guardrails before choosing a statistical test.
-- Randomization balances observed and unobserved causes in expectation; execution failures can destroy that advantage.
-- Choose the randomization unit to match interference, product delivery, and analysis. Analyze uncertainty at the assignment unit.
-- Power depends on baseline variance/rate, minimum detectable effect, significance level, power, allocation, clustering, and eligible traffic.
-- Intention-to-treat compares assignment groups and preserves randomization. Treatment-on-the-treated needs stronger assumptions when exposure differs from assignment.
-- A/A tests and sample-ratio-mismatch checks find instrumentation, assignment, logging, and analysis problems before effect interpretation.
-- Report effect size and confidence interval; do not equate “not significant” with “no effect” or significance with practical value.
-- Repeated peeking, many metrics, and many variants inflate false positives unless the design and inference account for them.
-- CUPED and pre-period covariates can reduce variance when chosen before outcome inspection and measured consistently.
-- Causal diagrams clarify confounders, mediators, colliders, and adjustment choices. Do not control for every available variable.
-- Observational methods exchange randomization for assumptions: overlap, parallel trends, exclusion restriction, continuity, or no unmeasured confounding.
-- Validate novelty, carryover, network effects, heterogeneous impacts, long-term outcomes, and operational guardrails before scaling.
+- Define the user/business decision, treatment, outcome, population, unit, exposure rule, time window, and causal estimand before choosing a test.
+- Randomize at the unit where interference and implementation permit; analyze uncertainty at the unit that was randomized.
+- Predeclare the primary metric, guardrails, diagnostic metrics, minimum detectable effect, duration, and stopping rule.
+- Validate assignment and telemetry before reading treatment effects: A/A behavior, invariant metrics, exposure counts, and sample-ratio mismatch.
+- Prefer intention-to-treat for the primary estimate; treatment-on-the-treated needs additional assumptions or an instrument.
+- Report absolute effect, relative effect, uncertainty interval, practical significance, and decision—not only a p-value.
+- Peeking inflates false positives unless the design uses a valid sequential method. A fixed-horizon test is not sequential merely because a dashboard refreshes.
+- CUPED can reduce variance using a pre-treatment covariate correlated with the outcome; never use a variable affected by treatment.
+- In observational studies, draw the causal graph and state the identification assumptions before matching, regression, weighting, or machine learning.
+- Distinguish confounders, mediators, and colliders. Adjusting for the wrong variable can create bias.
+- Check overlap, balance, sensitivity, pre-trends, placebo outcomes/treatments, and estimate stability. These checks support an argument; they do not prove untestable assumptions.
+- Heterogeneous treatment effects are useful only when discovered and evaluated with honest sample splitting, shrinkage, multiplicity control, and an actionable policy.
 
-## 2. Decision and estimand contract
+## 2. Start with the causal contract
 
-Record:
+Write one sentence:
 
-| Field | Question |
-|---|---|
-| Decision | launch, stop, iterate, target, or learn? |
-| Population | which eligible users, accounts, regions, devices, or events? |
-| Treatment | what exact experience or policy changes? |
-| Comparator | current product, placebo, alternate model, or no action? |
-| Outcome | primary metric with unit, direction, and observation window |
-| Guardrails | safety, quality, fairness, latency, cost, complaints, retention |
-| Estimand | ITT, ATE, ATT, per-protocol, uplift, long-term effect? |
-| Horizon | exposure, maturation, novelty, seasonality, and follow-up |
-| Decision rule | required value, risk tolerance, and owner |
+> For **population P**, what is the effect of assigning **treatment T** rather than **control C** on **outcome Y** over **window W**, measured at **unit U**, under **policy and interference assumptions A**?
 
-The **estimand** is the precise causal quantity to estimate. For potential outcomes $Y_i(1)$ and $Y_i(0)$, average treatment effect is:
+Key terms:
 
-$$
-ATE=\mathbb{E}[Y(1)-Y(0)]
-$$
+| Term | Meaning | Interview trap |
+|---|---|---|
+| Experimental unit | entity independently assigned to a variant | randomizing sessions when users cross sessions |
+| Exposure | opportunity to experience the treatment | conditioning on a post-treatment click |
+| Outcome | behavior/value the decision should change | optimizing a proxy with no business link |
+| Estimand | precise causal quantity being targeted | saying “impact” without population or contrast |
+| ATE | average effect in the target population | averaging away important constraints or harm |
+| ATT | average effect among treated units | confusing it with ATE after selective treatment |
+| CATE | effect conditional on characteristics $X=x$ | treating noisy subgroups as personalized truth |
+| ITT | effect of assignment, regardless of compliance | excluding non-compliers and breaking randomization |
 
-Only one potential outcome is observed per unit. Experimental design or causal assumptions bridge that missing counterfactual.
+Potential-outcome notation:
 
-## 3. Randomization unit, interference, and clustering
+- Potential outcomes: `Y_i(1)` and `Y_i(0)`
+- Individual effect: `τ_i = Y_i(1) − Y_i(0)`
 
-Common units include user, session, account, household, store, geography, or time block. Choose the smallest unit that avoids unacceptable contamination and matches delivery.
+Only one potential outcome is observed for each unit. Randomization makes treatment independent of potential outcomes in expectation, enabling:
 
-If one user's treatment affects another user's outcome, the Stable Unit Treatment Value Assumption is violated. Examples include marketplaces, social graphs, shared sales teams, inventory, and recommendation feedback.
+`estimated ATE = mean(Y_T) − mean(Y_C)`
 
-Cluster randomization can reduce contamination but lowers effective sample size because outcomes within clusters correlate. Approximate design effect for equal cluster size $m$ and intracluster correlation $\rho$:
+State assumptions when relevant: consistency, positivity/overlap, no unmeasured confounding for observational adjustment, and an interference model. “SUTVA” is shorthand, not a substitute for describing spillovers and treatment versions.
 
-$$
-DE=1+(m-1)\rho
-$$
+## 3. Experiment design sequence
 
-Analyze with cluster-robust or design-consistent methods. Millions of events do not create millions of independent experimental units.
+1. **Decision:** what changes if the result is positive, negative, or inconclusive?
+2. **Hypothesis and mechanism:** why should the treatment move the outcome?
+3. **Population and eligibility:** who can enter, and when?
+4. **Randomization unit:** user, account, household, store, region, query, creator, or time block.
+5. **Assignment and exposure:** preserve assignment logs separately from triggered exposure.
+6. **Variants and allocation:** include ramp plan, mutual exclusions, and interacting experiments.
+7. **Metrics:** one primary outcome; guardrails; mechanism and data-quality diagnostics.
+8. **Power:** baseline variance/rate, α, power, MDE, allocation, clustering, attrition.
+9. **Duration:** cover operational cycles and delayed outcomes, not merely required sample size.
+10. **Analysis plan:** estimator, variance method, missing-data handling, multiplicity, slices, stopping.
+11. **Launch safety:** A/A checks, instrumentation validation, staged ramp, kill conditions.
+12. **Decision record:** estimate, interval, risks, heterogeneity, limitations, and follow-up.
 
-## 4. Power, MDE, and sample size
+For clustered assignment, effective information is lower when observations within clusters correlate. A common approximation is `DE = 1 + (m−1)ρ`, where `m` is average cluster size and `ρ` is intra-cluster correlation. Use cluster-aware power and standard errors rather than applying this approximation blindly to unequal clusters.
 
-Power is the probability of rejecting the null under a specified true effect. The minimum detectable effect (MDE) should come from the smallest effect worth acting on, not from the sample the team happens to have.
+## 4. Power, MDE, and effect reporting
 
-For a simple balanced comparison of means, required sample per arm scales approximately as:
+For two equally sized groups and a continuous outcome, a planning approximation is:
 
-$$
-n\propto\frac{\sigma^2(z_{1-\alpha/2}+z_{1-\beta})^2}{\delta^2}
-$$
+`n_group ≈ 2σ²(z_(1−α/2) + z_(1−β))² / δ²`
 
-where $\sigma$ is outcome standard deviation, $\delta$ the MDE, $\alpha$ type-I error, and $1-\beta$ power.
+Here `δ` is the minimum detectable absolute effect. For proportions, use the variance appropriate to the expected rates. Planning inputs are estimates, so run sensitivity scenarios.
 
-Smaller MDE, noisier outcome, lower alpha, higher power, uneven allocation, clustering, noncompliance, and multiple comparisons require more traffic. Convert sample size to calendar time using eligible units and maturation delay; include weekly cycles and operational constraints.
+Power depends on:
 
-## 5. Assignment, eligibility, exposure, and analysis sets
+- outcome variance or baseline rate;
+- MDE worth acting on;
+- Type I error `α` and desired power `1−β`;
+- treatment allocation;
+- unit and clustering;
+- repeated measures, CUPED, and estimator choice;
+- attrition, non-compliance, and multiple comparisons.
 
-- **Eligibility:** who could enter the experiment.
-- **Assignment:** randomized treatment allocation.
-- **Exposure:** whether the assigned experience was actually delivered or seen.
-- **Outcome:** measurement after a defined treatment opportunity.
+Report:
 
-Intention-to-treat (ITT) compares all assigned units, preserving randomization and estimating the effect of the assignment policy. Per-protocol or exposed-only analyses can introduce selection bias because exposure may depend on user behavior or system health.
+- control and treatment sample sizes;
+- control baseline;
+- absolute effect with unit;
+- relative effect with a defined denominator;
+- confidence/credible interval and analysis method;
+- guardrail and slice results;
+- whether the test was powered for the observed magnitude;
+- practical decision and remaining uncertainty.
 
-Log assignment once with immutable experiment, variant, unit, timestamp, and version. Keep assignment stable for the required horizon. Distinguish failure to render from genuine non-engagement.
+A non-significant result is not proof of no effect. Ask whether the interval excludes effects that matter.
 
-## 6. A/A tests, SRM, and instrumentation
+## 5. Trustworthiness checks before outcome interpretation
 
-An A/A test sends equivalent experiences through the full assignment and measurement path. It can reveal false-positive inflation, unstable metrics, timestamp issues, inconsistent eligibility, duplicate units, or correlated analysis mistakes.
+### Sample-ratio mismatch
 
-Sample ratio mismatch (SRM) tests whether observed allocation differs materially from the planned ratio. Investigate before estimating treatment effects. Causes include:
+Compare observed allocation counts with the configured allocation using a predeclared goodness-of-fit test. SRM is a symptom, not a correction target. Investigate assignment, eligibility, redirects, identifier instability, logging loss, joins, bot filtering, ramp changes, and post-assignment segmentation. Do not simply reweight unexplained SRM away.
 
-- hashing or bucketing defects;
-- variant-specific crashes or redirects;
-- logging loss;
-- eligibility evaluated after assignment;
-- bot/internal traffic filters applied asymmetrically;
-- joins that drop one arm;
-- overlapping experiments or stale configuration.
+### A/A and invariant checks
 
-Do not “fix” SRM by reweighting until the mechanism is understood; the missingness may be outcome-related.
+- A/A tests exercise assignment, exposure, logging, metrics, and false-positive calibration.
+- Invariant metrics such as pre-treatment attributes should not change causally.
+- Run balance checks as diagnostics; do not repeatedly rerandomize until every covariate is “significant.”
+- Reconcile counts from assignment to exposure to outcome tables.
 
-## 7. Metric design and metric trees
+### Common failure modes
 
-Use one primary metric tied to the decision, a small set of guardrails, and diagnostic metrics for mechanism understanding.
+| Failure | Why it biases or weakens the result | Better response |
+|---|---|---|
+| Peeking at fixed-horizon p-values | raises false-positive probability | fixed stop or valid sequential design |
+| Post-treatment filtering | conditions on treatment consequences | ITT; pre-treatment eligibility |
+| Survivorship/attrition | missingness differs by treatment/outcome | measure attrition; bounds/sensitivity |
+| Novelty/learning effects | early response differs from steady state | inspect time profile; run long enough |
+| Seasonality/event shocks | period is unrepresentative | concurrent control; planned duration |
+| Interference | one unit affects another | cluster/switchback/network design |
+| Metric logging changes | treatment alters measurement | invariant telemetry and source reconciliation |
+| Multiple slicing | winner’s curse and false discoveries | predeclare; adjust; validate independently |
+| Unit mismatch | standard errors are too small | analyze/cluster at assignment unit |
 
-A metric definition needs numerator, denominator, unit, window, attribution, deduplication, eligibility, late-data rule, and owner. Prefer user-level or assignment-unit aggregates when the unit is randomized.
+## 6. Ratio metrics and variance reduction
 
-Metric trees connect business outcome to controllable drivers. For example:
+Ratios such as clicks/impressions are not generally equivalent to averaging per-user ratios. Define the estimand first: ratio of totals, average user ratio, or another business quantity. Use an estimator and variance method appropriate to dependence—delta method, cluster-robust variance, or a unit-level/bootstrap design that reproduces assignment.
 
-$$
-Revenue = Eligible\ users \times Conversion\ rate \times Average\ order\ value
-$$
+For CUPED, let `X` be a pre-treatment covariate:
 
-Ratios require care: average of user-level ratios, ratio of totals, and event-level averages answer different questions. Use the estimator aligned with the estimand.
+`Y_cv = Y − θ(X − mean(X))`, where `θ = Cov(Y, X) / Var(X)`.
 
-## 8. Effect sizes, intervals, and tests
+Randomization preserves unbiasedness when the adjustment is pre-treatment and the implementation is correct. Fit/define the adjustment without using treatment-induced information. Recheck missingness, stability, and whether one common coefficient matches the analysis plan.
 
-For treatment mean $\bar Y_T$ and control mean $\bar Y_C$:
+Other variance-reduction approaches include stratification, regression adjustment, repeated-measures models, triggered metrics with careful eligibility, and covariate-adaptive designs. Do not change the estimand merely to obtain a smaller p-value.
 
-$$
-\hat\tau=\bar Y_T-\bar Y_C
-$$
+## 7. Sequential tests, multiple testing, and adaptive allocation
 
-Also report relative lift only when the baseline is stable and nonzero. A confidence interval expresses uncertainty under the design and model assumptions. It is not the probability that the fixed true effect lies in that realized interval.
+- **Fixed horizon:** analyze at the predeclared information/time boundary.
+- **Group sequential:** planned interim looks with alpha spending or boundaries.
+- **Always-valid/e-process methods:** support continuous monitoring under their assumptions.
+- **Bayesian monitoring:** requires a prior, loss/decision rule, and operating-characteristic checks; it is not automatically immune to optional stopping concerns.
+- **Multiple outcomes/variants/slices:** control family-wise error or false discovery where the decision family requires it; separate confirmatory from exploratory analysis.
+- **Bandits:** optimize cumulative reward while learning, but can complicate unbiased inference, delayed outcomes, non-stationarity, guardrails, and reproducibility.
 
-Choose tests from the outcome and design:
+Choose an A/B test for clean causal estimation, a bandit for online allocation under exploration costs, and contextual/policy learning only when the action space, feedback, safety, and evaluation support it.
 
-- difference in means or regression for continuous outcomes;
-- proportion tests or regression for binary outcomes;
-- count/time-to-event methods when appropriate;
-- randomization inference for design-based testing;
-- cluster-robust standard errors for clustered assignment;
-- bootstrap only with resampling at the correct independent unit.
+## 8. When ordinary user-level A/B testing does not fit
 
-Large samples make tiny effects significant. Compare the interval with the minimum practical effect, guardrail limits, and implementation cost.
+| Design | Use when | Main risks/checks |
+|---|---|---|
+| Cluster randomization | spillovers within teams, stores, schools | few clusters, imbalance, cluster variance |
+| Switchback | marketplace/operations treatment applies by time | carryover, autocorrelation, block length |
+| Geo experiment | media or policy assigned by region | matching, spillover, regional shocks |
+| Factorial | estimate effects/interactions efficiently | interaction power, operational complexity |
+| Stepped wedge | staged cluster rollout is required | time confounding and carryover |
+| Encouragement/IV | assignment affects adoption, not treatment directly | exclusion, relevance, monotonicity |
 
-## 9. Variance reduction and CUPED
+## 9. Causal graphs and observational identification
 
-Pre-period covariates correlated with the outcome can reduce variance without changing treatment assignment. CUPED forms an adjusted outcome:
+Use a DAG to encode the causal story:
 
-$$
-Y_{adj}=Y-\theta(X-\mathbb{E}[X])
-$$
+- **Confounder:** causes treatment and outcome; often needs adjustment.
+- **Mediator:** lies on the causal path; adjust only for a direct-effect estimand.
+- **Collider:** is caused by two variables; conditioning can open a spurious path.
+- **Instrument:** changes treatment, affects outcome only through treatment under strong assumptions.
 
-where $X$ is a pre-treatment covariate and $\theta$ is chosen to reduce variance.
+Identification asks whether the causal estimand can be expressed from observed data under assumptions. Estimation computes that expression. A predictive model with high accuracy does not identify a causal effect.
 
-Requirements:
+| Method | Core identifying idea | Frequent failure |
+|---|---|---|
+| Outcome regression | outcome model removes observed confounding | misspecification, poor overlap |
+| Matching/stratification | compare similar propensity/covariate groups | hidden confounding, discarded population |
+| IPW | reweight to a pseudo-population | extreme weights, positivity violations |
+| Doubly robust/AIPW | combine treatment and outcome models | both wrong; nuisance overfit without cross-fitting |
+| Difference-in-differences | treated/control would have parallel trends | anticipatory effects, differential trends |
+| Regression discontinuity | assignment changes at a cutoff | manipulation, bandwidth/model sensitivity |
+| Instrumental variables | instrument shifts treatment but has no other outcome path | weak instrument, exclusion failure |
+| Synthetic control | weighted controls approximate counterfactual trajectory | donor contamination, poor pre-fit |
 
-- covariate measured before treatment;
-- consistent availability and definition across arms;
-- no leakage from treatment;
-- method declared before inspecting treatment outcomes;
-- uncertainty computed for the adjusted estimator;
-- handling for new users without history.
+Always include falsification and sensitivity work appropriate to the design: pre-trends, placebo dates/outcomes/treatments, negative controls, balance/overlap plots, weight diagnostics, alternate specifications, leave-one-group-out, Rosenbaum/E-value-style sensitivity, or bounds. Robustness to many models does not rule out a shared wrong assumption.
 
-Regression adjustment and stratification can also improve precision. Variance reduction cannot rescue biased assignment or broken instrumentation.
+## 10. Heterogeneous effects and uplift
 
-## 10. Multiple testing, peeking, and sequential designs
+Use CATE/uplift when the action changes by segment. Separate:
 
-Testing many metrics, variants, segments, or stopping times increases the chance of a false discovery. Options include:
+1. estimating whether heterogeneity exists;
+2. discovering candidate segments/policies;
+3. evaluating the policy on held-out or new experimental data;
+4. enforcing budget, fairness, safety, and capacity constraints.
 
-- one predeclared primary outcome;
-- family-wise control such as Holm when any false positive is costly;
-- false-discovery-rate control for exploratory families;
-- hierarchical or gatekeeping procedures;
-- holdout confirmation for discovered segments;
-- Bayesian or sequential designs with a predeclared stopping and decision rule;
-- alpha-spending or always-valid methods designed for repeated looks.
+Prefer honest trees/forests, causal forests, meta-learners, or orthogonal learners only when sample size and overlap support them. Report uncertainty and policy value; avoid presenting unstable individual effects as facts.
 
-Ordinary fixed-horizon p-values are not valid after repeatedly stopping when they cross a threshold. Operational safety monitoring can run continuously, but the primary efficacy analysis needs its planned inference.
+## 11. Library map
 
-## 11. Switchback, geo, and marketplace experiments
+| Tool | Best fit | Do not confuse it with |
+|---|---|---|
+| SciPy/statsmodels | tests, power, regression, robust/cluster covariance | an experimentation platform |
+| DoWhy | graph-first model–identify–estimate–refute workflow | proof that assumptions are true |
+| EconML | orthogonal ML and heterogeneous treatment effects | automatic confounder discovery |
+| CausalML | uplift and treatment-effect estimators | a substitute for design/identification |
+| PyMC/Stan | Bayesian models and decision uncertainty | automatic causal identification |
+| experiment platform | assignment, exposure, metrics, guardrails, analysis | a guarantee of trustworthy instrumentation |
 
-Use switchback designs when treatment operates at a shared system level, such as dispatch, ranking, pricing, or capacity. Alternate treatment and control over randomized time blocks, accounting for:
+Pin versions and verify estimator assumptions, variance behavior, clustering, missingness, and supported treatments/outcomes against the exact library documentation.
 
-- carryover and washout;
-- time-of-day/day-of-week seasonality;
-- autocorrelation;
-- block length;
-- shared shocks;
-- interference across regions or inventory pools.
-
-Geo experiments aggregate treatment by region and often require matched or synthetic controls, enough independent geographies, stable tracking, and sensitivity to spillover.
-
-Marketplace experiments should define whether the estimand is buyer, seller, transaction, or ecosystem welfare. Treating one side can change supply, competition, and equilibrium for both arms.
-
-## 12. Novelty, duration, and long-term effects
-
-Early lift can reflect novelty, learning, or temporary operational attention. Short experiments may miss retention, fatigue, delayed conversion, model-feedback loops, or cost accumulation.
-
-Set duration from:
-
-- required independent units and power;
-- full business cycles;
-- outcome maturation;
-- novelty/carryover risk;
-- ramp safety and seasonality;
-- capacity and support constraints.
-
-Use long-term holdouts, repeated measurement, or surrogate validation when immediate metrics do not capture durable value. Do not extend a losing unsafe experiment merely to hit a sample-size target.
-
-## 13. Causal diagrams: confounders, mediators, and colliders
-
-A directed acyclic graph (DAG) makes assumed causal relationships explicit.
-
-- **Confounder:** causes both treatment and outcome; often needs adjustment.
-- **Mediator:** lies on the treatment-to-outcome path; adjusting for it changes the estimand toward a direct effect.
-- **Collider:** is caused by two variables; conditioning on it can create a spurious association.
-- **Instrument:** affects treatment and affects outcome only through treatment under strong assumptions.
-
-Example: if user motivation affects both feature adoption and purchase, it confounds an observational adoption analysis. If adoption affects engagement which affects purchase, engagement is a mediator. Filtering only users who completed a workflow can create collider bias.
-
-Do not let feature availability decide the adjustment set. Let the causal question and graph do it.
-
-## 14. Identification assumptions
-
-Observational estimation often needs:
-
-1. **Consistency:** observed outcome under received treatment equals the corresponding potential outcome.
-2. **Exchangeability/no unmeasured confounding:** after adjustment, treatment is as-if random.
-3. **Positivity/overlap:** each relevant covariate profile has nonzero chance of each treatment.
-4. **Correct temporal order:** covariates precede treatment and outcome.
-5. **No unacceptable interference:** one unit's treatment does not alter another's outcome, or the interference is modeled.
-
-These are domain claims, not facts proven by a library. Use negative controls, placebo tests, balance/overlap checks, sensitivity analysis, triangulation, and explicit limitations.
-
-## 15. Propensity scores, matching, and weighting
-
-The propensity score is $e(x)=P(T=1\mid X=x)$. Matching, stratification, and inverse-probability weighting use it to balance observed covariates.
-
-For ATE weighting:
-
-$$
-w_i=\frac{T_i}{e(X_i)}+\frac{1-T_i}{1-e(X_i)}
-$$
-
-Workflow:
-
-1. define pre-treatment covariates from a causal model;
-2. estimate treatment propensity without outcome leakage;
-3. inspect overlap and extreme weights;
-4. trim or redefine the population when positivity fails;
-5. check standardized balance after adjustment;
-6. estimate effects with appropriate uncertainty;
-7. run sensitivity and alternate-specification checks.
-
-High propensity-model accuracy is not the goal; covariate balance and credible identification are.
-
-## 16. Difference-in-differences
-
-Difference-in-differences (DiD) compares outcome changes in treated and comparison groups:
-
-$$
-\hat\tau_{DiD}=(\bar Y_{T,post}-\bar Y_{T,pre})-(\bar Y_{C,post}-\bar Y_{C,pre})
-$$
-
-The central assumption is parallel untreated trends, not equal levels. Inspect multiple pre-periods, anticipation, composition changes, concurrent shocks, and spillovers. With staggered adoption and heterogeneous effects, naive two-way fixed-effects estimators can be misleading; use methods appropriate to treatment timing.
-
-Event studies help visualize dynamics but pre-trend non-significance is not proof of parallel trends.
-
-## 17. Regression discontinuity
-
-Regression discontinuity design (RDD) uses a treatment rule with a threshold on a running variable. Near the cutoff, units just above and below may be comparable.
-
-Validate:
-
-- exact or fuzzy treatment assignment at the threshold;
-- no precise manipulation of the running variable;
-- continuity of potential outcomes and covariates;
-- bandwidth and functional-form sensitivity;
-- enough data near the cutoff;
-- local estimand and limited external validity.
-
-Plot raw binned outcomes and density near the threshold. High-order polynomials are not a substitute for robust local analysis.
-
-## 18. Instrumental variables
-
-An instrument $Z$ changes treatment $T$ but should affect outcome $Y$ only through treatment. Core assumptions include relevance, independence, exclusion restriction, and usually monotonicity for a local average treatment effect.
-
-A weak instrument produces unstable, biased estimates. The exclusion restriction is a substantive claim and is often the hardest to defend. Report the complier population represented by the local effect rather than generalizing to everyone.
-
-Examples such as randomized encouragement can be credible when encouragement changes uptake without directly changing the outcome.
-
-## 19. Heterogeneous effects and uplift
-
-Average effects can hide important variation. Estimate conditional average treatment effects only with adequate sample size, overlap, and honest validation.
-
-Pre-specify a small number of decision-relevant segments or use causal forests/meta-learners with sample splitting and out-of-sample evaluation. Validate policies using incremental outcome, uplift/Qini curves, value under treatment capacity, and guardrails—not ordinary response-model AUC alone.
-
-Segment mining after seeing results invites false discoveries. Confirm exploratory heterogeneity in a new experiment or holdout.
-
-## 20. Experiment analysis skeleton
+## 12. Minimal dependency-free estimate
 
 ```python
 from __future__ import annotations
 
-import numpy as np
-from numpy.typing import NDArray
+from dataclasses import dataclass
+from math import sqrt
+from statistics import NormalDist, mean, variance
+from typing import Sequence
+
+
+@dataclass(frozen=True)
+class MeanDifference:
+    control_mean: float
+    treatment_mean: float
+    absolute_effect: float
+    standard_error: float
+    lower: float
+    upper: float
 
 
 def difference_in_means(
-    treatment: NDArray[np.float64], control: NDArray[np.float64]
-) -> tuple[float, float]:
-    if treatment.size < 2 or control.size < 2:
-        raise ValueError("each arm needs at least two independent units")
-    effect = float(treatment.mean() - control.mean())
-    standard_error = float(
-        np.sqrt(treatment.var(ddof=1) / treatment.size + control.var(ddof=1) / control.size)
+    control: Sequence[float],
+    treatment: Sequence[float],
+    *,
+    confidence: float = 0.95,
+) -> MeanDifference:
+    """Illustrative independent-unit normal interval, not a universal test."""
+    if len(control) < 2 or len(treatment) < 2:
+        raise ValueError("each arm needs at least two observations")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be between zero and one")
+
+    control_mean = mean(control)
+    treatment_mean = mean(treatment)
+    effect = treatment_mean - control_mean
+    se = sqrt(variance(control) / len(control) + variance(treatment) / len(treatment))
+    z = NormalDist().inv_cdf(0.5 + confidence / 2.0)
+    return MeanDifference(
+        control_mean=control_mean,
+        treatment_mean=treatment_mean,
+        absolute_effect=effect,
+        standard_error=se,
+        lower=effect - z * se,
+        upper=effect + z * se,
     )
-    return effect, standard_error
+
+
+estimate = difference_in_means([1, 2, 3, 4], [2, 3, 4, 5])
+assert estimate.absolute_effect == 1.0
+assert estimate.lower < estimate.absolute_effect < estimate.upper
 ```
 
-This skeleton assumes independent units and a simple design. Clustered assignment, ratio metrics, triggered analysis, missing outcomes, repeated measures, and sequential decisions need design-consistent estimators.
+Real analyses must match the randomization, repeated observations, clustering, metric type, missingness, multiplicity, and stopping design.
 
-## 21. Common interview failure modes
+## 13. Rapid interview questions
 
-- choosing a t-test before defining the estimand;
-- randomizing sessions while treatment persists at user level;
-- treating events as independent when users were randomized;
-- removing non-exposed users from the primary analysis;
-- continuing despite unexplained SRM;
-- calling a non-significant result “no effect”;
-- peeking until significance without sequential correction;
-- optimizing many metrics and reporting only the winner;
-- controlling for a mediator or collider without changing the estimand explicitly;
-- claiming propensity methods remove unmeasured confounding;
-- using pre-trend tests as proof of DiD validity;
-- presenting a local RDD or IV effect as a population-wide ATE.
+**Why is randomization powerful?** It makes assignment independent of potential outcomes in expectation, so treatment groups provide a credible counterfactual subject to implementation, interference, attrition, and chance.
 
-## 22. Rapid interview Q&A
+**What is the difference between statistical and practical significance?** Statistical significance measures incompatibility with a null under a model; practical significance asks whether the magnitude justifies value, cost, and risk.
 
-**Why use ITT?**  
-It preserves randomization and estimates the effect of assigning the policy, including delivery and uptake realities.
+**What does SRM mean?** Observed variant counts differ implausibly from configured allocation. It is a diagnostic for assignment, logging, eligibility, joining, or analysis problems.
 
-**What does SRM mean?**  
-Observed allocation is inconsistent with the planned ratio beyond expected chance; investigate assignment and data before effects.
+**Why use ITT?** It preserves the randomization and estimates the effect of the assignment policy. Excluding non-compliers can reintroduce selection bias.
 
-**Can CUPED create bias?**  
-Yes, if the covariate is affected by treatment, inconsistently measured, or selected after inspecting outcomes.
+**Can you stop when p < 0.05?** Not under an ordinary fixed-horizon test. Use a predeclared sequential design if repeated looks are required.
 
-**Why not adjust for every feature?**  
-Post-treatment variables, colliders, poor overlap, and model instability can bias or weaken the estimate.
+**When does CUPED help?** When a stable pre-treatment covariate predicts the outcome. It reduces variance without changing the estimand when correctly specified.
 
-**When is a switchback useful?**  
-When treatment acts on a shared system and simultaneous unit-level randomization would contaminate outcomes.
+**Why not control every available variable?** Controlling mediators changes the estimand; controlling colliders can introduce bias; irrelevant variables may increase variance or instability.
 
-## 23. Lead-level case
+**What is positivity?** Each covariate pattern in the target population needs a non-zero probability of receiving each compared treatment. Poor overlap makes estimates extrapolative and unstable.
 
-**Case:** an agent-assisted support workflow reports a 7% resolution lift, but only exposed sessions were analyzed and treatment had more logging loss.
+**How would you validate a DiD?** Examine domain plausibility, pre-trends/event-study patterns, anticipation, composition, concurrent shocks, treatment timing, clustering, and placebo tests.
 
-A strong answer should:
+**How do you evaluate uplift?** On held-out randomized data using policy value, Qini/uplift curves with uncertainty, treatment capacity, and guardrails—not only CATE fit.
 
-1. stop the launch decision and reconstruct eligibility, immutable assignment, exposure, outcomes, and logging completeness by arm;
-2. test SRM and differential missingness at the randomized unit;
-3. restore ITT as the primary estimand and treat exposed-only results as selected diagnostics;
-4. define resolution window, repeat contacts, escalation, hallucination/safety, latency, and cost guardrails;
-5. repair instrumentation, run an A/A or shadow validation, and repeat with a predeclared analysis;
-6. separate product effect from delivery reliability and record the decision threshold and owner.
+## 14. Lead-level case
 
-## 24. Final checklist
+**Prompt:** A product team wants to deploy an AI-generated notification because a pilot showed higher clicks.
 
-- Can you define treatment, comparator, unit, population, outcome, horizon, and estimand?
-- Can you explain power, MDE, design effect, and calendar duration?
-- Can you distinguish assignment, exposure, ITT, and treatment-on-treated?
-- Can you diagnose SRM and explain A/A tests?
-- Can you handle multiple testing, peeking, and variance reduction?
-- Can you choose user, cluster, switchback, or geo randomization?
-- Can you identify confounders, mediators, and colliders in a DAG?
-- Can you state the assumptions behind propensity methods, DiD, RDD, and IV?
-- Can you validate heterogeneous effects without segment fishing?
-- Can you translate statistical uncertainty into a launch decision with guardrails?
+Structure the answer:
 
-## Primary references
+1. define the business decision and distinguish clicks from retained value;
+2. specify eligibility, user-level assignment, treatment variants, and exposure logging;
+3. choose a primary downstream outcome, click mechanism metric, unsubscribe/complaint/safety guardrails, and infrastructure metrics;
+4. establish baseline, MDE, delayed outcome window, power, duration, ramp, and kill conditions;
+5. verify content-policy and model-version invariants across variants;
+6. perform SRM, assignment, exposure, logging, and contamination checks before effect analysis;
+7. estimate ITT with user-level uncertainty and CUPED only from pre-period data;
+8. inspect predeclared slices for accessibility, language, and vulnerable-user harm with multiplicity awareness;
+9. separate novelty from steady-state response and check repeated-notification fatigue;
+10. decide ship, iterate, or stop using the estimate interval, guardrails, operational risk, and expected value;
+11. version the treatment/model/prompt and retain an audit-ready decision record.
 
-- Kohavi, Tang, and Xu, *Trustworthy Online Controlled Experiments*.
-- Imbens and Rubin, *Causal Inference for Statistics, Social, and Biomedical Sciences*.
-- Hernán and Robins, *Causal Inference: What If*.
-- Pearl, Glymour, and Jewell, *Causal Inference in Statistics: A Primer*.
-- Original or official documentation for CUPED, cluster-robust analysis, and the chosen sequential-testing procedure.
+## 15. Final checklist
+
+- [ ] I can state treatment, control, population, unit, exposure, outcome window, and estimand.
+- [ ] I can explain power, MDE, Type I/II error, and why non-significance is not equivalence.
+- [ ] I can diagnose SRM, attrition, instrumentation, post-treatment filtering, and interference.
+- [ ] I can distinguish fixed-horizon, sequential, multiple-testing, and bandit designs.
+- [ ] I can derive difference-in-means and explain cluster-aware uncertainty.
+- [ ] I can explain CUPED and why its covariate must be pre-treatment.
+- [ ] I can distinguish confounder, mediator, collider, and instrument using a DAG.
+- [ ] I can compare matching, IPW, doubly robust, DiD, RDD, IV, and synthetic control assumptions.
+- [ ] I can defend heterogeneous-effect validation and policy evaluation.
+- [ ] I can connect causal evidence to a concrete product decision, guardrails, rollout, and limitations.
+
+## 16. Primary references
+
+- Microsoft Experimentation Platform, [CUPED paper](https://exp-platform.com/Documents/2013-02-CUPED-ImprovingSensitivityOfControlledExperiments.pdf)
+- Microsoft Research, [Diagnosing Sample Ratio Mismatch](https://www.microsoft.com/en-us/research/publication/diagnosing-sample-ratio-mismatch-in-online-controlled-experiments-a-taxonomy-and-rules-of-thumb-for-practitioners/)
+- PyWhy, [DoWhy effect-estimation workflow](https://www.pywhy.org/dowhy/v0.13/user_guide/causal_tasks/estimating_causal_effects/effect_estimation_with_estimators.html)
+- Microsoft Research, [EconML documentation](https://econml.azurewebsites.net/)
+- Hernán and Robins, [Causal Inference: What If](https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/)
+- Kohavi, Tang, and Xu, *Trustworthy Online Controlled Experiments*
+
+Use these sources to verify assumptions and methods; do not memorize a company-specific threshold as a universal experiment policy.

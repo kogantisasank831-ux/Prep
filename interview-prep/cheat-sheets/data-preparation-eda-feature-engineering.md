@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
+version: "1.1.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -9,420 +9,415 @@ back_url: "/interview-prep/"
 toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
-title: "Data preparation, EDA, and feature engineering interview cheat sheet"
-description: "Prediction grain, labels, splits, leakage, data quality, missingness, outliers, scaling, encoding, temporal and aggregate features, imbalance, point-in-time correctness, and monitoring."
-summary: "Revise how decision time, identity, lineage, reproducible transformations, and point-in-time evidence turn raw data into reliable model inputs."
+title: "Feature engineering and ML data validation interview cheat sheet"
+description: "Modeling grain, data identity, splits, leakage, feature design, missingness, temporal aggregates, selection, point-in-time correctness, validation layers, drift, and parity."
+summary: "Revise features as governed time-aware data products with reproducible identity, deployment-aligned validation, explicit failure policy, and online/offline evidence."
 permalink: "/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/"
 kicker_primary: "Interview preparation"
-kicker_secondary: "Batch 7 · Data and feature foundations"
+kicker_secondary: "Batch 8 · Expanded features and validation"
 current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 7 source:** This page integrates the newly prepared revision source into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page updates the prepared `26_Feature_Engineering_Data_Validation_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
 
-**Target roles:** Data Scientist, ML Engineer, AI Engineer, Analytics Engineer, AI/Data Science Lead  
-**Use:** data-quality, exploratory-analysis, modeling, feature-platform, and production-ML rounds  
-**Interview rule:** define the prediction unit, decision time, label horizon, and data-availability contract before cleaning or engineering features. Most serious feature bugs are time, identity, or lineage bugs.
+**Target roles:** Data Scientist, Lead Data Scientist, ML Engineer, AI Engineer, Applied Scientist  
+**Use:** modeling, data-quality, leakage, feature-store, ML-system-design, debugging, and leadership interviews  
+**Interview rule:** a feature is not merely a column. It has an entity key, event time, availability time, source, transformation, default, freshness contract, owner, and allowed use.
 
 ## 1. Thirty-second revision
 
-- Define one row: entity, event, timestamp, observation window, prediction time, label horizon, and action.
-- Split before learning imputation, scaling, encoding, feature selection, or resampling. Fit preprocessing on training data only.
-- Leakage is information unavailable at decision time or information created by the outcome, future, or split construction.
-- EDA should test data-generating and measurement assumptions, not merely render charts.
-- Validate schema, keys, units, ranges, categories, freshness, missingness, duplicates, lineage, and changes by important slice.
-- Missingness can be informative, but a missingness indicator is not a substitute for understanding its mechanism.
-- Scaling matters for distance, gradient, and regularization-sensitive models; trees usually do not need it.
-- Encode categories with an explicit unseen-value policy. Target encoding must be out-of-fold and time-aware.
-- Temporal, aggregate, and rolling features require point-in-time joins and event-time cutoffs.
-- Handle imbalance with decision-aware metrics, thresholds, weighting or resampling inside training folds—not by duplicating data before splitting.
-- Put transformations in one reproducible pipeline used by training and serving; version code, data, schema, and feature definitions.
-- Monitor feature availability, freshness, distribution, nulls, categories, lineage, and online/offline parity—not only model scores.
+- Define the prediction unit, entity, prediction time, horizon, outcome window, label availability, and action before exploring columns.
+- Preserve immutable source/snapshot and transformation identities. A reproducible model needs reproducible data, labels, features, splits, and code.
+- Split according to deployment: by entity/group, time, geography, or combinations. Fit every learned preprocessing step on the training fold only.
+- Leakage includes future data, target-derived features, post-outcome records, duplicated entities, full-data preprocessing, aggregate leakage, and point-in-time errors.
+- Join a feature using what was available—not merely what had happened—at prediction time.
+- Missing, zero, unknown, not applicable, and censored are different states. Preserve their semantics.
+- Start with stable, explainable features tied to the mechanism; add complexity only when cross-validated error analysis justifies it.
+- One-hot, ordinal, hashing, frequency, target encoding, and embeddings solve different cardinality and model constraints. Target encoding must be out-of-fold and time-safe.
+- Validate schema, content, relationships, domain rules, labels, splits, transformation outputs, offline/online parity, freshness, and meaningful slices.
+- Drift is a symptom. Separate real population change, seasonality, upstream bugs, sampling shifts, and training-serving skew before responding.
+- Never silently infer a new schema or accept a new baseline just because current data fails.
+- Quarantine bad partitions, record scoped exceptions with expiry, and block publication when an accepted critical rule fails.
 
-## 2. Prediction and data contract
+## 2. Define the modeling grain before features
 
-Before opening a notebook, write:
+Use a contract such as:
 
-| Field | Example question |
-|---|---|
-| Unit | one customer, machine-hour, document, order, or event? |
-| Key | which stable identifier prevents duplicates and bad joins? |
-| Decision time | when must the prediction be available? |
-| Observation window | which history may features use? |
-| Label horizon | what future interval defines the outcome? |
-| Action | what changes because of the score? |
-| Availability | which sources exist, with what delay, at decision time? |
-| Population | which entities are eligible and which are excluded? |
-| Cost | consequences of false positive, false negative, abstention, delay |
+> At **prediction time $t$**, for **entity $e$**, predict **outcome $Y$** during **$[t+h_1,t+h_2]$** so that **actor A** can take **action D**.
 
-Example: “At 08:00 each day, score each operating pump using telemetry available through 07:55 to predict failure in the next seven days, enabling inspection under a daily capacity limit.”
+Record:
 
-This makes future maintenance records, post-failure fields, and late laboratory readings visibly unavailable.
-
-## 3. Grain, keys, joins, and duplicates
-
-State the grain of every table. A one-to-many join can multiply rows and silently change weights, totals, class balance, and train/test independence.
-
-For each join, validate:
-
-- key uniqueness on the expected side;
-- null keys and fallback behavior;
-- row counts before/after;
-- unmatched rates by source and slice;
-- time validity and slowly changing dimensions;
-- duplicate precedence;
-- units and timezone;
-- late-arriving corrections.
-
-Duplicates may be exact ingestion retries, repeated legitimate events, conflicting records, or multiple measurements. Deduplicate only after defining identity and precedence. “Drop duplicates” is not a business rule.
-
-## 4. Labels and target audit
-
-Audit label definition, source, timing, noise, missingness, adjudication, and feedback loops.
-
-Ask:
-
-- Is the label observable for every eligible unit?
-- Is it delayed or censored?
-- Does intervention prevent the outcome, creating selective labels?
-- Was it created using a model or policy being evaluated?
-- Does a proxy match the decision objective?
-- Can positive and negative labels be confirmed?
-- Are label definitions stable across time, sites, or annotators?
-
-For document or LLM tasks, record annotation instructions, rubric, examples, adjudication, agreement, model assistance, and dataset license/provenance. Weak labels can scale coverage but need an audited high-quality evaluation set.
-
-## 5. Split strategy
-
-Choose splits from deployment:
-
-- **random stratified:** approximately IID units, no grouped dependency;
-- **group split:** people, devices, accounts, documents, patients, or sites must not cross splits;
-- **time split/backtest:** future prediction, changing behavior, or temporal availability;
-- **geographic/domain holdout:** generalization to new regions, clients, or environments;
-- **nested cross-validation:** unbiased model-selection assessment when data is limited;
-- **rolling/expanding windows:** repeated time-based evaluation under retraining plans.
-
-Keep a final test set untouched by feature and hyperparameter decisions. Validation must reproduce feature availability and label maturation. Random splitting a repeated entity often measures memorization of identity rather than future generalization.
-
-## 6. Leakage taxonomy
-
-### Target leakage
-
-A feature directly or indirectly encodes the outcome: closure reason, post-diagnosis treatment, final invoice, or human resolution note.
-
-### Temporal leakage
-
-Feature value was produced after prediction time, even if stored in a table with an earlier business date.
-
-### Split leakage
-
-Same entity, near-duplicate document, augmented example, or future-derived statistic crosses train and validation.
-
-### Preprocessing leakage
-
-Imputer, scaler, encoder, feature selector, resampler, or vocabulary is fit before the split.
-
-### Evaluation leakage
-
-Test results repeatedly guide model choices, prompts, thresholds, or data cleanup.
-
-### Feedback leakage
-
-Labels or features reflect decisions made by an earlier model, so observed outcomes are policy-dependent.
-
-Use a feature-availability table with source event, produced-at time, available-at time, decision cutoff, and lineage. Column names alone cannot prove safety.
-
-## 7. EDA as hypothesis testing
-
-Good EDA answers questions:
-
-- What is the actual unit and population?
-- Are keys unique and time ordered?
-- How do missingness and labels vary by time, source, geography, device, tenant, or cohort?
-- Are ranges, units, categories, and relationships plausible?
-- Is the target prevalence stable and measurable?
-- Are train/validation periods or groups materially different?
-- Which anomalies are data errors versus real rare cases?
-- Where can leakage or selection enter?
-
-Use distributions, quantiles, counts, scatter/hexbin plots, correlations with caveats, time plots, missingness matrices, and slice tables. Report denominators and uncertainty. A correlation heatmap alone is not EDA.
-
-## 8. Schema and quality checks
-
-Quality dimensions include:
-
-- **validity:** type, range, allowed category, format;
-- **completeness:** required fields and missingness;
-- **uniqueness:** primary/business keys;
-- **consistency:** cross-field, cross-table, and unit rules;
-- **timeliness:** freshness and event/ingestion delay;
-- **accuracy:** agreement with an authoritative source where available;
-- **lineage:** source, transformations, owner, version, and retention.
-
-Use blocking gates for violations that make results invalid; quarantine bounded bad records when policy allows; alert on distributional changes; and define recovery/backfill. Thresholds need a baseline and owner, not arbitrary round numbers.
-
-## 9. Missing data
-
-Missingness mechanisms:
-
-- **MCAR:** independent of observed and unobserved values;
-- **MAR:** explained by observed variables;
-- **MNAR:** depends on the missing value or unobserved causes.
-
-These are assumptions, not labels a library discovers. Investigate collection workflow, outages, eligibility, and policy.
-
-Options:
-
-- drop only with a defensible missingness and population argument;
-- simple median/mode imputation as a strong baseline;
-- model-based or multiple imputation when uncertainty and assumptions justify it;
-- missing indicator when absence itself may carry signal;
-- native missing-value handling in supported models;
-- explicit “unknown” category distinct from “not applicable.”
-
-Fit imputation inside training folds. Validate missingness shift and serving fallback. Do not impute identifiers or labels casually.
-
-## 10. Outliers, transformations, and units
-
-An outlier may be error, rare valid case, regime change, fraud, or the most important event. Trace source and business context before removal.
-
-Options include:
-
-- correct unit or parsing errors;
-- cap/winsorize using training-derived, justified limits;
-- log or power transform positive skew;
-- robust scaling by median and interquartile range;
-- use robust losses or tree models;
-- model regimes separately;
-- retain and add an anomaly/quality flag.
-
-Ensure physical units are consistent. A model trained on Celsius and served Fahrenheit values can pass type checks and fail catastrophically.
-
-## 11. Scaling and normalization
-
-- **Standardization:** $(x-\mu)/\sigma$; common for linear models, neural nets, PCA, SVMs, and k-means.
-- **Min-max scaling:** maps training range to a bounded interval but is sensitive to extremes and future values can fall outside it.
-- **Robust scaling:** median and IQR; useful with heavy tails.
-- **Vector normalization:** makes each sample unit norm; common for cosine geometry.
-
-Scaling affects regularization because penalties operate on coefficient magnitudes. Fit statistics only on training data and preserve them with the model. Trees split by order and generally do not need scaling, though downstream distances or mixed pipelines may.
-
-## 12. Categorical encoding
-
-| Method | Use | Risk |
-|---|---|---|
-| one-hot | low/moderate cardinality, linear or simple models | wide sparse matrix, unseen categories |
-| ordinal | genuinely ordered categories | false order if used for nominal values |
-| hashing | bounded width and streaming/unseen values | collisions, harder interpretation |
-| frequency/count | stable frequency signal | drift and population leakage |
-| target encoding | high-cardinality predictive categories | severe target leakage/overfit |
-| learned embedding | large data and complex interactions | training/serving complexity, rare values |
-
-Target encoding must use out-of-fold values for training rows and only past data for time problems. Apply smoothing and a global fallback. Treat unseen, rare, missing, and retired categories explicitly.
-
-## 13. Temporal features
+- prediction unit and unique key;
+- entity, event, processing, and availability timestamps;
+- label definition, source, observation window, delay, revisions, and censoring;
+- training, validation, test, and serving populations;
+- intended and excluded use;
+- acceptable latency/freshness and failure response;
+- business and data owners.
 
 Examples:
 
-- calendar: hour, weekday, holiday, fiscal period;
-- cyclical encoding: sine/cosine for known periodicity;
-- recency: time since last event;
-- frequency: events in trailing windows;
-- trend: slope/change over past intervals;
-- lag: prior observed values;
-- rolling statistics: count, mean, max, volatility;
-- lifecycle: tenure or time since activation.
+- churn: one customer at weekly decision time, outcome in next 30 days;
+- fraud: one transaction at authorization time, confirmed label after investigation;
+- ranking: one query–candidate pair at request time, observed interaction under exposure;
+- forecasting: one series–horizon target at forecast origin.
 
-Every window needs an event-time cutoff, inclusion rule, late-data policy, timezone, and minimum history. Centered rolling windows and globally computed aggregates leak future data. Backtests must rebuild features as they would have existed at each prediction time.
+If the grain is ambiguous, joins, duplicates, leakage checks, and metrics will also be ambiguous.
 
-## 14. Text, image, geographic, and domain features
+## 3. Preserve data identity and provenance
 
-For text, start with length, language, metadata, and TF-IDF baselines before embeddings. Prevent near-duplicate documents across splits and fit vocabulary/IDF on training data.
+For each dataset stage retain:
 
-For images/audio, validate acquisition device, compression, orientation, sampling rate, artifacts, augmentation, and subject/group splits. Metadata can leak the target.
+- source systems and collection purpose;
+- access/usage rights and privacy class;
+- extraction query/job and parameters;
+- schema and contract version;
+- partition range and watermark;
+- transformation code/config version;
+- row/entity counts and checksums/manifests;
+- raw, cleaned, labeled, transformed, feature, and published identities;
+- environment, owner, and creation time.
 
-For geography, use appropriate coordinate systems, distances, regions, and privacy controls. Latitude/longitude Euclidean distance is unreliable over large areas; use geodesic methods or local projections.
+“The latest table” is not a reproducible training input. Use immutable snapshots or manifests and distinguish corrected/reprocessed data from the original evidence.
 
-Domain features should encode mechanisms or constraints, not post-outcome knowledge. Document definition, units, availability, and owner.
+## 4. Split strategy is part of the model
 
-## 15. Aggregates, interactions, and relational features
+| Deployment pattern | Preferred evaluation boundary | Leakage prevented |
+|---|---|---|
+| IID new rows | random/stratified split | class imbalance only; not entity repetition |
+| repeat records per entity | group split by entity | same customer/device/patient in train and test |
+| future prediction | temporal/rolling split | future information and regime optimism |
+| new sites/regions | group/geographic holdout | location-specific memorization |
+| model/tuning selection | nested CV or locked final test | tuning on final evaluation |
+| ranking/recommendation | user/time-aware split with exposure | future interactions and repeated candidate leakage |
 
-Aggregates often carry strong signal: spend in prior 30 days, failure count by asset, supplier delay rate, or graph degree. They also create common leakage.
+Rules:
 
-For each aggregate specify:
+1. Split raw entities/events before fitted transformations.
+2. Deduplicate and near-deduplicate with the deployment grain in mind.
+3. Fit imputers, scalers, encoders, feature selection, resampling, and text vocabularies inside each training fold.
+4. Preserve a locked final set after model and threshold selection.
+5. Use a temporal gap when labels/features near the boundary overlap the future outcome window.
 
-- entity key and relationship;
-- event-time window and cutoff;
-- allowed records and outcome exclusion;
-- minimum support and smoothing;
-- update frequency and late corrections;
-- offline/online computation;
-- privacy and group-size constraints.
+Repeated K-fold scores do not repair a split that violates deployment.
 
-Interactions allow non-additive effects, such as price × segment. Linear models may need explicit interactions; trees and neural networks can learn many automatically but still benefit from meaningful ratios or invariants. Avoid combinatorial feature generation without validation and capacity controls.
+## 5. Leakage taxonomy
 
-## 16. Feature selection
+| Leakage type | Example | Prevention |
+|---|---|---|
+| Target leakage | “refund issued” predicts fraudulent transaction | causal timeline and feature review |
+| Future leakage | next-month balance in current churn score | event/availability-time join |
+| Label-window leakage | activity inside the outcome window used as input | explicit cutoff and horizon |
+| Train–test leakage | scaler or vocabulary fitted on all data | pipeline fitted per train fold |
+| Entity leakage | same customer in train and validation | group-aware split |
+| Duplicate leakage | near-identical documents/images cross sets | content hash/near-duplicate detection |
+| Aggregate leakage | customer lifetime aggregate includes future events | cutoff-aware window aggregation |
+| Target encoding leakage | category mean includes the current row/validation | out-of-fold and time-safe encoding |
+| Selection leakage | dataset contains only users who completed a post-treatment action | eligibility from pre-decision state |
+| Serving leakage | offline feature uses a source unavailable online | availability contract and parity test |
 
-Reasons include generalization, stability, latency, cost, interpretability, privacy, and maintainability.
+Ask of every feature: **Could this exact value have been known, computed, and retrieved at the real decision time?**
 
-- **Filter:** variance, univariate score, mutual information; fast but ignores joint behavior.
-- **Wrapper:** recursive elimination or forward selection; expensive and selection-biased without nested validation.
-- **Embedded:** L1, trees, regularized models; importance is model-dependent.
-- **Domain/operational:** remove unavailable, expensive, unstable, redundant, sensitive, or unactionable features.
+## 6. Feature-engineering mental model
 
-Run selection inside training folds. Permutation importance needs a valid holdout and can dilute importance among correlated features. SHAP values explain the fitted model under its assumptions; they do not prove causality.
+A good feature should be:
 
-## 17. Class imbalance and sampling
+- causally/operationally available at prediction time;
+- stable enough for the deployment horizon;
+- expressive of a plausible mechanism;
+- computable within serving cost and latency;
+- consistently defined offline and online;
+- monitored and owned;
+- compliant with privacy, fairness, and policy constraints.
 
-Accuracy can be useless under imbalance. Select metrics from costs and capacity: precision/recall, PR-AUC, recall at alert budget, cost-weighted utility, calibration, or expected value.
+Start with baselines:
 
-Options:
+1. constant/rule or historical rate;
+2. raw stable variables;
+3. simple recency, frequency, magnitude, trend, and interaction features;
+4. domain aggregates;
+5. learned representations only where they add validated value.
 
-- class/sample weights;
-- over/under-sampling inside training folds;
-- focal loss for suitable hard-example settings;
-- anomaly or ranking formulation;
-- threshold optimization on validation data;
-- targeted label acquisition.
+Feature importance is not proof of causality or data quality. A leaked identifier often appears extremely important.
 
-Preserve real prevalence for calibration and final evaluation. Synthetic sampling such as SMOTE can help some tabular problems but may create implausible examples or cross group/time boundaries. Compare with simpler weighting and threshold baselines.
+## 7. Numeric features
 
-## 18. Reproducible preprocessing pipeline
+Common transformations:
+
+- standardization: `(x−μ)/σ`;
+- robust scaling using median/IQR;
+- min–max scaling when bounded inputs are required;
+- log or signed-log for heavy positive tails;
+- winsorization/capping using training-derived, domain-approved rules;
+- bins/splines for nonlinear effects;
+- ratios only with denominator semantics and zero handling;
+- interactions when the model cannot learn them efficiently.
+
+Scaling matters for distance-based models, regularized linear models, SVMs, neural networks, and optimization. Tree ensembles usually do not require monotonic scaling, but still need valid units, finite values, and consistent missing semantics.
+
+Treat outliers as possible data errors, rare valid cases, regime changes, or the business events of interest. Do not delete them automatically.
+
+## 8. Categorical features
+
+| Method | Suitable when | Main risk |
+|---|---|---|
+| One-hot | modest cardinality, linear/tree baseline | wide sparse matrix |
+| Ordinal | real order exists or tree model supports category order carefully | invented order |
+| Frequency/count | cardinality is high and prevalence helps | drift and no target relation |
+| Hashing | open vocabulary and bounded memory | collisions and weak interpretability |
+| Target encoding | category has outcome signal | leakage/overfit; needs OOF smoothing |
+| Learned embedding | large data and interactions justify it | cold start, complexity, serving parity |
+
+Specify unknown/unseen-category behavior. Reserve a stable unknown token; do not map unseen categories to an arbitrary existing class.
+
+## 9. Missing data and labels
+
+Distinguish:
+
+- missing because not collected;
+- structurally not applicable;
+- not yet available;
+- suppressed for privacy;
+- sensor/system failure;
+- censored outcome;
+- true zero.
+
+MCAR/MAR/MNAR are assumptions about the missingness mechanism, not labels produced by a library. Use domain reasoning, missingness indicators, sensitivity analysis, and data-collection fixes.
+
+For labels, define:
+
+- authoritative source and adjudication;
+- positive and negative observation rules;
+- availability delay and revision policy;
+- ambiguous/unlabeled handling;
+- class prevalence by time and slice;
+- inter-annotator agreement or audit sample where applicable.
+
+Absence of a recorded event is not automatically a negative outcome.
+
+## 10. Temporal, text, and aggregate features
+
+### Temporal
+
+- age/tenure at prediction time;
+- recency since last event;
+- counts/sums/unique counts over fixed lookback windows;
+- slopes, volatility, seasonality, and change from baseline;
+- cyclical encodings `sin(2πt/P)` and `cos(2πt/P)`;
+- holiday/event flags known at forecast/prediction time.
+
+### Text/documents
+
+- language, length, format, extraction confidence;
+- lexical features, embeddings, or task-specific model outputs;
+- document/version identity and access rights;
+- duplication/near-duplication and contamination;
+- generation timestamp and model/version for derived features.
+
+### Aggregates
+
+An aggregate requires entity key, event-time window, availability-time cutoff, filter, unit, late-data policy, and transform version. “Last 30 days” is incomplete without the exact reference time and inclusion boundary.
+
+## 11. Feature selection and imbalance
+
+Feature-selection families:
+
+- **filter:** variance, correlation, mutual information;
+- **wrapper:** forward/backward selection, recursive elimination;
+- **embedded:** L1, tree/boosting importance;
+- **stability-based:** repeated folds/time windows and slice consistency.
+
+Run selection inside training folds. Prefer a smaller stable set when additional features add fragile or unexplained lift.
+
+For imbalance:
+
+- choose metrics that reflect costs and prevalence;
+- use class/sample weights or resampling inside the training fold;
+- tune the decision threshold on validation data;
+- preserve real prevalence in validation/test;
+- evaluate calibration and operational capacity.
+
+SMOTE-like methods can be useful for some continuous feature spaces but may create impossible samples, leak across folds, or distort categories/time. Validate against simpler weighting and threshold baselines.
+
+## 12. Point-in-time correctness
+
+Track both:
+
+- **event time:** when the real-world fact occurred;
+- **availability time:** when the system could actually retrieve the processed value.
+
+For a prediction at `t_p`, use only feature rows with `availability_time ≤ t_p`.
+
+and select the appropriate event/aggregation window. Late-arriving data can have an old event time but a future availability time and must not appear in historical training before it was available.
+
+Test:
+
+- events exactly at cutoff boundaries;
+- late and corrected records;
+- source timezone and DST;
+- backfilled partitions;
+- feature expiration/TTL;
+- entity reuse or changing identifiers;
+- offline historical retrieval against online values for matched entity–timestamp pairs.
+
+## 13. Validation layers
+
+| Layer | Example checks | Failure response |
+|---|---|---|
+| Schema | required fields, type, shape, encoding | reject/quarantine incompatible data |
+| Content | finite, ranges, units, categories, missing/default | block critical violations; sample evidence |
+| Relationships | uniqueness, keys, referential integrity, grain | stop duplicate/fan-out corruption |
+| Domain | conservation, monotonicity, feasible combinations | domain-owner review |
+| Temporal | order, gaps, overlap, timezone, freshness, late data | hold affected partitions |
+| Labels | source, delay, prevalence, agreement, revisions | relabel, exclude, or mark uncertain |
+| Splits | entity/time isolation, duplicates, contamination | rebuild split before training |
+| Transform | fitted-on-train, deterministic outputs, version | block candidate |
+| Parity | offline/online names, values, defaults, precision | stop release or degrade safely |
+| Slices | coverage and failure rates for meaningful groups | targeted investigation |
+
+Test validators with known-good data and deliberately seeded failures. Passing a schema inferred from historical data proves only conformity to that inferred schema, not business fitness.
+
+## 14. Drift, skew, and parity
+
+- **Data drift:** input distribution changes over time.
+- **Concept drift:** relationship between inputs and outcome changes.
+- **Label drift:** outcome prevalence changes.
+- **Schema drift:** structure or categories change.
+- **Training-serving skew:** values or transformations differ between offline training and online inference.
+
+Possible statistics include missing-rate change, PSI, KS, Wasserstein distance, Jensen–Shannon divergence, population moments, and category-frequency distance. Choose feature-specific methods, sample sizes, slices, and thresholds based on accepted risk; do not copy one threshold across all features.
+
+A drift alert should answer:
+
+1. Is the data pipeline healthy?
+2. Is the change expected seasonality or a real population shift?
+3. Does model performance/calibration change?
+4. Is retraining valid, or would it learn a corrupted regime?
+5. Which owner acts, and what is the safe fallback?
+
+## 15. Library map
+
+| Tool | Primary use | Boundary |
+|---|---|---|
+| Pandera | dataframe schemas/checks across supported Python backends | backend capabilities differ; pin version |
+| Great Expectations | expectation suites, validation definitions/results, data docs | expectations still need domain ownership |
+| TensorFlow Data Validation | statistics, schema anomalies, drift/skew in TFX workflows | inferred schema needs review |
+| Deequ | scalable data-quality constraints on Spark | not an ML leakage detector by itself |
+| Feast | feature definitions, historical retrieval, point-in-time joins, online serving | feature store does not invent correct semantics |
+| Evidently/whylogs | profiles and monitoring/drift workflows | distance alert is not root-cause proof |
+| custom SQL/Python | domain invariants and reconciliation | needs tests, versioning, and evidence storage |
+
+Select tooling by execution engine, volume, contract/version workflow, streaming/batch needs, evidence retention, and integration—not popularity.
+
+## 16. Minimal point-in-time retrieval
 
 ```python
 from __future__ import annotations
 
-from sklearn.compose import ColumnTransformer
-from sklearn.impute import SimpleImputer
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from dataclasses import dataclass
+from typing import Iterable
 
 
-numeric = Pipeline(
-    steps=[
-        ("impute", SimpleImputer(strategy="median", add_indicator=True)),
-        ("scale", StandardScaler()),
+@dataclass(frozen=True)
+class FeatureEvent:
+    entity_id: str
+    event_time: int
+    available_time: int
+    value: float
+
+
+def latest_available_value(
+    events: Iterable[FeatureEvent],
+    *,
+    entity_id: str,
+    prediction_time: int,
+) -> float | None:
+    """Return the latest event that was actually available by prediction time."""
+    eligible = [
+        event
+        for event in events
+        if event.entity_id == entity_id
+        and event.available_time <= prediction_time
+        and event.event_time <= prediction_time
     ]
-)
-categorical = Pipeline(
-    steps=[
-        ("impute", SimpleImputer(strategy="most_frequent")),
-        ("encode", OneHotEncoder(handle_unknown="ignore")),
-    ]
-)
-preprocess = ColumnTransformer(
-    transformers=[("num", numeric, ["age", "balance"]), ("cat", categorical, ["region"])]
-)
-model = Pipeline(
-    steps=[("preprocess", preprocess), ("model", LogisticRegression(max_iter=1_000))]
-)
+    if not eligible:
+        return None
+    return max(eligible, key=lambda event: (event.event_time, event.available_time)).value
+
+
+events = [
+    FeatureEvent("A", event_time=10, available_time=11, value=2.0),
+    FeatureEvent("A", event_time=12, available_time=20, value=99.0),  # late
+    FeatureEvent("A", event_time=14, available_time=14, value=3.0),
+]
+assert latest_available_value(events, entity_id="A", prediction_time=15) == 3.0
+assert latest_available_value(events, entity_id="A", prediction_time=10) is None
 ```
 
-Split first; then fit the complete pipeline on training data. Cross-validation should refit every learned step in each fold. Serialize or rebuild from a versioned definition, and validate exact schema plus a representative prediction fixture.
+Production joins also need window boundaries, deduplication, corrections, TTL, source priority, and deterministic tie-breaking.
 
-## 19. Point-in-time features and feature stores
+## 17. Rapid interview questions
 
-A feature value is correct only if it was available at the prediction timestamp. Store or reconstruct:
+**Why split before preprocessing?** Learned preprocessing otherwise uses validation/test information and makes evaluation optimistic.
 
-- entity key;
-- feature event time;
-- produced/ingested time;
-- feature definition/version;
-- source lineage;
-- TTL/freshness;
-- correction and deletion semantics.
+**What is point-in-time correctness?** Reconstructing features using only values that would have been available at each historical prediction time.
 
-Offline training and online serving need semantic parity, not necessarily identical storage. Use point-in-time joins for training, materialize online values with freshness metadata, and reconcile sampled offline/online results. A feature store can standardize this contract; it cannot infer correct event time or business meaning.
+**Why is target encoding risky?** Category outcome means can directly include the current row or future validation outcomes. Use out-of-fold, smoothed, time-safe computation.
 
-## 20. Drift, parity, and feature monitoring
+**Should trees use unscaled data?** Trees usually do not need standardization for split ordering, but still need correct types, units, missingness, ranges, and consistent train/serve logic.
 
-Monitor:
+**How do you handle unseen categories?** Define an explicit unknown path or hashing strategy and test it in training and serving.
 
-- schema and category changes;
-- missingness and default/fallback rate;
-- freshness and age at prediction;
-- distribution and range by meaningful slice;
-- online/offline value parity;
-- feature/model version compatibility;
-- source lineage and failed jobs;
-- relationship to prediction and delayed outcome;
-- compute, storage, latency, and serving cost.
+**What is training-serving skew?** Offline and online feature schemas, values, transforms, defaults, precision, or freshness differ for equivalent entity/timestamp requests.
 
-Population Stability Index or statistical distances are signals, not universal alarms. Large benign seasonality and small high-impact shifts are both possible. Tie thresholds to baselines, consequences, and response playbooks.
+**Does drift mean retrain?** No. First identify pipeline errors, sampling changes, seasonality, population shifts, and whether model quality changed.
 
-## 21. Weak supervision and active learning
+**How do you validate labels?** Document source/time/window/revisions, audit a sample, measure prevalence/slices/agreement, and distinguish unlabeled or censored cases from negatives.
 
-Weak supervision combines noisy labeling rules, heuristics, distant supervision, or model outputs. Keep labeling-function coverage, conflict, correlation, provenance, and version. Validate against independently adjudicated gold data.
+**When is a feature store useful?** When shared definitions, point-in-time historical retrieval, online access, freshness, lineage, and reuse justify its operational cost.
 
-Active learning selects examples whose labels may be valuable—uncertain, diverse, representative, or high-impact cases. Correct for selection bias in evaluation and maintain random samples. Human-label capacity, adjudication, privacy, and turnaround are part of the system.
+**How would you reduce a large feature set?** Leakage audit, stability and redundancy analysis, fold-safe embedded/filter methods, ablation, cost/latency review, and slice-level validation.
 
-Never evaluate only on examples selected because the current model found them difficult.
+## 18. Lead-level case
 
-## 22. Common interview failure modes
+**Prompt:** Build a fraud-risk model using transaction, customer, device, and investigation data.
 
-- cleaning before defining row grain and decision time;
-- random splitting repeated users or future records;
-- fitting scalers or encoders on all data;
-- deleting outliers because a boxplot marked them;
-- treating missing as zero without meaning;
-- using ordinal integers for nominal categories;
-- target encoding without out-of-fold/time-aware computation;
-- calculating rolling features with centered or future windows;
-- oversampling before the split;
-- selecting features on the test set;
-- assuming feature-store adoption guarantees point-in-time correctness;
-- monitoring global distributions while critical slices fail.
+Cover:
 
-## 23. Rapid interview Q&A
+1. prediction at authorization time, transaction entity, fraud confirmation window, and decision/action;
+2. label delay, chargeback revisions, false reports, censored recent transactions, and adjudication;
+3. immutable source snapshots and privacy/retention classification;
+4. time-based split with customer/device grouping and a gap matching outcome delay;
+5. point-in-time joins using processed availability, not only event time;
+6. transaction amount/currency, velocity windows, device/account novelty, merchant history, and network signals;
+7. unknown/missing semantics, currency/unit normalization, duplicate attempts, and identifier rotation;
+8. class-weight/threshold baseline before synthetic resampling;
+9. schema, domain, referential, temporal, label, split, parity, and slice validation gates;
+10. offline–online matched-value tests and fallback when an online feature is stale;
+11. PR-AUC plus calibrated cost/capacity metrics and customer-friction/fairness guardrails;
+12. monitoring for upstream failures, fraud adaptation, label delay, calibration, and decision outcomes.
 
-**What is the first leakage question?**  
-Could this exact value have been known, in this form, at the real decision time?
+## 19. Final checklist
 
-**Why split before preprocessing?**  
-Learned statistics otherwise transfer validation or future information into training.
+- [ ] I can define prediction grain, prediction time, horizon, label window, and action.
+- [ ] I can select random, stratified, group, temporal, geographic, or nested splits based on deployment.
+- [ ] I can identify target, future, preprocessing, entity, duplicate, aggregate, and serving leakage.
+- [ ] I can compare numeric/categorical transformations and unknown-category behavior.
+- [ ] I can explain missingness and label uncertainty without treating all absence as zero/negative.
+- [ ] I can design point-in-time features with event and availability timestamps.
+- [ ] I can define feature contracts, ownership, freshness, defaults, and versions.
+- [ ] I can validate schema, content, relationships, domain, temporal, labels, splits, transforms, parity, and slices.
+- [ ] I can distinguish drift, skew, seasonality, sampling change, and concept change.
+- [ ] I can connect validation failures to quarantine, release blocking, safe fallback, and accountable action.
 
-**When do trees need scaling?**  
-Usually not for their splits, but a surrounding distance, regularization, or mixed-model pipeline may.
+## 20. Primary references
 
-**Why can a missing indicator help?**  
-Collection behavior or eligibility may carry information, though it can also drift when operations change.
+- TensorFlow, [TensorFlow Data Validation](https://www.tensorflow.org/tfx/guide/tfdv)
+- Feast, [Point-in-time joins](https://docs.feast.dev/master/getting-started/concepts/point-in-time-joins)
+- Pandera, [official documentation](https://pandera.readthedocs.io/en/stable/)
+- Great Expectations, [Run Validations](https://docs.greatexpectations.io/docs/core/run_validations/)
+- scikit-learn, [Common pitfalls and recommended practices](https://scikit-learn.org/stable/common_pitfalls.html)
+- scikit-learn, [Preprocessing and pipelines](https://scikit-learn.org/stable/modules/compose.html)
 
-**What is online/offline skew?**  
-Training and serving compute different values because definitions, sources, timing, defaults, or versions differ.
-
-## 24. Lead-level case
-
-**Case:** a churn model has excellent random-split AUC but fails after launch.
-
-A strong answer should:
-
-1. reconstruct the real scoring time, action, observation window, label horizon, and entity population;
-2. test whether users, future transactions, cancellation fields, support notes, or globally fitted transforms crossed the split boundary;
-3. rebuild a time- and entity-aware backtest with point-in-time features and matured labels;
-4. compare against a simple baseline and evaluate calibration, lift at contact capacity, cost, and slices;
-5. verify feature freshness and online/offline parity, then canary with an action holdout;
-6. add availability contracts, join/cardinality tests, leakage review, and delayed-outcome monitoring.
-
-## 25. Final checklist
-
-- Can you define grain, key, decision time, observation window, and label horizon?
-- Can you choose random, group, time, geo, or nested splits from deployment?
-- Can you identify target, temporal, split, preprocessing, evaluation, and feedback leakage?
-- Can you audit labels, joins, missingness, duplicates, units, and outliers?
-- Can you choose scaling and encoding with unseen-value behavior?
-- Can you build point-in-time temporal and aggregate features?
-- Can you handle imbalance without corrupting prevalence or validation?
-- Can you put all learned transformations inside a reproducible pipeline?
-- Can you explain feature-store value without outsourcing semantics to the platform?
-- Can you monitor feature quality, freshness, parity, drift, and cost with an owner?
-
-## Primary references
-
-- scikit-learn documentation: common pitfalls, pipelines, preprocessing, model selection, and inspection.
-- Google, *Rules of Machine Learning*, especially training-serving skew and pipeline guidance.
-- Sculley et al., “Hidden Technical Debt in Machine Learning Systems.”
-- Pandera, Great Expectations, or equivalent official documentation for executable data contracts.
-- Feature-store official documentation for point-in-time joins and online/offline materialization semantics.
+Library APIs and supported backends change. Verify the pinned version and test the exact production data path.

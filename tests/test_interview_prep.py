@@ -60,6 +60,20 @@ BATCH_SEVEN_CHEAT_SHEETS = (
     ROOT / "interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection.md",
 )
 
+BATCH_EIGHT_UPDATED_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/experimentation-causal-inference.md",
+    ROOT / "interview-prep/cheat-sheets/data-preparation-eda-feature-engineering.md",
+)
+
+BATCH_EIGHT_NEW_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/time-series-forecasting.md",
+    ROOT / "interview-prep/cheat-sheets/recommendation-search-ranking.md",
+)
+
+BATCH_EIGHT_CHEAT_SHEETS = (
+    BATCH_EIGHT_UPDATED_CHEAT_SHEETS + BATCH_EIGHT_NEW_CHEAT_SHEETS
+)
+
 ALL_CHEAT_SHEETS = (
     BATCH_ONE_CHEAT_SHEETS
     + BATCH_TWO_CHEAT_SHEETS
@@ -68,6 +82,7 @@ ALL_CHEAT_SHEETS = (
     + BATCH_FIVE_CHEAT_SHEETS
     + BATCH_SIX_CHEAT_SHEETS
     + BATCH_SEVEN_CHEAT_SHEETS
+    + BATCH_EIGHT_NEW_CHEAT_SHEETS
 )
 
 
@@ -128,7 +143,7 @@ def test_public_pages_have_required_front_matter() -> None:
 def test_role_banks_have_stable_complete_batches() -> None:
     for prefix, path in ROLE_BANKS.items():
         content = read(path)
-        for batch in (1, 2, 3, 4, 5, 6, 7):
+        for batch in (1, 2, 3, 4, 5, 6, 7, 8):
             ids = re.findall(
                 rf"^### ({prefix}-B{batch}-\d{{2}}) — ",
                 content,
@@ -137,10 +152,10 @@ def test_role_banks_have_stable_complete_batches() -> None:
             expected = [f"{prefix}-B{batch}-{index:02d}" for index in range(1, 21)]
             assert ids == expected
             assert len(ids) == len(set(ids)) == 20
-        assert content.count("**Strong answer signals**") == 140
-        assert content.count("**Follow-up probe:**") == 140
-        assert content.count("**Revision links:**") == 140
-        assert "question_count: 140" in content
+        assert content.count("**Strong answer signals**") == 160
+        assert content.count("**Follow-up probe:**") == 160
+        assert content.count("**Revision links:**") == 160
+        assert "question_count: 160" in content
 
 
 def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
@@ -182,6 +197,8 @@ def test_hub_links_every_interview_artifact() -> None:
         "/interview-prep/cheat-sheets/experimentation-causal-inference/",
         "/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/",
         "/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/",
+        "/interview-prep/cheat-sheets/time-series-forecasting/",
+        "/interview-prep/cheat-sheets/recommendation-search-ranking/",
         "/interview-prep/roles/agentic-ai-engineer/",
         "/interview-prep/roles/data-science-technical-lead/",
         "/interview-prep/roles/senior-data-scientist/",

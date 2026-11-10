@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.6.0"
+version: "1.7.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "One hundred forty guided questions for Data Science Technical Lead interviews."
-summary: "Practise AI and data leadership across mathematical review, causal strategy, experimentation platforms, data and feature governance, clustering, anomaly operating models, security, delivery, and product decisions."
+description: "One hundred sixty guided questions for Data Science Technical Lead interviews."
+summary: "Practise AI and data leadership across experimentation standards, feature governance, forecasting strategy, recommendation products, operating models, risk, delivery, and business decisions."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–7 · 140 guided questions"
+kicker_secondary: "Batches 1–8 · 160 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 140
+question_count: 160
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 140 questions across Batches 1–7 · **Status:** Batches 1–7 approved
+**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
 
 ## Problem framing
 
@@ -2057,6 +2057,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** What must be reconciled before declaring the incident resolved?
 
 **Revision links:** [Unsupervised learning and anomaly detection]({{ '/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/' | relative_url }})
+
+## Experimentation and causal inference — advanced practice
+
+### DSTL-B8-01 — Define the minimum experimentation standard for all AI product teams.
+
+**Round:** Experiment governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require decision, population, treatment, unit, estimand, primary metric, guardrails, MDE/power, duration, stopping rule, assignment/exposure and accountable owner before launch.
+- Standardize immutable configuration, A/A and SRM checks, design-consistent analysis, multiplicity policy, reproducible result records and safety stop paths.
+- Tier review by user/business impact, train teams through templates and examples, and audit whether shipped decisions created durable value rather than counting experiments.
+
+**Follow-up probe:** Which controls remain mandatory for a low-risk experiment with little traffic?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B8-02 — Establish a multiple-testing and sequential-monitoring policy.
+
+**Round:** Statistical leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Classify one primary outcome, guardrails, confirmatory families and exploratory diagnostics; choose family-wise, false-discovery, hierarchical or confirmation rules from decision cost.
+- Permit continuous safety monitoring while requiring supported sequential inference or predeclared looks for efficacy; prohibit optional stopping with ordinary fixed-horizon p-values.
+- Encode policy in the platform, simulate error/power trade-offs, require transparent reporting of all variants/segments and retain an independent confirmation path.
+
+**Follow-up probe:** When is false-discovery-rate control more appropriate than family-wise error control?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B8-03 — Decide whether an observational study is sufficient for an executive ROI claim.
+
+**Round:** Causal governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Demand a precise policy contrast, population, horizon and outcome plus a causal graph covering selection, opportunity, prior performance, management and post-treatment behavior.
+- Review identification, overlap, balance, missing outcomes, negative/placebo controls and sensitivity; make residual unmeasured-confounding and external-validity limits visible.
+- Prefer randomized encouragement, phased rollout or natural experiment when feasible, and label estimates as directional rather than realized causal ROI when assumptions are weak.
+
+**Follow-up probe:** What evidence would justify delaying the executive claim for a stronger design?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B8-04 — Govern heterogeneous-effect models used to target treatment.
+
+**Round:** Decision-science leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require randomized or credibly identified data, overlap, honest sample splitting, sufficient support and a targeting decision with capacity, fairness and safety constraints.
+- Compare treat-all, treat-none, simple segments and uplift models using out-of-sample policy value, uncertainty and sensitivity rather than response-model accuracy.
+- Confirm discovered segments prospectively, version the policy and threshold, monitor distribution and treatment allocation, and prevent self-reinforcing exclusion.
+
+**Follow-up probe:** Who owns the risk when an estimated low-benefit group receives less service?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+### DSTL-B8-05 — Select a causal design for a shared-capacity marketplace change.
+
+**Round:** Causal strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define buyer, seller, transaction and ecosystem estimands; map inventory, competition, queue and geographic spillovers that invalidate simple user assignment.
+- Compare cluster, geo, switchback, saturation and staged designs by contamination, effective sample, carryover, operational risk and representativeness.
+- Measure welfare on both sides, concentration, safety, cost and long-term equilibrium; require staged ramp, washout and sensitivity before scaling.
+
+**Follow-up probe:** Why can a treatment assigned only to buyers change control sellers' outcomes?
+
+**Revision links:** [Experimentation and causal inference]({{ '/interview-prep/cheat-sheets/experimentation-causal-inference/' | relative_url }})
+
+## Feature engineering and ML data validation
+
+### DSTL-B8-06 — Create an organization-wide feature ownership and change policy.
+
+**Round:** ML governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Assign source, semantic, pipeline and consuming-model owners; define entity/time, unit, default, privacy, retention, freshness, allowed use and deprecation in a versioned contract.
+- Map consumers and require compatibility, point-in-time, parity and downstream acceptance tests with canary/dual computation for high-risk changes.
+- Monitor quality and cost, support rollback/backfill/deletion propagation, and retire unused features rather than growing an unowned registry.
+
+**Follow-up probe:** Which semantic change requires a new feature version even when name and type remain unchanged?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B8-07 — Design a label strategy for delayed and selectively observed outcomes.
+
+**Round:** Applied-science strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Map label source, maturation, censoring, policy-created missingness, adjudication, disagreement, revisions and the action's false-error costs.
+- Maintain a randomly sampled independent gold set, combine weak supervision or active learning with provenance, and preserve exploration/holdouts where ethical.
+- Define feedback SLAs, delayed-outcome monitoring and evaluation-selection corrections; prevent current interventions from defining all future “ground truth.”
+
+**Follow-up probe:** How can a successful fraud block remove the label needed to learn whether the transaction was truly fraudulent?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B8-08 — Build a reusable ML data-validation standard without hiding domain rules.
+
+**Round:** Data platform leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Provide shared schema, uniqueness, freshness, distribution, lineage, point-in-time and parity primitives while keeping domain semantics and thresholds owned by the producing/consuming teams.
+- Define block, quarantine, warn and scoped-exception behavior with expiry, evidence and recovery; never silently learn a new baseline from failing production data.
+- Integrate checks at ingestion, transformation, training and serving, measure false alarms and incidents caught, and version rules with datasets and models.
+
+**Follow-up probe:** Which data failure should block publication even if the model's aggregate score still passes?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B8-09 — Lead a feature-store decision and adoption roadmap.
+
+**Round:** Build-versus-buy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Quantify reuse, online latency, point-in-time, parity, governance, backfill and duplicated-pipeline pain before treating a feature store as the solution.
+- Compare warehouse/shared-library/managed/self-hosted options across semantics, migration, ownership, scale, availability, cost, lock-in, deletion and disaster recovery.
+- Pilot one valuable cross-team feature family, publish adoption and correctness metrics, preserve an exit path, and require teams to own meaning despite platform support.
+
+**Follow-up probe:** What evidence would show the platform adds complexity without reducing training-serving skew?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+### DSTL-B8-10 — Set an operating response for feature and label drift.
+
+**Round:** Production governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate schema/source defects, seasonality, population/policy shifts, label-definition change and target-concept drift with source and outcome evidence by slice.
+- Define owners, severity, containment, fallback, repair, recalibration, retraining and risk-acceptance decisions; do not make drift score an automatic retraining trigger.
+- Retain incident lineage, validate recovery and measure whether changed thresholds/models improved downstream outcomes without hiding affected groups.
+
+**Follow-up probe:** When should the team freeze retraining even though feature drift is large?
+
+**Revision links:** [Feature engineering and ML data validation]({{ '/interview-prep/cheat-sheets/data-preparation-eda-feature-engineering/' | relative_url }})
+
+## Time series and forecasting
+
+### DSTL-B8-11 — Define a forecasting strategy across hundreds of heterogeneous series.
+
+**Round:** Forecasting leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Segment series by volume, intermittency, history, hierarchy, decision value and lead time; define common origins, horizons, information sets and business loss.
+- Establish seasonal-naive and domain baselines, then compare local statistical, global ML/deep and foundation models with portfolio-aware backtests.
+- Choose tiered models and fallbacks from value, uncertainty, latency, maintainability and data support rather than forcing one model family everywhere.
+
+**Follow-up probe:** Which series should remain on a simple baseline even if a global model wins on average?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### DSTL-B8-12 — Decide whether to adopt a time-series foundation model.
+
+**Round:** Model strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Compare with seasonal-naive, ETS/ARIMA, boosting and existing global models on representative origins, horizons, intermittent/shifted slices and probabilistic calibration.
+- Evaluate context/horizon limits, covariates, adaptation, latency, memory, throughput, license, privacy, observability, reproducibility and vendor/model lifecycle.
+- Run a bounded benchmark with stop criteria, total cost and rollback; adopt only where incremental forecast value justifies operational complexity.
+
+**Follow-up probe:** What result would favor a classical model despite lower average accuracy?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### DSTL-B8-13 — Govern hierarchical and probabilistic forecasts used for planning.
+
+**Round:** Decision governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define hierarchy, aggregation constraints, decision levels, quantiles/scenarios, asymmetric costs and which totals must reconcile.
+- Compare bottom-up, top-down and reconciliation methods with coherent uncertainty, horizon/segment coverage and downstream optimization value.
+- Assign override authority, record versions and assumptions, monitor bias/coverage and reconcile actual decisions rather than accepting mathematically coherent but unusable forecasts.
+
+**Follow-up probe:** Why can separately calibrated intervals become incoherent after hierarchy reconciliation?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### DSTL-B8-14 — Measure forecast value rather than only forecast error.
+
+**Round:** Product and business metrics · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Link horizon/series error and uncertainty to inventory, capacity, service, waste, margin or regret through an explicit decision baseline.
+- Track forecast value add against naive and prior process, adoption/overrides, constraint feasibility and realized outcomes with attribution limits.
+- Prevent metric gaming through weighted slice reporting, guardrails and a holdout or phased decision test when forecast improvements do not guarantee operational benefit.
+
+**Follow-up probe:** How can lower RMSE increase inventory cost?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+### DSTL-B8-15 — Lead a forecasting incident during a structural break.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Protect decisions with baseline/manual/scenario fallbacks, establish exact data/model/calendar/override versions and bound affected series, horizons and business exposure.
+- Distinguish corrupted pipeline, stockout censoring, one-time shock and persistent regime change using source, residual, bias and external-event evidence.
+- Recover through corrected inputs or shadow challenger, communicate uncertainty, reconcile decisions and add break detection, runbooks and later effectiveness checks.
+
+**Follow-up probe:** What must be reconciled after the model recovers but planners already acted on bad forecasts?
+
+**Revision links:** [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }})
+
+## Recommendation, search, and ranking
+
+### DSTL-B8-16 — Define the objective and architecture for a recommendation product.
+
+**Round:** Product system design · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define user decision, candidate universe, eligibility/safety, exposure, short- and long-term value, business constraints, feedback window and failure cost.
+- Compare popularity/content/collaborative baselines with candidate-generation, ranking and policy re-ranking stages under latency, freshness, scale and explainability.
+- Create a metric tree spanning product outcome, retrieval/ranking quality, coverage/diversity/fairness, service reliability, cost and responsible exploration.
+
+**Follow-up probe:** Which objective prevents optimizing clicks at the expense of long-term user value?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### DSTL-B8-17 — Set evidence gates from offline ranking metrics to online launch.
+
+**Round:** Evaluation governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require time/user-aware evaluation, candidate recall, ranking metrics and slice diagnostics with exact data/policy identity and exposure-bias limitations.
+- Gate on relevance plus coverage, diversity, novelty, calibration, safety, fairness, latency, availability and cost; compare current and simple baselines.
+- Use guarded online experiments for causal product impact, staged ramp and long-term holdouts where feedback loops or novelty can hide harm.
+
+**Follow-up probe:** Which offline result is necessary but insufficient before an online ranking test?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### DSTL-B8-18 — Govern popularity bias, fairness, and feedback loops.
+
+**Round:** Responsible recommendation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Map who receives exposure and benefit, historical policy bias, cold-start/long-tail effects and protected or contractual constraints at user, creator and item levels.
+- Combine calibrated relevance with diversity/coverage constraints and bounded exploration; log propensities and audit outcomes rather than forcing demographic parity blindly.
+- Monitor concentration, opportunity, complaints, safety and long-term retention, assign risk ownership and test policy changes prospectively.
+
+**Follow-up probe:** How can optimizing only historical clicks make the long tail permanently invisible?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### DSTL-B8-19 — Make a build-versus-buy decision for search and ranking infrastructure.
+
+**Round:** Technical strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define catalog/index scale, query volume, latency, freshness, filters, personalization, multilingual relevance, experimentation, tenancy, security and availability needs.
+- Compare managed search/vector/ranking services and custom stacks across relevance control, integrations, operations, skills, migration, lock-in, total cost and provider failure.
+- Benchmark representative queries and failure modes, preserve an interface/data export path, and assign lifecycle, evaluation and incident ownership.
+
+**Follow-up probe:** Which requirement can justify custom ranking while retaining a managed retrieval layer?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+### DSTL-B8-20 — Lead a ranking incident that harms conversion and seller exposure.
+
+**Round:** Incident leadership · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop or narrow the release, establish exact candidate/model/feature/policy identities, bound user/seller impact and preserve exposure, ordering and action evidence.
+- Separate service latency/availability, inventory/filter, candidate recall, model, re-ranking and telemetry failures with segment and marketplace analysis.
+- Reconcile missed/incorrect exposure, communicate knowns and uncertainty, restore safely and add end-to-end gates, concentration monitors, rollback and post-incident effectiveness checks.
+
+**Follow-up probe:** Why must recovery verify both user conversion and seller exposure distribution?
+
+**Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
 
 ## Completion evidence
 

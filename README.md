@@ -44,6 +44,11 @@ experimentation and causal inference, data preparation and feature
 engineering, and unsupervised/anomaly guides. Each role bank now contains
 140 guided questions while preserving all earlier IDs.
 
+Approved Batch 8 expands the experimentation and feature/data-validation
+guides and adds time-series forecasting plus recommendation/search/ranking
+guides. Each role bank now contains 160 guided questions while preserving all
+earlier IDs.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than
