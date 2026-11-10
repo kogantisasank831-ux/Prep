@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "review"
-version: "0.1.0"
+status: "approved"
+version: "1.0.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 6 source:** This review candidate integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 6 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
 
 **Target roles:** AI Engineer, Agentic AI Engineer, ML Engineer, AI Security Engineer, Senior Data Scientist, AI/Data Science Lead  
 **Use:** security design, threat modeling, red-team, governance, responsible-AI, architecture, and leadership rounds  

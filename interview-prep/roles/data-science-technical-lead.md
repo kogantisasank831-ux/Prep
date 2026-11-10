@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.5.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–5 approved · Batch 6 review candidate
+**Bank size:** 120 questions across Batches 1–6 · **Status:** Batches 1–6 approved
 
 ## Problem framing
 
