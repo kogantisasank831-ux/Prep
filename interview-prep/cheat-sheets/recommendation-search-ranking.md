@@ -1,7 +1,7 @@
 ---
 layout: "week"
-status: "review"
-version: "0.1.0"
+status: "approved"
+version: "1.0.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
 back_label: "Interview prep"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 8 source:** This review candidate integrates the prepared `28_Recommendation_Search_Ranking_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page integrates the prepared `28_Recommendation_Search_Ranking_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
 
 **Target roles:** Data Scientist, Lead Data Scientist, Applied Scientist, ML Engineer, AI/Search Engineer  
 **Use:** recommender-system, personalized-search, learning-to-rank, ML-system-design, product, and leadership interviews  

@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.1.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 8 source:** This review candidate updates the prepared `26_Feature_Engineering_Data_Validation_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page updates the prepared `26_Feature_Engineering_Data_Validation_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
 
 **Target roles:** Data Scientist, Lead Data Scientist, ML Engineer, AI Engineer, Applied Scientist  
 **Use:** modeling, data-quality, leakage, feature-store, ML-system-design, debugging, and leadership interviews  

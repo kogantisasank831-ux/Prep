@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.1.0"
 last_reviewed: "2026-11-10"
 header_context: "Interview preparation"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 8 source:** This review candidate updates the prepared `25_Experimentation_Causal_Inference_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page updates the prepared `25_Experimentation_Causal_Inference_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
 
 **Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, Product Data Scientist, ML/AI Engineer  
 **Use:** statistics, product experimentation, causal-inference, modeling-case, system-design, and leadership interviews  

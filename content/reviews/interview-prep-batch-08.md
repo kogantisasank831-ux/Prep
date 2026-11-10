@@ -1,11 +1,11 @@
 # Interview preparation Batch 8 review record
 
-## Review state
+## Approval
 
-- Decision: candidate prepared for repository-owner review on 2026-11-10.
-- Candidate scope: expanded experimentation/causal-inference and feature/data-validation guides, new time-series/forecasting and recommendation/search/ranking guides, plus twenty new questions per role bank.
-- Publication state: not yet approved; Batch 8 pages and expanded banks use `status: review`.
-- Merge gate: explicit human approval plus content, navigation, regression, and PostgreSQL/pgvector integration checks.
+- Decision: approved for merge and publication on 2026-11-10.
+- Approved scope: expanded experimentation/causal-inference and feature/data-validation guides, new time-series/forecasting and recommendation/search/ranking guides, plus twenty new questions per role bank.
+- Authority: explicit repository-owner approval in the Batch 8 review conversation.
+- Merge gate: the approval state must pass the content, navigation, regression, and PostgreSQL/pgvector integration jobs.
 
 ## Documentation set
 
@@ -23,11 +23,11 @@
 - `27_Time_Series_Forecasting_Interview_Cheat_Sheet.md`;
 - `28_Recommendation_Search_Ranking_Interview_Cheat_Sheet.md`.
 
-The candidate pages preserve each prepared instructional body apart from removing its duplicate top-level heading and adding Jekyll metadata plus a Batch 8 source note. The first two sources replace the earlier approved bodies at their existing stable permalinks; time series and recommendation add new permalinks.
+The approved pages preserve each prepared instructional body apart from removing its duplicate top-level heading and adding Jekyll metadata plus a Batch 8 source note. The first two sources replace the earlier approved bodies at their existing stable permalinks; time series and recommendation add new permalinks.
 
 ## Role-bank extension
 
-| Role | Approved Batches 1–7 | New Batch 8 candidate | Candidate total |
+| Role | Approved Batches 1–7 | Approved Batch 8 | Approved total |
 | --- | ---: | ---: | ---: |
 | Agentic AI Engineer | 140 | 20 | 160 |
 | Data Science Technical Lead | 140 | 20 | 160 |
@@ -41,9 +41,9 @@ The same four topic blocks change depth by role: platform implementation and fai
 - each role adds exactly `B8-01` through `B8-20` with unique IDs;
 - every new question has three strong-answer signals, one follow-up probe, and direct revision links;
 - all four guide bodies retain their rapid-revision sections and exact prepared instructional content;
-- Batch 1–7 pages not updated by this candidate remain approved, while the two updated guides, two new guides, expanded role banks, and navigation remain review candidates;
+- all Batch 8 public pages, expanded role banks, and navigation use `status: approved`;
 - unique permalinks, complete hub links, Markdown structure, linting, tests, and repository integration checks are merge gates.
 
 ## Evidence boundary and handoff
 
-Automated checks establish source fidelity and repository consistency, not interview-market completeness, psychometric calibration, reader comprehension, causal validity for a particular business, forecast or recommendation fitness for a specific production system, or legal conclusions. The questions are guided practice prompts rather than authenticated exams. A cold-reader exercise remains future evidence. Human review is required before approval, merge, and publication.
+Automated checks establish source fidelity and repository consistency, not interview-market completeness, psychometric calibration, reader comprehension, causal validity for a particular business, forecast or recommendation fitness for a specific production system, or legal conclusions. The questions are guided practice prompts rather than authenticated exams. A cold-reader exercise remains future evidence. Post-merge publication verification remains required.
