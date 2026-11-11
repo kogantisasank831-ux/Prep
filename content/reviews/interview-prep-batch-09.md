@@ -1,11 +1,11 @@
 # Interview preparation Batch 9 review record
 
-## Review state
+## Approval
 
-- Decision: final planned candidate prepared for repository-owner review on 2026-11-11.
-- Candidate scope: the canonical sheets numbered 29–32—expanded mathematical foundations/optimization, unsupervised learning/dimensionality reduction, anomaly detection/rare-event modeling, and explainability/fairness/uncertainty/model governance—plus twenty new questions per role bank.
-- Publication state: not yet approved; Batch 9 pages and expanded banks use `status: review`.
-- Merge gate: explicit human approval plus content, navigation, regression, and PostgreSQL/pgvector integration checks.
+- Decision: approved for merge and publication on 2026-11-11.
+- Approved scope: the canonical sheets numbered 29–32—expanded mathematical foundations/optimization, unsupervised learning/dimensionality reduction, anomaly detection/rare-event modeling, and explainability/fairness/uncertainty/model governance—plus twenty new questions per role bank.
+- Authority: explicit repository-owner approval in the Batch 9 review conversation.
+- Merge gate: the approval state must pass the content, navigation, regression, and PostgreSQL/pgvector integration checks.
 
 ## Documentation set
 
@@ -29,7 +29,7 @@ The Jekyll wrappers remove only the source H1, add repository metadata and navig
 
 ## Role-bank extension
 
-| Role | Approved Batches 1–8 | New Batch 9 candidate | Candidate total |
+| Role | Approved Batches 1–8 | Approved Batch 9 | Approved total |
 | --- | ---: | ---: | ---: |
 | Agentic AI Engineer | 160 | 20 | 180 |
 | Data Science Technical Lead | 160 | 20 | 180 |
@@ -42,11 +42,11 @@ The same four topic blocks change depth by role: safe implementation and operati
 - Batch 1–8 IDs and question content remain present, ordered, and byte-for-byte unchanged;
 - each role adds exactly `B9-01` through `B9-20` with unique IDs;
 - every new question has three strong-answer signals, one follow-up probe, and direct revision links;
-- every candidate guide preserves its canonical body and rapid-revision contract;
+- every approved guide preserves its canonical body and rapid-revision contract;
 - the existing combined unsupervised/anomaly guide remains approved and unchanged so earlier links stay stable;
-- existing pages remain approved while Batch 9 guides, expanded role banks, and navigation remain review candidates;
+- all Batch 9 guides, expanded role banks, and navigation use `status: approved`;
 - unique permalinks, complete hub links, Markdown structure, Python snippets, linting, tests, and repository integration checks are merge gates.
 
 ## Evidence boundary and handoff
 
-Automated checks establish source fidelity, structure, preserved prior content, examples, links, and repository consistency—not interview-market completeness, psychometric calibration, reader comprehension, legal acceptance, fairness for a particular decision, or production fitness of any method. The questions are guided practice prompts rather than authenticated exams. Human review is required before approval, merge, and publication.
+Automated checks establish source fidelity, structure, preserved prior content, examples, links, and repository consistency—not interview-market completeness, psychometric calibration, reader comprehension, legal acceptance, fairness for a particular decision, or production fitness of any method. The questions are guided practice prompts rather than authenticated exams. Post-merge publication verification remains required.

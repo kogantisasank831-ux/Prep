@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "1.8.0"
 last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
@@ -25,7 +25,7 @@ current_label: "Interview prep hub"
 | [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML/LLM and optimization decisions, unsupervised and rare-event products, uncertainty, fairness and governance |
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, mathematical derivation, unsupervised and rare-event modeling, calibration, fairness, monitoring and impact |
 
-Each role bank now contains 180 guided questions across Batches 1–9, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 9 is the final planned review candidate; Batches 1–8 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 180 guided questions across Batches 1–9, with strong-answer signals, a deeper follow-up probe, and direct revision links. All nine planned batches are approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -134,6 +134,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Review final Batch 9 for mathematical correctness, unsupervised-model assumptions, rare-event evaluation, explanation limits, calibration and uncertainty, fairness trade-offs, governance evidence, role calibration, and interview usefulness.
+All nine planned interview-preparation batches are approved. Future changes should follow the same source, role-calibration, regression, approval, and publication gates.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

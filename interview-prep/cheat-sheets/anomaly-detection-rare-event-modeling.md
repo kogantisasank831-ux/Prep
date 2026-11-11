@@ -1,6 +1,6 @@
 ---
 layout: "week"
-status: "review"
+status: "approved"
 version: "0.1.0"
 last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 9 source-backed scope:** This review candidate publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
+> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
 
 **Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, ML Engineer, AI Engineer  
 **Use:** fraud, equipment monitoring, cybersecurity, quality, observability, risk, and imbalanced-classification interviews  
