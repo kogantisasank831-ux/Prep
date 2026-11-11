@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.7.0"
-last_reviewed: "2026-11-10"
+version: "1.8.0"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -21,11 +21,11 @@ current_label: "Interview prep hub"
 
 | Role bank | Best for | Current coverage |
 | --- | --- | --- |
-| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, embeddings, ingestion, RAG architecture, evaluation, security, reliability and incidents |
-| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML and LLM decisions, retrieval and RAG leadership, governance, security and operating models |
-| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, ML, embeddings, retrieval experiments, RAG evaluation, monitoring and business impact |
+| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, numerical reliability, unsupervised and rare-event systems, model assurance, security and incidents |
+| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML/LLM and optimization decisions, unsupervised and rare-event products, uncertainty, fairness and governance |
+| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, mathematical derivation, unsupervised and rare-event modeling, calibration, fairness, monitoring and impact |
 
-Each role bank now contains 160 guided questions across Batches 1–8, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batches 1–8 are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+Each role bank now contains 180 guided questions across Batches 1–9, with strong-answer signals, a deeper follow-up probe, and direct revision links. All nine planned batches are approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
 ## Batch 1 cheat sheets
 
@@ -99,6 +99,15 @@ Each role bank now contains 160 guided questions across Batches 1–8, with stro
 | [Time series and forecasting]({{ '/interview-prep/cheat-sheets/time-series-forecasting/' | relative_url }}) | Forecasting contracts, baselines, statistical/ML/global models, rolling-origin evaluation, metrics, uncertainty, hierarchy and production |
 | [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }}) | Candidate generation, ranking, feedback and exposure, collaborative/two-tower models, metrics, counterfactual evaluation, cold start and reliability |
 
+## Batch 9 cheat sheets
+
+| Revision sheet | Use it for |
+| --- | --- |
+| [Linear algebra, calculus, and optimization — expanded]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }}) | Shapes and conditioning, eigen/SVD/PCA, derivatives and autodiff, optimizers, curvature, constraints, regularization and numerical stability |
+| [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }}) | Representation and distance, k-means, mixtures and EM, hierarchical/density/graph clustering, PCA, t-SNE/UMAP, stability and production |
+| [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }}) | Detection contracts, robust and learned methods, change points, imbalance, calibration, rare-event metrics, thresholds, backtests and alert operations |
+| [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }}) | Global/local explanations, uncertainty, calibration, conformal coverage, fairness harms and metrics, mitigation, evidence and release gates |
+
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
 ## Interview answer standard
@@ -125,6 +134,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Batch 8 is approved. One final planned batch remains.
+All nine planned interview-preparation batches are approved. Future changes should follow the same source, role-calibration, regression, approval, and publication gates.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.7.0"
-last_reviewed: "2026-11-10"
+version: "1.8.0"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Data Science Technical Lead foundation interview bank"
-description: "One hundred sixty guided questions for Data Science Technical Lead interviews."
-summary: "Practise AI and data leadership across experimentation standards, feature governance, forecasting strategy, recommendation products, operating models, risk, delivery, and business decisions."
+description: "One hundred eighty guided questions for Data Science Technical Lead interviews."
+summary: "Practise AI and data leadership across mathematical and optimization standards, unsupervised and rare-event products, uncertainty, fairness, governance, delivery, and business decisions."
 permalink: "/interview-prep/roles/data-science-technical-lead/"
 kicker_primary: "Data Science Technical Lead"
-kicker_secondary: "Batches 1–8 · 160 guided questions"
+kicker_secondary: "Batches 1–9 · 180 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 160
+question_count: 180
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
+**Bank size:** 180 questions across Batches 1–9 · **Status:** Batches 1–9 approved
 
 ## Problem framing
 
@@ -2345,6 +2345,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Why must recovery verify both user conversion and seller exposure distribution?
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+## Linear algebra, calculus, and optimization
+
+### DSTL-B9-01 — Establish mathematical and numerical review standards for production ML teams.
+
+**Round:** Technical standards · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require explicit tensor shapes, units, objective/loss, constraints, dtypes and tolerances plus stable implementations for exponentials, logarithms, norms and linear solves.
+- Gate releases with invariant, gradient, conditioning, perturbation and non-finite tests on representative extremes, and assign owners for model and runtime assumptions.
+- Scale review depth by impact and novelty, keep reusable reference implementations, and track incidents caused by shape, precision, optimization or solver failures.
+
+**Follow-up probe:** Which numerical checks belong in every pipeline, and which should be risk-based?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B9-02 — Review a constrained scheduling proposal before it becomes an operational decision service.
+
+**Round:** Optimization architecture · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Validate decision variables, units, objective hierarchy, hard versus soft constraints, planning horizon and data availability with operators; establish a feasible baseline.
+- Choose LP/MILP/constraint or heuristic methods from structure and latency, and require status, incumbent, gap, violations, sensitivity/scenario and deterministic fallback evidence.
+- Define ownership for business-rule changes, solver/runtime versions, acceptance tests, overrides, audit, rollback and post-decision outcome monitoring.
+
+**Follow-up probe:** How would you detect that the optimization objective is improving while the real operational outcome worsens?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B9-03 — Lead an incident after distributed training starts diverging only at the larger rollout scale.
+
+**Round:** Training incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Contain spend and preserve checkpoints/configuration; compare effective batch, learning-rate schedule, optimizer/scaler state, reduction semantics, data order and hardware/runtime changes with the last good run.
+- Use loss, gradient/update norms, overflow/non-finite counters and small deterministic reproductions to separate optimization, data, communication and precision causes.
+- Roll back or repair one factor at a time, define resume equivalence, and add scale-specific warmup, precision, checkpoint and divergence gates before re-expansion.
+
+**Follow-up probe:** Why can keeping the same nominal learning rate still change optimization when global batch and update frequency change?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B9-04 — Decide whether a team should adopt a second-order optimizer for an expensive model.
+
+**Round:** Optimization strategy · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Start from the actual bottleneck and baseline: iterations, wall time, memory, conditioning, stochastic noise, quality and reproducibility—not theoretical convergence alone.
+- Compare first-order tuning, preconditioning or approximate curvature with second-order cost, Hessian/vector-product support, damping, distributed communication and failure behavior.
+- Approve a bounded benchmark with equal data/compute and quality gates, instrument curvature/step acceptance, and retain a simpler fallback if operational complexity lacks measured value.
+
+**Follow-up probe:** Why may Newton-style curvature information be less useful with noisy mini-batch objectives?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### DSTL-B9-05 — Govern a shared feature transform built from a changing low-rank basis.
+
+**Round:** Mathematical governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define the fitted population, scaling, rank-selection objective, sign/order conventions and downstream contracts; version the mean, basis, singular values and transform code together.
+- Require reconstruction, retained-variance, perturbation and downstream-utility evidence across important slices plus compatibility analysis for consumers of old coordinates.
+- Publish atomically with lineage and rollback, treat basis refresh as a model change, and monitor drift, conditioning and consumer impact rather than only matrix dimensions.
+
+**Follow-up probe:** Why can two valid PCA fits expose different coordinate signs without representing different subspaces?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+## Unsupervised learning and dimensionality reduction
+
+### DSTL-B9-06 — Set organization-wide standards for representation, distance, and clustering claims.
+
+**Round:** Unsupervised standards · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require a decision/user, unit of analysis, feature availability, preprocessing and geometry rationale; prohibit treating algorithmic clusters as discovered truth without validation.
+- Compare simple baselines and algorithms under multiple seeds/windows using stability, internal geometry, external evidence and downstream decision utility.
+- Document excluded populations, naming/interpretation limits, ownership, refresh triggers and failure/appeal paths when segments affect users or operations.
+
+**Follow-up probe:** When is a supervised model for a defined action preferable to discovering customer clusters?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### DSTL-B9-07 — Approve a segmentation product when different algorithms produce different but plausible clusters.
+
+**Round:** Unsupervised evidence · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Re-anchor on the intervention and success metric, then compare clusterability, stability, interpretability, coverage and incremental downstream value against no-segmentation and rule baselines.
+- Use resampling, time/site holdouts and sensitivity to scaling, distance and cluster count; inspect small groups and prevent post-hoc naming from replacing evidence.
+- Select the simplest stable solution that changes a decision beneficially, or stop the project if none survives the acceptance criteria.
+
+**Follow-up probe:** Why is the highest silhouette score not sufficient to choose the production segmentation?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### DSTL-B9-08 — Decide how dimensionality reduction may be used in a regulated modeling workflow.
+
+**Round:** Representation governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Separate exploratory visualization, compression and predictive preprocessing; require training-only fitting, versioned transforms and an interpretable mapping to governed source features.
+- Evaluate retained information, stability, reconstruction and downstream performance/fairness by slice, while recognizing that t-SNE/UMAP plots do not establish clusters or causality.
+- Define audit, explanation and compatibility requirements, preserve the original features where needed, and require re-review when the fitted population or basis changes.
+
+**Follow-up probe:** What governance risk appears when explanations are expressed only in latent components?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### DSTL-B9-09 — Build a cross-team platform for clustering experiments without standardizing on one algorithm.
+
+**Round:** ML platform strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Standardize data snapshots, transforms, metrics, seed/repeat protocol, lineage, artifact schemas and report templates while keeping algorithm choice problem-dependent.
+- Provide scalable k-means/mixture/hierarchical/density baselines, stability and downstream-utility evaluation, cluster alignment/versioning, and safe publication/rollback.
+- Track adoption, reproducibility, review time and real decision impact; avoid a platform that optimizes only experiment count or internal scores.
+
+**Follow-up probe:** Which artifact is necessary to reproduce a historical cluster assignment after three retrains?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### DSTL-B9-10 — Lead a response when a segment refresh changes half the customer labels overnight.
+
+**Round:** Unsupervised incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Pause downstream actions, preserve both snapshots, and compare population window, schema, preprocessing, distance, seeds, cluster count and alignment logic with the prior release.
+- Quantify membership churn, split/merge structure and business-policy impact; determine whether semantics changed, labels permuted or the population genuinely shifted.
+- Roll back or stage a mapped migration, notify consumers and affected process owners, and add stability, compatibility and downstream-impact gates plus refresh runbooks.
+
+**Follow-up probe:** How would you distinguish label permutation from a substantive change in cluster membership?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+## Anomaly detection and rare-event modeling
+
+### DSTL-B9-11 — Choose between robust rules, classical detectors, and deep models for a new rare-event program.
+
+**Round:** Detection strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define the event, action, detection horizon, prevalence, label process, false-positive/miss costs, capacity and data structure before choosing a method.
+- Establish robust statistical/rule baselines, then justify isolation, density, supervised or representation models only through incremental event-level value and operational fit.
+- Plan leakage-safe temporal/entity backtests, label maturation, shadow deployment, threshold ownership, monitoring and fallback before funding complexity.
+
+**Follow-up probe:** What evidence would justify an autoencoder over a seasonal residual rule?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### DSTL-B9-12 — Design a label and review strategy when only flagged cases receive investigation.
+
+**Round:** Rare-event data strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Map exposure, alert, review, outcome and maturity states, preserve propensities and reasons, and distinguish unknown from confirmed negative.
+- Reserve random or risk-stratified exploration/audits to estimate missed events, budget expert adjudication, and measure reviewer agreement and turnaround.
+- Govern retraining/evaluation for selection bias, delayed labels and policy changes, with transparent limitations and safety constraints on exploration.
+
+**Follow-up probe:** Why can improving precision on reviewed alerts make the detector's unseen recall impossible to estimate?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### DSTL-B9-13 — Decide whether an operational problem needs point anomalies, change-point detection, or forecasting residuals.
+
+**Round:** Detection framing · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Match the signal to the action: isolated deviations, persistent regime shifts, or deviations from expected seasonal/contextual behavior; define event aggregation and reset semantics.
+- Compare simple baselines under representative late/missing data using event recall, false alarms, detection delay and operational duration rather than sample accuracy alone.
+- Make ownership and response playbooks type-specific so a sustained shift does not generate endless duplicate point alerts.
+
+**Follow-up probe:** When could a forecasting residual detector hide a real regime change by adapting too quickly?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### DSTL-B9-14 — Approve thresholds for multiple regions with different prevalence and investigation capacity.
+
+**Round:** Threshold governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Make costs, capacity, SLA, group/region policy and minimum safety constraints explicit; separate score model, calibration and decision threshold ownership.
+- Use out-of-time event-level PR, recall-at-capacity, delay, calibration and uncertainty with minimum-support rules rather than equalizing a metric automatically.
+- Stage and monitor alert volume/yield and missed-event audits, record accountable trade-offs, and re-review when prevalence, score scale, capacity or policy changes.
+
+**Follow-up probe:** When are region-specific thresholds appropriate, and when could they encode an unacceptable policy difference?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### DSTL-B9-15 — Lead an incident where alerts triple after a new data source is onboarded.
+
+**Round:** Detection incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Contain alert routing and inspect schema, units, timing, missingness, entity mix, baseline contamination, score/calibrator/threshold and deduplication changes with preserved evidence.
+- Quantify affected operations and true yield from sampled review, compare a shadow baseline, and separate genuine risk increase from data or policy failure.
+- Roll back or quarantine the source, manage the queue and stakeholder communication, then add source acceptance, volume/yield and replay gates before re-entry.
+
+**Follow-up probe:** What sample would you review first to distinguish real new events from a unit-conversion error?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+## Explainability, fairness, uncertainty, and model governance
+
+### DSTL-B9-16 — Select explanation methods for developers, validators, operators, and affected users.
+
+**Round:** Explanation strategy · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Start with each audience's question and decision, then choose global behavior, local attribution, counterfactual/reason-code or debugging evidence with explicit non-causal limits.
+- Require fidelity, stability, sensitivity, correlation and privacy tests plus plain-language review; compare post-hoc methods with intrinsically interpretable alternatives where impact is high.
+- Define who may see what, version the explanation context, and provide human review/appeal rather than presenting an attribution as a complete justification.
+
+**Follow-up probe:** Why can one explanation artifact be inappropriate for both a model developer and an affected applicant?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### DSTL-B9-17 — Choose fairness metrics for a capacity-constrained review system.
+
+**Round:** Fairness decision · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Identify affected people, harms, eligibility and intervention; map errors, selection and delay to the decision rather than selecting a familiar parity metric first.
+- Compare selection, error, calibration and utility by meaningful groups/intersections with denominators and uncertainty, acknowledging incompatible goals under differing base rates.
+- Make a documented policy trade-off with legal/domain review, capacity and safety constraints, then monitor outcomes, overrides and appeals instead of optimizing a dashboard gap alone.
+
+**Follow-up probe:** Why might equal selection rates be harmful when need or eligibility differs across groups?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### DSTL-B9-18 — Govern calibration, uncertainty, conformal prediction, and abstention for a high-impact model.
+
+**Round:** Uncertainty governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Define which uncertainty affects which action, separate epistemic/data/operational uncertainty, and require calibrated probabilities or intervals on deployment-like data.
+- Validate reliability, Brier/log loss, coverage/set size and selective risk by time and relevant groups; state exchangeability and other assumptions without turning marginal coverage into individual certainty.
+- Align abstention with review capacity, user communication and fallback, and trigger revalidation on population, label, threshold or model changes.
+
+**Follow-up probe:** What business harm occurs if abstention grows during drift but human review capacity stays fixed?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### DSTL-B9-19 — Establish a lifecycle model-assurance and release process across teams.
+
+**Round:** Model governance · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Create a risk-tiered evidence chain linking intended use, data/model/runtime identity, performance/slices, explanation limits, uncertainty, fairness harms, security/privacy and accountable approvals.
+- Define machine-verifiable artifacts and human decisions, independent review for high impact, exception ownership, monitoring/appeal/rollback and re-review triggers.
+- Measure control effectiveness through prevented escapes, evidence freshness, time to decision and incident/appeal outcomes rather than document completion alone.
+
+**Follow-up probe:** Which change types should automatically invalidate an earlier approval?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### DSTL-B9-20 — Respond when a fairness mitigation improves parity but worsens calibration and business utility.
+
+**Round:** Responsible-ML trade-off · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Pause broad rollout, verify data, denominators, confidence intervals and affected-user outcomes, and restate the harm and decision constraints rather than treating parity as the only objective.
+- Compare alternatives such as data/label repair, model or threshold changes, process redesign and human review across error, calibration, utility, capacity and group impacts.
+- Make and record an accountable cross-functional decision with residual risks, staged monitoring and appeal/rollback; do not hide the trade-off behind one aggregate score.
+
+**Follow-up probe:** When would preserving calibration be more important than closing a selection-rate gap?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
 
 ## Completion evidence
 

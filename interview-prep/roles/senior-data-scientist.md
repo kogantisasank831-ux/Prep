@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.7.0"
-last_reviewed: "2026-11-10"
+version: "1.8.0"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Senior Data Scientist foundation interview bank"
-description: "One hundred sixty guided questions for Senior Data Scientist interviews."
-summary: "Practise causal estimators, trustworthy experiments, point-in-time feature validation, forecasting and uncertainty, recommendation and ranking models, production evidence, and business impact."
+description: "One hundred eighty guided questions for Senior Data Scientist interviews."
+summary: "Practise mathematical derivation, trustworthy unsupervised and rare-event modeling, explanation, calibration, uncertainty, fairness evidence, production validation, and business impact."
 permalink: "/interview-prep/roles/senior-data-scientist/"
 kicker_primary: "Senior Data Scientist"
-kicker_secondary: "Batches 1–8 · 160 guided questions"
+kicker_secondary: "Batches 1–9 · 180 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 160
+question_count: 180
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
+**Bank size:** 180 questions across Batches 1–9 · **Status:** Batches 1–9 approved
 
 ## SQL and data
 
@@ -2341,6 +2341,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Why can a short-term click reward make a bandit converge to a harmful policy?
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+## Linear algebra, calculus, and optimization
+
+### SDS-B9-01 — Diagnose a nearly singular least-squares problem using rank, singular values, and conditioning.
+
+**Round:** Linear algebra · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use the SVD to expose numerical rank and the ratio of largest to smallest retained singular value; relate small singular directions to coefficient sensitivity and collinearity.
+- Avoid explicit inversion of the normal equations, compare QR/SVD solutions and justified regularization or truncation, and standardize features when scale drives conditioning.
+- Evaluate predictive stability under perturbation and resampling, not coefficient magnitude alone, and report which directions are unsupported by the data.
+
+**Follow-up probe:** Why does forming \(X^TX\) make the condition number problem worse?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B9-02 — Derive PCA from both covariance eigenvectors and the SVD, then choose the retained dimension.
+
+**Round:** Matrix methods · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Center \(X\), show that right singular vectors of \(X=U\Sigma V^T\) are eigenvectors of \(X^TX\), and connect \(\Sigma^2/(n-1)\) to explained variance.
+- State how scaling, rank, repeated eigenvalues and sign indeterminacy affect interpretation; fit every transform on training data only.
+- Choose dimension using reconstruction error, retained variance, stability and downstream utility on held-out data rather than a universal variance threshold.
+
+**Follow-up probe:** What changes when PCA is performed on a correlation matrix instead of a covariance matrix?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B9-03 — Validate a backpropagation derivation for a custom composite loss.
+
+**Round:** Calculus and autodiff · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Write the computation graph with shapes, apply the chain rule using vector-Jacobian products, and identify reduction factors, broadcasting and parameter-sharing contributions.
+- Compare analytic/autodiff gradients with central finite differences and random directional derivatives in double precision away from kinks or saturation.
+- Investigate absolute and relative error by parameter, then test non-finite, extreme and batch-size cases instead of accepting one scalar check.
+
+**Follow-up probe:** Why is a directional-derivative check often cheaper than constructing a full numerical Jacobian?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B9-04 — Explain what the Hessian reveals about convexity, curvature, and optimization difficulty.
+
+**Round:** Optimization theory · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Relate positive semidefiniteness to local convexity, eigenvalues to curvature directions, and zero/negative directions to flats or saddles while distinguishing local from global conclusions.
+- Connect poor conditioning to elongated contours and slow first-order progress, and explain damping, preconditioning and Hessian-vector approximations.
+- Note the compute/memory and stochastic-noise limits of full second-order methods in large models and validate claims with trajectories rather than theory alone.
+
+**Follow-up probe:** Can a stationary point with an indefinite Hessian be a local minimum?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### SDS-B9-05 — Separate numerical, optimization, and generalization failures in an over-parameterized model.
+
+**Round:** Model diagnosis · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use non-finite/overflow and precision checks for numerical failure, training loss plus gradient/update norms for optimization, and train-validation gaps or shift slices for generalization.
+- Run controlled interventions on dtype/loss stability, learning rate/batch/optimizer and regularization/data while holding seeds and evaluation constant.
+- Compare simple baselines and multiple runs, inspect calibration and robustness, and avoid prescribing more regularization for a run that never optimized successfully.
+
+**Follow-up probe:** How could lowering the learning rate mask but not fix a numerical overflow problem?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+## Unsupervised learning and dimensionality reduction
+
+### SDS-B9-06 — Evaluate a clustering solution when silhouette and downstream business results disagree.
+
+**Round:** Cluster evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain that silhouette measures cohesion/separation under the chosen geometry, not semantic truth or intervention value, and can favor compact convex structure.
+- Check stability across seeds/resamples/time, alternative distances and cluster counts plus size/coverage and any external labels, then evaluate the actual downstream action.
+- Prefer the solution that is stable, interpretable and useful under uncertainty—or reject clustering—rather than optimizing one internal metric.
+
+**Follow-up probe:** Why can a high-dimensional distance concentration make silhouette differences hard to interpret?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### SDS-B9-07 — Derive the EM updates for a Gaussian mixture and diagnose component collapse.
+
+**Round:** Probabilistic clustering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Describe the E-step responsibilities from Bayes' rule and the M-step weighted updates for mixture weights, means and covariances as coordinate ascent on a likelihood lower bound.
+- Identify local optima, label switching and singular covariance as key failure modes; use multiple starts, covariance constraints/regularization and minimum component support.
+- Compare held-out likelihood, BIC/AIC cautiously, stability and downstream utility, and retain soft responsibilities when hard labels discard meaningful uncertainty.
+
+**Follow-up probe:** Why is monotonic training likelihood not proof that EM found a useful or global solution?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### SDS-B9-08 — Compare hierarchical clustering, DBSCAN/HDBSCAN, and spectral clustering for non-convex structure.
+
+**Round:** Unsupervised model selection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Relate hierarchical results to distance/linkage and dendrogram cuts, density methods to neighborhood scale/minimum support and noise, and spectral methods to graph affinity/eigenstructure.
+- Discuss scaling, varying density, high-dimensional distance, computational complexity and out-of-sample assignment rather than choosing from visual shape alone.
+- Evaluate parameter sensitivity, bootstrap/time stability and downstream utility on the intended population, with clear treatment of noise and tiny clusters.
+
+**Follow-up probe:** Why can single-link hierarchical clustering and DBSCAN both show chaining behavior?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### SDS-B9-09 — Interpret t-SNE and UMAP plots without claiming unsupported clusters or global distances.
+
+**Round:** Representation analysis · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain the methods' neighborhood-focused objectives and dependence on preprocessing, metric, parameters, initialization and random seed; local appearance is not a probability model.
+- Repeat across seeds/settings, compare with PCA and quantitative neighborhood/stability measures, and overlay labels only after fitting to avoid circular discovery.
+- Avoid reading island size, spacing or axes as faithful global geometry, and validate any hypothesis in original space and independent data.
+
+**Follow-up probe:** Why can t-SNE produce apparently separated islands from a continuous manifold?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### SDS-B9-10 — Test whether a low-dimensional representation preserves the information needed by a downstream model.
+
+**Round:** Dimensionality-reduction evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Fit transforms within training folds and compare no-reduction, PCA or other candidates under equal downstream tuning using untouched temporal/group holdouts.
+- Measure reconstruction or neighborhood preservation where relevant plus predictive performance, calibration, latency, memory and stability across slices/seeds.
+- Inspect whether low-variance or nonlinear directions carry target information, quantify uncertainty, and choose dimension by the end task rather than visualization quality.
+
+**Follow-up probe:** How can a component explaining little total variance still be highly predictive?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+## Anomaly detection and rare-event modeling
+
+### SDS-B9-11 — Design a robust modified-z-score detector and state its failure modes.
+
+**Round:** Robust statistics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Center with the median and scale with MAD using the consistency factor, define the reference window and threshold, and handle zero MAD, ties, missingness and seasonality explicitly.
+- Explain robustness to a bounded fraction of contamination but weakness for contextual, collective, multivariate and drifting behavior or multimodal baselines.
+- Backtest event-level precision/recall, delay and alert volume across time/entities, then compare with simple seasonal and domain-rule baselines.
+
+**Follow-up probe:** What would you do when MAD is zero because most reference values are identical?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### SDS-B9-12 — Compare Isolation Forest and Local Outlier Factor for sparse anomalous regions.
+
+**Round:** Classical anomaly methods · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain isolation path length as global partition-based rarity versus LOF's local-density ratio, including sensitivity to scale, neighborhoods, dimensionality and contamination.
+- Distinguish outlier detection on the fitted sample from novelty scoring of new points and use time/entity-safe fitting and hyperparameter selection.
+- Evaluate at the operational threshold with scarce-label PR, recall-at-capacity, stability and slice diagnostics, including synthetic injection only as a bounded sensitivity test.
+
+**Follow-up probe:** When might LOF flag a boundary point that Isolation Forest considers ordinary?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### SDS-B9-13 — Distinguish point anomalies, collective anomalies, and change points in a seasonal series.
+
+**Round:** Time-series detection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define isolated residual extremes, anomalous subsequences and persistent distribution/parameter changes with an explicit seasonal/contextual baseline.
+- Use rolling-origin evaluation with event windows, detection delay, duplicate suppression and late/missing-data rules; prevent the baseline from learning future or active incidents.
+- Compare residual thresholds, sequence statistics and change-point methods, and align reset/adaptation speed with the responder's action.
+
+**Follow-up probe:** How can an adaptive baseline absorb a slowly developing fault and reduce detectability?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### SDS-B9-14 — Evaluate a rare-event classifier when ROC-AUC is high but prevalence is one in ten thousand.
+
+**Round:** Rare-event evaluation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Explain that many negatives can keep false-positive rate small while producing overwhelming false alerts; use precision-recall and confusion counts at deployment thresholds.
+- Report recall/precision at review capacity, event detection/delay, calibration and expected cost with uncertainty across time, entities and important groups.
+- Preserve natural prevalence in validation, keep resampling confined to training, and examine label maturity and selective review before trusting estimates.
+
+**Follow-up probe:** Given fixed TPR and FPR, how does falling prevalence change precision?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### SDS-B9-15 — Select an anomaly threshold using costs, capacity, and delayed labels.
+
+**Round:** Detection decisions · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define miss and investigation costs, event aggregation, review capacity and SLA, then compare thresholds or top-k policies on out-of-time backtests at natural prevalence.
+- Use mature labels and censor incomplete windows, quantify uncertainty/sensitivity, and check calibration and performance by entity/time/group without overfitting many thresholds.
+- Validate in shadow mode, monitor alert yield/volume and missed-event audits after maturation, and reselect when score distribution, prevalence or capacity changes.
+
+**Follow-up probe:** Why can maximizing F1 choose an operating point that is infeasible for the review team?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+## Explainability, fairness, uncertainty, and model governance
+
+### SDS-B9-16 — Compare permutation importance, PDP/ICE/ALE, and SHAP-style attribution with correlated features.
+
+**Round:** Explainability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Separate global predictive reliance, average/local response curves and local contribution questions; no method turns association into causal effect.
+- Explain that marginal permutation/PDP can create unrealistic combinations and that correlated features can share or substitute importance; ALE or grouped/conditional analyses may reduce specific problems.
+- Validate fidelity, stability and sensitivity across reference/background choices and slices, and disclose model/output scale and correlation limitations.
+
+**Follow-up probe:** Why can two equally predictive correlated features each appear unimportant under permutation?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### SDS-B9-17 — Evaluate and repair probability calibration across groups and time.
+
+**Round:** Calibration · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Use reliability diagrams with denominators plus Brier/log loss and calibration slope/intercept; explain ECE's binning dependence and the distinction between calibration and discrimination.
+- Fit Platt, isotonic or other calibration only on separate representative data, compare out-of-time performance and avoid unstable group-specific calibrators with little support.
+- Report uncertainty and subgroup/time evidence, then monitor after prevalence or policy shifts while keeping score, calibrator and threshold versions separate.
+
+**Follow-up probe:** Can a model be perfectly calibrated yet have no useful discrimination?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### SDS-B9-18 — Explain conformal prediction guarantees and test whether they apply to deployment.
+
+**Round:** Predictive uncertainty · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Construct nonconformity scores and a held-out calibration quantile, state the exchangeability assumption, and distinguish finite-sample marginal coverage from conditional or individual coverage.
+- Evaluate empirical coverage and interval/set size overall, over time and by meaningful groups, with careful split/cross-conformal choices and no calibration leakage.
+- Diagnose covariate/concept shift and consider weighted/local approaches only with justified assumptions; abstain or revalidate rather than repeating a stale guarantee.
+
+**Follow-up probe:** Why can 90% marginal coverage coexist with much lower coverage for a small subgroup?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### SDS-B9-19 — Analyze demographic parity, equalized odds, and predictive parity when base rates differ.
+
+**Round:** Fairness statistics · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define each metric relative to selection, error conditional on outcome, or outcome conditional on prediction, and tie it to a concrete harm and decision process.
+- Explain that differing base rates and imperfect prediction make several parity/calibration goals generally incompatible, so metric choice is a policy trade-off rather than a purely technical optimum.
+- Report counts, confidence intervals, intersectional/time slices and data/label bias; compare process and model mitigations with utility, calibration and residual-harm evidence.
+
+**Follow-up probe:** Under unequal base rates, why can equalized odds conflict with equal positive predictive value?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### SDS-B9-20 — Separate predictive explanation, counterfactual recourse, and causal intervention.
+
+**Round:** Explanation and decisions · **Depth:** Leadership
+
+**Strong answer signals**
+
+- State that attribution explains model behavior under a reference, counterfactuals search for model-output changes under constraints, and causal effects require an identified intervention model.
+- Enforce feasibility, actionability, immutability and downstream constraints; test robustness to model/reference changes and avoid recommending proxy or impossible feature changes.
+- Validate recourse cost and availability by group with uncertainty, human/domain review and appeal, and describe limitations plainly to affected users.
+
+**Follow-up probe:** Why can changing a feature in the model input fail to produce the claimed real-world outcome?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
 
 ## Completion evidence
 

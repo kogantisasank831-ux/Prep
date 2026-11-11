@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.7.0"
-last_reviewed: "2026-11-10"
+version: "1.8.0"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,15 +10,15 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
-description: "One hundred sixty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production AI and agents alongside experiment platforms, causal telemetry, feature contracts, forecasting services, recommendation and ranking systems, security, reliability, and leadership."
+description: "One hundred eighty guided questions for AI and Agentic AI engineering interviews."
+summary: "Practise production AI and agents alongside numerical and optimization reliability, unsupervised systems, rare-event operations, model assurance, security, monitoring, and incident leadership."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
-kicker_secondary: "Batches 1–8 · 160 guided questions"
+kicker_secondary: "Batches 1–9 · 180 guided questions"
 current_label: "Role bank"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
-question_count: 160
+question_count: 180
 ---
 ## How to use this bank
 
@@ -32,7 +32,7 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 4. Open only the revision sheet needed for the gap.
 5. Repeat the answer in 45 seconds, then record one concrete project example.
 
-**Bank size:** 160 questions across Batches 1–8 · **Status:** Batches 1–8 approved
+**Bank size:** 180 questions across Batches 1–9 · **Status:** Batches 1–9 approved
 
 ## Python and service engineering
 
@@ -2343,6 +2343,294 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 **Follow-up probe:** Which online failure could lower conversion even if the served ordering matches the offline model?
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
+
+## Linear algebra, calculus, and optimization
+
+### AIE-B9-01 — Implement a numerically stable softmax endpoint and prove it matches the model contract.
+
+**Round:** Numerical reliability · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Subtract the row maximum before exponentiation, preserve the intended axis and shape, use an appropriate accumulation dtype, and reject or handle non-finite inputs explicitly.
+- Compare against a trusted implementation across extreme logits, batched and singleton shapes, mixed precision, empty/invalid cases, and verify probabilities are finite, non-negative, and sum to one within tolerance.
+- Version preprocessing, model, runtime and postprocessing together; monitor non-finite values and distribution shifts and fail safely instead of returning plausible corrupted scores.
+
+**Follow-up probe:** Why does subtracting the maximum preserve the probabilities while preventing overflow?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B9-02 — Add a custom differentiable operation to a training pipeline and validate its backward pass.
+
+**Round:** Automatic differentiation · **Depth:** Advanced
+
+**Strong answer signals**
+
+- State input/output shapes and dtypes, derive the local Jacobian-vector product, preserve only required forward state, and define behavior at non-differentiable or invalid points.
+- Run central-difference gradient checks in double precision on small, non-saturated inputs and compare directional derivatives rather than relying only on a falling training loss.
+- Test broadcasting, batching, device and mixed-precision behavior; add finite-gradient checks and isolate the release behind reproducible seeds and rollback.
+
+**Follow-up probe:** Why can finite-difference checks fail near a kink even when the implementation is correct?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B9-03 — Build an optimization service that distinguishes infeasible, unbounded, timed-out, and feasible solutions.
+
+**Round:** Constrained optimization · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Validate units, domains, bounds and constraint dimensions before solving; assign immutable model/data/solver identities and make the objective and feasibility tolerances explicit.
+- Return typed statuses with incumbent, bound/gap, violations, runtime and diagnostics; never convert an absent or partial solution into an empty valid plan.
+- Test known feasible/infeasible/unbounded fixtures, enforce time and memory limits, preserve solver evidence, and use an approved fallback or human review when guarantees are not met.
+
+**Follow-up probe:** When may a timed-out incumbent be operationally usable, and what evidence must accompany it?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B9-04 — Migrate a training job from Adam to AdamW while increasing global batch size.
+
+**Round:** Training optimization · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Treat optimizer, decoupled weight decay, excluded parameters, learning-rate schedule, warmup, gradient accumulation and effective batch as one versioned experiment contract.
+- Match tokens/examples and update counts, log gradient and update norms plus loss/validation trajectories, and compare controlled candidates rather than changing batch, optimizer and regularization without attribution.
+- Add non-finite and divergence stops, checkpoint optimizer/scheduler/scaler state, test resume equivalence, and promote only after quality, stability, throughput and memory gates pass.
+
+**Follow-up probe:** Why is an L2 penalty inside Adam not generally equivalent to AdamW weight decay?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+### AIE-B9-05 — Diagnose a linear-system feature transform that became unstable after new correlated inputs arrived.
+
+**Round:** Linear algebra incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Reproduce the exact matrix and scaling path, inspect rank, singular values and condition number, and separate data duplication/collinearity from dtype or solver changes.
+- Avoid explicit matrix inversion; compare stable factorizations or SVD/pseudoinverse with justified truncation or regularization and measure downstream sensitivity.
+- Roll back or quarantine the change, version the feature basis and tolerance, and add conditioning, finite-output and perturbation tests plus drift alerts.
+
+**Follow-up probe:** Why can a system have a mathematically unique solution yet still be unreliable in floating-point arithmetic?
+
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
+
+## Unsupervised learning and dimensionality reduction
+
+### AIE-B9-06 — Build a clustering pipeline whose distance geometry is identical offline and online.
+
+**Round:** Unsupervised data engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define the unit, feature snapshot, missing-value policy, scaling, encoding and distance/similarity contract; fit all learned transforms only on the training/reference population.
+- Package transform, feature order, metric and cluster model under one artifact identity, test online/offline parity, and reject schema or unit mismatches.
+- Monitor representation drift, assignment confidence, cluster size/stability and downstream utility, with a deterministic fallback for unseen or invalid inputs.
+
+**Follow-up probe:** Why can one unscaled high-variance feature dominate Euclidean k-means even if it is not useful?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-07 — Publish customer-segment labels without breaking downstream consumers when clusters are retrained.
+
+**Round:** Cluster lifecycle · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Treat cluster numbers as arbitrary; align candidate clusters to prior semantic segments using overlap/centroid/assignment evidence and route ambiguous splits or merges to review.
+- Version population window, transforms, model, mapping and business label; publish atomically and preserve the previous mapping for rollback and historical reproducibility.
+- Contract-test segment values and eligibility, monitor membership churn and outcome utility, and require downstream owners to accept material definition changes.
+
+**Follow-up probe:** Why is sorting new centroids and reusing the old numeric IDs unsafe?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-08 — Operationalize a Gaussian-mixture model whose EM training sometimes collapses a component.
+
+**Round:** Probabilistic clustering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Standardize inputs, use multiple seeded initializations and covariance regularization, bound iterations/tolerance, and detect tiny weights, singular covariance and non-finite likelihood.
+- Select a candidate using held-out likelihood, stability and downstream usefulness rather than accepting the highest training likelihood from one run.
+- Store responsibilities as calibrated soft assignments where appropriate, version component alignment, and fall back or retrain when convergence diagnostics fail.
+
+**Follow-up probe:** How can a Gaussian component drive likelihood upward by collapsing around very few observations?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-09 — Serve a density-based clustering result to new observations.
+
+**Round:** Density clustering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Clarify that standard DBSCAN produces fitted clusters/noise but does not define a universal prediction rule; choose a documented approximation, refit cadence or HDBSCAN-style prediction capability.
+- Persist scaling, metric, neighborhood parameters, reference points and cluster identities; bound nearest-neighbor search and define low-confidence/noise behavior explicitly.
+- Test boundary, sparse and shifted regions, measure assignment stability and downstream utility, and avoid presenting forced assignments as discovered ground truth.
+
+**Follow-up probe:** What is lost when every new point is assigned to the nearest existing cluster regardless of density?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-10 — Create an embedding-analysis tool that uses PCA and UMAP without turning a visualization into a production model.
+
+**Round:** Dimensionality-reduction tooling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Fit scaling and PCA on a declared reference set, persist components/means and explained variance, then treat UMAP parameters and random seed as visualization metadata rather than causal evidence.
+- Separate transformable production representations from exploratory two-dimensional views; test reconstruction/neighborhood preservation and label overlays only after the embedding is fixed.
+- Warn users that distances and apparent clusters can change across seeds/settings, preserve source IDs and versions, and prohibit decisions based solely on the plot.
+
+**Follow-up probe:** Why does a visually separated UMAP island not prove a real, stable population segment?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+## Anomaly detection and rare-event modeling
+
+### AIE-B9-11 — Implement a robust statistical anomaly baseline before adding a learned detector.
+
+**Round:** Detection baseline · **Depth:** Applied
+
+**Strong answer signals**
+
+- Define entity, signal, context, window, event-time availability and anomaly action; compute median/MAD or seasonal residual thresholds on an uncontaminated reference window.
+- Handle zero dispersion, missing/late values, repeated alerts and cold start explicitly; version baseline window, transformations and threshold policy.
+- Backtest event-level precision/recall, detection delay and alerts per period, then use the simple baseline as a shadow comparator for any complex model.
+
+**Follow-up probe:** Why is a mean-and-standard-deviation rule fragile under heavy tails and contaminated history?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-12 — Design an event-time pipeline that separates point anomalies from change points.
+
+**Round:** Streaming detection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define event time, watermark/late-data policy and state per entity; use point scores for isolated deviations and a separate persistent-regime detector with reset/cooldown semantics.
+- Make updates idempotent and replayable, checkpoint detector state, prevent future observations entering historical baselines, and bound state and recovery time.
+- Evaluate detection delay, duplicate/missed events and alert duration under late/out-of-order fixtures, then expose the anomaly type and supporting window to responders.
+
+**Follow-up probe:** Why can repeatedly flagging every sample after a mean shift be worse than emitting one change-point event?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-13 — Train a supervised rare-event service with delayed and selectively reviewed labels.
+
+**Round:** Rare-event ML platform · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Split by time/entity before resampling, define label maturity and availability, preserve exposure/review propensity, and prevent future outcomes or investigation features leaking backward.
+- Apply weights or sampling only within training, calibrate on a deployment-like untouched set, and evaluate PR curves, recall at alert capacity, calibration and subgroup/time slices.
+- Log scores, thresholds, eligibility, review decisions and mature outcomes; monitor selection effects and maintain shadow/random audits to estimate blind spots.
+
+**Follow-up probe:** How can training only on investigated alerts create a self-reinforcing blind spot?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-14 — Implement thresholds for a detector with a fixed daily investigation budget.
+
+**Round:** Alert decision engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Convert capacity, event cost, miss cost and response SLA into an explicit policy such as top-k or calibrated risk threshold, with deterministic tie and overload behavior.
+- Tune on out-of-time data using event-level precision/recall, delay and alerts per entity/period; test thresholds by segment while guarding minimum evidence and fairness constraints.
+- Version score, calibration and policy separately, monitor queue saturation and realized yield after labels mature, and provide fallback/prioritization when volume spikes.
+
+**Follow-up probe:** Why can a fixed score threshold violate the same review budget after prevalence or score scale changes?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-15 — Recover from an anomaly release that floods responders while offline ROC-AUC remains high.
+
+**Round:** Detection incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop or narrow routing, preserve requests and versions, and compare prevalence, score distribution, threshold/calibrator, entity mix, deduplication and queue behavior with the last good release.
+- Recompute precision-recall, alert yield, repeat-alert rate and capacity at the deployed operating point; inspect data/schema/seasonality shift and label delay rather than relying on ROC-AUC.
+- Roll back model or policy atomically, drain/deduplicate safely, communicate impact, and add alert-budget, event-level and shadow-baseline release gates.
+
+**Follow-up probe:** Why can ROC-AUC stay impressive while almost every alert sent to investigators is false?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+## Explainability, fairness, uncertainty, and model governance
+
+### AIE-B9-16 — Design a versioned explanation service for tabular predictions.
+
+**Round:** Model-assurance platform · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind prediction, raw/transformed features, preprocessing, model, output scale, explainer, reference data and parameters to one immutable request identity.
+- Return schema-validated attributions with local fidelity/additivity and stability diagnostics, privacy-safe feature labels, and explicit non-causal limitations.
+- Cache only on the full identity, enforce access/retention, monitor failures and drift, and fall back to approved reason codes or human review rather than fabricate an explanation.
+
+**Follow-up probe:** Why can changing the SHAP background dataset change the meaning of the same prediction's attribution?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### AIE-B9-17 — Implement subgroup assurance metrics without exposing sensitive attributes to unauthorized consumers.
+
+**Round:** Fairness telemetry · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Keep protected evaluation data outside serving features, enforce purpose-limited access, and compute approved aggregates in a restricted boundary.
+- Emit denominators, performance/error/calibration/selection measures and uncertainty by time/intersection with minimum-support and privacy rules.
+- Version group definitions, label maturity, threshold/policy and metric code; alert accountable owners without leaking row-level membership and retain auditable decisions.
+
+**Follow-up probe:** Why is removing a protected column from model inputs insufficient to rule out proxy effects?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### AIE-B9-18 — Add calibration, conformal uncertainty, and abstention to a high-impact classifier API.
+
+**Round:** Uncertainty engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Fit calibration and conformal quantiles on separate exchangeable validation/calibration data, pin all artifacts, and report reliability, coverage and set size by time and important groups.
+- Define abstention from supported uncertainty/OOD/operational signals with coverage-risk targets, review capacity, user communication and deterministic fallback.
+- Monitor prevalence, calibration and coverage after labels mature, detect assumption-breaking drift, and avoid describing marginal conformal coverage as a guarantee for every subgroup or individual.
+
+**Follow-up probe:** What happens to conformal coverage claims when the deployment distribution shifts materially?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### AIE-B9-19 — Build a release gate for model cards and model-assurance evidence.
+
+**Round:** Governance automation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require immutable data/model/runtime identities, intended and excluded use, baseline, metrics/slices/uncertainty, explanation limits, fairness-harm decisions and unresolved risks with owners.
+- Verify privacy/security, robustness, threshold/abstention, human oversight, appeal, rollback and monitoring evidence through machine-checkable manifests where possible.
+- Block promotion when required evidence or approval is missing, preserve the failed candidate, and trigger re-review on data, policy, population, interface or dependency changes.
+
+**Follow-up probe:** Which parts of a governance gate must remain accountable human decisions even when evidence collection is automated?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### AIE-B9-20 — Diagnose a fairness dashboard whose group gaps changed overnight with no model release.
+
+**Round:** Model-assurance incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Freeze decisions and verify metric code, group mapping, join grain, threshold/policy, label maturity, eligibility/exposure and data/backfill versions before interpreting harm.
+- Recompute denominators, confusion rates and calibration from known-good snapshots; separate telemetry or population shift from real decision/outcome change and quantify affected users.
+- Correct or roll back instrumentation or policy, notify responsible owners, preserve audit evidence, and add schema, mapping, late-label and minimum-support regression gates.
+
+**Follow-up probe:** How can a label backfill move equalized-odds metrics without changing any historical prediction?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
 
 ## Completion evidence
 

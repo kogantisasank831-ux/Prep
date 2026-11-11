@@ -49,6 +49,11 @@ guides and adds time-series forecasting plus recommendation/search/ranking
 guides. Each role bank now contains 160 guided questions while preserving all
 earlier IDs.
 
+Approved Batch 9 is the final planned content batch. It source-backs an expanded
+linear-algebra/calculus/optimization guide and adds separate unsupervised and
+dimensionality-reduction, anomaly and rare-event, and model-assurance guides.
+It adds 20 role-specific questions per bank, bringing each approved bank to 180.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than
