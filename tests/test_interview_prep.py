@@ -79,14 +79,14 @@ BATCH_NINE_UPDATED_CHEAT_SHEETS = (
 )
 
 BATCH_NINE_NEW_CHEAT_SHEETS = (
-    ROOT / "interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction.md",
+    ROOT
+    / "interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction.md",
     ROOT / "interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling.md",
-    ROOT / "interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance.md",
+    ROOT
+    / "interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance.md",
 )
 
-BATCH_NINE_CHEAT_SHEETS = (
-    BATCH_NINE_UPDATED_CHEAT_SHEETS + BATCH_NINE_NEW_CHEAT_SHEETS
-)
+BATCH_NINE_CHEAT_SHEETS = BATCH_NINE_UPDATED_CHEAT_SHEETS + BATCH_NINE_NEW_CHEAT_SHEETS
 
 ALL_CHEAT_SHEETS = (
     BATCH_ONE_CHEAT_SHEETS
