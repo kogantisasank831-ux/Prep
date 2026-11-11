@@ -1,4 +1,4 @@
-"""Build deterministic candidate assessment banks for Weeks 21–24.
+"""Build deterministic candidate assessment banks for Weeks 21–28.
 
 The script prints an apply_patch payload rather than writing repository files.
 Run `python scripts/build_candidate_assessments.py 21 --patch` from the root and
@@ -30,6 +30,12 @@ class WeekConfig:
 
 def _concept(term: str, definition: str, action: str, limitation: str) -> Concept:
     return Concept(term, definition, action, limitation)
+
+
+def _concepts(
+    rows: tuple[tuple[str, str, str, str], ...],
+) -> tuple[Concept, ...]:
+    return tuple(_concept(*row) for row in rows)
 
 
 CONFIGS: dict[int, WeekConfig] = {
@@ -411,6 +417,394 @@ CONFIGS: dict[int, WeekConfig] = {
                 "record claims review gaps and repeat",
                 "automated presence scoring cannot judge communication truth",
             ),
+        ),
+    ),
+    25: WeekConfig(
+        "Training foundations",
+        _concepts(
+            (
+                (
+                    "causal language modelling",
+                    "predicting each next token from only earlier tokens",
+                    "shift inputs and labels by one position",
+                    "lower training loss does not prove useful generation",
+                ),
+                (
+                    "cross-entropy loss",
+                    "mean negative log probability assigned to target tokens",
+                    "exclude padding and report comparable token sets",
+                    "the scalar does not explain category-level failures",
+                ),
+                (
+                    "document split",
+                    "partitioning complete leakage groups before preprocessing",
+                    "keep related documents wholly in train or validation",
+                    "chunk-level random splitting can inflate validation",
+                ),
+                (
+                    "training-only vocabulary",
+                    "token mapping fitted without observing validation text",
+                    "map unseen validation terms through declared unknown behavior",
+                    "fitting on all data leaks held-out distribution information",
+                ),
+                (
+                    "tokenisation",
+                    "mapping text and special markers to stable token identifiers",
+                    "pin and inspect the tokenizer and its revision",
+                    "different token counts invalidate direct run comparisons",
+                ),
+                (
+                    "optimiser",
+                    "stateful rule converting gradients into parameter updates",
+                    "record algorithm moments decay and update count",
+                    "default hyperparameters are not universal evidence",
+                ),
+                (
+                    "learning-rate warm-up",
+                    "gradually increasing early update size",
+                    "advance warm-up on optimiser steps",
+                    "too much warm-up can waste a short run",
+                ),
+                (
+                    "learning-rate decay",
+                    "reducing later update size under a declared schedule",
+                    "log the actual rate at every optimiser step",
+                    "an incorrect step unit silently changes training",
+                ),
+                (
+                    "gradient accumulation",
+                    "combining micro-batch gradients before one update",
+                    "normalise consistently and count global tokens",
+                    "it does not make compute or stochastic behavior identical",
+                ),
+                (
+                    "global token batch",
+                    "tokens contributing to one distributed optimiser update",
+                    "report devices micro-batch sequence length and accumulation",
+                    "example count hides variable sequence lengths",
+                ),
+                (
+                    "mixed precision",
+                    "using lower precision for selected training compute and state",
+                    "monitor finite loss gradients and hardware support",
+                    "FP16 underflow can require loss scaling",
+                ),
+                (
+                    "gradient clipping",
+                    "bounding gradient norm before an optimiser update",
+                    "log unclipped norms and clipped-step frequency",
+                    "constant clipping may hide an unstable configuration",
+                ),
+                (
+                    "validation loss",
+                    "next-token loss on unchanged held-out documents",
+                    "evaluate periodically without updating on validation",
+                    "it is not a downstream task or safety score",
+                ),
+                (
+                    "resumable checkpoint",
+                    "weights plus all state required to continue the next update",
+                    "save optimiser scheduler scaler random and data identities",
+                    "weights alone do not reproduce exact continuation",
+                ),
+                (
+                    "reproducible run",
+                    "a run bound to immutable data code configuration and randomness",
+                    "test an interrupted run against an uninterrupted control",
+                    "a seed cannot compensate for changing inputs",
+                ),
+            )
+        ),
+    ),
+    26: WeekConfig(
+        "Data preparation",
+        _concepts(
+            (
+                (
+                    "licence gate",
+                    "checking permitted training use retention and attribution",
+                    "quarantine documents whose rights are unknown",
+                    "public visibility does not imply training permission",
+                ),
+                (
+                    "source provenance",
+                    "traceable origin snapshot and processing history",
+                    "retain stable IDs hashes and policy decisions",
+                    "a URL alone may change or disappear",
+                ),
+                (
+                    "normalisation",
+                    "consistent text cleanup that preserves intended meaning",
+                    "version Unicode whitespace and boilerplate rules",
+                    "aggressive cleanup can destroy tables and numbers",
+                ),
+                (
+                    "language filtering",
+                    "accepting declared languages under a confidence policy",
+                    "review short and mixed-language uncertainty",
+                    "automatic detectors are probabilistic",
+                ),
+                (
+                    "quality filtering",
+                    "excluding malformed repetitive or unusable records",
+                    "emit rejection reasons and inspect samples",
+                    "one heuristic score is not an objective truth label",
+                ),
+                (
+                    "exact deduplication",
+                    "removing identical normalised content by fingerprint",
+                    "deduplicate across all candidate partitions",
+                    "exact hashes miss small edits and paraphrases",
+                ),
+                (
+                    "near deduplication",
+                    "detecting highly similar documents or passages",
+                    "validate thresholds on domain examples",
+                    "over-aggressive matching can remove distinct facts",
+                ),
+                (
+                    "contamination",
+                    "training exposure to evaluation questions answers or variants",
+                    "compare held-out fingerprints before the final split",
+                    "no match does not prove absence of contamination",
+                ),
+                (
+                    "PII minimisation",
+                    "avoiding collection of unnecessary personal information",
+                    "remove sensitive fields before derived datasets",
+                    "redaction after copying does not erase earlier snapshots",
+                ),
+                (
+                    "PII redaction",
+                    "replacing detected identifiers while preserving safe structure",
+                    "measure detection coverage and deletion propagation",
+                    "email and phone regexes are incomplete",
+                ),
+                (
+                    "source mixing",
+                    "controlling accepted token contribution from each source",
+                    "declare caps or weights and inspect representation",
+                    "large repetitive sources can dominate behavior",
+                ),
+                (
+                    "grouped split",
+                    "keeping related documents in a single partition",
+                    "group by source family entity or time boundary",
+                    "random chunks can leak near copies",
+                ),
+                (
+                    "sequence packing",
+                    "combining short examples into bounded token sequences",
+                    "preserve boundaries masks and attention policy",
+                    "silent truncation can remove answers or delimiters",
+                ),
+                (
+                    "dataset manifest",
+                    "versioned inventory of inputs rules outputs and statistics",
+                    "hash configuration and cleaned records",
+                    "a manifest is not proof of legal approval",
+                ),
+                (
+                    "rejection evidence",
+                    "counts and safe samples explaining excluded records",
+                    "monitor each policy reason across versions",
+                    "silent drops make bias and failures invisible",
+                ),
+            )
+        ),
+    ),
+    27: WeekConfig(
+        "Fine-tuning and LoRA",
+        _concepts(
+            (
+                (
+                    "full fine-tuning",
+                    "updating every trainable weight of the base model",
+                    "measure domain gain retained capability and full memory",
+                    "high flexibility increases compute and forgetting risk",
+                ),
+                (
+                    "parameter-efficient fine-tuning",
+                    "adapting behavior through a small trainable parameter subset",
+                    "store adapter configuration with the base identity",
+                    "fewer trainable weights do not guarantee quality",
+                ),
+                (
+                    "LoRA",
+                    "a low-rank learned update applied to frozen weights",
+                    "train only A and B adapter factors",
+                    "poor targets or rank can underfit the task",
+                ),
+                (
+                    "LoRA rank",
+                    "the dimensional capacity of the low-rank update",
+                    "compare ranks under the same data and evaluation",
+                    "higher rank costs more and is not always better",
+                ),
+                (
+                    "LoRA alpha",
+                    "the numerator controlling adapter update scale",
+                    "report alpha together with rank and effective scale",
+                    "alpha cannot be interpreted without scaling convention",
+                ),
+                (
+                    "target modules",
+                    "base layers selected to receive adapters",
+                    "map names to the exact model architecture",
+                    "copied module defaults can miss important pathways",
+                ),
+                (
+                    "zero-impact initialisation",
+                    "initial adapters that leave base output unchanged",
+                    "start one factor at zero and verify the first forward pass",
+                    "incorrect initialisation can alter the baseline immediately",
+                ),
+                (
+                    "QLoRA",
+                    "training adapters while storing the frozen base quantised",
+                    "declare quantisation format compute and adapter dtypes",
+                    "it is not the same as exporting quantised inference weights",
+                ),
+                (
+                    "quantised base",
+                    "low-bit frozen weights dequantised for supported compute",
+                    "measure real kernel memory quality and throughput",
+                    "weight bytes alone omit activations and optimiser state",
+                ),
+                (
+                    "training stability",
+                    "finite controlled optimisation across the planned run",
+                    "monitor loss gradients learning rate and checkpoints",
+                    "a completed process can still have numerical failure",
+                ),
+                (
+                    "catastrophic forgetting",
+                    "domain adaptation that damages previously useful capability",
+                    "retain general and safety suites beside domain evaluation",
+                    "domain-only scores cannot detect the regression",
+                ),
+                (
+                    "adapter artefact",
+                    "separable learned weights requiring a compatible base",
+                    "version base tokenizer template and adapter together",
+                    "an adapter may fail against a different revision",
+                ),
+                (
+                    "domain baseline",
+                    "unchanged test performance of the base or prompted base",
+                    "freeze cases before training and reuse them fairly",
+                    "training examples are not a held-out baseline",
+                ),
+                (
+                    "early stopping",
+                    "selecting a checkpoint from held-out progress",
+                    "stop after declared non-improvement patience",
+                    "selecting on test data leaks evaluation",
+                ),
+                (
+                    "seed variance",
+                    "performance changes caused by small-data randomness",
+                    "repeat important runs and report dispersion",
+                    "one successful seed can overstate reliability",
+                ),
+            )
+        ),
+    ),
+    28: WeekConfig(
+        "Instruction tuning",
+        _concepts(
+            (
+                (
+                    "instruction-response example",
+                    "a traceable request paired with the intended answer",
+                    "store category source rights and review status",
+                    "fluent synthetic answers can still be wrong",
+                ),
+                (
+                    "behavior specification",
+                    "declared tasks formats refusals and escalation expectations",
+                    "define categories and release metrics before data creation",
+                    "a loose conversation collection can blur the target",
+                ),
+                (
+                    "chat template",
+                    "model-specific rendering of roles and special tokens",
+                    "pin and unit-test the training and inference template",
+                    "wrong or doubled tokens can degrade behavior",
+                ),
+                (
+                    "supervised fine-tuning",
+                    "optimising model outputs against labelled response tokens",
+                    "train on reviewed examples and evaluate unseen groups",
+                    "low training loss can reflect memorisation",
+                ),
+                (
+                    "response-only loss",
+                    "loss applied to assistant answer tokens rather than prompts",
+                    "inspect token labels and masks after truncation",
+                    "a malformed mask can train the wrong role or no tokens",
+                ),
+                (
+                    "padding mask",
+                    "zero attention or loss contribution for padding positions",
+                    "verify alignment for every padded batch",
+                    "padding in loss distorts optimisation and metrics",
+                ),
+                (
+                    "dataset diversity",
+                    "coverage across tasks lengths difficulty outcomes and language",
+                    "measure category balance and inspect tail cases",
+                    "surface rewrites do not create real scenario diversity",
+                ),
+                (
+                    "source-group split",
+                    "partitioning all variants from one source together",
+                    "split before model-dependent preprocessing",
+                    "template variants across partitions leak answers",
+                ),
+                (
+                    "instruction deduplication",
+                    "removing exact and near duplicate request-answer pairs",
+                    "compare normalised pairs before splitting",
+                    "exact matching misses paraphrases",
+                ),
+                (
+                    "response schema",
+                    "machine-checkable structure required from an answer",
+                    "validate training labels with the inference schema",
+                    "valid structure does not prove factual correctness",
+                ),
+                (
+                    "explicit truncation policy",
+                    "declared handling for examples above token limits",
+                    "reject revise or record intentional truncation",
+                    "silent cuts can remove the answer or closing syntax",
+                ),
+                (
+                    "example packing",
+                    "placing multiple bounded examples in one training sequence",
+                    "preserve roles boundaries attention and loss masks",
+                    "cross-example attention may change the task",
+                ),
+                (
+                    "memorisation baseline",
+                    "a lookup showing performance on exact seen instructions",
+                    "compare it with unseen-source validation",
+                    "perfect training recall is not generalisation",
+                ),
+                (
+                    "overfitting",
+                    "training improvement paired with stagnant or worse held-out behavior",
+                    "track task metrics by unseen category and source",
+                    "training loss alone cannot diagnose it",
+                ),
+                (
+                    "inference parity",
+                    "matching template tokenizer schema and stop rules at serving",
+                    "test one sample end to end with the deployed stack",
+                    "train-serve mismatch can erase apparent gains",
+                ),
+            )
         ),
     ),
 }

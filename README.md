@@ -794,3 +794,30 @@ python -m labs.week_22.demo smoke
 python -m labs.week_23.demo smoke
 python -m labs.week_24.demo smoke
 ```
+
+## Weeks 25–28 review candidates
+
+Weeks 25–28 extend the optional LLM training experiment and remain deliberately
+absent from `PUBLISHED_WEEKS` until human approval. Each candidate has production
+and beginner lessons, a bounded deterministic lab, a 100-item assessment bank
+and review evidence:
+
+- Week 25 traces a causal next-token training loop with document splits,
+  training-only vocabulary, scheduled SGD, accumulation and checkpoint digests.
+- Week 26 creates a reproducible data manifest after rights, quality, duplicate,
+  contamination, source-balance and basic PII gates.
+- Week 27 manually trains LoRA factors over a frozen matrix and distinguishes
+  adapter rank/scale from simulated QLoRA base quantisation.
+- Week 28 builds chat-template SFT batches with source-group splits,
+  response-only loss masks and a visible memorisation baseline.
+
+The local Week 25, 27 and 28 labs are inspectable numerical/data surrogates; they
+do not claim to train a useful transformer. Run the candidate gates locally:
+
+```shell
+python -m pytest tests/test_week21_24_assessment.py tests/test_week25_training.py tests/test_week26_data_pipeline.py tests/test_week27_lora.py tests/test_week28_instruction.py -q
+python -m labs.week_25.demo smoke
+python -m labs.week_26.demo smoke
+python -m labs.week_27.demo smoke
+python -m labs.week_28.demo smoke
+```
