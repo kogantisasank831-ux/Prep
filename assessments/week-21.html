@@ -1,0 +1,36 @@
+---
+layout: week
+week: 21
+phase: 5
+status: review
+version: 1.0.0
+last_reviewed: 2026-11-11
+permalink: /assessments/week-21/
+title: "Week 21 assessment"
+description: "A 100-question cost and latency optimisation bank with balanced random papers and executable Python checks."
+summary: "Test baselines, routing, token budgets, quality gates, latency, parallelism, caching and honest optimisation evidence."
+kicker_primary: Week 21 assessment
+kicker_secondary: 10 questions · 100 marks
+current_label: Assessment
+alternate_label: Back to lesson
+alternate_url: /weeks/week-21/
+---
+<link rel="stylesheet" href="{{ '/assessment.css' | relative_url }}">
+<section class="assessment-app" id="assessment-app" data-bank="{{ '/assessments/week-21.json' | relative_url }}" aria-label="Week 21 assessment">
+  <h2 id="paper-guide">Your paper</h2>
+  <p>Each paper draws one foundation and one applied question from each format—single-choice, multiple-correct, matching, short syntax and Python coding. All ten questions are worth 10 marks each.</p>
+  <p>This is a learning check, not a pricing calculator. Practise comparing identical workloads, routing with a quality floor, budgeting required and optional context, separating TTFT from completion latency, limiting parallel work and scoping caches. All economic and performance values in the lesson lab are synthetic.</p>
+  <details class="assessment-guide"><summary>Scoring, coding and saved progress</summary><ul>
+    <li>Single-choice and short answers score 10 or 0. Multiple-correct requires the complete set. Matching awards 2.5 per pair.</li>
+    <li>Coding awards two marks per passed check. Python runs locally in a disposable browser worker with a five-second execution limit after loading.</li>
+    <li>Progress stays in this browser. Public answer keys and downloaded results are practice evidence, not authenticated exam records.</li>
+  </ul></details>
+  <p id="assessment-status" role="status" aria-live="polite">Loading the question bank…</p>
+  <div class="assessment-toolbar" id="assessment-toolbar" hidden><div><strong id="paper-id"></strong><span id="paper-progress"></span></div><div class="assessment-actions"><button type="button" id="new-paper">New random paper</button><button type="button" id="copy-paper">Copy paper link</button><button type="button" id="print-paper">Print questions</button></div></div>
+  <nav class="assessment-jumps" id="question-jumps" aria-label="Question navigation"></nav>
+  <form id="assessment-form" hidden><div id="assessment-questions"></div><div class="assessment-submit"><button type="submit" class="assessment-primary" id="submit-paper">Submit and score paper</button><button type="button" id="stop-code" hidden>Stop coding run</button><p>Submission locks your answers and shows the explanations. Unanswered questions receive zero.</p></div></form>
+  <section class="assessment-result" id="assessment-result" aria-live="polite" hidden></section>
+  <noscript>This assessment needs JavaScript for paper generation and scoring. The lesson remains readable without it.</noscript>
+</section>
+<div id="assessment-print"></div>
+<script type="module" src="{{ '/assessment.mjs' | relative_url }}"></script>

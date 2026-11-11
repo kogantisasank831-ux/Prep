@@ -769,3 +769,28 @@ retries represent safe read-like work, not Week 19's approval-bound writes.
 Required CI adds 64 focused assessment checks, 39 focused reliability checks
 and a 16-check smoke to all existing assessment, lab and PostgreSQL/pgvector
 gates. Lesson and questionnaire navigation both include Week 20.
+
+## Weeks 21–24 review candidates
+
+Weeks 21–24 are prepared as review candidates and are deliberately absent from
+`PUBLISHED_WEEKS` until human approval. Each week has production and beginner
+lessons, a deterministic local lab, a 100-item assessment bank and CI coverage:
+
+- Week 21 compares all-large and routed inference with token, quality, latency,
+  budget, parallelism and tenant-scoped exact-cache contracts.
+- Week 22 uses MCP specification revision `2026-07-28` and Python SDK 2.3.0 to
+  expose one tenant-scoped tool, one static resource and one user prompt.
+- Week 23 supplies six GenAI system-design cases and a transparent twelve-part
+  structural readiness rubric.
+- Week 24 builds 2-minute, 10-minute and deep-dive project stories from one
+  evidence record without changing metric attribution.
+
+Run the candidate gates locally:
+
+```shell
+python -m pytest tests/test_week21_24_assessment.py tests/test_week21_optimization.py tests/test_week22_mcp.py tests/test_week23_system_design.py tests/test_week24_storytelling.py -q
+python -m labs.week_21.demo smoke
+python -m labs.week_22.demo smoke
+python -m labs.week_23.demo smoke
+python -m labs.week_24.demo smoke
+```
