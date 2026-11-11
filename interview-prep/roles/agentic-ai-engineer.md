@@ -2,7 +2,7 @@
 layout: "week"
 status: "review"
 version: "1.8.0"
-last_reviewed: "2026-11-10"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -11,7 +11,7 @@ pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Agentic AI Engineer foundation interview bank"
 description: "One hundred eighty guided questions for AI and Agentic AI engineering interviews."
-summary: "Practise production AI and agents alongside vision and graph systems, responsible decision services, forecasting, recommendation, security, reliability, optimization, and incident leadership."
+summary: "Practise production AI and agents alongside numerical and optimization reliability, unsupervised systems, rare-event operations, model assurance, security, monitoring, and incident leadership."
 permalink: "/interview-prep/roles/agentic-ai-engineer/"
 kicker_primary: "Agentic AI Engineer"
 kicker_secondary: "Batches 1–9 · 180 guided questions"
@@ -2344,293 +2344,293 @@ These are interview-practice prompts, not a scored learning assessment. Answer a
 
 **Revision links:** [Recommendation, search, and ranking]({{ '/interview-prep/cheat-sheets/recommendation-search-ranking/' | relative_url }})
 
-## Computer vision and multimodal AI
+## Linear algebra, calculus, and optimization
 
-### AIE-B9-01 — Design an image-ingestion and inference API that safely handles untrusted media.
+### AIE-B9-01 — Implement a numerically stable softmax endpoint and prove it matches the model contract.
 
-**Round:** Vision service design · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Validate MIME/signature, dimensions, pixels, frames, file size and decompression limits; isolate/patch decoders and treat EXIF, OCR text, filenames and URLs as untrusted data.
-- Apply versioned preprocessing identical to evaluation, enforce tenant authorization and retention/redaction policy, and bind media, model, weights and postprocessing identities to the trace.
-- Bound queueing, batching, latency and resource use; return schema-validated outputs with abstention/review and safe fallback when decode, model or dependency fails.
-
-**Follow-up probe:** How can text inside an image become a prompt-injection path for a multimodal agent?
-
-**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
-
-### AIE-B9-02 — Export a detector to a faster runtime without silently changing behavior.
-
-**Round:** Vision optimization · **Depth:** Advanced
+**Round:** Numerical reliability · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Freeze exact preprocessing, label map, resize/padding, model weights, confidence/NMS and output-coordinate contracts before conversion.
-- Compare native and exported tensors plus task-level AP/recall by class/size and threshold on a locked corpus, including dynamic shapes, empty detections and target hardware precision.
-- Benchmark warm/cold p50/p95 latency, throughput and memory; canary the exact artifact with versioned rollback rather than promoting from a synthetic speed result alone.
+- Subtract the row maximum before exponentiation, preserve the intended axis and shape, use an appropriate accumulation dtype, and reject or handle non-finite inputs explicitly.
+- Compare against a trusted implementation across extreme logits, batched and singleton shapes, mixed precision, empty/invalid cases, and verify probabilities are finite, non-negative, and sum to one within tolerance.
+- Version preprocessing, model, runtime and postprocessing together; monitor non-finite values and distribution shifts and fail safely instead of returning plausible corrupted scores.
 
-**Follow-up probe:** Why can numerically small box-coordinate differences materially change AP after NMS?
+**Follow-up probe:** Why does subtracting the maximum preserve the probabilities while preventing overflow?
 
-**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
 
-### AIE-B9-03 — Build evaluation for a vision-language document assistant.
+### AIE-B9-02 — Add a custom differentiable operation to a training pipeline and validate its backward pass.
 
-**Round:** Multimodal evaluation · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Define document/image types, question taxonomy, answer schema and required visual evidence; preserve page, crop, prompt, template, model and generation identities.
-- Score OCR, extraction, spatial grounding, table/chart interpretation, unsupported detail, citation/evidence and refusal separately with calibrated human review.
-- Slice by resolution, rotation, language, handwriting, layout and page count; add latency/token/cost and security tests for visual prompt injection and sensitive content.
-
-**Follow-up probe:** How would you detect an answer copied from model prior knowledge rather than grounded in the supplied image?
-
-**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
-
-### AIE-B9-04 — Implement group-safe splitting for video-based training data.
-
-**Round:** Vision data engineering · **Depth:** Advanced
+**Round:** Automatic differentiation · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Define stable video, subject, device, site and event identities; keep adjacent frames, derived clips/crops and near duplicates in one split.
-- Choose temporal/site/group holdouts matching deployment, fit all learned preprocessing on training only and audit label/capture-policy changes at boundaries.
-- Persist a split manifest and duplicate report, then test generalization by scene, camera, lighting and rare event rather than relying on random frame accuracy.
+- State input/output shapes and dtypes, derive the local Jacobian-vector product, preserve only required forward state, and define behavior at non-differentiable or invalid points.
+- Run central-difference gradient checks in double precision on small, non-saturated inputs and compare directional derivatives rather than relying only on a falling training loss.
+- Test broadcasting, batching, device and mixed-precision behavior; add finite-gradient checks and isolate the release behind reproducible seeds and rollback.
 
-**Follow-up probe:** Why can sampling one frame every minute still leak if the same location appears in train and test?
+**Follow-up probe:** Why can finite-difference checks fail near a kink even when the implementation is correct?
 
-**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
 
-### AIE-B9-05 — Diagnose a camera rollout that doubled model abstentions at one site.
+### AIE-B9-03 — Build an optimization service that distinguishes infeasible, unbounded, timed-out, and feasible solutions.
 
-**Round:** Production incident · **Depth:** Leadership
-
-**Strong answer signals**
-
-- Stop/narrow the rollout, identify camera/firmware/preprocessing/model versions and compare resolution, aspect ratio, color, exposure, blur, compression and decode errors with known-good traffic.
-- Reproduce affected requests, separate capture shift from serving/threshold/calibration failure and inspect quality by class/object size plus reviewer outcomes.
-- Restore compatible capture/preprocessing or rollback, preserve evidence and add site/device compatibility gates, drift alerts and acceptance tests before re-release.
-
-**Follow-up probe:** Which signal would distinguish a new image distribution from a broken normalization path?
-
-**Revision links:** [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }})
-
-## Graph ML and knowledge graphs
-
-### AIE-B9-06 — Build a point-in-time graph feature pipeline for fraud scoring.
-
-**Round:** Graph data engineering · **Depth:** Advanced
+**Round:** Constrained optimization · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Define typed/directed nodes and edges with entity, event, processing and availability times plus provenance and validity intervals.
-- Reconstruct neighborhoods strictly before each authorization origin, remove target/future edges, version entity resolution and produce immutable graph/feature manifests.
-- Test late events, merges/splits, duplicate retries, high-degree caps and online/offline parity; fall back safely when graph freshness or identity state is invalid.
+- Validate units, domains, bounds and constraint dimensions before solving; assign immutable model/data/solver identities and make the objective and feasibility tolerances explicit.
+- Return typed statuses with incumbent, bound/gap, violations, runtime and diagnostics; never convert an absent or partial solution into an empty valid plan.
+- Test known feasible/infeasible/unbounded fixtures, enforce time and memory limits, preserve solver evidence, and use an approved fallback or human review when guarantees are not met.
 
-**Follow-up probe:** How can an edge that occurred earlier still be unavailable to the live scorer?
+**Follow-up probe:** When may a timed-out incumbent be operationally usable, and what evidence must accompany it?
 
-**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
 
-### AIE-B9-07 — Serve a neighbor-sampled GNN for unseen nodes under a latency budget.
+### AIE-B9-04 — Migrate a training job from Adam to AdamW while increasing global batch size.
 
-**Round:** GNN serving · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Define inductive node features, typed historical neighborhood, sampling fan-out/depth, high-degree policy, freshness and missing/new-node fallback.
-- Separate batch graph/embedding publication from online feature/subgraph retrieval, atomically version snapshot, sampler, model and index, and bound expansion/cancellation.
-- Benchmark recall/quality versus tabular aggregates and cached embeddings plus p95 latency, memory and dependency failures; monitor degree/cold-start slices and staleness.
-
-**Follow-up probe:** When would a precomputed embedding be unsafe to reuse for a newly changed neighborhood?
-
-**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
-
-### AIE-B9-08 — Implement leakage-safe negative sampling for temporal link prediction.
-
-**Round:** Graph modeling infrastructure · **Depth:** Advanced
+**Round:** Training optimization · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Define eligible pairs and non-edge meaning at each origin; avoid reverse duplicates, future positives, impossible pairs and target edges remaining in message-passing adjacency.
-- Combine random/degree-aware/local/hard negatives with recorded sampling probabilities and false-negative policy; mine only from information available then.
-- Evaluate on a representative/full candidate set with MRR/Hits/Recall and calibration by degree/age, disclosing differences from the sampled training distribution.
+- Treat optimizer, decoupled weight decay, excluded parameters, learning-rate schedule, warmup, gradient accumulation and effective batch as one versioned experiment contract.
+- Match tokens/examples and update counts, log gradient and update norms plus loss/validation trajectories, and compare controlled candidates rather than changing batch, optimizer and regularization without attribution.
+- Add non-finite and divergence stops, checkpoint optimizer/scheduler/scaler state, test resume equivalence, and promote only after quality, stability, throughput and memory gates pass.
 
-**Follow-up probe:** Why can a random non-edge be an unknown positive rather than a true negative?
+**Follow-up probe:** Why is an L2 penalty inside Adam not generally equivalent to AdamW weight decay?
 
-**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
 
-### AIE-B9-09 — Design an authorization-safe GraphRAG retrieval path.
+### AIE-B9-05 — Diagnose a linear-system feature transform that became unstable after new correlated inputs arrived.
 
-**Round:** GraphRAG security · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Resolve authorized seeds, apply ACL/tenant checks during every typed/time-valid traversal and cap depth, fan-out, paths, tokens, latency and cost.
-- Preserve entity/relation/document provenance, validate extracted graph updates before trust and re-check access before context assembly and output.
-- Evaluate entity linking, seed/path/evidence recall, grounding and authorization violations separately; propagate revocation/deletion through graph, embeddings, caches and summaries.
-
-**Follow-up probe:** Why is filtering the final text insufficient if traversal already crossed a restricted node?
-
-**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
-
-### AIE-B9-10 — Recover from a graph-embedding release whose online recommendations became repetitive.
-
-**Round:** Graph production incident · **Depth:** Leadership
+**Round:** Linear algebra incident · **Depth:** Leadership
 
 **Strong answer signals**
 
-- Verify graph snapshot, edge windows, sampler, embedding/index and ranker versions plus cache state, candidate counts, degree/popularity mix and exposure logging.
-- Compare structure-only, feature-only and prior embeddings; inspect collapse/oversmoothing, hub dominance, stale edges, missing relation types and index mismatch by slice.
-- Roll back atomically, repair construction/training/publication, add embedding diversity/norm and candidate-coverage gates, then revalidate online under guarded exposure.
+- Reproduce the exact matrix and scaling path, inspect rank, singular values and condition number, and separate data duplication/collinearity from dtype or solver changes.
+- Avoid explicit matrix inversion; compare stable factorizations or SVD/pseudoinverse with justified truncation or regularization and measure downstream sensitivity.
+- Roll back or quarantine the change, version the feature basis and tolerance, and add conditioning, finite-output and perturbation tests plus drift alerts.
 
-**Follow-up probe:** How could publishing new embeddings against an old ANN index create this symptom?
+**Follow-up probe:** Why can a system have a mathematically unique solution yet still be unreliable in floating-point arithmetic?
 
-**Revision links:** [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }})
+**Revision links:** [Linear algebra, calculus, and optimization]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }})
 
-## Explainability, fairness, and responsible ML
+## Unsupervised learning and dimensionality reduction
 
-### AIE-B9-11 — Design a versioned explanation service for tabular predictions.
+### AIE-B9-06 — Build a clustering pipeline whose distance geometry is identical offline and online.
 
-**Round:** Responsible ML platform · **Depth:** Advanced
+**Round:** Unsupervised data engineering · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Bind prediction, raw/transformed features, preprocessing, model, output scale, explainer, background/reference and parameters to one immutable request identity.
-- Return schema-validated attributions with local fidelity/additivity and stability diagnostics, privacy-safe feature labels and explicit non-causal limitations.
-- Cache only on full identity, enforce access/retention, monitor failures/drift and fall back to approved reason codes or human review rather than fabricate an explanation.
+- Define the unit, feature snapshot, missing-value policy, scaling, encoding and distance/similarity contract; fit all learned transforms only on the training/reference population.
+- Package transform, feature order, metric and cluster model under one artifact identity, test online/offline parity, and reject schema or unit mismatches.
+- Monitor representation drift, assignment confidence, cluster size/stability and downstream utility, with a deterministic fallback for unseen or invalid inputs.
 
-**Follow-up probe:** Why can reusing yesterday’s SHAP background change the meaning of today’s attribution?
+**Follow-up probe:** Why can one unscaled high-variance feature dominate Euclidean k-means even if it is not useful?
 
-**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
 
-### AIE-B9-12 — Implement slice metrics without exposing sensitive attributes to unauthorized consumers.
+### AIE-B9-07 — Publish customer-segment labels without breaking downstream consumers when clusters are retrained.
+
+**Round:** Cluster lifecycle · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Treat cluster numbers as arbitrary; align candidate clusters to prior semantic segments using overlap/centroid/assignment evidence and route ambiguous splits or merges to review.
+- Version population window, transforms, model, mapping and business label; publish atomically and preserve the previous mapping for rollback and historical reproducibility.
+- Contract-test segment values and eligibility, monitor membership churn and outcome utility, and require downstream owners to accept material definition changes.
+
+**Follow-up probe:** Why is sorting new centroids and reusing the old numeric IDs unsafe?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-08 — Operationalize a Gaussian-mixture model whose EM training sometimes collapses a component.
+
+**Round:** Probabilistic clustering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Standardize inputs, use multiple seeded initializations and covariance regularization, bound iterations/tolerance, and detect tiny weights, singular covariance and non-finite likelihood.
+- Select a candidate using held-out likelihood, stability and downstream usefulness rather than accepting the highest training likelihood from one run.
+- Store responsibilities as calibrated soft assignments where appropriate, version component alignment, and fall back or retrain when convergence diagnostics fail.
+
+**Follow-up probe:** How can a Gaussian component drive likelihood upward by collapsing around very few observations?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-09 — Serve a density-based clustering result to new observations.
+
+**Round:** Density clustering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Clarify that standard DBSCAN produces fitted clusters/noise but does not define a universal prediction rule; choose a documented approximation, refit cadence or HDBSCAN-style prediction capability.
+- Persist scaling, metric, neighborhood parameters, reference points and cluster identities; bound nearest-neighbor search and define low-confidence/noise behavior explicitly.
+- Test boundary, sparse and shifted regions, measure assignment stability and downstream utility, and avoid presenting forced assignments as discovered ground truth.
+
+**Follow-up probe:** What is lost when every new point is assigned to the nearest existing cluster regardless of density?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+### AIE-B9-10 — Create an embedding-analysis tool that uses PCA and UMAP without turning a visualization into a production model.
+
+**Round:** Dimensionality-reduction tooling · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Fit scaling and PCA on a declared reference set, persist components/means and explained variance, then treat UMAP parameters and random seed as visualization metadata rather than causal evidence.
+- Separate transformable production representations from exploratory two-dimensional views; test reconstruction/neighborhood preservation and label overlays only after the embedding is fixed.
+- Warn users that distances and apparent clusters can change across seeds/settings, preserve source IDs and versions, and prohibit decisions based solely on the plot.
+
+**Follow-up probe:** Why does a visually separated UMAP island not prove a real, stable population segment?
+
+**Revision links:** [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }})
+
+## Anomaly detection and rare-event modeling
+
+### AIE-B9-11 — Implement a robust statistical anomaly baseline before adding a learned detector.
+
+**Round:** Detection baseline · **Depth:** Applied
+
+**Strong answer signals**
+
+- Define entity, signal, context, window, event-time availability and anomaly action; compute median/MAD or seasonal residual thresholds on an uncontaminated reference window.
+- Handle zero dispersion, missing/late values, repeated alerts and cold start explicitly; version baseline window, transformations and threshold policy.
+- Backtest event-level precision/recall, detection delay and alerts per period, then use the simple baseline as a shadow comparator for any complex model.
+
+**Follow-up probe:** Why is a mean-and-standard-deviation rule fragile under heavy tails and contaminated history?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-12 — Design an event-time pipeline that separates point anomalies from change points.
+
+**Round:** Streaming detection · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Define event time, watermark/late-data policy and state per entity; use point scores for isolated deviations and a separate persistent-regime detector with reset/cooldown semantics.
+- Make updates idempotent and replayable, checkpoint detector state, prevent future observations entering historical baselines, and bound state and recovery time.
+- Evaluate detection delay, duplicate/missed events and alert duration under late/out-of-order fixtures, then expose the anomaly type and supporting window to responders.
+
+**Follow-up probe:** Why can repeatedly flagging every sample after a mean shift be worse than emitting one change-point event?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-13 — Train a supervised rare-event service with delayed and selectively reviewed labels.
+
+**Round:** Rare-event ML platform · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Split by time/entity before resampling, define label maturity and availability, preserve exposure/review propensity, and prevent future outcomes or investigation features leaking backward.
+- Apply weights or sampling only within training, calibrate on a deployment-like untouched set, and evaluate PR curves, recall at alert capacity, calibration and subgroup/time slices.
+- Log scores, thresholds, eligibility, review decisions and mature outcomes; monitor selection effects and maintain shadow/random audits to estimate blind spots.
+
+**Follow-up probe:** How can training only on investigated alerts create a self-reinforcing blind spot?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-14 — Implement thresholds for a detector with a fixed daily investigation budget.
+
+**Round:** Alert decision engineering · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Convert capacity, event cost, miss cost and response SLA into an explicit policy such as top-k or calibrated risk threshold, with deterministic tie and overload behavior.
+- Tune on out-of-time data using event-level precision/recall, delay and alerts per entity/period; test thresholds by segment while guarding minimum evidence and fairness constraints.
+- Version score, calibration and policy separately, monitor queue saturation and realized yield after labels mature, and provide fallback/prioritization when volume spikes.
+
+**Follow-up probe:** Why can a fixed score threshold violate the same review budget after prevalence or score scale changes?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+### AIE-B9-15 — Recover from an anomaly release that floods responders while offline ROC-AUC remains high.
+
+**Round:** Detection incident · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Stop or narrow routing, preserve requests and versions, and compare prevalence, score distribution, threshold/calibrator, entity mix, deduplication and queue behavior with the last good release.
+- Recompute precision-recall, alert yield, repeat-alert rate and capacity at the deployed operating point; inspect data/schema/seasonality shift and label delay rather than relying on ROC-AUC.
+- Roll back model or policy atomically, drain/deduplicate safely, communicate impact, and add alert-budget, event-level and shadow-baseline release gates.
+
+**Follow-up probe:** Why can ROC-AUC stay impressive while almost every alert sent to investigators is false?
+
+**Revision links:** [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }})
+
+## Explainability, fairness, uncertainty, and model governance
+
+### AIE-B9-16 — Design a versioned explanation service for tabular predictions.
+
+**Round:** Model-assurance platform · **Depth:** Advanced
+
+**Strong answer signals**
+
+- Bind prediction, raw/transformed features, preprocessing, model, output scale, explainer, reference data and parameters to one immutable request identity.
+- Return schema-validated attributions with local fidelity/additivity and stability diagnostics, privacy-safe feature labels, and explicit non-causal limitations.
+- Cache only on the full identity, enforce access/retention, monitor failures and drift, and fall back to approved reason codes or human review rather than fabricate an explanation.
+
+**Follow-up probe:** Why can changing the SHAP background dataset change the meaning of the same prediction's attribution?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### AIE-B9-17 — Implement subgroup assurance metrics without exposing sensitive attributes to unauthorized consumers.
 
 **Round:** Fairness telemetry · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Separate protected evaluation data from serving features, enforce purpose-limited access and compute approved metrics in a restricted aggregation boundary.
-- Emit denominators, events, performance/error/calibration/selection measures, confidence intervals and intersection/time slices with minimum-support/privacy rules.
-- Version group definitions, label maturity, threshold/policy and metric code; alert owners without leaking row-level membership and retain auditable decisions.
+- Keep protected evaluation data outside serving features, enforce purpose-limited access, and compute approved aggregates in a restricted boundary.
+- Emit denominators, performance/error/calibration/selection measures and uncertainty by time/intersection with minimum-support and privacy rules.
+- Version group definitions, label maturity, threshold/policy and metric code; alert accountable owners without leaking row-level membership and retain auditable decisions.
 
-**Follow-up probe:** Why is deleting a sensitive column from training not enough to assess proxy effects?
+**Follow-up probe:** Why is removing a protected column from model inputs insufficient to rule out proxy effects?
 
-**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
 
-### AIE-B9-13 — Add calibration and abstention to a high-impact classifier API.
+### AIE-B9-18 — Add calibration, conformal uncertainty, and abstention to a high-impact classifier API.
 
-**Round:** Decision safety · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Fit calibration on a separate validation procedure, pin score/calibrator/threshold/policy versions and verify reliability/Brier plus subgroup/time evidence on untouched data.
-- Define abstention from supported confidence/OOD/operational signals with coverage-risk targets, review capacity/SLA, user message and deterministic fallback.
-- Log outcome, override and selective-label paths; monitor prevalence, calibration, coverage and group effects after labels mature and rollback on policy breach.
-
-**Follow-up probe:** How can an abstention policy worsen fairness even when overall error falls?
-
-**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
-
-### AIE-B9-14 — Build a release gate for model cards and responsible-AI evidence.
-
-**Round:** ML governance automation · **Depth:** Leadership
+**Round:** Uncertainty engineering · **Depth:** Advanced
 
 **Strong answer signals**
 
-- Require immutable data/model/runtime identities, intended/excluded use, baseline, metrics/slices/uncertainty, explanation limits, fairness harm decision and unresolved risks with named owners.
-- Verify security, privacy, robustness, capacity, threshold/abstention, human oversight, appeal, rollback and monitoring evidence using machine-checkable manifests where possible.
-- Block promotion when required evidence/approval is missing, preserve the candidate and failure, and trigger re-review on data, policy, population, interface or dependency changes.
+- Fit calibration and conformal quantiles on separate exchangeable validation/calibration data, pin all artifacts, and report reliability, coverage and set size by time and important groups.
+- Define abstention from supported uncertainty/OOD/operational signals with coverage-risk targets, review capacity, user communication and deterministic fallback.
+- Monitor prevalence, calibration and coverage after labels mature, detect assumption-breaking drift, and avoid describing marginal conformal coverage as a guarantee for every subgroup or individual.
 
-**Follow-up probe:** Which parts must remain human decisions even if evidence collection is automated?
+**Follow-up probe:** What happens to conformal coverage claims when the deployment distribution shifts materially?
 
-**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
 
-### AIE-B9-15 — Diagnose a fairness dashboard whose group gaps changed overnight with no model release.
+### AIE-B9-19 — Build a release gate for model cards and model-assurance evidence.
 
-**Round:** Responsible AI incident · **Depth:** Leadership
+**Round:** Governance automation · **Depth:** Leadership
+
+**Strong answer signals**
+
+- Require immutable data/model/runtime identities, intended and excluded use, baseline, metrics/slices/uncertainty, explanation limits, fairness-harm decisions and unresolved risks with owners.
+- Verify privacy/security, robustness, threshold/abstention, human oversight, appeal, rollback and monitoring evidence through machine-checkable manifests where possible.
+- Block promotion when required evidence or approval is missing, preserve the failed candidate, and trigger re-review on data, policy, population, interface or dependency changes.
+
+**Follow-up probe:** Which parts of a governance gate must remain accountable human decisions even when evidence collection is automated?
+
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
+
+### AIE-B9-20 — Diagnose a fairness dashboard whose group gaps changed overnight with no model release.
+
+**Round:** Model-assurance incident · **Depth:** Leadership
 
 **Strong answer signals**
 
 - Freeze decisions and verify metric code, group mapping, join grain, threshold/policy, label maturity, eligibility/exposure and data/backfill versions before interpreting harm.
-- Recompute denominators/confusion/calibration with known-good snapshots; separate telemetry or population shift from real decision/outcome change and quantify affected users.
-- Correct or roll back instrumentation/policy, notify responsible owners, preserve audit evidence and add schema/mapping/late-label regression plus anomaly gates.
+- Recompute denominators, confusion rates and calibration from known-good snapshots; separate telemetry or population shift from real decision/outcome change and quantify affected users.
+- Correct or roll back instrumentation or policy, notify responsible owners, preserve audit evidence, and add schema, mapping, late-label and minimum-support regression gates.
 
-**Follow-up probe:** How can a label backfill move equalized-odds metrics without changing any historical predictions?
+**Follow-up probe:** How can a label backfill move equalized-odds metrics without changing any historical prediction?
 
-**Revision links:** [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }})
-
-## Survival, risk, pricing, and decision optimization
-
-### AIE-B9-16 — Design a survival-model prediction contract for multiple horizons.
-
-**Round:** Specialized model serving · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Accept a time origin and point-in-time feature snapshot; return ordered supported horizons with survival/event probabilities, model/calibrator and feature identities plus uncertainty/limitations.
-- Validate horizon support, monotonic survival probabilities, missing/time-varying features and calibration; distinguish risk ranking from probability and avoid extrapolation beyond trained follow-up.
-- Version thresholds/actions separately, monitor censoring/cohort/calibration after maturity and route unsupported or stale requests to safe fallback/review.
-
-**Follow-up probe:** What invariant should the returned survival curve satisfy as the horizon increases?
-
-**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
-
-### AIE-B9-17 — Build an optimization API that never treats “no solution” as an empty plan.
-
-**Round:** Decision service engineering · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Validate variables, units, data freshness and authorized hard/soft constraints; version the formulation, inputs, solver and parameters before solving under bounded time/resources.
-- Branch explicitly on optimal, feasible, infeasible, unbounded, limit and failure states; verify tolerances/business rules before returning decisions and include objective/bound/gap diagnostics.
-- Provide owner-approved fallback, human escalation and idempotent separation between plan generation and execution; log exact evidence for replay and rollback.
-
-**Follow-up probe:** Why is reading variable values after an `UNKNOWN` solver status dangerous?
-
-**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
-
-### AIE-B9-18 — Connect a demand forecast to an allocation optimizer without version skew.
-
-**Round:** Predict-then-optimize architecture · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Publish forecast scenarios/distributions with origin, horizon, item/location identities, units, calibration and model/data versions as an immutable manifest.
-- Construct optimization from the exact manifest, validate coverage/freshness and constraints, atomically bind solution to forecast/formulation/solver identities and reject mixed versions.
-- Evaluate forecast metrics plus feasibility, realized objective/regret and decision stability; monitor sensitivity and use robust fallback when uncertainty or dependency fails.
-
-**Follow-up probe:** How can a small forecast error cause a large allocation change near a capacity constraint?
-
-**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
-
-### AIE-B9-19 — Implement safe randomized price exploration.
-
-**Round:** Pricing platform · **Depth:** Advanced
-
-**Strong answer signals**
-
-- Enforce eligibility, floors/ceilings, contracts, inventory and fairness/legal policy; randomize within approved support and log assignment probability, price, context and policy version.
-- Bound traffic, customer exposure, duration and loss with guardrails/kill switch; keep deterministic fallback and prevent caching or retries from changing assigned treatment.
-- Measure margin and long-term guardrails with interference/seasonality analysis, audit sample-ratio mismatch and use causal estimates rather than treating observed price correlation as elasticity.
-
-**Follow-up probe:** Why must a retry return the same assigned price for the same experimental unit?
-
-**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
-
-### AIE-B9-20 — Recover from a scheduler that became infeasible after an upstream schema change.
-
-**Round:** Optimization incident · **Depth:** Leadership
-
-**Strong answer signals**
-
-- Stop execution, identify input/schema/formulation/constraint/solver versions and validate units, null/default handling, row counts and the first infeasible constraint group.
-- Use controlled relaxation/IIS diagnostics where supported without silently changing hard rules; quantify blocked decisions and activate the approved safe schedule/manual fallback.
-- Restore compatible data or formulation, replay the exact case, add schema/units/feasibility fixtures and canary shadow solves, then re-release with owner sign-off.
-
-**Follow-up probe:** Why should automatic constraint relaxation never directly authorize the production schedule?
-
-**Revision links:** [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }})
+**Revision links:** [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }})
 
 ## Completion evidence
 

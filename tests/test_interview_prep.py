@@ -74,11 +74,18 @@ BATCH_EIGHT_CHEAT_SHEETS = (
     BATCH_EIGHT_UPDATED_CHEAT_SHEETS + BATCH_EIGHT_NEW_CHEAT_SHEETS
 )
 
+BATCH_NINE_UPDATED_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/linear-algebra-calculus-optimization.md",
+)
+
+BATCH_NINE_NEW_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction.md",
+    ROOT / "interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling.md",
+    ROOT / "interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance.md",
+)
+
 BATCH_NINE_CHEAT_SHEETS = (
-    ROOT / "interview-prep/cheat-sheets/computer-vision-multimodal-ai.md",
-    ROOT / "interview-prep/cheat-sheets/graph-ml-knowledge-graphs.md",
-    ROOT / "interview-prep/cheat-sheets/explainability-fairness-responsible-ml.md",
-    ROOT / "interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization.md",
+    BATCH_NINE_UPDATED_CHEAT_SHEETS + BATCH_NINE_NEW_CHEAT_SHEETS
 )
 
 ALL_CHEAT_SHEETS = (
@@ -90,7 +97,7 @@ ALL_CHEAT_SHEETS = (
     + BATCH_SIX_CHEAT_SHEETS
     + BATCH_SEVEN_CHEAT_SHEETS
     + BATCH_EIGHT_NEW_CHEAT_SHEETS
-    + BATCH_NINE_CHEAT_SHEETS
+    + BATCH_NINE_NEW_CHEAT_SHEETS
 )
 
 
@@ -213,10 +220,9 @@ def test_hub_links_every_interview_artifact() -> None:
         "/interview-prep/cheat-sheets/unsupervised-learning-anomaly-detection/",
         "/interview-prep/cheat-sheets/time-series-forecasting/",
         "/interview-prep/cheat-sheets/recommendation-search-ranking/",
-        "/interview-prep/cheat-sheets/computer-vision-multimodal-ai/",
-        "/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/",
-        "/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/",
-        "/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/",
+        "/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/",
+        "/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/",
+        "/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/",
         "/interview-prep/roles/agentic-ai-engineer/",
         "/interview-prep/roles/data-science-technical-lead/",
         "/interview-prep/roles/senior-data-scientist/",

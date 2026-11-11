@@ -2,7 +2,7 @@
 layout: "week"
 status: "review"
 version: "1.8.0"
-last_reviewed: "2026-11-10"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -21,9 +21,9 @@ current_label: "Interview prep hub"
 
 | Role bank | Best for | Current coverage |
 | --- | --- | --- |
-| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, vision and graph systems, RAG/agents, decision services, security, reliability and incidents |
-| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML/LLM and specialized-model decisions, responsible governance, security, delivery and operating models |
-| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, causal and specialized modeling, retrieval/RAG evaluation, responsible evidence, monitoring and business impact |
+| [Agentic AI Engineer]({{ '/interview-prep/roles/agentic-ai-engineer/' | relative_url }}) | AI Engineer, GenAI Engineer, Agentic AI Engineer | Production AI, numerical reliability, unsupervised and rare-event systems, model assurance, security and incidents |
+| [Data Science Technical Lead]({{ '/interview-prep/roles/data-science-technical-lead/' | relative_url }}) | Data Science Lead, Technical Lead, Applied AI Lead | Framing, ML/LLM and optimization decisions, unsupervised and rare-event products, uncertainty, fairness and governance |
+| [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, mathematical derivation, unsupervised and rare-event modeling, calibration, fairness, monitoring and impact |
 
 Each role bank now contains 180 guided questions across Batches 1–9, with strong-answer signals, a deeper follow-up probe, and direct revision links. Batch 9 is the final planned review candidate; Batches 1–8 remain approved. Stable IDs let you track weak areas and support later random-paper conversion.
 
@@ -103,10 +103,10 @@ Each role bank now contains 180 guided questions across Batches 1–9, with stro
 
 | Revision sheet | Use it for |
 | --- | --- |
-| [Computer vision and multimodal AI]({{ '/interview-prep/cheat-sheets/computer-vision-multimodal-ai/' | relative_url }}) | Visual task contracts, capture and annotation quality, CNNs/ViTs, transfer learning, detection, segmentation, VLM grounding, serving, monitoring and safety |
-| [Graph ML and knowledge graphs]({{ '/interview-prep/cheat-sheets/graph-ml-knowledge-graphs/' | relative_url }}) | Graph construction, message passing, temporal link evaluation, sampling, heterogeneous graphs, knowledge provenance, GraphRAG, serving and access control |
-| [Explainability, fairness, and responsible ML]({{ '/interview-prep/cheat-sheets/explainability-fairness-responsible-ml/' | relative_url }}) | Inspection and attribution limits, calibration, uncertainty, abstention, fairness harms and metrics, mitigation, lifecycle governance and appeals |
-| [Survival, risk, pricing, and decision optimization]({{ '/interview-prep/cheat-sheets/survival-risk-pricing-decision-optimization/' | relative_url }}) | Censoring and time-to-event models, risk and CLV, causal pricing, LP/MILP/constraint systems, solver evidence, uncertainty and downstream regret |
+| [Linear algebra, calculus, and optimization — expanded]({{ '/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/' | relative_url }}) | Shapes and conditioning, eigen/SVD/PCA, derivatives and autodiff, optimizers, curvature, constraints, regularization and numerical stability |
+| [Unsupervised learning and dimensionality reduction]({{ '/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-reduction/' | relative_url }}) | Representation and distance, k-means, mixtures and EM, hierarchical/density/graph clustering, PCA, t-SNE/UMAP, stability and production |
+| [Anomaly detection and rare-event modeling]({{ '/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/' | relative_url }}) | Detection contracts, robust and learned methods, change points, imbalance, calibration, rare-event metrics, thresholds, backtests and alert operations |
+| [Explainability, fairness, uncertainty, and model governance]({{ '/interview-prep/cheat-sheets/explainability-fairness-uncertainty-model-governance/' | relative_url }}) | Global/local explanations, uncertainty, calibration, conformal coverage, fairness harms and metrics, mitigation, evidence and release gates |
 
 Use the [complete master index]({{ '/interview-prep/master-index/' | relative_url }}) to see the full topic backlog and expected depth for each role.
 
@@ -134,6 +134,6 @@ A senior answer should normally cover:
 
 ## Next review step
 
-Review final Batch 9 for visual and graph evidence, explanation and fairness limits, survival/censoring assumptions, causal pricing, optimization feasibility, role calibration, and interview usefulness.
+Review final Batch 9 for mathematical correctness, unsupervised-model assumptions, rare-event evaluation, explanation limits, calibration and uncertainty, fairness trade-offs, governance evidence, role calibration, and interview usefulness.
 
 > The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

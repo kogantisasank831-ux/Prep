@@ -1,8 +1,8 @@
 ---
 layout: "week"
-status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-10"
+status: "review"
+version: "1.1.0"
+last_reviewed: "2026-11-11"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -10,403 +10,374 @@ toc_heading: "Interview sections"
 pagination_label: "Interview prep hub"
 pagination_url: "/interview-prep/"
 title: "Linear algebra, calculus, and optimization interview cheat sheet"
-description: "Shapes, vector geometry, rank, projections, eigendecomposition, SVD, PCA, gradients, backpropagation, optimizers, regularization, constraints, and numerical stability."
-summary: "Revise mathematical objects through their shapes, meaning, assumptions, optimization behavior, numerical consequences, and production evidence."
+description: "Shapes, rank, conditioning, eigendecomposition, SVD and PCA, derivatives, automatic differentiation, optimizers, constraints, regularization, and numerical stability."
+summary: "Revise the mathematical contracts behind modern ML, from tensor shapes and conditioning through gradients, curvature, constrained optimization, regularization, and stable computation."
 permalink: "/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/"
 kicker_primary: "Interview preparation"
-kicker_secondary: "Batch 7 · Mathematics and optimization"
+kicker_secondary: "Batch 9 · Linear algebra, calculus, and optimization"
 current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 7 source:** This page integrates the newly prepared revision source into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 9 source-backed scope:** This review candidate publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
 
-**Target roles:** AI Engineer, ML Engineer, Data Scientist, Applied Scientist, AI/Data Science Lead  
-**Use:** mathematical-foundations, model-training, embeddings, optimization, and system-design rounds  
-**Interview rule:** connect every mathematical object to its shape, meaning, assumption, and computational consequence. A formula without those four pieces is not yet an engineering answer.
+**Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, ML Engineer, AI Engineer  
+**Use:** mathematical-foundation, modeling, deep-learning, optimization, debugging, and system-design interviews  
+**Interview rule:** connect every equation to shapes, assumptions, computation, and failure modes. The goal is not symbolic recall; it is explaining why an algorithm works, when it becomes unstable, and how you would diagnose it.
 
 ## 1. Thirty-second revision
 
-- A scalar has no axis, a vector has one, a matrix has two, and a tensor generalizes to more axes. State shapes before manipulating them.
-- Broadcasting expands compatible singleton dimensions conceptually; it can also hide a wrong batch, feature, or sequence axis.
-- A dot product measures aligned magnitude. Cosine similarity removes magnitude but is not automatically the right business similarity.
-- Matrix rank is the number of independent directions. Low rank means redundancy and enables compression or latent-factor models.
-- Projection finds the closest point in a subspace under a chosen geometry. Orthogonality makes coefficients and errors easier to reason about.
-- Eigenvectors preserve direction under a linear map. Singular vectors exist for any rectangular matrix and power PCA, low-rank approximation, and conditioning analysis.
-- A gradient gives the direction of steepest local increase; gradient descent moves against it. The learning rate controls the step, not the objective.
-- Backpropagation is repeated chain rule with cached intermediate values; automatic differentiation does not fix a wrong computation graph or loss.
-- Convexity gives global structure, but most deep-learning objectives are non-convex. Stable optimization still depends on scale, initialization, curvature, noise, and schedules.
-- L1 encourages sparsity; L2 shrinks weights smoothly; AdamW decouples weight decay from the adaptive gradient update.
-- Numerical stability is part of correctness: use log-sum-exp, stable softmax, clipping where justified, normalized inputs, and appropriate precision.
+- A vector is an ordered set of features; a matrix is a linear transformation or collection of vectors; a tensor generalizes arrays to more axes.
+- Always state shapes. For `X ∈ R^(n×d)` and `w ∈ R^d`, `Xw ∈ R^n`; many implementation bugs are shape or broadcasting bugs.
+- A dot product measures aligned magnitude; cosine similarity normalizes magnitude; a norm measures size; a distance must satisfy metric properties.
+- Rank is the number of independent directions. Rank deficiency creates non-identifiability and unstable inverses.
+- Eigenvectors preserve direction under a square transformation. Singular value decomposition works for any matrix and exposes rank, conditioning, and best low-rank approximations.
+- A gradient gives the steepest local increase; the negative gradient is the steepest local decrease under the Euclidean norm.
+- The Jacobian generalizes first derivatives for vector outputs; the Hessian captures local curvature for scalar outputs.
+- Backpropagation is efficient reverse-mode automatic differentiation using the chain rule; it is not a separate optimization algorithm.
+- Convexity makes every local minimum global, but most neural-network objectives are non-convex.
+- Learning rate is often the most important optimizer setting. Divergence, oscillation, plateaus, and noisy validation require different diagnoses.
+- Adam adapts step sizes using gradient moments; AdamW decouples weight decay from the adaptive update. Neither removes the need for schedules, validation, or regularization.
+- Numerical stability is part of correctness: prefer log-sum-exp, stable softmax, factorizations/solvers instead of explicit inverses, scaled inputs, and appropriate precision.
 
-## 2. Shapes, axes, and broadcasting
+## 2. Shapes, vectors, matrices, and tensors
 
-For a batch of `B` sequences, length `T`, hidden width `D`, a transformer activation commonly has shape `(B, T, D)`. A linear layer with weight `(D, H)` produces `(B, T, H)`.
+Let a batch of `n` examples with `d` features be `X ∈ R^(n×d)`.
 
-Matrix multiplication requires matching inner dimensions:
+| Object | Typical shape | ML meaning |
+|---|---:|---|
+| scalar | `()` | loss, learning rate, temperature |
+| vector | `(d,)` | one example, weights, embedding |
+| matrix | `(n, d)` | tabular batch or token embeddings flattened by batch |
+| 3-D tensor | `(b, t, h)` | batch, sequence length, hidden size |
+| 4-D tensor | `(b, c, h, w)` | image batch in channel-first format |
 
-$$
-A_{m\times n}B_{n\times p}=C_{m\times p}
-$$
+For a linear layer:
 
-Elementwise operations require equal shapes or broadcast-compatible trailing dimensions. For dimensions compared from the right, values must be equal or one must be `1`.
+`Z = XW + b`
 
-Interview habit:
+If `X` is `(n, d_in)`, `W` is `(d_in, d_out)`, and `b` is `(d_out,)`, then `Z` is `(n, d_out)`. Broadcasting repeats `b` across rows without materializing copies. State which axes are broadcast; accidental broadcasting can silently produce a plausible but wrong result.
 
-1. name every axis;
-2. write input and parameter shapes;
-3. distinguish elementwise multiplication from matrix multiplication;
-4. check the output shape;
-5. ask whether broadcasting is intended.
+### Core operations
 
-An accidental `(B, 1)` target against `(B, T, 1)` predictions may silently repeat labels across time. Shape-valid does not mean semantically valid.
+- Dot product: `x · y = Σ x_i y_i`
+- Euclidean norm: `||x||₂ = sqrt(Σ x_i²)`
+- L1 norm: `||x||₁ = Σ |x_i|`
+- Cosine similarity: `(x · y) / (||x||₂ ||y||₂)`
+- Matrix product: each output entry is a row-column dot product.
+- Outer product: `xyᵀ` creates a matrix of pairwise products.
+- Projection of `x` onto nonzero `u`: `proj_u(x) = (x · u / u · u)u`
 
-## 3. Vectors, inner products, norms, and distance
+Cosine ignores overall scale but is undefined for a zero vector. Euclidean distance is scale-sensitive. Standardize or otherwise choose a geometry consistent with the data and downstream objective.
 
-For vectors $x,y\in\mathbb{R}^d$:
+## 3. Span, basis, rank, and linear systems
 
-$$
-x^\top y=\sum_i x_i y_i
-$$
+- **Span:** all linear combinations of a set of vectors.
+- **Linear independence:** no vector is redundant as a combination of the others.
+- **Basis:** an independent set spanning a space.
+- **Rank:** dimension of the column space; equivalently the number of nonzero singular values under exact arithmetic.
+- **Null space:** vectors mapped to zero by a matrix.
 
-Common norms:
+For `Ax = b`:
 
-$$
-\lVert x\rVert_1=\sum_i |x_i|,\qquad
-\lVert x\rVert_2=\sqrt{\sum_i x_i^2},\qquad
-\lVert x\rVert_\infty=\max_i |x_i|
-$$
+- a unique solution requires sufficient independent constraints;
+- no exact solution occurs when `b` is outside the column space;
+- infinitely many solutions occur when a nontrivial null space remains.
 
-Cosine similarity is:
+Least squares minimizes `||Ax − b||₂²`. The normal equation `AᵀAx = Aᵀb` is useful conceptually, but computing `(AᵀA)⁻¹Aᵀb` explicitly can worsen conditioning and numerical error. Prefer QR, SVD, or a library solver.
 
-$$
-\cos(x,y)=\frac{x^\top y}{\lVert x\rVert_2\lVert y\rVert_2}
-$$
+### Conditioning
 
-Euclidean distance preserves magnitude and direction; cosine emphasizes angle. On unit-normalized vectors, ranking by cosine, dot product, and squared Euclidean distance is equivalent up to monotone transformations. With unnormalized embeddings, they can produce different neighbors.
+The condition number is approximately `largest singular value / smallest nonzero singular value`. A large value means small input or rounding changes can cause large solution changes. Remedies include:
 
-Choose geometry from the data and decision. Manhattan distance can be more robust in some sparse settings; Mahalanobis distance accounts for covariance but requires a stable covariance estimate.
+- rescaling features;
+- removing redundant variables;
+- regularization;
+- higher precision where justified;
+- stable decompositions rather than explicit inversion;
+- collecting more informative data.
 
-## 4. Matrices, linear systems, rank, and conditioning
+Regularization can make a computation stable while changing the estimand. Report that trade-off.
 
-A linear system is $Ax=b$. An inverse is rarely the computational answer; solve the system with a factorization appropriate to the matrix.
+## 4. Eigenvalues, covariance, PCA, and SVD
 
-- **Rank:** number of linearly independent rows or columns.
-- **Null space:** directions mapped to zero.
-- **Column space:** reachable outputs $Ax$.
-- **Full column rank:** unique least-squares coefficients when the design is otherwise well posed.
-- **Condition number:** sensitivity of the solution to input perturbations.
+For a square matrix `A`, an eigenpair satisfies:
 
-For least squares, minimize:
+`Av = λv`
 
-$$
-\min_w \lVert Xw-y\rVert_2^2
-$$
+The direction `v` is preserved and scaled by `λ`. For a symmetric positive-semidefinite matrix, eigenvalues are real and nonnegative. A covariance matrix is positive semidefinite because every projected variance is nonnegative.
 
-The normal equations $X^\top Xw=X^\top y$ explain the solution, but QR or SVD is usually more numerically stable than explicitly computing $(X^\top X)^{-1}$.
+Singular value decomposition:
 
-Multicollinearity makes coefficient estimates unstable: predictions may remain acceptable while individual coefficients change sharply. Regularization, feature redesign, or a lower-dimensional basis can help.
+`A = UΣVᵀ`
 
-## 5. Basis, orthogonality, and projection
+It works for rectangular matrices. The columns of `V` are input directions, singular values in `Σ` quantify strength, and columns of `U` are corresponding output directions.
 
-A basis spans a vector space with independent directions. An orthonormal basis has unit, mutually orthogonal vectors, so coordinates are simple dot products.
+Important consequences:
 
-Projection of $x$ onto a unit vector $u$ is:
+- numerical rank comes from singular values relative to a tolerance;
+- the top `k` singular components form the best rank-`k` approximation under common matrix norms;
+- pseudoinverses use reciprocal nonzero singular values;
+- tiny singular values reveal ill-conditioned directions.
 
-$$
-\operatorname{proj}_u(x)=(u^\top x)u
-$$
+### PCA
 
-For a matrix $Q$ with orthonormal columns, projection onto its column space is $QQ^\top x$.
+For centered data, PCA finds orthogonal directions of maximum variance. It can be computed through eigen-decomposition of covariance or SVD of the centered data matrix.
 
-Least squares chooses the prediction $X\hat w$ whose residual is orthogonal to the column space of $X$:
+Explained variance ratio for component `j`:
 
-$$
-X^\top(y-X\hat w)=0
-$$
+`λ_j / Σ λ_i`
 
-This geometric view explains why the fitted point is the closest point in the model subspace under squared Euclidean loss.
+PCA is linear and variance-driven. It does not guarantee class separation, causal factors, semantic meaning, or faithful preservation of small but important signals. Scaling determines which features dominate. Fit preprocessing and PCA on training data only.
 
-## 6. Eigenvalues, covariance, and PCA
+## 5. Derivatives and automatic differentiation
 
-For square $A$, an eigenpair satisfies:
+For scalar `f(x)`:
 
-$$
-Av=\lambda v
-$$
+- derivative: local rate of change;
+- partial derivative: rate with respect to one coordinate;
+- gradient `∇f`: vector of partial derivatives;
+- directional derivative along unit vector `u`: `∇f · u`;
+- Hessian `H`: matrix of second partial derivatives.
 
-The eigenvalue describes scaling along eigenvector $v$. For a centered data matrix $X$, covariance is proportional to $X^\top X$. PCA finds orthogonal directions of maximum variance, equivalently eigenvectors of the covariance matrix or right singular vectors of centered $X$.
+For vector function `g: R^d → R^m`, the Jacobian contains output-input partial derivatives. Be explicit about library layout conventions.
 
-PCA workflow:
+### Chain rule and backpropagation
 
-1. split data before fitting preprocessing;
-2. impute and scale where feature units require it;
-3. center using training statistics;
-4. fit PCA on training data only;
-5. select components using validation performance, reconstruction needs, or a justified variance target;
-6. preserve the transformation for serving.
+If `y = f(g(x))`, then the derivative composes local derivatives. Neural networks are long compositions, so reverse-mode automatic differentiation reuses intermediate values to compute a scalar loss gradient with respect to many parameters efficiently.
 
-High explained variance does not prove high predictive value, fairness, or cluster quality. PCA is linear and sensitive to scale and outliers.
+Key distinctions:
 
-## 7. SVD and low-rank approximation
+- **forward pass:** compute outputs and record required operations/intermediates;
+- **backward pass:** propagate vector-Jacobian products;
+- **optimizer step:** use gradients to update parameters;
+- **zeroing gradients:** prevent unwanted accumulation between steps.
 
-Any matrix $A\in\mathbb{R}^{m\times n}$ has singular value decomposition:
+Common failures:
 
-$$
-A=U\Sigma V^\top
-$$
+- detached tensors or non-differentiable operations break the graph;
+- in-place mutation can invalidate saved intermediates;
+- gradients accumulate unexpectedly;
+- saturation causes very small derivatives;
+- deep multiplication can cause vanishing/exploding gradients;
+- a correct gradient can still optimize the wrong objective.
 
-The singular values are nonnegative and measure strength along paired input/output directions. Keeping the top $k$ terms gives the best rank-$k$ approximation under Frobenius and spectral norms:
+### Gradient checking
 
-$$
-A_k=U_k\Sigma_kV_k^\top
-$$
+For coordinate `i`, the centered finite-difference approximation is:
 
-Uses include latent semantic analysis, recommendation, compression, denoising, pseudoinverses, and diagnosing ill-conditioning. A sharp singular-value decay suggests a compact approximation; a flat spectrum does not.
+`[f(x + εe_i) − f(x − εe_i)] / (2ε)`
 
-Truncated SVD on a sparse term-document matrix often avoids centering to preserve sparsity, so do not casually call it identical to centered PCA.
+Compare this with the analytical gradient on a tiny deterministic example using double precision. Too-large `ε` causes truncation error; too-small `ε` causes cancellation/rounding error. Gradient checking is a debugging tool, not a training method.
 
-## 8. Derivatives, gradients, Jacobians, and Hessians
+## 6. Optimization mental model
 
-- A derivative is the local rate of change of a scalar function of one variable.
-- A partial derivative changes one input while holding others fixed.
-- The gradient $\nabla f\in\mathbb{R}^d$ contains partial derivatives of scalar $f$ with respect to vector input.
-- A Jacobian contains derivatives of a vector output with respect to a vector input.
-- A Hessian contains second derivatives of a scalar output and describes local curvature.
+An optimization problem specifies:
 
-For $f(w)=\lVert Xw-y\rVert_2^2/n$:
+1. decision variables/parameters;
+2. objective;
+3. constraints;
+4. data distribution or finite dataset;
+5. evaluation and stopping criteria.
 
-$$
-\nabla_w f=\frac{2}{n}X^\top(Xw-y)
-$$
+Gradient descent:
 
-The gradient has the same shape as $w$. A useful interview check is to verify dimensional consistency before doing algebra.
+`θ_(t+1) = θ_t − η∇L(θ_t)`
 
-## 9. Chain rule and backpropagation
+The learning rate `η` controls step size.
 
-For $z=f(y)$ and $y=g(x)$:
-
-$$
-\frac{dz}{dx}=\frac{dz}{dy}\frac{dy}{dx}
-$$
-
-Neural networks compose many functions. Backpropagation traverses the computation graph in reverse, multiplying local derivatives by the upstream sensitivity. Reverse-mode automatic differentiation is efficient for a scalar loss with many parameters.
-
-Common gradient failures:
-
-- detached tensors or non-differentiable operations;
-- in-place mutation of needed intermediates;
-- saturation in sigmoid/tanh;
-- exploding/vanishing products through depth or time;
-- incorrect reduction or masking;
-- loss computed on padded or leaked targets;
-- mixed-precision underflow/overflow.
-
-Check gradients with small synthetic cases, finite differences, parameter/activation statistics, and overfitting one tiny batch.
-
-## 10. Objectives, losses, and metrics
-
-The training objective is what optimization sees; the business metric is what the system must improve. They need not be identical.
-
-- Squared loss strongly penalizes large residuals and estimates a conditional mean under familiar assumptions.
-- Absolute loss is more robust and targets a conditional median.
-- Cross-entropy trains probabilities by maximizing log likelihood for classification.
-- Ranking or contrastive losses optimize relative ordering or representation geometry.
-
-An objective can include regularization and constraints:
-
-$$
-J(w)=\frac{1}{n}\sum_{i=1}^n \ell(y_i,f_w(x_i))+\lambda R(w)
-$$
-
-Validate whether improvements in the surrogate loss transfer to calibration, decision thresholds, latency, cost, fairness, and the downstream outcome.
-
-## 11. Gradient descent, SGD, and learning rate
-
-Full-batch gradient descent uses all examples per update:
-
-$$
-w_{t+1}=w_t-\eta\nabla J(w_t)
-$$
-
-Stochastic or mini-batch gradients trade exactness for cheaper, noisier updates. Mini-batches exploit hardware parallelism and often improve optimization throughput.
-
-Learning rate too high can diverge or oscillate; too low can stall. Batch size changes gradient noise, memory, throughput, and sometimes the appropriate learning-rate policy. Compare runs by examples/tokens, optimizer steps, and wall-clock cost—not epochs alone.
-
-Use warmup when early updates are unstable, decay to refine later training, gradient accumulation when memory limits the physical batch, and clipping when large gradients are a diagnosed risk.
-
-## 12. Momentum, Adam, AdamW, and schedules
-
-Momentum smooths updates using an exponential history of gradients. Adam maintains first- and second-moment estimates to adapt step sizes per parameter.
-
-AdamW applies weight decay separately from the adaptive gradient update. That distinction matters because adding an L2 term to the loss is not generally equivalent under adaptive scaling.
-
-Interview comparison:
-
-| Choice | Strength | Watch |
+| Observed behavior | Likely causes | First checks |
 |---|---|---|
-| SGD + momentum | simple, often strong final generalization | sensitive schedules; slower early progress |
-| Adam/AdamW | fast, robust initial optimization | memory, hyperparameters, decay semantics |
-| constant LR | predictable baseline | may waste late-stage refinement |
-| cosine/step decay | lower late-stage steps | schedule tied to correct step budget |
-| warmup | stabilizes early training | too long delays useful learning |
+| loss becomes `NaN`/infinite | large steps, overflow, invalid log/division | inputs, loss numerics, LR, gradient norm |
+| loss oscillates | LR too high, sharp curvature, noisy batches | LR range, batch statistics, clipping |
+| train loss flat | LR too low, dead/saturated activations, graph issue | gradients, activations, optimizer parameters |
+| train improves, validation worsens | overfit, leakage, shift, weak regularization | split, pipeline, capacity, early stopping |
+| highly variable runs | seed/data order, small validation, nondeterminism | repeated runs and confidence intervals |
 
-Do not declare one optimizer universally best; report the model, data, batch, schedule, compute budget, and validation evidence.
+### Batch, stochastic, and mini-batch updates
 
-## 13. Curvature, conditioning, and optimization geometry
+- Full-batch gradients are deterministic for fixed data but expensive.
+- Stochastic gradients update from one example and are noisy.
+- Mini-batches exploit accelerators while retaining useful noise.
 
-The Hessian describes local curvature. Large curvature differences across directions create narrow valleys: one learning rate may be too large for a steep direction and too small for a flat one.
+Noise can help exploration, but it also increases variance. Batch size changes optimization dynamics, memory, throughput, and the number of updates per epoch. Do not scale learning rate without testing.
 
-Normalization, feature scaling, residual connections, initialization, preconditioning, adaptive optimizers, and momentum can improve the effective geometry. A low training loss with poor validation performance is primarily a generalization problem, not proof that the optimizer failed.
+### Momentum, Adam, and AdamW
 
-Saddle points have zero gradient but mixed positive and negative curvature. Plateaus have small gradients across broad regions. Both differ from a useful local minimum.
+- Momentum accumulates a velocity, reducing zig-zagging and accelerating persistent directions.
+- Adam keeps exponential moving averages of gradients and squared gradients with bias correction.
+- AdamW applies weight decay separately from the adaptive gradient update.
 
-## 14. Convexity and constrained optimization
+Use SGD with momentum when its inductive bias and final generalization are validated; AdamW is a strong practical default for many transformer-style workloads. Optimizer choice is empirical and workload-specific.
 
-A convex objective over a convex feasible set has no suboptimal local minimum. Strong convexity adds curvature and can give uniqueness and faster convergence guarantees.
+## 7. Convexity, curvature, and constraints
 
-Many classical losses are convex in linear-model parameters; neural-network training is not. Convex intuition is still useful locally and for subproblems.
+A differentiable function is convex when its graph lies below every chord; equivalently, first-order supporting-hyperplane conditions hold. For twice-differentiable functions, a positive-semidefinite Hessian everywhere implies convexity.
 
-For equality constraint $g(w)=0$, the Lagrangian is:
+Convex optimization advantages:
 
-$$
-\mathcal{L}(w,\lambda)=f(w)+\lambda g(w)
-$$
+- any local minimum is global;
+- optimality conditions are more informative;
+- mature solvers can provide certificates or tight diagnostics.
 
-Lagrange multipliers represent sensitivity of the optimum to a constraint under suitable conditions. In production optimization, validate units, feasibility, solver status, tolerance, and what happens when no feasible solution exists.
+Deep networks are non-convex. Practitioners therefore use initialization, normalization, residual connections, schedules, regularization, stochasticity, and repeated evaluation rather than expecting a global certificate.
 
-## 15. L1, L2, and regularization
+### Second-order information
 
-L1 regularization adds $\lambda\lVert w\rVert_1$ and can produce exact zeros because of its geometry. L2 adds $\lambda\lVert w\rVert_2^2$ and smoothly shrinks correlated coefficients.
+Newton's method uses inverse Hessian curvature to scale a step. It can converge quickly near a suitable optimum but is expensive and may move badly under indefinite curvature. Quasi-Newton methods such as BFGS/L-BFGS approximate curvature without storing a full Hessian.
 
-Regularization controls effective complexity but does not repair leakage, distribution shift, a wrong label, or a biased sample. Tune strength inside the training/validation process. Apply weight decay selectively: biases and normalization parameters are often handled differently in deep networks.
+### Constrained optimization
 
-Early stopping, data augmentation, dropout, and architectural constraints are also regularizers, but they work through different mechanisms.
+For equality constraint `g(θ)=0`, a Lagrangian is:
 
-## 16. Numerical stability and precision
+`L(θ, λ) = f(θ) + λg(θ)`
 
-Stable softmax subtracts the maximum logit:
+Karush-Kuhn-Tucker conditions extend this idea to inequalities under regularity assumptions. In interviews, explain feasibility, complementary slackness, and why conditions may be necessary rather than sufficient in non-convex problems.
 
-$$
-\operatorname{softmax}(z_i)=\frac{e^{z_i-m}}{\sum_j e^{z_j-m}},\quad m=\max_j z_j
-$$
+Practical constraint strategies include projection, penalty/barrier methods, reparameterization, and specialized solvers. A penalty coefficient creates a trade-off; it does not guarantee exact feasibility.
 
-Use `logsumexp` for log probabilities, `log1p` for $\log(1+x)$ near zero, and stable library losses that combine activation and log operations. Avoid explicit matrix inverses and probabilities rounded to exactly zero before logging.
+## 8. Regularization and generalization
 
-Mixed precision improves throughput and memory but needs supported kernels, loss scaling where applicable, stable reductions, and accuracy checks against an appropriate baseline. Monitor NaN/Inf counts, gradient norms, activation ranges, and the first failing step.
+| Technique | Training effect | Important caveat |
+|---|---|---|
+| L2 penalty/weight decay | discourages large weights | adaptive optimizers make coupling details matter |
+| L1 penalty | encourages sparsity | correlated features make selection unstable |
+| dropout | noisy subnetworks during training | disabled or rescaled appropriately at inference |
+| early stopping | limits optimization on training set | validation reuse can overfit decisions |
+| data augmentation | encodes invariances | invalid transforms corrupt labels |
+| label smoothing | softens confidence targets | can affect calibration and rare classes |
+| normalization | improves scale/optimization behavior | train/eval state and small batches matter |
 
-## 17. Two derivations worth speaking
+Regularization should be chosen against a held-out objective and operational constraints, not by tradition.
 
-### Mean-squared-error gradient
+## 9. Numerical stability and precision
 
-For $J(w)=\lVert Xw-y\rVert_2^2/n$, let $r=Xw-y$. Then $J=r^\top r/n$ and:
+For logits `z`, stable softmax subtracts `max(z)` before exponentiation:
 
-$$
-\nabla_wJ=\frac{2}{n}X^\top r
-$$
+`softmax_i(z) = exp(z_i − m) / Σ exp(z_j − m)`
 
-Explain shapes: `X` is `(n, d)`, `w` is `(d,)`, `r` is `(n,)`, so the gradient is `(d,)`.
+The stable log-sum-exp identity is:
 
-### Binary logistic loss gradient
+`log Σ exp(z_i) = m + log Σ exp(z_i − m)`
 
-For logits $z=Xw$, probabilities $p=\sigma(z)$, and average binary cross-entropy:
+Other practices:
 
-$$
-\nabla_wJ=\frac{1}{n}X^\top(p-y)
-$$
+- clip probabilities only when the objective's intended numerical contract justifies it;
+- use fused cross-entropy-with-logits routines;
+- avoid subtracting nearly equal large numbers;
+- monitor finite values and gradient norms;
+- accumulate sensitive reductions in adequate precision;
+- use automatic mixed precision with scaling and overflow checks;
+- recognize that floating-point operations are not associative.
 
-The residual is probability error rather than raw prediction error. Regularization adds its own gradient.
+Reproducibility is bounded: seeds help, but parallel reductions, hardware, kernels, and library versions may still change results.
 
-## 18. Small numerical checks
+## 10. Minimal dependency-free example: stable softmax
 
 ```python
 from __future__ import annotations
 
-from collections.abc import Callable
-
-import numpy as np
-from numpy.typing import NDArray
+from math import exp, isclose
+from typing import Sequence
 
 
-def stable_softmax(logits: NDArray[np.float64]) -> NDArray[np.float64]:
-    shifted = logits - np.max(logits, axis=-1, keepdims=True)
-    exp = np.exp(shifted)
-    return exp / np.sum(exp, axis=-1, keepdims=True)
+def stable_softmax(logits: Sequence[float]) -> list[float]:
+    """Return stable softmax probabilities for a non-empty finite sequence."""
+    if not logits:
+        raise ValueError("logits must not be empty")
+
+    maximum = max(logits)
+    shifted = [exp(value - maximum) for value in logits]
+    denominator = sum(shifted)
+    if denominator == 0.0:
+        raise ArithmeticError("softmax denominator underflowed to zero")
+    return [value / denominator for value in shifted]
 
 
-def central_difference(
-    objective: Callable[[NDArray[np.float64]], float],
-    weights: NDArray[np.float64],
-    index: int,
-    eps: float = 1e-6,
-) -> float:
-    plus = weights.copy()
-    minus = weights.copy()
-    plus[index] += eps
-    minus[index] -= eps
-    return float((objective(plus) - objective(minus)) / (2 * eps))
+probabilities = stable_softmax([1000.0, 1001.0, 1002.0])
+assert isclose(sum(probabilities), 1.0, rel_tol=0.0, abs_tol=1e-12)
+assert probabilities[2] > probabilities[1] > probabilities[0]
+assert stable_softmax([5.0, 5.0]) == [0.5, 0.5]
 ```
 
-Finite differences are a diagnostic on small smooth cases, not a scalable training method. Compare absolute and relative error, and avoid testing exactly at non-differentiable points.
+Production code should use the framework's fused, tested routines. This example demonstrates the stability transformation.
 
-## 19. Common interview failure modes
+## 11. Library and solver map
 
-- multiplying matrices without stating shapes;
-- saying cosine is a distance without defining the conversion and normalization;
-- claiming PCA selects predictive features;
-- computing inverses explicitly as the default solver;
-- confusing gradient direction with the parameter update direction;
-- treating epoch count as comparable when batch size or dataset size changed;
-- saying Adam includes the same L2 behavior as AdamW;
-- using gradient clipping to hide a broken data or loss pipeline;
-- attributing poor validation solely to a local minimum;
-- ignoring NaNs, overflow, masking, and reduction semantics.
+| Tool | Use it for | Verify before production |
+|---|---|---|
+| NumPy | dense array operations and linear algebra | shapes, dtype, copies/views, solver choice |
+| SciPy | sparse/dense solvers and optimization | convergence flags, bounds, tolerances, scaling |
+| PyTorch | tensors, reverse-mode autograd, neural optimization | train/eval modes, device/dtype, gradient flow |
+| JAX | composable transformations, autodiff, compilation | purity/static-shape constraints and compilation behavior |
+| CVXPY | modeling disciplined convex programs | problem class, solver support, status/certificates |
+| OR-Tools | discrete, routing, and constraint optimization | optimality gap, time limits, business constraints |
 
-## 20. Rapid interview Q&A
+Do not claim “the solver succeeded” from the absence of an exception. Read the termination status, residuals, feasibility, objective gap, iteration limit, and sensitivity.
 
-**Why normalize embeddings for cosine search?**  
-It makes the dot product equal cosine similarity and removes vector magnitude from ranking. Confirm that magnitude is not useful information.
+## 12. Rapid interview questions
 
-**Why can PCA hurt a tree model?**  
-It mixes interpretable axis-aligned features, can discard low-variance predictive directions, and may add unnecessary preprocessing.
+**Why avoid a matrix inverse?**  
+Solving a system through QR, Cholesky, SVD, or another suitable factorization is typically more stable and efficient than forming an inverse.
 
-**Why is $X^\top X$ often worse conditioned than $X$?**  
-Its condition number is approximately squared, amplifying numerical sensitivity.
+**Eigen-decomposition versus SVD?**  
+Eigen-decomposition applies to square matrices and may involve complex values. SVD applies to any matrix and directly exposes singular directions, rank, and conditioning.
+
+**Why does feature scaling affect gradient descent?**  
+Unequal scales create elongated loss contours; one learning rate then overshoots steep directions or crawls along flat ones.
 
 **What does a zero gradient mean?**  
-A stationary point or numerical issue—not necessarily a minimum. Inspect curvature, neighborhood behavior, and implementation.
+It may be a minimum, maximum, saddle, flat/saturated region, non-differentiable convention, or graph bug. Inspect loss, curvature/perturbations, and gradient flow.
 
-**When is L1 useful?**  
-When a sparse solution is plausible and useful, while accounting for instability among correlated features.
+**Why can cosine and Euclidean nearest neighbors disagree?**  
+Cosine uses angle while Euclidean uses angle and magnitude. Normalizing vectors makes their rankings more closely related.
 
-## 21. Lead-level case
+**What is exploding-gradient clipping doing?**  
+It bounds update-driving gradient magnitude. It can stabilize training but may hide a bad learning rate, architecture, data scale, or loss.
 
-**Case:** training loss becomes NaN after scaling batch size across GPUs.
+**Does Adam always converge faster or generalize better?**  
+No. It often reaches useful loss quickly, but results depend on objective, schedule, regularization, and workload.
 
-A strong answer should:
+**Why is an ill-conditioned problem risky?**  
+Small data or rounding changes can cause large parameter changes, producing unstable estimates and unreliable extrapolation.
 
-1. pin the exact code, data, optimizer, precision, global batch, accumulation, and learning-rate schedule;
-2. find the first non-finite activation, loss, gradient, or parameter using a small reproducible run;
-3. verify target range, masks, reductions, normalization, loss implementation, and distributed aggregation;
-4. compare full precision, lower learning rate, warmup, stable kernels, loss scaling, and clipping only with a causal hypothesis;
-5. restore from a known checkpoint and re-run a bounded acceptance set;
-6. add finite-value assertions, gradient telemetry, and a batch/learning-rate scaling test to the release gate.
+## 13. Lead-level case: training diverges after a larger rollout
 
-## 22. Final checklist
+Structure the answer:
 
-- Can you annotate shapes through a linear layer and attention score calculation?
-- Can you explain cosine versus dot product versus Euclidean ranking?
-- Can you connect rank, projection, eigendecomposition, SVD, and PCA?
-- Can you derive MSE or logistic-loss gradients with shapes?
-- Can you explain backpropagation as chain rule rather than a library call?
-- Can you compare SGD, momentum, Adam, AdamW, schedules, and batch size?
-- Can you distinguish optimization failure, numerical failure, and generalization failure?
-- Can you explain L1/L2, convexity, conditioning, and constraints without overclaiming?
+1. Freeze the exact data snapshot, code, config, seed, container, and hardware metadata.
+2. Compare old/new data schemas, feature ranges, missingness, duplicates, labels, sampling, and batch composition.
+3. Reproduce on a minimal deterministic slice; assert finite inputs, logits, losses, and gradients.
+4. Log per-layer activation/gradient norms and the first failing step.
+5. Check mixed-precision scaling, optimizer state restoration, schedule position, effective batch size, gradient accumulation, and distributed reduction.
+6. Run an LR range reduction and full-precision control; temporarily disable questionable augmentations or fused kernels.
+7. Verify the objective and labels, not only mechanics.
+8. Fix the root cause, add a regression test and numerical guardrail, rerun repeated-seed evaluation, then stage the rollout.
 
-## Primary references
+The lead answer connects mathematics to reproducible operations and prevents recurrence.
 
-- NumPy documentation: array broadcasting and linear algebra.
-- PyTorch documentation: autograd mechanics, numerical accuracy, and optimizer APIs.
-- Golub and Van Loan, *Matrix Computations*.
-- Boyd and Vandenberghe, *Convex Optimization*.
-- Goodfellow, Bengio, and Courville, *Deep Learning*, optimization and numerical computation chapters.
+## 14. Final checklist
+
+- [ ] I state tensor shapes and broadcasting axes.
+- [ ] I can explain norms, cosine, projections, rank, and conditioning.
+- [ ] I distinguish eigen-decomposition, SVD, and PCA.
+- [ ] I explain gradient, Jacobian, Hessian, chain rule, and reverse-mode autodiff.
+- [ ] I can diagnose divergence, oscillation, plateaus, and overfitting.
+- [ ] I distinguish SGD, momentum, Adam, and AdamW without claiming a universal winner.
+- [ ] I understand convexity, constraints, solver status, and optimization gaps.
+- [ ] I use stable softmax/log-sum-exp and avoid explicit inverses.
+- [ ] I connect regularization and precision choices to validation evidence.
+- [ ] I can turn a numerical failure into a reproducible debugging plan.
+
+## 15. Primary references
+
+- [PyTorch automatic differentiation documentation](https://docs.pytorch.org/docs/stable/autograd.html)
+- [PyTorch autograd mechanics](https://docs.pytorch.org/docs/stable/notes/autograd.html)
+- [PyTorch numerical accuracy notes](https://docs.pytorch.org/docs/stable/notes/numerical_accuracy.html)
+- [PyTorch AdamW documentation](https://docs.pytorch.org/docs/stable/generated/torch.optim.AdamW.html)
+- [NumPy linear algebra documentation](https://numpy.org/doc/stable/reference/routines.linalg.html)
+- [SciPy optimization documentation](https://docs.scipy.org/doc/scipy/reference/optimize.html)
+- [JAX automatic differentiation guide](https://docs.jax.dev/en/latest/automatic-differentiation.html)
+- [CVXPY disciplined convex programming tutorial](https://www.cvxpy.org/tutorial/dcp/)
+- [Boyd and Vandenberghe, Convex Optimization](https://web.stanford.edu/~boyd/cvxbook/)
+- [scikit-learn PCA documentation](https://scikit-learn.org/stable/modules/decomposition.html#pca)

@@ -49,10 +49,10 @@ guides and adds time-series forecasting plus recommendation/search/ranking
 guides. Each role bank now contains 160 guided questions while preserving all
 earlier IDs.
 
-Batch 9 is the final planned review candidate. It adds computer vision and
-multimodal AI, graph ML and knowledge graphs, explainability/fairness/responsible
-ML, and survival/risk/pricing/decision-optimization guides. It adds 20
-role-specific questions per bank, bringing each candidate bank to 180.
+Batch 9 is the final planned review candidate. It source-backs an expanded
+linear-algebra/calculus/optimization guide and adds separate unsupervised and
+dimensionality-reduction, anomaly and rare-event, and model-assurance guides.
+It adds 20 role-specific questions per bank, bringing each candidate bank to 180.
 
 ## Run locally
 
