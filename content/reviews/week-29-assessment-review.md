@@ -1,0 +1,16 @@
+---
+week: 29
+status: candidate
+version: 1.0.0
+last_reviewed: 2026-11-11
+publication_authorization: pending human approval
+---
+
+# Week 29 assessment review
+
+The 100-item bank covers frozen tests, same-case baselines, perplexity, exact
+match, precision, recall, F1, segments, contamination, paired deltas, bootstrap
+limits, blind human comparison, agreement, LLM judges and accepted-task cost.
+Explanations keep task correctness, preference, uncertainty and operations as
+separate evidence rather than one overall truth score.
+
