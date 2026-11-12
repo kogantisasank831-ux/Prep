@@ -4,9 +4,9 @@
 
 Roadmap source: `Path.md`, Week 23 — GenAI system design.
 
-The candidate includes beginner/production lessons, six cases, a strict
+The reviewed scope includes beginner/production lessons, six cases, a strict
 twelve-dimension proposal contract, deterministic structural reviewer, CLI,
-tests and assessment. Version 1.0.0 remains under review.
+tests and assessment. Version 1.0.0 is approved for publication.
 
 ## Coverage
 
@@ -34,5 +34,5 @@ approval. Lessons require a human reviewer to challenge feasibility,
 calculations, consistency, security and operating ownership.
 
 Focused Ruff, formatting, strict typing, behavior and CLI checks pass. The
-assessment's 20 references and shared browser contract pass. Publication and
-live rendering remain pending approval.
+assessment's 20 references and shared browser contract pass. Publication was
+approved on 2026-11-12; live rendering verification follows main promotion.

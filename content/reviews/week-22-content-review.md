@@ -4,9 +4,10 @@
 
 Roadmap source: `Path.md`, Week 22 — MCP and interoperable tools.
 
-The candidate includes two lessons, `labs/week_22/`, focused tests and a
+The reviewed scope includes two lessons, `labs/week_22/`, focused tests and a
 100-item assessment. It targets specification revision `2026-07-28` and pinned
-Python SDK 2.3.0. All pages remain `status: review`; publication is pending.
+Python SDK 2.3.0. All pages are `status: approved`; publication was authorized
+on 2026-11-12.
 
 ## Coverage
 
@@ -40,5 +41,5 @@ covered, while authentication itself is explicitly outside the lab.
 - Discovery, schema, annotation, scope, isolation, resource, prompt and CLI tests
   pass without a model, token, database or network.
 - The Week 22 assessment passes the shared browser and executable-code gates.
-- Independent-client transport, OAuth and live deployment checks remain pending
-  production work and are not claimed by this candidate.
+- Independent-client transport and OAuth checks remain future production work
+  and are not claimed by this bounded lab.

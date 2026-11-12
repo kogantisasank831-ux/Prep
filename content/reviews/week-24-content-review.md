@@ -4,9 +4,9 @@
 
 Roadmap source: `Path.md`, Week 24 — Project storytelling and mock interviews.
 
-The candidate adds two lesson depths, strict evidence contracts, a deterministic
+The reviewed scope adds two lesson depths, strict evidence contracts, a deterministic
 three-depth story builder, a six-dimension practice rubric, CLI, tests and a
-100-item assessment. It remains unpublished pending human review.
+100-item assessment. Publication was approved on 2026-11-12.
 
 ## Coverage
 
@@ -30,4 +30,4 @@ experience.
 The rubric checks presence and specificity, not external truth or communication
 quality. Confidential-data review and employer permission are separate human
 gates. Ruff, formatting, strict mypy, focused behavior/CLI tests and the bank
-contracts pass locally. Publication remains pending.
+contracts pass locally. Live rendering verification follows main promotion.

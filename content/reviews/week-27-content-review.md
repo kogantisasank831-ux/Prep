@@ -2,8 +2,8 @@
 
 ## Scope and disposition
 
-Roadmap source: `Path.md`, Week 27 — Fine-tuning and LoRA. The candidate remains
-unpublished pending human approval.
+Roadmap source: `Path.md`, Week 27 — Fine-tuning and LoRA. The reviewed lesson,
+assessment and lab scope was approved for publication on 2026-11-12.
 
 ## Coverage and findings
 

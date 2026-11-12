@@ -2,9 +2,9 @@
 layout: week
 week: 26
 phase: 7
-status: review
+status: approved
 version: 1.0.0
-last_reviewed: 2026-11-11
+last_reviewed: 2026-11-12
 estimated_hours: 8
 permalink: /weeks/week-26/beginner/
 title: "Turn raw documents into safe, repeatable training data"

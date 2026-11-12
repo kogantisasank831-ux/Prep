@@ -2,8 +2,8 @@
 
 ## Scope and disposition
 
-Roadmap source: `Path.md`, Week 26 — Data preparation. The candidate remains
-unpublished pending human approval.
+Roadmap source: `Path.md`, Week 26 — Data preparation. The reviewed lesson,
+assessment and lab scope was approved for publication on 2026-11-12.
 
 ## Coverage and findings
 

@@ -1,9 +1,9 @@
 ---
 week: 25
-status: candidate
+status: reviewed
 version: 1.0.0
-last_reviewed: 2026-11-11
-publication_authorization: pending human approval
+last_reviewed: 2026-11-12
+publication_authorization: User approved publishing Weeks 21–30 after the validated content batches were merged to main
 ---
 
 # Week 25 assessment review

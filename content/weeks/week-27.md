@@ -2,9 +2,9 @@
 layout: week
 week: 27
 phase: 7
-status: review
+status: approved
 version: 1.0.0
-last_reviewed: 2026-11-11
+last_reviewed: 2026-11-12
 estimated_hours: 8
 permalink: /weeks/week-27/
 title: "Choose and evaluate full fine-tuning, LoRA and QLoRA"
