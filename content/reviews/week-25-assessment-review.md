@@ -1,0 +1,16 @@
+---
+week: 25
+status: candidate
+version: 1.0.0
+last_reviewed: 2026-11-11
+publication_authorization: pending human approval
+---
+
+# Week 25 assessment review
+
+The 100-item bank covers causal objectives, token loss, document splits,
+training-only vocabulary, tokenisation, optimisers, warm-up/decay, accumulation,
+global token batches, mixed precision, clipping, validation, checkpoints and
+reproducibility. The balanced-paper and executable-code contracts match Weeks
+21–24. Explanations do not equate falling training loss with useful behavior.
+

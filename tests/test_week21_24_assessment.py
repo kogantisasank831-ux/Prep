@@ -1,4 +1,4 @@
-"""Candidate Week 21–24 bank, executable-code and page contracts."""
+"""Candidate Week 21–28 bank, executable-code and page contracts."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from scripts.build_candidate_assessments import build_bank
 
 
 ROOT = Path(__file__).resolve().parents[1]
-WEEKS = (21, 22, 23, 24)
+WEEKS = tuple(range(21, 29))
 
 
 class Question(TypedDict, total=False):
