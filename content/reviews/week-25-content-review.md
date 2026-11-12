@@ -2,9 +2,9 @@
 
 ## Scope and disposition
 
-Roadmap source: `Path.md`, Week 25 — Training foundations. The review candidate
-adds two lesson depths and an inspectable causal-training surrogate. It remains
-unpublished pending human approval.
+Roadmap source: `Path.md`, Week 25 — Training foundations. The reviewed scope
+adds two lesson depths and an inspectable causal-training surrogate. Publication
+was approved on 2026-11-12.
 
 ## Coverage and findings
 

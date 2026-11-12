@@ -1,4 +1,4 @@
-"""Candidate Week 21–30 bank, executable-code and page contracts."""
+"""Approved Week 21–30 bank, executable-code and page contracts."""
 
 from __future__ import annotations
 
@@ -138,7 +138,7 @@ def test_shared_browser_engine_contract(week: int) -> None:
 
 
 @pytest.mark.parametrize("week", WEEKS)
-def test_page_and_lesson_links_are_candidate_only(week: int) -> None:
+def test_page_and_lesson_links_are_approved(week: int) -> None:
     page = (ROOT / f"assessments/week-{week:02d}.html").read_text()
     production = (ROOT / f"content/weeks/week-{week:02d}.md").read_text()
     beginner = (ROOT / f"content/weeks/week-{week:02d}-beginner.md").read_text()
@@ -146,14 +146,15 @@ def test_page_and_lesson_links_are_candidate_only(week: int) -> None:
     assert page.count('id="assessment-app"') == 1
     assert f"/assessments/week-{week:02d}/" in production
     assert f"/assessments/week-{week:02d}/" in beginner
-    assert "status: review" in page
-    assert "status: review" in production
-    assert "status: review" in beginner
+    assert "status: approved" in page
+    assert "status: approved" in production
+    assert "status: approved" in beginner
 
 
-def test_candidate_weeks_are_not_published_before_approval() -> None:
+@pytest.mark.parametrize("set_name", ["PUBLISHED_WEEKS", "ASSESSMENT_WEEKS"])
+def test_all_reviewed_weeks_are_public(set_name: str) -> None:
     shell = (ROOT / "shell.js").read_text()
-    match = re.search(r"window\.PUBLISHED_WEEKS = new Set\(\[([^]]+)\]\)", shell)
+    match = re.search(rf"window\.{set_name} = new Set\(\[([^]]+)\]\)", shell)
     assert match is not None
     published = {int(value.strip()) for value in match.group(1).split(",")}
-    assert published == set(range(1, 21))
+    assert published == set(range(1, 31))

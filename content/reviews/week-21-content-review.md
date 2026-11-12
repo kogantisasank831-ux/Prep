@@ -4,10 +4,10 @@
 
 Roadmap source: `Path.md`, Week 21 — Cost and latency optimisation.
 
-Candidate artifacts are the production and beginner lessons, `labs/week_21/`,
+Reviewed artifacts are the production and beginner lessons, `labs/week_21/`,
 `tests/test_week21_optimization.py` and the Week 21 portion of the shared
-assessment bank test. Version 1.0.0 remains `status: review`; Week 21 is not in
-`PUBLISHED_WEEKS` and requires human approval before promotion.
+assessment bank test. Version 1.0.0 is `status: approved`; Week 21 is included in
+both public navigation allowlists after user approval on 2026-11-12.
 
 ## Coverage
 
@@ -41,4 +41,4 @@ false hits—are explicit.
 - All focused Week 21 behavior and CLI tests pass.
 - The Week 21 bank passes the shared 1,000-paper JavaScript contract and all 20
   coding references pass five checks.
-- Publication and live Pages verification are pending approval.
+- Publication is approved; live Pages verification follows main promotion.

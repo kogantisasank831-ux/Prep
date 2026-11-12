@@ -2,9 +2,9 @@
 layout: week
 week: 21
 phase: 5
-status: review
+status: approved
 version: 1.0.0
-last_reviewed: 2026-11-11
+last_reviewed: 2026-11-12
 estimated_hours: 8
 permalink: /weeks/week-21/beginner/
 title: "Make an AI answer faster and cheaper without making it worse"

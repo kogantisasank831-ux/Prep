@@ -2,8 +2,9 @@
 
 ## Scope and disposition
 
-Roadmap source: `Path.md`, Week 30 — Serving and documentation. The candidate
-completes the optional phase but remains unpublished pending human approval.
+Roadmap source: `Path.md`, Week 30 — Serving and documentation. The reviewed
+scope completes the optional phase and was approved for publication on
+2026-11-12.
 
 ## Coverage and findings
 

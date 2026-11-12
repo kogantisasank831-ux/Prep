@@ -1,14 +1,14 @@
 ---
 week: 24
-status: candidate
+status: reviewed
 version: 1.0.0
-last_reviewed: 2026-11-11
-publication_authorization: pending human approval
+last_reviewed: 2026-11-12
+publication_authorization: User approved publishing Weeks 21–30 after the validated content batches were merged to main
 ---
 
 # Week 24 assessment review
 
-The 100-item candidate bank covers one-source evidence, STAR context, personal
+The 100-item reviewed bank covers one-source evidence, STAR context, personal
 role, observable actions, metric provenance, team attribution, decision
 alternatives, failure, limitations, reflection, three story depths and
 adversarial mock interviews. Its balanced paper and scoring policy match prior
@@ -21,4 +21,4 @@ and gate contracts without storing personal or employer data.
 
 All 20 coding references pass five checks; starters score zero and no-op
 solutions lose marks. The shared verifier reaches every item across 1,000 papers
-and validates scoring/restoration. Publication is not yet authorized.
+and validates scoring/restoration. Publication was authorized on 2026-11-12.

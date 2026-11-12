@@ -92,7 +92,7 @@ test("Roadmap remains selected on the roadmap route", () => {
 });
 
 test("Roadmap is not selected on a published week route", () => {
-  const { context, roadmapLink } = loadShell("/Prep/weeks/week-07/");
+  const { context, roadmapLink } = loadShell("/Prep/weeks/week-30/");
   updateNavigation(context);
   assert.equal(roadmapLink.classList.contains("active"), false);
   assert.equal(roadmapLink.getAttribute("aria-current"), null);

@@ -2,9 +2,9 @@
 
 ## Scope and disposition
 
-Roadmap source: `Path.md`, Week 29 — Model evaluation. The candidate adds two
-lesson depths and a deterministic four-candidate comparison. It remains
-unpublished pending human approval.
+Roadmap source: `Path.md`, Week 29 — Model evaluation. The reviewed scope adds
+two lesson depths and a deterministic four-candidate comparison. Publication was
+approved on 2026-11-12.
 
 ## Coverage and findings
 

@@ -1,14 +1,14 @@
 ---
 week: 23
-status: candidate
+status: reviewed
 version: 1.0.0
-last_reviewed: 2026-11-11
-publication_authorization: pending human approval
+last_reviewed: 2026-11-12
+publication_authorization: User approved publishing Weeks 21–30 after the validated content batches were merged to main
 ---
 
 # Week 23 assessment review
 
-The 100-item candidate bank tests the twelve design dimensions plus trade-offs,
+The 100-item reviewed bank tests the twelve design dimensions plus trade-offs,
 critical paths and readiness gates. It follows the established type and
 difficulty distribution and keeps structural readiness distinct from semantic
 approval.
@@ -20,4 +20,4 @@ they are small browser-safe contracts rather than pretend architecture judges.
 
 All references pass five checks, starters score zero, no-op implementations lose
 marks and the shared JavaScript engine validates 1,000 balanced papers. The page
-and both lesson variants remain review-only.
+and both lesson variants are approved and publicly navigable.

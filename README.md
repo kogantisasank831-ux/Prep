@@ -275,8 +275,8 @@ paper seed. They can be resumed by link and downloaded as JSON. This is a public
 practice bank with client-side scoring; neither answer secrecy nor authenticated
 exam results are provided. No central learner database or score upload is added.
 
-Weeks 1 through 20 use the shared engine. Future weeks need their own
-reviewed 100-question JSON bank and assessment page before being added to
+Weeks 1 through 30 use the shared engine. Any future week needs its own reviewed
+100-question JSON bank and assessment page before being added to
 `ASSESSMENT_WEEKS` in `shell.js`. A bank revision needs a new version; an old
 version's paper link is rejected instead of silently changing its questions.
 The page chooses the Python or SQL worker from bank metadata; other languages
@@ -770,11 +770,11 @@ Required CI adds 64 focused assessment checks, 39 focused reliability checks
 and a 16-check smoke to all existing assessment, lab and PostgreSQL/pgvector
 gates. Lesson and questionnaire navigation both include Week 20.
 
-## Weeks 21–24 review candidates
+## Weeks 21–24 published curriculum
 
-Weeks 21–24 are prepared as review candidates and are deliberately absent from
-`PUBLISHED_WEEKS` until human approval. Each week has production and beginner
-lessons, a deterministic local lab, a 100-item assessment bank and CI coverage:
+Weeks 21–24 are approved and available through lesson and assessment navigation.
+Each week has production and beginner lessons, a deterministic local lab, a
+100-item assessment bank and CI coverage:
 
 - Week 21 compares all-large and routed inference with token, quality, latency,
   budget, parallelism and tenant-scoped exact-cache contracts.
@@ -785,7 +785,7 @@ lessons, a deterministic local lab, a 100-item assessment bank and CI coverage:
 - Week 24 builds 2-minute, 10-minute and deep-dive project stories from one
   evidence record without changing metric attribution.
 
-Run the candidate gates locally:
+Run the validation gates locally:
 
 ```shell
 python -m pytest tests/test_week21_24_assessment.py tests/test_week21_optimization.py tests/test_week22_mcp.py tests/test_week23_system_design.py tests/test_week24_storytelling.py -q
@@ -795,12 +795,11 @@ python -m labs.week_23.demo smoke
 python -m labs.week_24.demo smoke
 ```
 
-## Weeks 25–28 review candidates
+## Weeks 25–28 published curriculum
 
-Weeks 25–28 extend the optional LLM training experiment and remain deliberately
-absent from `PUBLISHED_WEEKS` until human approval. Each candidate has production
-and beginner lessons, a bounded deterministic lab, a 100-item assessment bank
-and review evidence:
+Weeks 25–28 extend the optional LLM training experiment and are approved for
+lesson and assessment navigation. Each week has production and beginner lessons,
+a bounded deterministic lab, a 100-item assessment bank and review evidence:
 
 - Week 25 traces a causal next-token training loop with document splits,
   training-only vocabulary, scheduled SGD, accumulation and checkpoint digests.
@@ -812,7 +811,7 @@ and review evidence:
   response-only loss masks and a visible memorisation baseline.
 
 The local Week 25, 27 and 28 labs are inspectable numerical/data surrogates; they
-do not claim to train a useful transformer. Run the candidate gates locally:
+do not claim to train a useful transformer. Run the validation gates locally:
 
 ```shell
 python -m pytest tests/test_week21_24_assessment.py tests/test_week25_training.py tests/test_week26_data_pipeline.py tests/test_week27_lora.py tests/test_week28_instruction.py -q
@@ -822,10 +821,10 @@ python -m labs.week_27.demo smoke
 python -m labs.week_28.demo smoke
 ```
 
-## Weeks 29–30 review candidates
+## Weeks 29–30 published curriculum
 
-Weeks 29–30 complete the optional LLM training experiment while remaining at
-`status: review` and outside `PUBLISHED_WEEKS` pending approval:
+Weeks 29–30 complete the optional LLM training experiment and are approved for
+lesson and assessment navigation:
 
 - Week 29 compares synthetic base, prompted-base, fine-tuned and RAG outputs on
   one frozen, contamination-aware test set. It keeps exact match,
@@ -834,7 +833,7 @@ Weeks 29–30 complete the optional LLM training experiment while remaining at
   observations and validates the full experiment report plus package manifest.
 
 The serving lab does not launch vLLM or allocate a GPU; target-runtime capacity
-still requires actual hardware benchmarks. Run the final candidate gates:
+still requires actual hardware benchmarks. Run the final validation gates:
 
 ```shell
 python -m pytest tests/test_week21_24_assessment.py tests/test_week29_evaluation.py tests/test_week30_serving.py -q

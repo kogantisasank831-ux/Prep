@@ -2,9 +2,9 @@
 layout: week
 week: 23
 phase: 6
-status: review
+status: approved
 version: 1.0.0
-last_reviewed: 2026-11-11
+last_reviewed: 2026-11-12
 estimated_hours: 8
 permalink: /weeks/week-23/
 title: "Defend a GenAI system design from requirement to failure mode"
