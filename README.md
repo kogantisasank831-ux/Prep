@@ -821,3 +821,23 @@ python -m labs.week_26.demo smoke
 python -m labs.week_27.demo smoke
 python -m labs.week_28.demo smoke
 ```
+
+## Weeks 29–30 review candidates
+
+Weeks 29–30 complete the optional LLM training experiment while remaining at
+`status: review` and outside `PUBLISHED_WEEKS` pending approval:
+
+- Week 29 compares synthetic base, prompted-base, fine-tuned and RAG outputs on
+  one frozen, contamination-aware test set. It keeps exact match,
+  classification, perplexity, paired uncertainty and human preferences separate.
+- Week 30 combines transparent weight/KV memory estimates with supplied load
+  observations and validates the full experiment report plus package manifest.
+
+The serving lab does not launch vLLM or allocate a GPU; target-runtime capacity
+still requires actual hardware benchmarks. Run the final candidate gates:
+
+```shell
+python -m pytest tests/test_week21_24_assessment.py tests/test_week29_evaluation.py tests/test_week30_serving.py -q
+python -m labs.week_29.demo smoke
+python -m labs.week_30.demo smoke
+```

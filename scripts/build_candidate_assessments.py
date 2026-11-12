@@ -1,4 +1,4 @@
-"""Build deterministic candidate assessment banks for Weeks 21–28.
+"""Build deterministic candidate assessment banks for Weeks 21–30.
 
 The script prints an apply_patch payload rather than writing repository files.
 Run `python scripts/build_candidate_assessments.py 21 --patch` from the root and
@@ -803,6 +803,200 @@ CONFIGS: dict[int, WeekConfig] = {
                     "matching template tokenizer schema and stop rules at serving",
                     "test one sample end to end with the deployed stack",
                     "train-serve mismatch can erase apparent gains",
+                ),
+            )
+        ),
+    ),
+    29: WeekConfig(
+        "Model evaluation",
+        _concepts(
+            (
+                (
+                    "frozen test set",
+                    "unchanged examples labels and scoring used for every candidate",
+                    "define cases and gates before final candidate results",
+                    "repeated tuning against the test leaks evaluation",
+                ),
+                (
+                    "baseline comparison",
+                    "same-case evidence against the unchanged or prompted base",
+                    "compare base prompted fine-tuned and RAG outputs",
+                    "a weak baseline prompt can exaggerate adaptation gain",
+                ),
+                (
+                    "perplexity",
+                    "exponentiated mean token negative log-likelihood",
+                    "compare only the same tokenizer tokens and masks",
+                    "it does not directly measure factual or task success",
+                ),
+                (
+                    "exact match",
+                    "rate of answers equal after one published normalisation",
+                    "use it for canonical short or strict structured answers",
+                    "it can reject valid paraphrases",
+                ),
+                (
+                    "precision",
+                    "correct predicted positives divided by all predicted positives",
+                    "define the positive class and report support",
+                    "high precision can coexist with poor recall",
+                ),
+                (
+                    "recall",
+                    "found positives divided by all actual positives",
+                    "use it when missed positives matter",
+                    "high recall can include many false positives",
+                ),
+                (
+                    "F1",
+                    "harmonic balance of precision and recall",
+                    "report it with confusion counts and class support",
+                    "it does not encode business costs",
+                ),
+                (
+                    "segment metric",
+                    "performance for a declared subgroup or task slice",
+                    "inspect language difficulty length and safety categories",
+                    "aggregate means can hide critical regressions",
+                ),
+                (
+                    "contamination exclusion",
+                    "removing known train-exposed cases from the primary result",
+                    "report excluded identifiers and scan coverage",
+                    "a negative scan cannot prove absence",
+                ),
+                (
+                    "paired comparison",
+                    "candidate and baseline differences on identical examples",
+                    "retain per-example outcomes before averaging",
+                    "unpaired samples add avoidable variance",
+                ),
+                (
+                    "bootstrap interval",
+                    "resampled uncertainty around a sample statistic",
+                    "resample example groups with a recorded seed",
+                    "it does not repair biased or dependent data",
+                ),
+                (
+                    "pairwise human evaluation",
+                    "blind preference judgment between two candidate outputs",
+                    "randomise positions and use win loss tie rubrics",
+                    "preference is not absolute factual correctness",
+                ),
+                (
+                    "reviewer agreement",
+                    "consistency among independent human labels",
+                    "double-score a subset and adjudicate material conflicts",
+                    "one reviewer cannot establish agreement",
+                ),
+                (
+                    "LLM-as-judge",
+                    "a model applying a fixed rubric to candidate outputs",
+                    "pin prompt/model randomise positions and validate with people",
+                    "bias verbosity and prompt sensitivity can distort scores",
+                ),
+                (
+                    "cost per accepted task",
+                    "total inference spend divided by valid completed outcomes",
+                    "include retries invalid outputs retrieval and judging",
+                    "cost per call can reward failed cheap attempts",
+                ),
+            )
+        ),
+    ),
+    30: WeekConfig(
+        "Serving and documentation",
+        _concepts(
+            (
+                (
+                    "weight quantisation",
+                    "representing model weights with fewer bits",
+                    "benchmark each format on quality memory and target kernels",
+                    "theoretical weight bytes are not total allocation",
+                ),
+                (
+                    "packed weight estimate",
+                    "parameter count multiplied by bits per weight divided by eight",
+                    "label units and separate metadata or unquantised layers",
+                    "it omits KV activations workspaces and fragmentation",
+                ),
+                (
+                    "KV cache",
+                    "per-request attention state that grows with sequence length",
+                    "calculate or measure bytes per token by architecture and dtype",
+                    "weight quantisation does not automatically reduce KV bytes",
+                ),
+                (
+                    "serving headroom",
+                    "reserved memory and capacity for variation and fragmentation",
+                    "subtract it before admitting worst-case requests",
+                    "zero headroom makes estimates brittle",
+                ),
+                (
+                    "admission control",
+                    "bounding or queuing work before resource exhaustion",
+                    "limit context output concurrency and queue time",
+                    "autoscaling cannot fix an infeasible single request",
+                ),
+                (
+                    "throughput",
+                    "completed requests or generated tokens per unit time",
+                    "measure it under a declared request distribution",
+                    "high throughput can coexist with poor user latency",
+                ),
+                (
+                    "time to first token",
+                    "delay before a streaming response begins",
+                    "report TTFT percentiles separately from completion",
+                    "fast first output does not imply fast total completion",
+                ),
+                (
+                    "end-to-end latency",
+                    "time until the usable response is complete",
+                    "include queue retrieval model validation and transport",
+                    "averages hide slow-tail behavior",
+                ),
+                (
+                    "continuous batching",
+                    "dynamically grouping active sequences for shared execution",
+                    "tune batch limits against throughput and latency SLOs",
+                    "large batches can increase queue and TTFT",
+                ),
+                (
+                    "target-hardware benchmark",
+                    "load evidence on the actual model runtime GPU and request mix",
+                    "test cold warm streaming length and concurrency cases",
+                    "one synthetic prompt cannot prove capacity",
+                ),
+                (
+                    "package manifest",
+                    "binding model tokenizer adapter quantisation runtime and checksums",
+                    "use immutable revisions and verify a clean load",
+                    "an unpinned latest tag breaks reproducibility",
+                ),
+                (
+                    "rollback package",
+                    "previous compatible artefact and procedure for recovery",
+                    "test rollback and its trigger before release",
+                    "retaining files without a tested path is insufficient",
+                ),
+                (
+                    "experiment report",
+                    "traceable objective data configuration results failures and lessons",
+                    "include compute cost RAG comparison package and serving evidence",
+                    "schema completeness does not prove truth",
+                ),
+                (
+                    "failure record",
+                    "documented unsuccessful run issue response and consequence",
+                    "retain stopped runs and negative findings",
+                    "omitting failures creates survivorship bias",
+                ),
+                (
+                    "bounded recommendation",
+                    "deployment conclusion tied to measured gates and limitations",
+                    "state where prompting RAG tuning or no deployment wins",
+                    "a small teaching experiment cannot justify broad claims",
                 ),
             )
         ),
