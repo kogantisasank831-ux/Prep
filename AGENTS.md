@@ -20,6 +20,7 @@ Prep is a static GitHub Pages learning site for a 30-week Applied GenAI roadmap.
 - `labs/week_N/LOGIC.md`: accepted week-specific behavior and implementation boundaries.
 - `interview-prep/`: public role banks, interview index, and revision pages.
 - `cheat-sheets/index.md`: the public 40-sheet collection hub.
+- `interview-room/index.md`: the attributed companion index for the external Interview Room practice library.
 - `.github/workflows/weekly-assessments.yml`: the canonical test and release gates.
 - `_config.yml`, `_layouts/`, `styles.css`, `week.css`, `shell.js`, and `week.js`: GitHub Pages rendering and navigation contracts.
 
@@ -51,7 +52,9 @@ There is no authoritative `Design/` directory. Do not invent one or apply requir
 - Public pages use `layout: "week"`, `status: "approved"`, unique permalinks, and accurate version/review metadata.
 - Interview Prep is the role-question section. Cheat Sheets is the 40-topic revision section.
 - The Roadmap, Interview Prep, and Cheat Sheets navigation states are mutually exclusive.
+- Interview Room is a separate companion section and is mutually exclusive with the other top-level navigation states.
 - The canonical Cheat Sheets hub links all 40 source sheets. Preserve source repository, commit, and path provenance for newly imported material.
+- Do not republish external Interview Room question text without an explicit reuse licence or owner permission. Preserve attribution, source identity, and the external validation boundary.
 - Keep old public sheet URLs working when reorganizing navigation.
 
 ## Engineering conventions

@@ -165,6 +165,7 @@ def test_public_pages_have_required_front_matter() -> None:
         ROOT / "interview-prep/master-index.md",
         ROOT / "interview-prep/index.md",
         ROOT / "cheat-sheets/index.md",
+        ROOT / "interview-room/index.md",
         *ALL_CHEAT_SHEETS,
         *ROLE_BANKS.values(),
     )
@@ -214,6 +215,37 @@ def test_cheat_sheet_hub_links_the_complete_40_sheet_source_collection() -> None
         assert match is not None, path
         assert match.group(1) in hub, path
     assert "cdd45b6b0c08c5d88a626e4d16853abdf285f08d" in hub
+
+
+def test_cheat_sheet_hub_has_search_filters_and_local_progress() -> None:
+    hub = read(ROOT / "cheat-sheets/index.md")
+    layout = read(ROOT / "_layouts/week.html")
+    script = read(ROOT / "cheat-sheets.js")
+    stylesheet = read(ROOT / "week.css")
+    workflow = read(ROOT / ".github/workflows/weekly-assessments.yml")
+
+    assert 'version: "1.1.0"' in hub
+    for control_id in (
+        "cheat-sheet-search",
+        "cheat-sheet-batch",
+        "cheat-sheet-progress-filter",
+        "clear-cheat-sheet-filters",
+        "cheat-sheet-progress",
+        "reset-cheat-sheet-progress",
+        "cheat-sheet-filter-status",
+    ):
+        assert f'id="{control_id}"' in hub
+    for batch in range(1, 11):
+        assert f'<option value="{batch}">Batch {batch} ·' in hub
+
+    assert "page.url == '/cheat-sheets/'" in layout
+    assert "'/cheat-sheets.js' | relative_url" in layout
+    assert "applied-genai-cheat-sheets-v1" in script
+    assert "localStorage" in script
+    assert "textContent" in script
+    assert ".innerHTML" not in script
+    assert ".cheat-sheet-tools" in stylesheet
+    assert "tests/test_cheat_sheets.mjs" in workflow
 
 
 def test_new_cheat_sheets_preserve_source_provenance() -> None:
@@ -284,16 +316,37 @@ def test_hub_links_every_interview_artifact() -> None:
         assert path in hub
 
 
-def test_shared_navigation_exposes_interview_prep_and_cheat_sheets() -> None:
+def test_shared_navigation_exposes_all_learning_sections() -> None:
     home = read(ROOT / "index.html")
     layout = read(ROOT / "_layouts/week.html")
     for content in (home, layout):
         assert 'data-nav-section="roadmap"' in content
         assert 'data-nav-section="interview-prep"' in content
         assert 'data-nav-section="cheat-sheets"' in content
+        assert 'data-nav-section="interview-room"' in content
     assert "interview-prep/" in home
     assert "interview-prep/" in layout
     assert "cheat-sheets/" in home
     assert "cheat-sheets/" in layout
+    assert "interview-room/" in home
+    assert "interview-room/" in layout
     assert "page.back_url" in layout
     assert "page.pagination_url" in layout
+
+
+def test_interview_room_companion_indexes_the_external_practice_library() -> None:
+    page = read(ROOT / "interview-room/index.md")
+    assert 'permalink: "/interview-room/"' in page
+    assert 'source_repository: "deepankarkotnala/interview_prep"' in page
+    assert 'source_commit: "b487032a09e7ae3e0630cf1da660b62a3d988b4a"' in page
+    assert "https://deepankarkotnala.github.io/interview_prep/" in page
+    for path in (
+        "review.html",
+        "mock.html",
+        "rehearsal.html",
+        "rounds.html",
+        "tracks.html",
+        "visuals.html",
+    ):
+        assert f"https://deepankarkotnala.github.io/interview_prep/{path}" in page
+    assert page.count("https://deepankarkotnala.github.io/interview_prep/topics/") == 21
