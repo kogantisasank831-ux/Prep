@@ -8,15 +8,15 @@ modes, weekly completion tracking, and private browser-local notes.
 
 ## Interview preparation
 
-Role-specific interview banks and reusable revision guides live under
-[`interview-prep/`](interview-prep/). They are deliberately separate from the
-weekly learning assessments: the weekly banks check lesson understanding, while
-the interview banks test decisions, trade-offs, communication and project evidence.
+Role-specific interview banks live under [`interview-prep/`](interview-prep/).
+They are deliberately separate from the weekly learning assessments: the weekly
+banks check lesson understanding, while the interview banks test decisions,
+trade-offs, communication and project evidence. Reusable topic revision guides
+have a dedicated [`cheat-sheets/`](cheat-sheets/) hub.
 
 Batch 1 covers Python, SQL, probability/statistics and machine-learning
 fundamentals, with guided banks for Agentic AI Engineer, Data Science Technical
-Lead and Senior Data Scientist roles. Approved public pages use `status: approved`; future batches remain review
-candidates until their content and CI checks are accepted.
+Lead and Senior Data Scientist roles. Approved public pages use `status: approved`.
 
 Approved Batch 2 adds Deep Learning and Neural Networks, NLP, Transformers,
 and LLM/Generative AI revision guides. Each role bank now contains 40 guided
@@ -53,6 +53,19 @@ Approved Batch 9 is the final planned content batch. It source-backs an expanded
 linear-algebra/calculus/optimization guide and adds separate unsupervised and
 dimensionality-reduction, anomaly and rare-event, and model-assurance guides.
 It adds 20 role-specific questions per bank, bringing each approved bank to 180.
+
+## Cheat sheets
+
+The dedicated [Cheat Sheets hub](cheat-sheets/index.md) links 40 canonical
+Markdown revision guides across 10 batches, from Python, SQL, statistics, and
+machine learning through GenAI, agents, specialized modeling, AI platforms, and
+end-to-end architecture. The collection is sourced from
+[`AI_Data_Science_Interview_Cheat_Sheets`](https://github.com/kogantisasank831-ux/transformer-explainer/tree/cdd45b6b0c08c5d88a626e4d16853abdf285f08d/AI_Data_Science_Interview_Cheat_Sheets)
+at commit `cdd45b6b0c08c5d88a626e4d16853abdf285f08d`.
+
+The public sheet URLs remain under `interview-prep/cheat-sheets/` for backward
+compatibility, while the shared navigation presents Cheat Sheets as its own
+mutually exclusive top-level section.
 
 ## Run locally
 

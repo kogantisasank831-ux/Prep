@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-09"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "LLM and Generative AI interview cheat sheet"
 description: "LLM foundations, prompting, structured output, fine-tuning, post-training, evaluation, quantization, and production decisions."
 summary: "Revise model types, generation, prompt and adaptation choices, LoRA/QLoRA, SFT/DPO, evaluation, safety, cost, release gates, and rollback."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/llm-generative-ai/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 2 · LLM and Generative AI"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 2 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 2 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** Generative AI Engineer, Agentic AI Engineer, ML Engineer, Applied Scientist, Senior/Lead Data Scientist  
 **Use:** quick revision, model/prompt/fine-tuning decisions, evaluation, and production design  

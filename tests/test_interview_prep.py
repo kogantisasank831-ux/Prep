@@ -88,6 +88,24 @@ BATCH_NINE_NEW_CHEAT_SHEETS = (
 
 BATCH_NINE_CHEAT_SHEETS = BATCH_NINE_UPDATED_CHEAT_SHEETS + BATCH_NINE_NEW_CHEAT_SHEETS
 
+SPECIALIZED_MODELING_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/computer-vision-multimodal-ai.md",
+    ROOT / "interview-prep/cheat-sheets/graph-machine-learning-gnn.md",
+    ROOT / "interview-prep/cheat-sheets/survival-analysis-reliability-modeling.md",
+    ROOT / "interview-prep/cheat-sheets/operations-research-scheduling-optimization.md",
+)
+
+AI_ENGINEERING_PLATFORM_CHEAT_SHEETS = (
+    ROOT / "interview-prep/cheat-sheets/ai-backend-api-async-service-engineering.md",
+    ROOT / "interview-prep/cheat-sheets/cloud-kubernetes-gpu-platform-engineering.md",
+    ROOT / "interview-prep/cheat-sheets/ai-testing-release-quality-engineering.md",
+    ROOT / "interview-prep/cheat-sheets/end-to-end-ai-architecture-mock-interview.md",
+)
+
+NEW_IMPORTED_CHEAT_SHEETS = (
+    SPECIALIZED_MODELING_CHEAT_SHEETS + AI_ENGINEERING_PLATFORM_CHEAT_SHEETS
+)
+
 ALL_CHEAT_SHEETS = (
     BATCH_ONE_CHEAT_SHEETS
     + BATCH_TWO_CHEAT_SHEETS
@@ -98,6 +116,13 @@ ALL_CHEAT_SHEETS = (
     + BATCH_SEVEN_CHEAT_SHEETS
     + BATCH_EIGHT_NEW_CHEAT_SHEETS
     + BATCH_NINE_NEW_CHEAT_SHEETS
+    + NEW_IMPORTED_CHEAT_SHEETS
+)
+
+CANONICAL_SOURCE_CHEAT_SHEETS = tuple(
+    path
+    for path in ALL_CHEAT_SHEETS
+    if path.name != "unsupervised-learning-anomaly-detection.md"
 )
 
 
@@ -139,6 +164,7 @@ def test_public_pages_have_required_front_matter() -> None:
     approved_pages = (
         ROOT / "interview-prep/master-index.md",
         ROOT / "interview-prep/index.md",
+        ROOT / "cheat-sheets/index.md",
         *ALL_CHEAT_SHEETS,
         *ROLE_BANKS.values(),
     )
@@ -178,6 +204,39 @@ def test_cheat_sheets_keep_their_rapid_revision_contract() -> None:
         content = read(path)
         assert "## 1. Thirty-second revision" in content
         assert markdown_h1_lines_outside_fences(content) == []
+
+
+def test_cheat_sheet_hub_links_the_complete_40_sheet_source_collection() -> None:
+    hub = read(ROOT / "cheat-sheets/index.md")
+    assert len(CANONICAL_SOURCE_CHEAT_SHEETS) == 40
+    for path in CANONICAL_SOURCE_CHEAT_SHEETS:
+        match = re.search(r'^permalink: "([^"]+)"$', read(path), re.MULTILINE)
+        assert match is not None, path
+        assert match.group(1) in hub, path
+    assert "cdd45b6b0c08c5d88a626e4d16853abdf285f08d" in hub
+
+
+def test_new_cheat_sheets_preserve_source_provenance() -> None:
+    for path in NEW_IMPORTED_CHEAT_SHEETS:
+        content = read(path)
+        assert (
+            'source_repository: "kogantisasank831-ux/transformer-explainer"' in content
+        )
+        assert 'source_commit: "cdd45b6b0c08c5d88a626e4d16853abdf285f08d"' in content
+        assert 'source_path: "AI_Data_Science_Interview_Cheat_Sheets/' in content
+
+
+def test_public_interview_docs_reference_complete_weekly_curriculum() -> None:
+    public_pages = (
+        ROOT / "interview-prep/index.md",
+        ROOT / "interview-prep/master-index.md",
+        ROOT / "cheat-sheets/index.md",
+        *ALL_CHEAT_SHEETS,
+    )
+    for path in public_pages:
+        content = read(path)
+        assert "Week 1–20" not in content, path
+        assert "Week 1-20" not in content, path
 
 
 def test_hub_links_every_interview_artifact() -> None:
@@ -225,13 +284,16 @@ def test_hub_links_every_interview_artifact() -> None:
         assert path in hub
 
 
-def test_shared_navigation_exposes_interview_prep() -> None:
+def test_shared_navigation_exposes_interview_prep_and_cheat_sheets() -> None:
     home = read(ROOT / "index.html")
     layout = read(ROOT / "_layouts/week.html")
     for content in (home, layout):
         assert 'data-nav-section="roadmap"' in content
         assert 'data-nav-section="interview-prep"' in content
+        assert 'data-nav-section="cheat-sheets"' in content
     assert "interview-prep/" in home
     assert "interview-prep/" in layout
+    assert "cheat-sheets/" in home
+    assert "cheat-sheets/" in layout
     assert "page.back_url" in layout
     assert "page.pagination_url" in layout

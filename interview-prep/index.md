@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.8.0"
-last_reviewed: "2026-11-11"
+version: "1.8.1"
+last_reviewed: "2026-11-13"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -26,6 +26,8 @@ current_label: "Interview prep hub"
 | [Senior Data Scientist]({{ '/interview-prep/roles/senior-data-scientist/' | relative_url }}) | Senior Data Scientist, Applied Scientist | Statistics, mathematical derivation, unsupervised and rare-event modeling, calibration, fairness, monitoring and impact |
 
 Each role bank now contains 180 guided questions across Batches 1–9, with strong-answer signals, a deeper follow-up probe, and direct revision links. All nine planned batches are approved. Stable IDs let you track weak areas and support later random-paper conversion.
+
+The complete 40-topic revision collection now has its own [Cheat Sheets hub]({{ '/cheat-sheets/' | relative_url }}), grouped into 10 batches from core foundations through specialized modeling and AI platform engineering.
 
 ## Batch 1 cheat sheets
 
@@ -136,4 +138,4 @@ A senior answer should normally cover:
 
 All nine planned interview-preparation batches are approved. Future changes should follow the same source, role-calibration, regression, approval, and publication gates.
 
-> The Week 1–20 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.
+> The Week 1–30 question banks remain learning checks. These interview banks deliberately test role performance, decision quality, communication, and production judgment.

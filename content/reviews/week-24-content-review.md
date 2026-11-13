@@ -30,4 +30,5 @@ experience.
 The rubric checks presence and specificity, not external truth or communication
 quality. Confidential-data review and employer permission are separate human
 gates. Ruff, formatting, strict mypy, focused behavior/CLI tests and the bank
-contracts pass locally. Live rendering verification follows main promotion.
+contracts pass locally. Completed live checks are recorded in the
+[Weeks 21–30 publication verification](weeks-21-30-publication-verification.md).

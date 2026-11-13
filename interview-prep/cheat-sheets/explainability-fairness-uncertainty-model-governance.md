@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "0.1.0"
-last_reviewed: "2026-11-11"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "0.1.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Explainability, fairness, uncertainty, and model governance interview cheat sheet"
 description: "Global and local explanations, explanation validation, uncertainty, calibration, conformal prediction, fairness harms and metrics, mitigation, evidence, release gates, and lifecycle governance."
 summary: "Revise model assurance as an evidence chain connecting explanation questions, uncertainty and calibration, fairness harms and trade-offs, release decisions, human oversight, and monitoring."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/explainability-fairness-uncertainty-mod
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 9 · Explainability, fairness, uncertainty, and governance"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
+> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–30 learning assessments.
 
 **Target roles:** Data Science Lead, Lead/Senior Data Scientist, Applied Scientist, ML Engineer, AI Engineer, Responsible AI Engineer  
 **Use:** model-assurance, high-impact AI, evaluation, system-design, governance, leadership, and risk interviews  

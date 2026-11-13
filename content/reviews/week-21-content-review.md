@@ -41,4 +41,5 @@ false hits—are explicit.
 - All focused Week 21 behavior and CLI tests pass.
 - The Week 21 bank passes the shared 1,000-paper JavaScript contract and all 20
   coding references pass five checks.
-- Publication is approved; live Pages verification follows main promotion.
+- Publication is approved and the completed live checks are recorded in the
+  [Weeks 21–30 publication verification](weeks-21-30-publication-verification.md).

@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-10"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "AI technical leadership and product thinking interview cheat sheet"
 description: "Problem framing, AI alternatives, metric trees, roadmaps, architecture decisions, build-versus-buy, operating models, delegation, delivery, and incidents."
 summary: "Revise how leads turn ambiguity into evidence, decisions, ownership, safe delivery, measurable outcomes, organizational learning, and change."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/ai-technical-leadership-product-thinkin
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 6 · Leadership and product thinking"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 6 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 6 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** Data Science Lead, AI/ML Technical Lead, Staff AI Engineer, Senior Data Scientist, Applied Science Lead  
 **Use:** leadership, product, architecture, prioritization, stakeholder, delivery, and manager-plus-technical interview rounds  

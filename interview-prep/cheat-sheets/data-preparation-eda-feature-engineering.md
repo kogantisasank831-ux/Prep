@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.1.0"
-last_reviewed: "2026-11-10"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.1.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Feature engineering and ML data validation interview cheat sheet"
 description: "Modeling grain, data identity, splits, leakage, feature design, missingness, temporal aggregates, selection, point-in-time correctness, validation layers, drift, and parity."
 summary: "Revise features as governed time-aware data products with reproducible identity, deployment-aligned validation, explicit failure policy, and online/offline evidence."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/data-preparation-eda-feature-engineerin
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 8 · Expanded features and validation"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 8 source:** This page updates the prepared `26_Feature_Engineering_Data_Validation_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page updates the prepared `26_Feature_Engineering_Data_Validation_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** Data Scientist, Lead Data Scientist, ML Engineer, AI Engineer, Applied Scientist  
 **Use:** modeling, data-quality, leakage, feature-store, ML-system-design, debugging, and leadership interviews  
