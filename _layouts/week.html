@@ -11,12 +11,17 @@
     <link rel="stylesheet" href="{{ '/week.css' | relative_url }}">
     <script src="{{ '/shell.js' | relative_url }}" defer></script>
     <script src="{{ '/week.js' | relative_url }}" defer></script>
+    {% if page.url == '/cheat-sheets/' %}
+    <script src="{{ '/cheat-sheets.js' | relative_url }}" defer></script>
+    {% endif %}
   </head>
   <body class="app-shell-page lesson-view" id="top">
     <a class="skip-link" href="#lesson-content">Skip to lesson</a>
 
     {% assign nav_section = "" %}
-    {% if page.url contains '/interview-prep/cheat-sheets/' or page.url contains '/cheat-sheets/' %}
+    {% if page.url contains '/interview-room/' %}
+      {% assign nav_section = "interview-room" %}
+    {% elsif page.url contains '/interview-prep/cheat-sheets/' or page.url contains '/cheat-sheets/' %}
       {% assign nav_section = "cheat-sheets" %}
     {% elsif page.url contains '/interview-prep/' %}
       {% assign nav_section = "interview-prep" %}
@@ -40,6 +45,10 @@
         <a class="app-nav-link app-content-link{% if nav_section == 'cheat-sheets' %} active{% endif %}" data-nav-section="cheat-sheets" href="{{ '/cheat-sheets/' | relative_url }}"{% if nav_section == 'cheat-sheets' %} aria-current="page"{% endif %}>
           <span aria-hidden="true">▤</span>
           <span>Cheat sheets</span>
+        </a>
+        <a class="app-nav-link app-content-link{% if nav_section == 'interview-room' %} active{% endif %}" data-nav-section="interview-room" href="{{ '/interview-room/' | relative_url }}"{% if nav_section == 'interview-room' %} aria-current="page"{% endif %}>
+          <span aria-hidden="true">◉</span>
+          <span>Interview Room</span>
         </a>
         <p class="app-nav-label app-weeks-label">Learning path</p>
         <div class="app-week-navigation" id="app-week-navigation" aria-live="polite"></div>

@@ -1,7 +1,7 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
+version: "1.1.0"
 last_reviewed: "2026-11-13"
 header_context: "Interview cheat sheets"
 back_label: "Roadmap"
@@ -22,6 +22,56 @@ current_label: "Cheat sheets hub"
 Choose one topic, complete its thirty-second revision from memory, then work through the decision tables, failure modes, rapid questions, and lead-level case. The collection serves AI Engineer, Agentic AI Engineer, ML Engineer, Senior Data Scientist, Applied Scientist, and Data Science Technical Lead interviews.
 
 These 40 canonical Markdown sheets come from [`AI_Data_Science_Interview_Cheat_Sheets`](https://github.com/kogantisasank831-ux/transformer-explainer/tree/cdd45b6b0c08c5d88a626e4d16853abdf285f08d/AI_Data_Science_Interview_Cheat_Sheets) at source commit `cdd45b6b0c08c5d88a626e4d16853abdf285f08d`. Prep renders them in its reading layout and keeps the original technical content intact.
+
+<section class="cheat-sheet-tools" data-cheat-sheet-tools hidden aria-labelledby="cheat-sheet-tools-title">
+  <div class="cheat-sheet-tools-heading">
+    <p class="cheat-sheet-tools-label">Revision workspace</p>
+    <h3 id="cheat-sheet-tools-title">Find and track cheat sheets</h3>
+    <p>Search all 40 sheets, narrow the collection by topic or revision state, and keep your progress on this browser.</p>
+  </div>
+  <form class="cheat-sheet-filters" data-cheat-sheet-filters role="search">
+    <label class="cheat-sheet-field" for="cheat-sheet-search">
+      <span>Search titles and focus areas</span>
+      <input id="cheat-sheet-search" type="search" autocomplete="off" placeholder="Try RAG, SQL, security, or Kubernetes">
+    </label>
+    <label class="cheat-sheet-field" for="cheat-sheet-batch">
+      <span>Topic or batch</span>
+      <select id="cheat-sheet-batch">
+        <option value="all">All topics · 10 batches</option>
+        <option value="1">Batch 1 · Core foundations</option>
+        <option value="2">Batch 2 · Deep learning and GenAI</option>
+        <option value="3">Batch 3 · RAG and search</option>
+        <option value="4">Batch 4 · Agent systems</option>
+        <option value="5">Batch 5 · Production AI</option>
+        <option value="6">Batch 6 · Data, security, and leadership</option>
+        <option value="7">Batch 7 · Modeling and decision science</option>
+        <option value="8">Batch 8 · Advanced modeling and assurance</option>
+        <option value="9">Batch 9 · Specialized modeling</option>
+        <option value="10">Batch 10 · AI engineering platform</option>
+      </select>
+    </label>
+    <label class="cheat-sheet-field" for="cheat-sheet-progress-filter">
+      <span>Revision state</span>
+      <select id="cheat-sheet-progress-filter">
+        <option value="all">All sheets</option>
+        <option value="incomplete">Not revised</option>
+        <option value="complete">Revised</option>
+      </select>
+    </label>
+    <button class="cheat-sheet-button" id="clear-cheat-sheet-filters" type="button">Clear filters</button>
+  </form>
+  <div class="cheat-sheet-progress-card" aria-labelledby="cheat-sheet-progress-title">
+    <div>
+      <p class="cheat-sheet-tools-label">Your revision progress</p>
+      <p class="cheat-sheet-progress-title" id="cheat-sheet-progress-title">0 of 40 revised</p>
+      <p class="cheat-sheet-progress-note" id="cheat-sheet-progress-note">Saved only on this browser and device.</p>
+    </div>
+    <progress id="cheat-sheet-progress" value="0" max="40" aria-describedby="cheat-sheet-progress-note">0 of 40 revised</progress>
+    <button class="cheat-sheet-button cheat-sheet-reset" id="reset-cheat-sheet-progress" type="button" disabled>Reset revision progress</button>
+  </div>
+  <p class="cheat-sheet-filter-status" id="cheat-sheet-filter-status" role="status" aria-live="polite">Showing all 40 cheat sheets.</p>
+  <p class="cheat-sheet-empty" id="cheat-sheet-empty" hidden>No cheat sheets match these filters. Change the search or clear the filters.</p>
+</section>
 
 ## Batch 1 — Core foundations
 

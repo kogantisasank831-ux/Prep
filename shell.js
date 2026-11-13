@@ -18,6 +18,7 @@ const weekNavigation = document.querySelector("#app-week-navigation");
 const roadmapNavigationLink = document.querySelector('[data-nav-section="roadmap"]');
 const interviewPrepNavigationLink = document.querySelector('[data-nav-section="interview-prep"]');
 const cheatSheetsNavigationLink = document.querySelector('[data-nav-section="cheat-sheets"]');
+const interviewRoomNavigationLink = document.querySelector('[data-nav-section="interview-room"]');
 const desktopQuery = window.matchMedia("(min-width: 1100px)");
 
 function setApplicationMenuOpen(open) {
@@ -68,6 +69,7 @@ function currentWeekNumber() {
 
 function currentContentSection() {
   const path = window.location.pathname;
+  if (/\/interview-room(?:\/|$)/.test(path)) return "interview-room";
   if (/\/cheat-sheets(?:\/|$)/.test(path)) return "cheat-sheets";
   if (/\/interview-prep(?:\/|$)/.test(path)) return "interview-prep";
   if (currentWeekNumber() === null) return "roadmap";
@@ -81,6 +83,7 @@ function updateActiveNavigation() {
     ["roadmap", roadmapNavigationLink],
     ["interview-prep", interviewPrepNavigationLink],
     ["cheat-sheets", cheatSheetsNavigationLink],
+    ["interview-room", interviewRoomNavigationLink],
   ];
   for (const [section, link] of contentNavigationLinks) {
     const active = section === activeSection;

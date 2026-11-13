@@ -67,6 +67,19 @@ The public sheet URLs remain under `interview-prep/cheat-sheets/` for backward
 compatibility, while the shared navigation presents Cheat Sheets as its own
 mutually exclusive top-level section.
 
+The hub includes client-side title/focus search, topic-batch and revision-state
+filters, and per-sheet revision tracking. Completion IDs are stored only in the
+current browser's `localStorage`; no account or backend is required.
+
+## Interview Room companion
+
+The [Interview Room companion](interview-room/index.md) provides an attributed
+route into the external `deepankarkotnala/interview_prep` practice library. It
+maps daily review, timed mock and rehearsal modes, round and employer browsing,
+visual explanations, and 21 topic banks without republishing the external
+question text. Prep does not treat those external answers as validated course
+content; time-sensitive claims still require source review.
+
 ## Run locally
 
 The site loads `Path.md` with `fetch`, so it must be served over HTTP rather than

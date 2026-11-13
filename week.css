@@ -65,6 +65,34 @@
 .lesson-pagination { display: flex; justify-content: space-between; gap: 1rem; width: min(100%, calc(var(--lesson-toc-width) + var(--lesson-gap) + var(--lesson-content-width))); margin: 5rem auto 0; padding: 1.5rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
 .lesson-pagination a { color: var(--accent); text-decoration: none; }
 
+.cheat-sheet-tools { margin: 2.5rem 0 3.5rem; padding: clamp(1.1rem, 3vw, 1.65rem); border: 1px solid var(--accent-border); border-radius: 16px; background: linear-gradient(145deg, var(--surface), var(--accent-soft)); }
+.cheat-sheet-tools-heading { margin-bottom: 1.25rem; }
+.cheat-sheet-tools-heading h3 { margin: .25rem 0 .55rem; }
+.cheat-sheet-tools-heading p:last-child { margin: 0; color: var(--muted); }
+.cheat-sheet-tools-label { margin: 0; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+.cheat-sheet-filters { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, .8fr) auto; gap: .85rem; align-items: end; }
+.cheat-sheet-field { display: grid; gap: .4rem; min-width: 0; color: var(--text); font-size: .75rem; font-weight: 750; }
+.cheat-sheet-field input, .cheat-sheet-field select { width: 100%; min-height: 44px; padding: .7rem .75rem; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); font: inherit; font-weight: 500; }
+.cheat-sheet-field input::placeholder { color: var(--muted); opacity: 1; }
+.cheat-sheet-field input:focus-visible, .cheat-sheet-field select:focus-visible, .cheat-sheet-button:focus-visible, .cheat-sheet-progress-control input:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.cheat-sheet-button { min-height: 44px; padding: .65rem .85rem; border: 1px solid var(--accent-border); border-radius: 9px; background: var(--surface); color: var(--accent); cursor: pointer; font-size: .76rem; font-weight: 800; }
+.cheat-sheet-button:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+.cheat-sheet-button:disabled { cursor: not-allowed; opacity: .5; }
+.cheat-sheet-progress-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .8fr) auto; gap: 1rem; align-items: center; margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--subtle-fill); }
+.cheat-sheet-progress-title { margin: .25rem 0 0; color: var(--text); font-size: 1rem; font-weight: 850; }
+.cheat-sheet-progress-note { margin: .2rem 0 0; color: var(--muted); font-size: .72rem; }
+.cheat-sheet-progress-card progress { width: 100%; height: .65rem; overflow: hidden; border: 0; border-radius: 999px; background: var(--surface-3); accent-color: var(--accent); }
+.cheat-sheet-progress-card progress::-webkit-progress-bar { border-radius: 999px; background: var(--surface-3); }
+.cheat-sheet-progress-card progress::-webkit-progress-value { border-radius: 999px; background: var(--accent); }
+.cheat-sheet-progress-card progress::-moz-progress-bar { border-radius: 999px; background: var(--accent); }
+.cheat-sheet-filter-status { margin: 1rem 0 0; color: var(--muted); font-size: .76rem; }
+.cheat-sheet-empty { margin: 1rem 0 0; padding: .8rem 1rem; border: 1px dashed var(--accent-border); border-radius: 9px; color: var(--text); }
+.cheat-sheet-progress-cell { min-width: 7rem; }
+.cheat-sheet-progress-control { display: inline-flex; align-items: center; gap: .45rem; color: var(--muted); cursor: pointer; font-size: .72rem; font-weight: 750; white-space: nowrap; }
+.cheat-sheet-progress-control input { width: 1.05rem; height: 1.05rem; margin: 0; }
+.lesson-content tr.cheat-sheet-row-complete { background: var(--accent-soft); }
+.lesson-content tr.cheat-sheet-row-complete a { color: var(--accent); }
+
 .lesson-read-mode-active .lesson-hero { grid-template-columns: minmax(0, var(--lesson-read-width)); }
 .lesson-read-mode-active .lesson-hero-content { grid-column: 1; }
 .lesson-read-mode-active .lesson-layout { grid-template-columns: minmax(0, var(--lesson-read-width)); }
@@ -94,6 +122,10 @@ html[data-theme="light"] .lesson-content blockquote { color: #40556c; }
   .lesson-progress { margin: .6rem 0 0; }
   .lesson-read-mode-active .lesson-content { grid-row: 1; }
 }
+@media (max-width: 850px) {
+  .cheat-sheet-filters { grid-template-columns: 1fr 1fr; }
+  .cheat-sheet-field:first-child { grid-column: 1 / -1; }
+}
 @media (max-width: 620px) {
   .lesson-header-actions .back-link { font-size: 0; }
   .lesson-header-actions .back-link::before { content: "← Roadmap"; font-size: .78rem; }
@@ -104,4 +136,7 @@ html[data-theme="light"] .lesson-content blockquote { color: #40556c; }
   .lesson-hero h1 { font-size: clamp(2.35rem, 12vw, 3.3rem); }
   .lesson-content h2 { margin-top: 3.8rem; }
   .lesson-pagination { flex-direction: column; }
+  .cheat-sheet-filters, .cheat-sheet-progress-card { grid-template-columns: 1fr; }
+  .cheat-sheet-progress-card { align-items: stretch; }
+  .cheat-sheet-reset { width: 100%; }
 }
