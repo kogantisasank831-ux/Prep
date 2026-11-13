@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.1.0"
-last_reviewed: "2026-11-10"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.1.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Experimentation and causal inference interview cheat sheet"
 description: "Causal contracts, power, trustworthy experiments, ratio metrics, CUPED, sequential decisions, interference, DAGs, observational identification, uplift, and implementation."
 summary: "Revise causal decisions from estimand and assignment through telemetry, inference, identification assumptions, heterogeneous effects, and production evidence."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/experimentation-causal-inference/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 8 · Expanded experimentation and causality"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 8 source:** This page updates the prepared `25_Experimentation_Causal_Inference_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page updates the prepared `25_Experimentation_Causal_Inference_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, Product Data Scientist, ML/AI Engineer  
 **Use:** statistics, product experimentation, causal-inference, modeling-case, system-design, and leadership interviews  

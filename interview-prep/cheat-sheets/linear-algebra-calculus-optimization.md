@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.1.0"
-last_reviewed: "2026-11-11"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.1.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Linear algebra, calculus, and optimization interview cheat sheet"
 description: "Shapes, rank, conditioning, eigendecomposition, SVD and PCA, derivatives, automatic differentiation, optimizers, constraints, regularization, and numerical stability."
 summary: "Revise the mathematical contracts behind modern ML, from tensor shapes and conditioning through gradients, curvature, constrained optimization, regularization, and stable computation."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/linear-algebra-calculus-optimization/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 9 · Linear algebra, calculus, and optimization"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
+> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–30 learning assessments.
 
 **Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, ML Engineer, AI Engineer  
 **Use:** mathematical-foundation, modeling, deep-learning, optimization, debugging, and system-design interviews  

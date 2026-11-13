@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-10"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "AI/ML system design and production architecture interview cheat sheet"
 description: "Requirements, metrics, scale estimates, control and serving planes, storage, APIs, queues, tenancy, security, reliability, rollout, and operations."
 summary: "Revise the complete AI system-design method from user outcome and capacity estimates through production architecture, failure handling, validation, and rollback."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/ai-ml-system-design-production-architec
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 5 · System design"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 5 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 5 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** AI Engineer, ML Engineer, GenAI Engineer, Senior Data Scientist, ML/AI Platform Engineer, Data Science/AI Lead  
 **Use:** system-design rounds, architecture reviews, scale estimation, reliability, security, and technical leadership  

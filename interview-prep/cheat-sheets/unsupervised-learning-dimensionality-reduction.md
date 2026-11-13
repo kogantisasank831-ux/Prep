@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "0.1.0"
-last_reviewed: "2026-11-11"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "0.1.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Unsupervised learning and dimensionality reduction interview cheat sheet"
 description: "Representations and distance, k-means, mixtures and EM, hierarchical and density clustering, PCA, t-SNE, UMAP, evaluation, stability, and production lifecycle."
 summary: "Revise unsupervised learning as a decision system: define useful structure, choose geometry and algorithms deliberately, test stability and downstream utility, and operate the result safely."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/unsupervised-learning-dimensionality-re
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 9 · Unsupervised learning and dimensionality reduction"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
+> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–30 learning assessments.
 
 **Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, ML Engineer, AI Engineer  
 **Use:** clustering, segmentation, representation-learning, visualization, anomaly-detection, and modeling-case interviews  

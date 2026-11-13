@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-10"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Time series and forecasting interview cheat sheet"
 description: "Forecasting contracts, temporal audits, baselines, ETS, ARIMA, lagged ML, global and foundation models, rolling-origin evaluation, metrics, uncertainty, hierarchy, and production."
 summary: "Revise forecast-origin correctness, model and baseline choices, horizon-aware backtests, probabilistic decisions, special demand patterns, and production operations."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/time-series-forecasting/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 8 · Time series and forecasting"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 8 source:** This page integrates the prepared `27_Time_Series_Forecasting_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 8 source:** This page integrates the prepared `27_Time_Series_Forecasting_Interview_Cheat_Sheet.md` artifact in the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** Data Scientist, Lead Data Scientist, Applied Scientist, ML Engineer, Forecasting Scientist  
 **Use:** statistical modeling, demand/capacity forecasting, temporal ML, system-design, and leadership interviews  

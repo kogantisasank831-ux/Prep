@@ -35,4 +35,5 @@ calculations, consistency, security and operating ownership.
 
 Focused Ruff, formatting, strict typing, behavior and CLI checks pass. The
 assessment's 20 references and shared browser contract pass. Publication was
-approved on 2026-11-12; live rendering verification follows main promotion.
+approved on 2026-11-12; the completed live checks are recorded in the
+[Weeks 21–30 publication verification](weeks-21-30-publication-verification.md).

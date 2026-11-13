@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-10"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "LLM inference and serving optimization interview cheat sheet"
 description: "TTFT, TPOT, prefill, decode, GPU and KV-cache memory, batching, caching, quantization, parallelism, benchmarking, and autoscaling."
 summary: "Revise latency decomposition, memory and capacity estimates, serving-engine choices, workload-aware optimization, goodput, and production rollout."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/llm-inference-serving-optimization/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 5 · Inference optimization"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 5 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 5 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** AI/ML Engineer, LLM Inference Engineer, GenAI Engineer, AI Platform Engineer, Senior/Lead Data Scientist  
 **Use:** latency/throughput tuning, GPU memory estimation, serving-engine selection, capacity, autoscaling, and production rollout  

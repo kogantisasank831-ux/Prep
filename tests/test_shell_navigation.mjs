@@ -41,6 +41,8 @@ function createLink() {
 
 function loadShell(pathname, hash = "") {
   const roadmapLink = createLink();
+  const interviewPrepLink = createLink();
+  const cheatSheetsLink = createLink();
   const bodyClassList = createClassList(["app-shell-page"]);
   const context = vm.createContext({
     URL,
@@ -51,6 +53,8 @@ function loadShell(pathname, hash = "") {
       addEventListener() {},
       querySelector(selector) {
         if (selector === '[data-nav-section="roadmap"]') return roadmapLink;
+        if (selector === '[data-nav-section="interview-prep"]') return interviewPrepLink;
+        if (selector === '[data-nav-section="cheat-sheets"]') return cheatSheetsLink;
         return null;
       },
       querySelectorAll() {
@@ -70,7 +74,7 @@ function loadShell(pathname, hash = "") {
     },
   });
   vm.runInContext(shellSource, context, { filename: "shell.js" });
-  return { context, roadmapLink };
+  return { context, roadmapLink, interviewPrepLink, cheatSheetsLink };
 }
 
 function updateNavigation(context) {
@@ -78,22 +82,50 @@ function updateNavigation(context) {
 }
 
 test("Interview Prep is the only selected content section on interview routes", () => {
-  const { context, roadmapLink } = loadShell("/Prep/interview-prep/");
+  const { context, roadmapLink, interviewPrepLink, cheatSheetsLink } = loadShell("/Prep/interview-prep/");
   updateNavigation(context);
   assert.equal(roadmapLink.classList.contains("active"), false);
   assert.equal(roadmapLink.getAttribute("aria-current"), null);
+  assert.equal(interviewPrepLink.classList.contains("active"), true);
+  assert.equal(interviewPrepLink.getAttribute("aria-current"), "page");
+  assert.equal(cheatSheetsLink.classList.contains("active"), false);
+  assert.equal(cheatSheetsLink.getAttribute("aria-current"), null);
+});
+
+test("Cheat Sheets is the only selected section on its hub", () => {
+  const { context, roadmapLink, interviewPrepLink, cheatSheetsLink } = loadShell("/Prep/cheat-sheets/");
+  updateNavigation(context);
+  assert.equal(roadmapLink.classList.contains("active"), false);
+  assert.equal(interviewPrepLink.classList.contains("active"), false);
+  assert.equal(cheatSheetsLink.classList.contains("active"), true);
+  assert.equal(cheatSheetsLink.getAttribute("aria-current"), "page");
+});
+
+test("Cheat Sheets remains selected for legacy nested sheet routes", () => {
+  const { context, roadmapLink, interviewPrepLink, cheatSheetsLink } = loadShell(
+    "/Prep/interview-prep/cheat-sheets/python/",
+  );
+  updateNavigation(context);
+  assert.equal(roadmapLink.classList.contains("active"), false);
+  assert.equal(interviewPrepLink.classList.contains("active"), false);
+  assert.equal(cheatSheetsLink.classList.contains("active"), true);
+  assert.equal(cheatSheetsLink.getAttribute("aria-current"), "page");
 });
 
 test("Roadmap remains selected on the roadmap route", () => {
-  const { context, roadmapLink } = loadShell("/Prep/");
+  const { context, roadmapLink, interviewPrepLink, cheatSheetsLink } = loadShell("/Prep/");
   updateNavigation(context);
   assert.equal(roadmapLink.classList.contains("active"), true);
   assert.equal(roadmapLink.getAttribute("aria-current"), "page");
+  assert.equal(interviewPrepLink.classList.contains("active"), false);
+  assert.equal(cheatSheetsLink.classList.contains("active"), false);
 });
 
 test("Roadmap is not selected on a published week route", () => {
-  const { context, roadmapLink } = loadShell("/Prep/weeks/week-30/");
+  const { context, roadmapLink, interviewPrepLink, cheatSheetsLink } = loadShell("/Prep/weeks/week-30/");
   updateNavigation(context);
   assert.equal(roadmapLink.classList.contains("active"), false);
   assert.equal(roadmapLink.getAttribute("aria-current"), null);
+  assert.equal(interviewPrepLink.classList.contains("active"), false);
+  assert.equal(cheatSheetsLink.classList.contains("active"), false);
 });

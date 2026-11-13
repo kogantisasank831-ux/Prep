@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "0.1.0"
-last_reviewed: "2026-11-11"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "0.1.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Anomaly detection and rare-event modeling interview cheat sheet"
 description: "Detection contracts, robust baselines, isolation and local-density methods, deep representations, change points, class imbalance, calibration, metrics, thresholds, backtests, and alert operations."
 summary: "Revise anomaly and rare-event systems from event definitions and robust baselines through leakage-safe evaluation, alert-budget thresholds, delayed labels, monitoring, and incident response."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/anomaly-detection-rare-event-modeling/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 9 · Anomaly detection and rare-event modeling"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–20 learning assessments.
+> **Batch 9 source-backed scope:** This approved page publishes the canonical interview sheet without altering its instructional body. It remains separate from the Week 1–30 learning assessments.
 
 **Target roles:** Lead Data Scientist, Senior Data Scientist, Applied Scientist, ML Engineer, AI Engineer  
 **Use:** fraud, equipment monitoring, cybersecurity, quality, observability, risk, and imbalanced-classification interviews  

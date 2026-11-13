@@ -16,6 +16,8 @@ const shellOverlay = document.querySelector("#app-overlay");
 const shellToggles = [...document.querySelectorAll("[data-app-menu-toggle]")];
 const weekNavigation = document.querySelector("#app-week-navigation");
 const roadmapNavigationLink = document.querySelector('[data-nav-section="roadmap"]');
+const interviewPrepNavigationLink = document.querySelector('[data-nav-section="interview-prep"]');
+const cheatSheetsNavigationLink = document.querySelector('[data-nav-section="cheat-sheets"]');
 const desktopQuery = window.matchMedia("(min-width: 1100px)");
 
 function setApplicationMenuOpen(open) {
@@ -64,17 +66,29 @@ function currentWeekNumber() {
   return hashMatch ? Number(hashMatch[1]) : null;
 }
 
-function isInterviewPrepPage() {
-  return /\/interview-prep(?:\/|$)/.test(window.location.pathname);
+function currentContentSection() {
+  const path = window.location.pathname;
+  if (/\/cheat-sheets(?:\/|$)/.test(path)) return "cheat-sheets";
+  if (/\/interview-prep(?:\/|$)/.test(path)) return "interview-prep";
+  if (currentWeekNumber() === null) return "roadmap";
+  return null;
 }
 
 function updateActiveNavigation() {
   const activeWeek = currentWeekNumber();
-  const roadmapActive = activeWeek === null && !isInterviewPrepPage();
-  roadmapNavigationLink?.classList.toggle("active", roadmapActive);
-  if (roadmapNavigationLink) {
-    if (roadmapActive) roadmapNavigationLink.setAttribute("aria-current", "page");
-    else roadmapNavigationLink.removeAttribute("aria-current");
+  const activeSection = currentContentSection();
+  const contentNavigationLinks = [
+    ["roadmap", roadmapNavigationLink],
+    ["interview-prep", interviewPrepNavigationLink],
+    ["cheat-sheets", cheatSheetsNavigationLink],
+  ];
+  for (const [section, link] of contentNavigationLinks) {
+    const active = section === activeSection;
+    link?.classList.toggle("active", active);
+    if (link) {
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    }
   }
   for (const link of weekNavigation?.querySelectorAll(".app-week-link") ?? []) {
     const active = Number(link.dataset.week) === activeWeek;

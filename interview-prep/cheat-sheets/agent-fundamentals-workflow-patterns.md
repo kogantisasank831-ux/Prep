@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-09"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "AI agent fundamentals and workflow patterns interview cheat sheet"
 description: "Agent and workflow boundaries, tool contracts, state, memory, multi-agent patterns, autonomy, human approval, and bounded execution."
 summary: "Revise when to use agents, core runtime anatomy, tool safety, routing and coordination patterns, memory boundaries, budgets, and human oversight."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/agent-fundamentals-workflow-patterns/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 4 · Agent fundamentals"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 4 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 4 source:** This page integrates the prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** Agentic AI Engineer, AI Engineer, ML Engineer, Senior Data Scientist, Data Science/AI Lead  
 **Use:** architecture discussions, agent design, tool use, memory, multi-agent patterns, and production trade-offs  

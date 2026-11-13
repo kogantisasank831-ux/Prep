@@ -15,20 +15,31 @@
   <body class="app-shell-page lesson-view" id="top">
     <a class="skip-link" href="#lesson-content">Skip to lesson</a>
 
+    {% assign nav_section = "" %}
+    {% if page.url contains '/interview-prep/cheat-sheets/' or page.url contains '/cheat-sheets/' %}
+      {% assign nav_section = "cheat-sheets" %}
+    {% elsif page.url contains '/interview-prep/' %}
+      {% assign nav_section = "interview-prep" %}
+    {% endif %}
+
     <aside class="app-sidebar" id="app-sidebar" aria-label="Learning navigation">
       <a class="brand app-sidebar-brand" href="{{ '/' | relative_url }}" aria-label="Applied GenAI roadmap home">
         <span class="brand-mark" aria-hidden="true">AI</span>
         <span>Applied GenAI <strong>Roadmap</strong></span>
       </a>
-      <nav class="app-nav" aria-label="Roadmap and lessons">
+      <nav class="app-nav" aria-label="Learning resources">
         <p class="app-nav-label">Contents</p>
         <a class="app-nav-link app-content-link" data-nav-section="roadmap" href="{{ '/#roadmap' | relative_url }}">
           <span aria-hidden="true">⌂</span>
           <span>Roadmap</span>
         </a>
-        <a class="app-nav-link app-content-link{% if page.url contains '/interview-prep/' %} active{% endif %}" data-nav-section="interview-prep" href="{{ '/interview-prep/' | relative_url }}"{% if page.url contains '/interview-prep/' %} aria-current="page"{% endif %}>
+        <a class="app-nav-link app-content-link{% if nav_section == 'interview-prep' %} active{% endif %}" data-nav-section="interview-prep" href="{{ '/interview-prep/' | relative_url }}"{% if nav_section == 'interview-prep' %} aria-current="page"{% endif %}>
           <span aria-hidden="true">◎</span>
           <span>Interview prep</span>
+        </a>
+        <a class="app-nav-link app-content-link{% if nav_section == 'cheat-sheets' %} active{% endif %}" data-nav-section="cheat-sheets" href="{{ '/cheat-sheets/' | relative_url }}"{% if nav_section == 'cheat-sheets' %} aria-current="page"{% endif %}>
+          <span aria-hidden="true">▤</span>
+          <span>Cheat sheets</span>
         </a>
         <p class="app-nav-label app-weeks-label">Learning path</p>
         <div class="app-week-navigation" id="app-week-navigation" aria-live="polite"></div>

@@ -1,14 +1,14 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-09"
-header_context: "Interview preparation"
-back_label: "Interview prep"
-back_url: "/interview-prep/"
-toc_heading: "Interview sections"
-pagination_label: "Interview prep hub"
-pagination_url: "/interview-prep/"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
+header_context: "Interview cheat sheets"
+back_label: "Cheat sheets"
+back_url: "/cheat-sheets/"
+toc_heading: "Cheat-sheet sections"
+pagination_label: "Cheat sheets hub"
+pagination_url: "/cheat-sheets/"
 title: "Machine-learning fundamentals interview cheat sheet"
 description: "End-to-end machine-learning revision for AI Engineer, ML Engineer, and senior Data Science interviews."
 summary: "Revise framing, leakage, algorithms, metrics, validation, calibration, debugging, deployment, monitoring, and lead-level trade-offs."
@@ -16,10 +16,10 @@ permalink: "/interview-prep/cheat-sheets/machine-learning/"
 kicker_primary: "Interview preparation"
 kicker_secondary: "Batch 1 · Machine learning"
 current_label: "Revision guide"
-alternate_label: "Interview prep hub"
-alternate_url: "/interview-prep/"
+alternate_label: "Cheat sheets hub"
+alternate_url: "/cheat-sheets/"
 ---
-> **Batch 1 source:** This page integrates the previously prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 1 source:** This page integrates the previously prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Target roles:** AI Engineer, ML Engineer, Senior/Lead Data Scientist  
 **Goal:** select, train, evaluate, debug, deploy, and explain a model under real business constraints.

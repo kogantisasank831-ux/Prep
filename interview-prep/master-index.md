@@ -1,8 +1,8 @@
 ---
 layout: "week"
 status: "approved"
-version: "1.0.0"
-last_reviewed: "2026-11-09"
+version: "1.0.1"
+last_reviewed: "2026-11-13"
 header_context: "Interview preparation"
 back_label: "Interview prep"
 back_url: "/interview-prep/"
@@ -19,7 +19,7 @@ current_label: "Revision guide"
 alternate_label: "Interview prep hub"
 alternate_url: "/interview-prep/"
 ---
-> **Batch 1 source:** This page integrates the previously prepared revision artifact into the Prep site. It is separate from the Week 1–20 learning assessments.
+> **Batch 1 source:** This page integrates the previously prepared revision artifact into the Prep site. It is separate from the Week 1–30 learning assessments.
 
 **Purpose:** a comprehensive syllabus for building short, reusable cheat sheets for AI Engineer, Senior/Lead Data Scientist, Applied Scientist, ML Engineer, and Agentic AI Engineer interviews.
 
