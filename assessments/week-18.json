@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "week": 18,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Deterministic agent evaluation",
   "code_language": "python",
   "paper_policy": {
@@ -543,12 +543,12 @@
       "type": "single",
       "topic": "Offline evaluation",
       "difficulty": "foundation",
-      "prompt": "What is an offline evaluation best used for?",
-      "explanation": "Offline datasets support repeatable regression and comparison before deployment, while live behavior still needs separate online observation.",
+      "prompt": "What does one LangSmith offline experiment represent in the routing walkthrough?",
+      "explanation": "An experiment records one target candidate's outputs and evaluator results on dataset examples. Comparing experiments supports pre-deployment regression testing; it is not a production rollout.",
       "options": [
         {
           "id": "o1",
-          "text": "Pre-deployment regression and controlled candidate comparison"
+          "text": "One candidate's outputs and evaluator scores on the shared dataset"
         },
         {
           "id": "o2",
@@ -572,7 +572,7 @@
       "type": "single",
       "topic": "Online evaluation",
       "difficulty": "foundation",
-      "prompt": "What distinguishes online evaluation?",
+      "prompt": "What distinguishes LangSmith online evaluation of sampled traces from the fixed offline experiment?",
       "explanation": "Online evaluation measures governed deployed behavior; it introduces operational, privacy and sampling concerns not present in the local synthetic lab.",
       "options": [
         {
@@ -1431,28 +1431,28 @@
       "type": "multiple",
       "topic": "Offline evaluation",
       "difficulty": "foundation",
-      "prompt": "Which are appropriate offline-evaluation uses?",
-      "explanation": "Offline evaluation supports controlled comparison and testing but its intentionally selected cases do not reveal the live request distribution.",
+      "prompt": "Which practices make a LangSmith comparison between two candidates meaningful?",
+      "explanation": "Freeze the cases and grader, record candidate identity and inspect individual failures. A perfect score on the three-case teaching fixture cannot establish production routing quality.",
       "options": [
         {
           "id": "o1",
-          "text": "Regression testing before release"
+          "text": "Use the same grader version for both candidates"
         },
         {
           "id": "o2",
-          "text": "Comparing candidate versions on the same cases"
+          "text": "Use the same unchanged dataset examples"
         },
         {
           "id": "o3",
-          "text": "Replaying historical or synthetic scenarios"
+          "text": "Record candidate and fixture identities in experiment metadata"
         },
         {
           "id": "o4",
-          "text": "Testing grader mutations"
+          "text": "Inspect individual failed examples as well as the mean score"
         },
         {
           "id": "o5",
-          "text": "Inferring exact live traffic frequency from a stress suite"
+          "text": "Treat a score of 3/3 on the fixture as proof of production quality"
         }
       ],
       "correct": [
@@ -2469,10 +2469,10 @@
       "type": "short",
       "topic": "Dataset identity",
       "difficulty": "applied",
-      "prompt": "Write the exact Week 18 dataset ID.",
-      "explanation": "week18-procurement-agent-v1 is the stable logical identifier bound to a version and byte digest.",
+      "prompt": "The LangSmith evaluator can receive inputs, outputs and reference_outputs. Which of those fields is the answer key that must not be passed to the target? Field name only.",
+      "explanation": "reference_outputs supplies the independent expected result to the grader. The target receives example inputs, not its answer key.",
       "accepted": [
-        "week18-procurement-agent-v1"
+        "reference_outputs"
       ],
       "case_sensitive": true,
       "id": "W18-Q075"

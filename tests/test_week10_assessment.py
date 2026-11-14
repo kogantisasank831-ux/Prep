@@ -5,7 +5,10 @@ import ast
 from collections import Counter
 import json
 from pathlib import Path
+import re
+import runpy
 import shutil
+import socket
 import subprocess
 from typing import TypedDict, cast
 
@@ -127,7 +130,7 @@ def exercise(q: Question) -> Exercise:
 def test_bank_distribution_and_teaching_context() -> None:
     assert BANK["schema_version"] == 1
     assert BANK["week"] == 10
-    assert BANK["version"] == "1.1.0"
+    assert BANK["version"] == "1.2.0"
     assert BANK["code_language"] == "python"
     assert len(BANK["questions"]) == 100
     assert Counter(q["type"] for q in BANK["questions"]) == {
@@ -193,6 +196,46 @@ def test_complete_paper_and_stale_result_contracts() -> None:
         text=True,
     )
     assert "1,000 balanced reproducible papers" in completed.stdout
+
+
+def test_langsmith_walkthrough_does_not_upload_by_default(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    lesson = (ROOT / "content/weeks/week-10.md").read_text(encoding="utf-8")
+    source = next(
+        block
+        for block in re.findall(r"```python\n(.*?)```", lesson, re.DOTALL)
+        if "PREP_LANGSMITH_UPLOAD" in block
+    )
+    script = tmp_path / "langsmith_trace.py"
+    script.write_text(source, encoding="utf-8")
+
+    def forbid_upload(*args: object, **kwargs: object) -> None:
+        raise AssertionError(
+            "The default walkthrough must not create a client or connect"
+        )
+
+    monkeypatch.delenv("PREP_LANGSMITH_UPLOAD", raising=False)
+    monkeypatch.delenv("LANGSMITH_API_KEY", raising=False)
+    monkeypatch.setenv("LANGSMITH_TRACING", "true")
+    monkeypatch.setenv("LANGSMITH_TRACING_V2", "true")
+    monkeypatch.setattr("langsmith.Client", forbid_upload)
+    monkeypatch.setattr(socket, "create_connection", forbid_upload)
+    runpy.run_path(str(script), run_name="__main__")
+    result = json.loads(capsys.readouterr().out)
+    assert result == {
+        "result": {
+            "answer": "Net 30 after inspection",
+            "source": "synthetic-contract-v1",
+        },
+        "upload_requested": False,
+    }
+
+    monkeypatch.setenv("PREP_LANGSMITH_UPLOAD", "1")
+    with pytest.raises(SystemExit, match="Set a LangSmith API key privately"):
+        runpy.run_path(str(script), run_name="__main__")
 
 
 def test_references_are_bounded_and_self_contained() -> None:

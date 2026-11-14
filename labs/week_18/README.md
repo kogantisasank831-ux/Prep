@@ -9,6 +9,15 @@ No model, provider, network, database, secret, current clock or external action
 participates. Cost and latency are declared fixture units for arithmetic practice;
 they are not measurements of a production system.
 
+## Optional LangSmith experiments
+
+The [Week 18 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-18/#compare-two-candidates-with-langsmith)
+adds a copyable three-case routing comparison. Its default standard-library path
+runs locally; an explicit opt-in creates a synthetic LangSmith dataset and two
+experiments using a code evaluator. The tutorial explains how to map this
+28-case suite into inputs, independent references and separate graders; it does
+not automatically upload the suite or replace its outcome/safety contracts.
+
 ## Evaluation shape
 
 | Layer | Responsibility |

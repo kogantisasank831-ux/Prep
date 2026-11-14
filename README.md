@@ -372,6 +372,11 @@ context and citations. The [local lab](labs/week_10/README.md) adds request/span
 identities, monotonic stage timing, version fingerprints, bounded failure records,
 explicit synthetic payload capture and labelled token/cost examples.
 
+The lesson also teaches LangSmith projects, parent/child runs, custom Python
+instrumentation, metadata, payload controls and delivery diagnosis. Its separate
+copyable SDK walkthrough defaults to uploads disabled; hosted practice is an
+explicit opt-in using only synthetic text. The core lab remains account-free.
+
 ```shell
 python -m labs.week_10.demo --scenario payment --output-dir .runtime/week10-payment
 python -m labs.week_10.demo --scenario model-fixture --output-dir .runtime/week10-model --capture-synthetic-content
@@ -688,6 +693,12 @@ evaluate Procurement Intelligence Agent v1 on a versioned 28-case synthetic
 suite. The [local lab](labs/week_18/README.md) records end states and ordered tool
 traces, then reports task completion, exact tool selection, argument accuracy,
 step efficiency, loops, escalation, fixture cost/latency and unsafe actions.
+
+A separate LangSmith walkthrough compares two candidates on three synthetic
+routes using a deterministic evaluator. It runs locally with standard Python;
+optional hosted practice creates one dataset and two experiments. Both lesson
+depths explain versioning, answer-key isolation, failed-row inspection and
+offline versus online evaluation. This practice does not replace the 28-case lab.
 
 The [Week 18 assessment](https://kogantisasank831-ux.github.io/Prep/assessments/week-18/)
 draws ten balanced questions from a reviewed 100-item bank. Its 20 independent

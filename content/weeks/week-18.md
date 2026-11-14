@@ -3,14 +3,14 @@ layout: week
 week: 18
 phase: 4
 status: approved
-version: 1.1.0
-last_reviewed: 2026-11-09
+version: 1.2.0
+last_reviewed: 2026-11-14
 estimated_hours: 8
 permalink: /weeks/week-18/
 title: "Evaluate agents by outcomes, trajectories and safety"
-description: Build a 28-case procurement-agent evaluation with explicit success criteria, deterministic graders, trace metrics, category slices and honest cost and latency boundaries.
-summary: A useful agent evaluation names the task, expected end state, permitted trajectory and grader before running the candidate—and keeps every denominator visible.
-kicker_primary: Agent evaluation
+description: Build a 28-case agent evaluation, then practice LangSmith datasets, deterministic evaluators and candidate comparisons with an optional synthetic experiment.
+summary: Define independent outcomes and trajectory graders, retain metric denominators, and compare LangSmith experiments without leaking reference answers into the target.
+kicker_primary: Agent evaluation and LangSmith
 kicker_secondary: Tasks, trials, traces, graders and regression gates
 current_label: Production version
 alternate_label: Beginner version
@@ -484,6 +484,162 @@ Use both:
 Never copy a production incident blindly into a public dataset. Minimize,
 de-identify, authorize and retain it according to policy.
 
+## Compare two candidates with LangSmith
+
+Week 10 used LangSmith to inspect one execution. Here it organizes evaluation
+examples, scored runs and comparisons. You still define the expected behavior
+and the grader. A dashboard cannot decide whether your business rule is right.
+
+| Object | Role | Keep separate from |
+| --- | --- | --- |
+| Dataset | Versioned collection of inputs and reference outputs | Candidate-generated answers |
+| Example | One input and its independently specified expected result | A complete experiment |
+| Target | Candidate function receiving example inputs | The reference outputs |
+| Evaluator | Rule assigning a named score to observed behavior | The system producing that behavior |
+| Experiment | Candidate outputs and evaluator results for dataset examples | A production rollout |
+| Feedback | Individual code, model or human scores/annotations | Proof of overall agent safety |
+
+Use this three-case route-selection fixture to learn the SDK. It does not run
+the Week 17 agent, check actual tool execution, or replace the 28-case suite.
+There is no LLM or judge-model call. The intentionally weak baseline always
+selects document search; the candidate distinguishes contract, spend and
+approval intents. Neither candidate executes a purchase or any other tool.
+
+Save the following as `.runtime/langsmith_evaluation.py`. The default path uses
+only Python's standard library. The optional upload path uses the SDK pinned
+in [Week 10]({{ '/weeks/week-10/' | relative_url }}#instrument-a-small-workflow-with-langsmith).
+
+```python
+import hashlib
+import json
+import os
+from uuid import uuid4
+
+
+EXAMPLES = [
+    {"inputs": {"intent": "contract"}, "outputs": {"route": "document_search"}},
+    {"inputs": {"intent": "spend"}, "outputs": {"route": "sql_read"}},
+    {"inputs": {"intent": "approve"}, "outputs": {"route": "human_review"}},
+]
+
+
+def baseline(inputs: dict[str, str]) -> dict[str, str]:
+    return {"route": "document_search"}
+
+
+def candidate(inputs: dict[str, str]) -> dict[str, str]:
+    routes = {
+        "contract": "document_search",
+        "spend": "sql_read",
+        "approve": "human_review",
+    }
+    return {"route": routes.get(inputs["intent"], "human_review")}
+
+
+def route_exact(
+    outputs: dict[str, str], reference_outputs: dict[str, str]
+) -> dict[str, bool]:
+    return {"score": outputs == reference_outputs}
+
+
+def main() -> None:
+    versions = (("baseline-v1", baseline), ("candidate-v2", candidate))
+    for version, target in versions:
+        passed = sum(
+            route_exact(target(row["inputs"]), row["outputs"])["score"]
+            for row in EXAMPLES
+        )
+        print(json.dumps({"candidate": version, "passed": passed, "cases": 3}))
+
+    if os.environ.get("PREP_LANGSMITH_UPLOAD") != "1":
+        return
+    if not os.environ.get("LANGSMITH_API_KEY"):
+        raise SystemExit("Set a LangSmith API key privately before enabling uploads.")
+
+    from langsmith import Client, tracing_context
+
+    client = Client()
+    fixture_digest = hashlib.sha256(
+        json.dumps(EXAMPLES, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+    dataset = client.create_dataset(
+        dataset_name=f"prep-routing-v1-{uuid4().hex[:8]}",
+        description="Three synthetic routes; a teaching fixture, not an agent benchmark.",
+    )
+    client.create_examples(dataset_id=dataset.id, examples=EXAMPLES)
+    with tracing_context(enabled=True, client=client):
+        for version, target in versions:
+            client.evaluate(
+                target,
+                data=dataset.id,
+                evaluators=[route_exact],
+                experiment_prefix=f"prep-{version}",
+                max_concurrency=1,
+                metadata={
+                    "candidate_version": version,
+                    "fixture_version": "routing-v1",
+                    "fixture_sha256": fixture_digest,
+                    "grader_version": "route-exact-v1",
+                },
+            )
+    client.flush(timeout=10)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run `python .runtime/langsmith_evaluation.py` with `PREP_LANGSMITH_UPLOAD` unset.
+Expect baseline `passed: 1, cases: 3` and candidate `passed: 3, cases: 3`.
+This local path neither imports LangSmith nor creates datasets or experiments.
+Both versions see only `inputs`; the grader alone receives reference outputs.
+Do not pass an entire example, including its answer key, to a target.
+The evaluator returns a `score` mapping; LangSmith uses its function name,
+`route_exact`, as the feedback key for comparison.
+
+For optional hosted practice, configure the private key/workspace/endpoint as in
+Week 10. The key needs dataset and experiment write permissions; a tracing-only
+key is insufficient. Use `PREP_LANGSMITH_UPLOAD=1 python .runtime/langsmith_evaluation.py`
+in Bash. In PowerShell, set `$env:PREP_LANGSMITH_UPLOAD = "1"`, run the script,
+and remove that variable afterward. Each opt-in execution **creates one new
+dataset, adds three synthetic examples and runs two three-example experiments**.
+It sends example inputs, references, candidate outputs and scores to LangSmith.
+It makes no model call, but hosted storage/evaluation usage follows your account
+limits. Trace payload suppression does not suppress these dataset writes.
+
+Open the new dataset's experiments and compare the two `prep-` prefixes side by
+side. Inspect the `spend` and `approve` rows, not just the average `route_exact`
+score. Confirm both experiments used the same dataset ID, three examples and
+grader version. Keep the dataset unchanged during the pair; record its version
+or snapshot identity for subsequent experiments. The fixture digest binds the
+declared example content, not a server export or every experiment setting.
+Inspect upload failures separately; printed local scores do not prove hosted
+evaluation succeeded. Remove the synthetic dataset and experiments through the
+account's deletion controls when finished.
+
+### Apply the design to the agent suite
+
+Adapt the 28-case suite only after the three-case comparison makes sense.
+Keep candidate-visible request/scenario fields in `inputs`, independently
+reviewed outcomes/routes in reference `outputs`, and category labels in example
+metadata. The target returns a closed observation. Separate evaluators call the
+reviewed outcome, tool-selection, argument and unsafe-action graders; never
+collapse them into one flattering answer score. Keep case IDs, source dataset
+digest/version, candidate/build identity and grader versions with the experiment.
+
+For model-backed targets, retain prompt/model/retrieval settings, bounded
+concurrency and repeated trials. A model judge is optional and needs its own
+versioned rubric and human calibration; deterministic route checks do not
+require one. Explore human annotation queues for disputed examples. Online
+evaluation applies reviewed checks to sampled deployed traces, usually without
+gold answers; it does not replace the fixed offline regression set. Sampling
+affects both cost and what population a score describes.
+
+**Exercise:** add an unknown-intent case with an independently declared safe
+route. Predict both versions' results before running them. Explain why four
+hand-written cases cannot establish real routing quality. Then propose a
+case-level grader mapping for the existing 28-case suite without uploading it.
+
 ## Avoid evaluation leakage and overfitting
 
 A visible regression set is useful for debugging and CI. It becomes less useful
@@ -552,6 +708,12 @@ denominators, category slices, safety gates and evidence-bounded interpretation.
 
 ## Sources and further reading
 
+- [LangSmith SDK evaluation walkthrough](https://docs.langchain.com/langsmith/evaluate-llm-application)
+  for input-only targets, reference outputs, code evaluators and experiment metadata.
+- [LangSmith dataset management](https://docs.langchain.com/langsmith/manage-datasets)
+  for dataset versions and maintained example collections.
+- [LangSmith experiment comparison](https://docs.langchain.com/langsmith/compare-experiment-results)
+  for inspecting per-example differences across candidates.
 - [OpenAI agent evals](https://developers.openai.com/api/docs/guides/agent-evals)
   for evaluating end-to-end agent workflows, tool calls and handoffs.
 - [OpenAI trace grading](https://developers.openai.com/api/docs/guides/trace-grading)

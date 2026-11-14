@@ -345,7 +345,7 @@ Explain why evaluating only the final answer hides retrieval failures.
 
 ---
 
-## Week 10 — Observability and tracing
+## Week 10 — Observability, tracing and LangSmith
 
 ### Learn
 
@@ -358,6 +358,9 @@ Explain why evaluating only the final answer hides retrieval failures.
 * Cost monitoring
 * Failure classification
 * Prompt and model versioning
+* LangSmith projects, traces, runs and metadata
+* Custom instrumentation with `traceable` and `tracing_context`
+* Payload controls, sampling and trace-delivery troubleshooting
 
 ### Build
 
@@ -372,11 +375,19 @@ Add traces for:
 * Token consumption
 * End-to-end latency
 
+Complete the LangSmith walkthrough in the lesson: first run the synthetic
+Python example with uploads disabled, then optionally inspect its parent/child
+runs in a private LangSmith project. Keep the local JSON lab as an account-free
+route. Distinguish trace collection from answer-quality evaluation.
+
 ### Interview preparation
 
 Prepare a debugging workflow for:
 
 > The assistant answered correctly last week but now answers incorrectly.
+
+Explain how LangSmith differs from LangGraph, and why a successful trace does
+not establish a correct answer.
 
 ---
 
@@ -620,6 +631,9 @@ Be prepared to justify why each agent exists.
 * Cost per successful task
 * Latency per task
 * Unsafe-action rate
+* LangSmith datasets, reference outputs, evaluators and experiments
+* Comparing candidates on the same versioned examples
+* Offline evaluation versus online evaluation of sampled traces
 
 ### Build
 
@@ -634,6 +648,12 @@ Include:
 * Prompt injection
 * Invalid tool arguments
 * Requests requiring approval
+
+Run the lesson's small LangSmith experiment locally before optionally uploading
+its synthetic dataset. Compare a baseline and candidate with the same code
+evaluator, inspect individual failures, and record dataset/candidate/grader
+identities. Apply the same experiment design to the 28-case local agent suite;
+the three-case walkthrough does not replace that suite.
 
 ### Project milestone
 

@@ -3,14 +3,14 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.1.0
-last_reviewed: 2026-11-08
+version: 1.2.0
+last_reviewed: 2026-11-14
 estimated_hours: 8
 permalink: /weeks/week-10/beginner/
 title: "LLM observability: see what happened inside one answer"
-description: Learn traces and spans through a small retrieval assistant, follow evidence through each stage, and explain timings, missing token counts and failures without guessing.
-summary: Build a request history, compare a complete answer with one that lost supporting context, and practice reading the evidence one stage at a time.
-kicker_primary: LLM observability
+description: Learn traces and spans through a retrieval assistant, then understand LangSmith projects and runs through an optional synthetic example.
+summary: Build a request history, diagnose lost supporting context, and read a LangSmith parent/child trace while distinguishing execution from answer quality.
+kicker_primary: LLM observability and LangSmith
 kicker_secondary: Beginner route through the same build
 current_label: Beginner version
 alternate_label: Production version
@@ -218,6 +218,53 @@ For a real system, first define the purpose and access/retention policy. Keep or
 Larger systems sometimes sample traces. Head sampling chooses early; tail sampling can use later outcomes but needs buffering. A set chosen mainly for errors will not represent the overall error rate fairly. This lab has a bounded recorder and no sampling backend.
 
 OpenTelemetry provides a standard ecosystem for instrumented services. Our file format is custom and is not OTLP. Moving across HTTP or queues requires supported context propagation; trace IDs never replace authentication. The current recorder is synchronous and should not be shared across concurrent requests.
+
+## Try the same tracing idea with LangSmith
+
+So far, you have read a trace from a JSON file. LangSmith is a tool that can
+receive traces and give you an interface for exploring them. You do not need
+LangGraph to use it. LangGraph runs a workflow; LangSmith helps you inspect and
+evaluate what happened. A workflow checkpoint lets work resume. A trace helps
+explain the work but does not save a resumable checkpoint.
+
+Suppose a function answers a payment question by calling a retrieval function.
+LangSmith can record an **answer run** containing a **retrieval run**. Those
+related runs form one trace. A **project** groups traces, and **metadata** records
+labels such as the fixture version. A completed run means its code finished;
+it does not mean its answer met the task's requirements.
+
+Follow the complete, copyable
+[LangSmith example in the production lesson]({{ '/weeks/week-10/' | relative_url }}#instrument-a-small-workflow-with-langsmith).
+The example is deliberately smaller than the full retrieval lab. It returns a
+fixed invented contract term and makes no model calls.
+
+1. Install the optional SDK using the exact command in that section.
+2. Create `.runtime`, save the example as `.runtime/langsmith_trace.py`, and run
+   `python .runtime/langsmith_trace.py` with `PREP_LANGSMITH_UPLOAD` unset.
+3. Expect `Net 30 after inspection` and `upload_requested: false`. Explain which
+   function called which. No key or LangSmith account is needed for this step,
+   and no LangSmith trace is saved locally.
+4. If you want to practice the hosted interface, follow the account/key setup
+   and explicit opt-in in that section. It sends only the invented example.
+   Inspect the answer parent and retrieval child in `prep-week10`, then turn
+   uploads off and delete the learning data when finished.
+
+The original local lab remains the core route and needs no extra package.
+You can complete the week without signing up for anything. Uploading is a
+separate learning choice, subject to your account's current usage limits.
+
+Keep credentials outside saved source. Real questions, documents and customer
+identifiers may be sensitive even when debugging. Hiding inputs and outputs
+does not automatically hide metadata, errors or dataset examples. Learn the
+payload controls before instrumenting another application.
+
+**Pause and check:** You see no trace in the project. Does that prove the answer
+function never ran? No. Uploading might be disabled, the destination might be
+wrong, or trace delivery might have failed. Check the printed application result
+separately from backend delivery. Never rerun a purchase just to get a trace.
+
+In Week 18, we will add examples with expected answers and an evaluator. That
+lets us ask whether the behavior is correct, rather than only whether it ran.
 
 ## Practice before moving on
 

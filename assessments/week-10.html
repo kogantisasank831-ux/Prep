@@ -3,12 +3,12 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.1.0
-last_reviewed: 2026-11-08
+version: 1.2.0
+last_reviewed: 2026-11-14
 permalink: /assessments/week-10/
-title: "Week 10 assessment: Observability and tracing"
+title: "Week 10 assessment: Observability, tracing and LangSmith"
 description: "A 100-question bank with balanced random papers, Python coding checks, scoring and printable questions."
-summary: "Test request/span identities, elapsed timing, context diagnosis, model usage, cost arithmetic and failure handling. Each paper draws 10 questions from a bank of 100."
+summary: "Test traces, LangSmith instrumentation and payload boundaries, elapsed timing, context diagnosis, usage, costs and failures. Each paper draws 10 questions from a bank of 100."
 kicker_primary: Week 10 assessment
 kicker_secondary: 10 questions · 100 marks
 current_label: Assessment
@@ -20,6 +20,7 @@ alternate_url: /weeks/week-10/
   <h2 id="paper-guide">Your paper</h2>
   <p>Each paper contains two single-choice, two multiple-correct, two matching, two short syntax and two Python coding questions. Every format contributes one foundation and one applied question, for five of each in total. All ten questions are worth 10 marks each.</p>
   <p>The paper checks lesson understanding through signal selection, trace interpretation, prediction and small applications. It is a learning check, not a role-specific interview bank.</p>
+  <p>LangSmith questions cover parent/child inspection, version metadata, explicit upload controls and the difference between trace payloads and dataset examples. No account or API key is needed to answer the questions.</p>
   <p>Practice trace IDs and parent trees, stage ordering, overlapping intervals, unknown usage, cached-token costs, failure cleanup and controlled comparisons. Python tasks use standard-library functions and synthetic records. Each states its own contract and has five executable checks. The full tracing assistant and optional scripted model remain separate lesson exercises.</p>
   <details class="assessment-guide">
     <summary>Scoring, coding and saved progress</summary>
