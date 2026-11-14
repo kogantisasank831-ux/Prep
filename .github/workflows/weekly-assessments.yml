@@ -16,7 +16,8 @@ concurrency:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
+    # Python 3.13.12 has an official 24.04 build, but no 26.04 build.
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -105,7 +106,7 @@ jobs:
 
   week12-stack:
     needs: pytest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

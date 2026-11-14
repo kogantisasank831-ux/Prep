@@ -6,7 +6,9 @@ Owner request: add LangSmith to the existing Prep roadmap. Source base:
 `914e227efecb801697278ebb7317376f7cfd8945` on `main`. Keep exactly 30 weeks,
 existing public routes, both lesson depths, and the two 100-question assessment
 contracts. No change to the local tracing recorder, agent evaluator, dependency
-files, provider integrations or hosted site configuration.
+files, provider integrations or hosted site configuration. An observed CI setup
+failure also requires pinning the two verification jobs to Ubuntu 24.04, retaining
+the accepted Python 3.13.12 runtime and every existing gate.
 
 | Document / task | Audience and purpose | Source / version | Evidence / next review |
 | --- | --- | --- | --- |
@@ -66,3 +68,22 @@ rendered-site or browser verification. The real Week 12 container integration
 remains a candidate-matched CI gate. Candidate CI, approval to merge, exact
 merged-commit Pages build and deployed route checks are separate release stages
 and are not established by this local record.
+
+## CI runner repair
+
+The first PR candidate `a1d84ace9e3c69d87ca2019117aa9c680835d325` failed before
+tests in [run 43593409792](https://github.com/kogantisasank831-ux/Prep/actions/runs/43593409792).
+`ubuntu-latest` selected Ubuntu 26.04, and `actions/setup-python` could not find
+Python 3.13.12 for that platform. The official
+[Python versions manifest](https://github.com/actions/python-versions/blob/main/versions-manifest.json)
+lists a Linux x64 build for 24.04 and none for 26.04. Pin `pytest` and
+`week12-stack` to `ubuntu-24.04`; keep action pins, runtime, triggers, permissions,
+dependency installation, required tests, service setup and cleanup unchanged.
+
+The observed failure proves the prior setup blocks the gate. YAML validation
+and the official platform manifest justify the repair; only a new exact-candidate
+workflow run can verify the configured runner actually executes both jobs.
+Owner: repository maintainer. Review the runner pin when changing the Python
+patch release or supported runner image; do not restore an unverified floating
+image merely to remove the pin. This repair does not change deployment authority
+or turn a missing/skipped gate into a successful result.
