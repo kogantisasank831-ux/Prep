@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "week": 10,
-  "version": "1.1.0",
-  "title": "Observability and tracing",
+  "version": "1.2.0",
+  "title": "Observability, tracing and LangSmith",
   "source_lesson": "/weeks/week-10/",
   "code_language": "python",
   "paper_policy": {
@@ -21,9 +21,9 @@
     {
       "id": "W10-Q001",
       "type": "single",
-      "topic": "Signals",
+      "topic": "LangSmith trace inspection",
       "difficulty": "foundation",
-      "prompt": "A user reports one unexpectedly slow answer. Which observation best localizes the work inside that particular execution?",
+      "prompt": "A user reports one unexpectedly slow answer. Which observation in LangSmith best localizes work inside that particular execution?",
       "explanation": "Request-level spans reveal stage intervals and relationships. Aggregate metrics help establish prevalence but cannot by themselves reconstruct this execution.",
       "options": [
         {
@@ -514,9 +514,9 @@
     {
       "id": "W10-Q018",
       "type": "single",
-      "topic": "Prompt tracing",
+      "topic": "LangSmith version metadata",
       "difficulty": "applied",
-      "prompt": "The prompt template version matches in two runs. Why might constructed prompts still differ?",
+      "prompt": "The prompt_version metadata matches on two LangSmith runs. Why might their constructed prompts still differ?",
       "explanation": "A template identifier is only one input. Inspect the constructed message content through an authorized capture when actual serialization differences matter.",
       "options": [
         {
@@ -891,26 +891,26 @@
     {
       "id": "W10-Q031",
       "type": "multiple",
-      "topic": "Signal boundaries",
+      "topic": "LangSmith upload and payload boundaries",
       "difficulty": "foundation",
-      "prompt": "Which observations answer distinct useful questions?",
-      "explanation": "Quality, execution structure and population behavior are separate claims; none should silently stand in for the others.",
+      "prompt": "Which statements about the lesson's LangSmith walkthrough are correct?",
+      "explanation": "The walkthrough runs without an account by disabling tracing explicitly. Hosted uploads require a private key. Hiding trace payloads does not hide separately created dataset examples.",
       "options": [
         {
           "id": "o1",
-          "text": "A metric distribution can describe many request durations"
+          "text": "tracing_context(enabled=False) can disable decorated tracing"
         },
         {
           "id": "o2",
-          "text": "A trace status alone proves semantic correctness"
+          "text": "Hiding trace inputs also hides all dataset examples"
         },
         {
           "id": "o3",
-          "text": "An evaluation can check whether the answer met task criteria"
+          "text": "A private API key is needed for the optional hosted upload"
         },
         {
           "id": "o4",
-          "text": "A trace can localize a specific request operation"
+          "text": "The default walkthrough can run without a LangSmith account"
         }
       ],
       "correct": [
@@ -2293,12 +2293,12 @@
     {
       "id": "W10-Q070",
       "type": "short",
-      "topic": "Exact integer type",
+      "topic": "LangSmith custom instrumentation",
       "difficulty": "foundation",
-      "prompt": "Complete the bool-rejecting check: type(count) is ___. Built-in type name only.",
-      "explanation": "Exact type identity excludes True/False even though isinstance(True, int) is true. The token contract requires actual integers.",
+      "prompt": "Enter the LangSmith decorator used in the lesson to instrument an ordinary Python function. Name only, without @ or parentheses.",
+      "explanation": "traceable instruments the function. Whether it sends runs depends on tracing configuration; decorating a function alone does not establish answer correctness or delivery.",
       "accepted": [
-        "int"
+        "traceable"
       ],
       "case_sensitive": true
     },

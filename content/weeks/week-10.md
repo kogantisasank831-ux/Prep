@@ -3,14 +3,14 @@ layout: week
 week: 10
 phase: 3
 status: approved
-version: 1.1.0
-last_reviewed: 2026-11-08
+version: 1.2.0
+last_reviewed: 2026-11-14
 estimated_hours: 8
 permalink: /weeks/week-10/
 title: "LLM observability: follow a request and explain what changed"
-description: Trace a retrieval assistant, inspect stage latency and version identities, account for model usage honestly, and diagnose a changed answer with a controlled comparison.
-summary: Follow one procurement question through query planning, authorized search, reranking, context and citations, then add explicit prompt, model, usage and failure observations.
-kicker_primary: LLM observability
+description: Trace a retrieval assistant locally and with optional LangSmith instrumentation, inspect stage latency and version identities, and diagnose a changed answer with evidence.
+summary: Follow procurement evidence through each stage, then practice LangSmith projects, parent/child runs, metadata, payload controls and delivery diagnosis without requiring a model call.
+kicker_primary: LLM observability and LangSmith
 kicker_secondary: Explain one request with evidence
 current_label: Production version
 alternate_label: Beginner version
@@ -278,6 +278,143 @@ Across HTTP or queues, use a supported propagator to inject/extract trace contex
 
 A future real-model adapter must enforce actual timeouts/cancellation, validate provider responses, normalize reported usage and retain resolved identity where available. A deployment also needs export health, sampling policy and payload controls. This week provides the local observation contract, not that service deployment. Week 11 will examine prompt injection and other security boundaries; Week 12 will address deployment and monitoring.
 
+## Instrument a small workflow with LangSmith
+
+LangSmith gives you a backend and interface for inspecting executions and running
+evaluations. LangGraph executes a stateful workflow; LangSmith helps observe and
+evaluate it. You can also instrument ordinary Python without LangChain or
+LangGraph. A checkpoint records workflow state for resumption; a trace records
+execution evidence. Keeping a trace does not make an interrupted graph resumable.
+
+| LangSmith term | Meaning in this exercise |
+| --- | --- |
+| Project | The destination grouping the `prep-week10` traces |
+| Trace | One invocation of the synthetic question-answering function |
+| Run | One recorded operation, such as the parent answer or child retrieval |
+| Tags | Small labels for filtering, such as `synthetic` |
+| Metadata | Declared identities, such as fixture and prompt versions |
+| Feedback | A score or annotation attached to a run; introduced with experiments in Week 18 |
+
+The existing `labs.week_10.demo` writes its own local format. It does not upload
+to LangSmith. This separate SDK exercise uses only the fixed text below. First
+install the optional SDK in your Python environment:
+
+```shell
+python -m pip install "langsmith==0.14.17"
+```
+
+This pin was reviewed on 14 November 2026. The core local lab still needs no
+LangSmith dependency or account. Save this complete example as
+`.runtime/langsmith_trace.py` after creating the `.runtime` directory:
+
+```python
+import json
+import os
+
+from langsmith import Client, traceable, tracing_context
+
+
+@traceable(name="retrieve-fixture", run_type="retriever")
+def retrieve(question: str) -> list[dict[str, str]]:
+    if question != "What is the payment term?":
+        raise ValueError("unsupported_fixture_question")
+    return [{"source": "synthetic-contract-v1", "quote": "Net 30 after inspection"}]
+
+
+@traceable(name="answer-fixture", run_type="chain")
+def answer(question: str) -> dict[str, str]:
+    evidence = retrieve(question)
+    return {"answer": evidence[0]["quote"], "source": evidence[0]["source"]}
+
+
+def main() -> None:
+    upload = os.environ.get("PREP_LANGSMITH_UPLOAD") == "1"
+    if upload and not os.environ.get("LANGSMITH_API_KEY"):
+        raise SystemExit("Set a LangSmith API key privately before enabling uploads.")
+    client = Client() if upload else None
+    with tracing_context(
+        enabled=upload,
+        client=client,
+        project_name="prep-week10",
+        tags=["synthetic", "week10"],
+        metadata={"fixture_version": "contract-v1", "prompt_version": "no-llm"},
+    ):
+        result = answer("What is the payment term?")
+    print(json.dumps({"result": result, "upload_requested": upload}))
+    if client is not None:
+        client.flush(timeout=10)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run `python .runtime/langsmith_trace.py`. With `PREP_LANGSMITH_UPLOAD` unset,
+`tracing_context(enabled=False)` overrides ambient tracing configuration. It
+runs the functions without sending traces or constructing a client. Expect the
+answer `Net 30 after inspection` and `upload_requested: false`. This verifies
+the example's application path; it creates no local LangSmith trace artifact.
+It makes no model call and measures no model tokens or generation cost.
+
+### Inspect the synthetic trace in a private project
+
+For the optional hosted step, create a LangSmith account and a private learning
+project. Create a key with access to your chosen workspace and set
+`LANGSMITH_API_KEY` privately in your terminal or secret manager. Use the
+endpoint supplied for that workspace/region as `LANGSMITH_ENDPOINT`; supply
+`LANGSMITH_WORKSPACE_ID` when your key's scope requires it. Never put the key in
+this page, a notebook output or a Git commit. Check the current account's usage
+limits and retention settings before sending traces; an account-free local
+completion route remains available.
+
+Enable uploads only for this synthetic script:
+
+```bash
+PREP_LANGSMITH_UPLOAD=1 python .runtime/langsmith_trace.py
+```
+
+PowerShell equivalent:
+
+```powershell
+$env:PREP_LANGSMITH_UPLOAD = "1"
+python .runtime/langsmith_trace.py
+Remove-Item Env:PREP_LANGSMITH_UPLOAD
+```
+
+In the `prep-week10` project, locate the `answer-fixture` parent and its
+`retrieve-fixture` child. Inspect their inputs/outputs, parent relationship,
+status, duration and version metadata. The parent's duration already contains
+the child. `upload_requested: true` and a completed flush are not proof of
+backend delivery: confirm that the expected runs actually appear. Change only
+the caller's question to `Unsupported fixture question` to inspect a
+`ValueError` and its error runs; restore it before continuing. Never retry business
+work merely to replace a missing trace.
+
+### Protect payloads and troubleshoot delivery
+
+The example intentionally records only invented content. For another system,
+decide which fields may leave its environment before enabling instrumentation.
+`LANGSMITH_HIDE_INPUTS=true` and `LANGSMITH_HIDE_OUTPUTS=true` can suppress those
+payloads. Custom input/output processors can redact selected fields, but hiding
+payloads does not hide run names, metadata, errors or separately uploaded
+dataset examples. Do not put secrets in those fields. A sampling setting is a
+volume/cost choice, not a redaction policy; error-heavy samples are not a fair
+estimate of the overall error rate.
+
+If no trace appears, check the explicit opt-in, key/workspace/endpoint alignment,
+project name, runtime enablement and upload/flush errors. A 401/403 suggests an
+authentication or authorization problem; an empty project alone does not tell
+you whether the application ran. Do not print a key while troubleshooting.
+After the exercise, disable the opt-in and remove the synthetic project data
+through the account's normal deletion controls.
+
+For a LangGraph application in Week 15, supported framework instrumentation can
+record graph/node runs. Its cloud tracing is separately opt-in; the Week 15 lab
+does not turn it on. Continue to configure a checkpointer for graph resumption.
+In [Week 18]({{ '/weeks/week-18/' | relative_url }}#compare-two-candidates-with-langsmith),
+you will attach explicit correctness criteria to a fixed dataset instead of
+assuming an error-free trace is a good answer.
+
 ## Practice explaining the evidence
 
 **Exercise 1 — Reconstruct one trace.** Generate `payment`, identify the root and every tool's parent, and calculate root milliseconds without summing nested intervals. Retain a small table of IDs, parents and durations. Acceptance: no orphan records; all intervals are nonnegative or explicitly missing; the stated measurement boundary excludes ingestion and export.
@@ -289,6 +426,12 @@ A future real-model adapter must enforce actual timeouts/cancellation, validate 
 **Exercise 4 — Separate two failures.** Inspect the model-timeout trace, then call `deliver()` with a sink that raises. Acceptance: timeout usage remains null, original application exceptions propagate, delivery has one attempt, and an already obtained answer is unchanged. Do not simulate a second generation as an export retry.
 
 **Exercise 5 — Propose a payload policy.** List what goes into routine metadata versus a restricted debug artifact for a real document assistant. Acceptance: source permissions apply to inspection; identifiers are treated as potentially sensitive; purpose, retention and deletion are explicit. Do not upload real data as part of this exercise.
+
+**Exercise 6 — Read a LangSmith trace.** Run the SDK example with uploads disabled
+and explain its result. If you choose hosted practice, also identify its two
+runs and parent relationship in `prep-week10`. Acceptance: distinguish local
+execution, attempted upload and observed delivery; explain why neither an `ok`
+run nor a trace ID establishes answer quality or source permission.
 
 For interviews, answer with a boundary and a concrete consequence:
 
@@ -308,6 +451,10 @@ Your weekly deliverable is the observed assistant plus a short diagnostic note, 
 
 ## Sources and next reading
 
+- [LangSmith custom instrumentation](https://docs.langchain.com/langsmith/annotate-code) — ordinary Python functions and explicit tracing controls.
+- [LangSmith tracing context](https://docs.langchain.com/langsmith/trace-without-env-vars) — runtime enablement and client selection.
+- [LangSmith payload controls](https://docs.langchain.com/langsmith/mask-inputs-outputs) — suppression, redaction and limits.
+- [LangSmith SDK flush](https://reference.langchain.com/python/langsmith/client/Client/flush) — bounded waiting for pending trace operations.
 - [OpenTelemetry traces](https://opentelemetry.io/docs/concepts/signals/traces/) — spans, relationships, attributes and exporters.
 - [Python performance-counter reference](https://docs.python.org/3.13/library/time.html#time.perf_counter_ns) — elapsed measurements and integer nanoseconds.
 - [Python decimal arithmetic](https://docs.python.org/3.13/library/decimal.html) — explicit decimal construction and precision.

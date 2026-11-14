@@ -65,6 +65,15 @@ The illustrative rate card is not a provider price list or an invoice; unknown
 usage/cache/rates produce a null estimate rather than zero. The prompt/output
 contracts do not establish faithfulness, truth or injection resistance.
 
+## Optional LangSmith practice
+
+The [Week 10 lesson](https://kogantisasank831-ux.github.io/Prep/weeks/week-10/#instrument-a-small-workflow-with-langsmith)
+includes a separate copyable SDK example for parent/child runs, project metadata,
+payload controls and upload troubleshooting. It defaults to uploads disabled;
+the optional hosted path sends only its fixed synthetic fixture. It does not
+export this lab's custom JSON format or change its dependencies. Week 18 adds
+dataset and experiment comparison practice.
+
 ## Validation
 
 ```bash

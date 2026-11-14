@@ -3,13 +3,13 @@ layout: week
 week: 18
 phase: 4
 status: approved
-version: 1.1.0
-last_reviewed: 2026-11-09
+version: 1.2.0
+last_reviewed: 2026-11-14
 estimated_hours: 8
 permalink: /weeks/week-18/beginner/
 title: "Test an agent like a careful driving examiner"
-description: Learn agent evaluation with 28 clear procurement cases, simple graders, visible metric denominators and a safe local Python lab.
-summary: Give the agent a task, record what it did, compare the result and route with an answer key, and keep safety failures separate from averages.
+description: Learn agent evaluation through procurement cases and simple graders, then compare two candidates with an account-free LangSmith practice example.
+summary: Compare the result and route with an independent answer key, keep safety failures separate, and learn how datasets, evaluators and experiments fit together.
 kicker_primary: Beginner path
 kicker_secondary: Cases, answer keys, traces and scores
 current_label: Beginner version
@@ -317,6 +317,63 @@ python -m labs.week_18.demo evaluate --output-dir .runtime/week18-run-001
 The command refuses to overwrite that directory on a second run. Every result is
 bound to the candidate version and exact dataset digest.
 
+## Compare experiments with LangSmith
+
+In Week 10, LangSmith helped us inspect how a function ran. Now we add an
+answer key so we can check what it returned. You can complete this exercise
+locally without an account; sending examples to LangSmith is optional.
+
+Learn the objects through one small routing task:
+
+| Word | Concrete meaning |
+| --- | --- |
+| Example | “contract” should select `document_search` |
+| Dataset | Three such examples, each with inputs and expected outputs |
+| Target | The function choosing a route from the input |
+| Evaluator | A function comparing the chosen route with the answer key |
+| Experiment | One candidate's results and scores across the dataset |
+
+The [complete example]({{ '/weeks/week-18/' | relative_url }}#compare-two-candidates-with-langsmith)
+contains three invented requests: contract, spend and approval. The baseline
+always selects document search. The candidate selects document search, SQL read
+or human review depending on the intent. It selects a label only; it does not
+execute those tools or approve a purchase.
+
+1. Create `.runtime` if needed and copy the complete example to
+   `.runtime/langsmith_evaluation.py`.
+2. Leave `PREP_LANGSMITH_UPLOAD` unset and run
+   `python .runtime/langsmith_evaluation.py`. This uses standard Python only.
+3. Read `1/3` for the baseline and `3/3` for the candidate. Explain why the spend
+   and approval examples distinguish the two versions.
+4. Change a candidate route to a wrong value and rerun. The score must fall.
+   Restore it afterward. This checks that the evaluator can detect a defect.
+5. Optional: install the SDK from Week 10, configure a private key and follow
+   the explicit upload command in the complete example. Open the resulting
+   dataset's two experiments and compare the same failed rows in the interface.
+
+Both candidates must receive only the input. The evaluator receives the
+reference answer. Giving the target the answer key would make the test unfair.
+Use the same examples and grader when comparing versions; if both change,
+you cannot explain the score difference clearly.
+
+The optional hosted step creates a dataset and two experiments and uploads the
+synthetic inputs, answer keys, outputs and scores. Hiding trace inputs does not
+hide dataset examples. Keep real documents and credentials out of the exercise,
+check your account's usage limits, and delete the learning data when finished.
+Do not interpret printed local scores as proof that an upload arrived.
+
+These three examples teach the experiment workflow. A score of 3/3 does not
+prove that an agent is safe or accurate on real requests. The original 28-case
+lab still checks outcomes, actual recorded routes, arguments and safety
+separately. Online evaluation later checks sampled live executions; offline
+evaluation runs your fixed test set before deployment. You need the right
+evidence for each claim.
+
+**Pause and check:** Does using LangSmith require an LLM judge? No. An exact
+route comparison is an ordinary code evaluator. Subjective explanation quality
+may need human review or a calibrated model judge, with separate costs and
+limitations.
+
 ## Avoid these beginner mistakes
 
 ### Testing only the happy path
@@ -361,6 +418,8 @@ memorize the practice exam.
 8. Why should one unsafe action be a hard signal?
 9. What does the prompt-injection test prove, and what does it not prove?
 10. How would you check that a grader can really fail?
+11. What is the difference between a LangSmith dataset and an experiment?
+12. Why must the target never receive the reference outputs?
 
 Try the [Week 18 assessment]({{ '/assessments/week-18/' | relative_url }}) for a
 random paper covering answer keys, routes, argument positions, efficiency,

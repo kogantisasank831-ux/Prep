@@ -5,9 +5,12 @@ import ast
 from collections import Counter
 import json
 from pathlib import Path
+import re
+import runpy
 import shutil
 import subprocess
-from typing import TypedDict, cast
+import sys
+from typing import Callable, TypedDict, cast
 
 import pytest
 
@@ -83,7 +86,7 @@ def exercise(question: Question) -> Exercise:
 def test_bank_distribution_and_teaching_context() -> None:
     assert BANK["schema_version"] == 1
     assert BANK["week"] == 18
-    assert BANK["version"] == "1.1.0"
+    assert BANK["version"] == "1.2.0"
     assert BANK["code_language"] == "python"
     assert len(BANK["questions"]) == 100
     assert Counter(question["type"] for question in BANK["questions"]) == {
@@ -121,6 +124,42 @@ def test_bank_distribution_and_teaching_context() -> None:
         "code": Counter(foundation=5, applied=15),
     }
     assert set(MUTANTS) == {question["id"] for question in CODING}
+
+
+def test_langsmith_comparison_is_account_free_and_grader_detects_errors(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    lesson = (ROOT / "content/weeks/week-18.md").read_text(encoding="utf-8")
+    source = next(
+        block
+        for block in re.findall(r"```python\n(.*?)```", lesson, re.DOTALL)
+        if "PREP_LANGSMITH_UPLOAD" in block
+    )
+    script = tmp_path / "langsmith_evaluation.py"
+    script.write_text(source, encoding="utf-8")
+    monkeypatch.delenv("PREP_LANGSMITH_UPLOAD", raising=False)
+    monkeypatch.delenv("LANGSMITH_API_KEY", raising=False)
+    completed = subprocess.run(
+        [sys.executable, "-S", str(script)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert [json.loads(row) for row in completed.stdout.splitlines()] == [
+        {"candidate": "baseline-v1", "passed": 1, "cases": 3},
+        {"candidate": "candidate-v2", "passed": 3, "cases": 3},
+    ]
+    namespace = runpy.run_path(str(script))
+    grader = cast(
+        Callable[[dict[str, str], dict[str, str]], dict[str, bool]],
+        namespace["route_exact"],
+    )
+    assert grader({"route": "sql_read"}, {"route": "sql_read"})["score"]
+    assert not grader({"route": "document_search"}, {"route": "sql_read"})["score"]
+    assert not grader({"route": "sql_read", "extra": "field"}, {"route": "sql_read"})[
+        "score"
+    ]
 
 
 @pytest.mark.parametrize(
